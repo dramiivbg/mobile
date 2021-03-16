@@ -1,0 +1,41 @@
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.ion-color-plure {
+    --ion-color-base: var(--ion-color-plure) !important;
+    --ion-color-base-rgb: var(--ion-color-plure-rgb) !important;
+    --ion-color-contrast: var(--ion-color-plure-contrast) !important;
+    --ion-color-contrast-rgb: var(--ion-color-plure-contrast-rgb) !important;
+    --ion-color-shade: var(--ion-color-plure-shade) !important;
+    --ion-color-tint: var(--ion-color-plure-tint) !important;
+}
+
+.input-plure {    
+    border-radius: 5px;    
+}
+
+div.img-logo-plure { 
+    position: fixed;       
+    top: 10%;    
+    width: 100%;
+    height: 10rem;    
+    background: url(../assets/img/img-logo-plure.png) no-repeat center;    
+    background-size: contain;    
+}
+
+ion-content.content-init-background {
+    --background: none;
+    position: fixed;    
+    background: var(--ion-color-plure) url(../assets/img/img-background-plure.png) no-repeat;        
+    background-size: 480px 519.83px;    
+    background-position-x: center;
+    background-position-y: 75%; 
+}
+
+ion-input {
+    --placeholder-color: var(--ion-color-plure);
+}

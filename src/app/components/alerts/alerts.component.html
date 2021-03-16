@@ -1,0 +1,17 @@
+<div class="alert-plure" [hidden]="alertObj.type == undefined">
+  <div class="alert-content">
+    <div class="alert-header">
+      <h1>{{alertObj.title}}</h1>
+    </div>
+    <div class="alert-body">
+      {{alertObj.desc}}
+      <div class="alert-btn" *ngIf="alertObj.type != 'confirm'">
+        <button type="button" class="btn btn-plure" (click)="onOk()">OK</button>
+      </div>
+      <div class="alert-btn" *ngIf="alertObj.type == 'confirm'">
+        <button type="button" class="btn btn-plure" (click)="onYes()">Yes</button>
+        <button type="button" class="btn btn-plure btn-plure-cancel" (click)="onOk()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

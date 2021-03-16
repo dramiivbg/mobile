@@ -1,0 +1,284 @@
+
+// design general
+body {
+    color: #bbbbbb !important;
+}
+
+ion-content, host {
+    background: #ffffff;
+    --background: #ffffff;
+}
+
+ion-input {
+    border: none !important;
+    input {
+        border: none !important;
+    }
+}
+
+// form
+ion-input, ion-select {
+    background: $input_back !important;
+    color:$input_color !important;
+    font-size: 13px !important;
+    input {
+        font-size: 13px !important;
+    }
+}
+// end form
+
+ion-button.btn-plure {
+    --background: #797979;
+    --background-activated: #dedede;
+    color: #fff;
+    height: 27px;
+    text-transform: lowercase;
+}
+
+ion-button:active {
+    --background: #dedede;
+    color: #999999;
+}
+
+ion-button:focus {
+    color: #999999;
+}
+
+// select {
+//     background: $input-sel-color !important;
+//     border: none !important;
+//     border-radius: 4px !important;
+//     padding: 6px 5px !important;
+//     color:$input_color !important;
+//     font-size: 12px !important;
+//     height: 27px;
+//     width: 100%;
+//     outline: none;
+// }
+
+// end design general
+
+.login {
+    ion-row{
+        height: 100%;
+        .login-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-form {
+            width: 100%;
+            .logo {
+                margin-bottom: 20px;
+                text-align: center;
+                img {
+                    display: inline-block;
+                }
+            }
+            ion-row {
+                margin-top: 8px;
+            }
+            ion-button {
+                width: 100%;
+            }
+        }
+    }
+    ion-row.environmentLogin {
+        padding: 0;
+        ion-col {
+            padding: 0;
+            ion-button {
+                --background: #fff;
+                --background-activated: #fff;
+                color: #999;
+                height: 20px;
+                width: 0;
+            }
+        }
+    }
+    
+}
+
+ion-content.environment {      
+
+    form {         
+        position: absolute;
+        margin: 0 5% 0 5%;
+        width: 90%;
+        top: 50%;
+
+        ion-item.input-plure {
+            --background: #fff  !important;
+            color: #000 !important;
+        } 
+    }
+    
+    ion-button.btn-submit{  
+        width: 50%;
+    }    
+    
+    ion-row {
+        padding-bottom: 15px;        
+    }
+}
+
+
+ion-content.login {      
+
+    form {         
+        position: absolute;
+        margin: 0 5% 0 5%;
+        width: 90%;
+        top: 40%;
+
+        ion-item.input-plure {
+            --background: #fff  !important;
+            color: #000 !important;
+        } 
+    }
+    
+    ion-button.btn-submit{  
+        width: 50%;
+    }    
+    
+    ion-row {
+        padding-bottom: 15px;        
+    }
+}
+
+
+// Home
+ion-content {
+    .home-title {
+        padding: 10px 0 0;
+        ion-col {
+            color: #555555;
+            font-size: 12px;
+        }
+    }
+    .home-center {
+        .home-border {
+            background: $back-color;
+            box-shadow: 0px 0px 2px #000000;
+            font-size: 12px;
+            margin: 5px;
+            text-align: center;
+            padding: 25px 0;
+        }
+    }
+    .accorn {
+        padding: 0 0 10px 0;
+        .accorn-title {
+            background: #777777;
+            font-size: 12px;
+            padding: 10px 5px;
+        }
+        .accorn-body {
+            font-size: 12px;
+            margin: 10px 0 0;
+            .btn-align {
+                text-align: center;
+                padding: 0;
+                ion-button {
+                    display: inline-block;
+                }
+            }
+            ion-datetime {
+                padding: 0;
+            }
+        }
+    }
+    .accorn.accorn-fields-dynamics {
+        .accorn-fields-dynamics-title {
+            padding: 15px 0 0 5px;
+        }
+        ion-datetime {
+            padding: 10px;
+        }
+    }
+}
+
+// search component 
+btn-search {
+    font-size: 12px;
+    .search-content {
+        padding: 5px;
+        .search-body {
+            margin-top: 10px;
+            ion-grid {
+                ion-row {
+                    border-bottom: $search_border_row;
+                    padding: 5px;
+                }
+            }
+        }
+    }
+}
+
+// loading
+loading-plure {
+    .alert-plure {
+        align-items: center;
+        background: $alert-back;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        left: 0;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        .loading {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            height: 100%;
+            img {
+                display: inline-block;
+            }
+        }
+    }   
+}
+
+alert-message {
+    .alert-plure {
+        align-items: center;
+        background: $alert-back;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        left: 0;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        .alert-content {
+            display: inline-block;
+            padding: 10%;
+            width: 90%;
+            .alert-header {
+                background: $alert-header-back;
+                color: $alert-header-color;
+                text-align: center;
+                padding: 10px;
+                h1 {
+                    font-weight: bold;
+                }
+            }
+            .alert-body {
+                background: $alert-body-back;
+                color: $alert-body-color;
+                text-align: center;
+                padding: 0 30px 30px;
+            }
+        }
+        button.btn-plure {
+            background: $alert-body-btn-back;
+            border-radius: 4px;
+            color: $alert-body-btn-color;
+            margin-top: 20px;
+            padding: 2vw 3vh;
+        }
+        button.btn-plure-cancel {
+            margin-left: 5px;
+        }
+    }
+}

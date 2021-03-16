@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Form</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="frm">
+
+    <div class="accorn">
+      <div class="accorn-title">
+        General
+      </div>
+      <div class="accorn-body">
+        
+        <!-- customer  -->
+        
+        <ion-row>
+          <ion-col>Customer</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="3">
+            <ion-input placeholder="No" formControlName="customerNo"></ion-input>
+          </ion-col>
+          <ion-col size="2" class="btn-align">
+            <ion-button class="btn btn-plure" (click)="onCustomer()" type="button">...</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-input placeholder="Customer name" formControlName="customerName" readonly></ion-input>
+          </ion-col>
+        </ion-row>
+  
+        <!-- ship to -->
+  
+        <ion-row>
+          <ion-col>Ship to</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="3">
+            <ion-input placeholder="No"></ion-input>
+          </ion-col>
+          <ion-col size="2" class="btn-align">
+            <ion-button class="btn btn-plure" type="button">...</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-input formControlName="shippingName" placeholder="Shipping name" readonly></ion-input>
+          </ion-col>
+        </ion-row>
+  
+        <ion-row>
+          <ion-col>Sales person</ion-col>
+          <ion-col>Location</ion-col>
+        </ion-row>
+  
+        <ion-row>
+          <ion-col>Delivery date</ion-col>
+          <ion-col>
+            <ion-datetime display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
+          </ion-col>
+          <ion-col>Order date</ion-col>
+          <ion-col>
+            <ion-datetime disabled display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
+          </ion-col>
+        </ion-row>
+  
+        <ion-row>
+          <ion-col>
+            Amount ($)
+          </ion-col>
+          <ion-col>
+            Discount ($)
+          </ion-col>
+          <ion-col>
+            Quantity ($)
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+  
+    <div class="accorn">
+      <div class="accorn-title">
+        Lines
+      </div>
+      <div class="accorn-body">
+  
+      </div>
+    </div>
+  
+    <div class="accorn accorn-fields-dynamics">
+      <div class="accorn-title">
+        Fields
+      </div>
+      <div class="accorn-body">
+        
+        <div *ngFor="let field of fields">
+
+          <ion-row *ngIf="!field.system && field.type != 'date'">
+            <ion-col size="3" class="accorn-fields-dynamics-title">
+              {{field.name}}
+            </ion-col>  
+            <ion-col>
+              <ion-input [max]="field.length" [type]="field.type" [formControlName]="field.id"></ion-input>
+            </ion-col>  
+          </ion-row>
+          <ion-row *ngIf="!field.system && field.type == 'date'">
+            <ion-col size="3" class="accorn-fields-dynamics-title">
+              {{field.name}}
+            </ion-col>  
+            <ion-col>
+              <ion-datetime [formControlName]="field.id" placeholder="Select your date" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
+            </ion-col>  
+          </ion-row>
+
+        </div>
+  
+      </div>
+    </div>
+
+    <ion-row>
+      <ion-col>
+        <ion-button class="btn btn-plure">Submit</ion-button>
+      </ion-col>
+    </ion-row>
+  
+    <!-- <div class="accorn">
+      <div class="accorn-title">
+        Lines
+      </div>
+      <div class="accorn-body">
+  
+      </div>
+    </div> -->
+
+  </form>
+  
+</ion-content>

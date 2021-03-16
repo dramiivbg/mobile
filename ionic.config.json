@@ -1,0 +1,7 @@
+{
+  "name": "plur-e mobile",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
