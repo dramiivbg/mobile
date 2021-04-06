@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from './services/auth-guard.service';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'enviroments',
+    redirectTo: 'environments',
     pathMatch: 'full'
   },
   {
@@ -13,19 +14,23 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./pages/init/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./pages/init/login/login.module').then( m => m.LoginPageModule),
+    canActivate: [AuthGuardService]
   },
   {
     path: 'init/home',
-    loadChildren: () => import('./pages/init/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./pages/init/home/home.module').then( m => m.HomePageModule),
+    canActivate: [AuthGuardService]
   },
   {
     path: 'sales/sales-form',
-    loadChildren: () => import('./pages/sales/sales-form/sales-form.module').then( m => m.SalesFormPageModule)
+    loadChildren: () => import('./pages/sales/sales-form/sales-form.module').then( m => m.SalesFormPageModule),
+    canActivate: [AuthGuardService]
   },
   {
-    path: 'enviroments',
-    loadChildren: () => import('./pages/init/enviroments/enviroments.module').then( m => m.EnviromentsPageModule)
+    path: 'environments',
+    loadChildren: () => import('./pages/init/environments/environments.module').then( m => m.EnvironmentsPageModule),
+    canActivate: [AuthGuardService]
   }
 ];
 

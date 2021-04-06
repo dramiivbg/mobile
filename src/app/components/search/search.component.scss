@@ -1,0 +1,12 @@
+// form stacke
+
+.item-native-plure {
+    padding: 0;
+    --background: #ffffff;
+    color: #000;
+    
+}
+
+ion-item::part(native){
+    padding: 0;
+}

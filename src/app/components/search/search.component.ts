@@ -1,9 +1,11 @@
+import { CONTEXT_NAME } from '@angular/compiler/src/render3/view/util';
 import { Component, OnInit } from '@angular/core';
 import { InterceptService } from 'src/app/services/intercept.service';
 
 @Component({
   selector: 'btn-search',
-  templateUrl: './search.component.html'
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
   private obj: any = {};
@@ -40,8 +42,8 @@ export class SearchComponent implements OnInit {
   }
 
   onClick(item) {
-    this.searchObj.func(item.id, item.name);
-    this.onBack();
+    this.searchObj.func(item);
+    if (this.searchObj.clear) this.onBack();
   }
 
 }

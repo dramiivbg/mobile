@@ -4,6 +4,15 @@ body {
     color: #bbbbbb !important;
 }
 
+// toolbar
+.ion-toolbar-backg {
+    --background: rgb(109, 167, 234);
+    .ion-toolbar-button {
+        color: #fff;
+    }
+}
+// toolbar
+
 ion-content, host {
     background: #ffffff;
     --background: #ffffff;
@@ -43,20 +52,6 @@ ion-button:active {
 ion-button:focus {
     color: #999999;
 }
-
-// select {
-//     background: $input-sel-color !important;
-//     border: none !important;
-//     border-radius: 4px !important;
-//     padding: 6px 5px !important;
-//     color:$input_color !important;
-//     font-size: 12px !important;
-//     height: 27px;
-//     width: 100%;
-//     outline: none;
-// }
-
-// end design general
 
 .login {
     ion-row{
@@ -99,105 +94,6 @@ ion-button:focus {
     
 }
 
-ion-content.environment {      
-
-    form {         
-        position: absolute;
-        margin: 0 5% 0 5%;
-        width: 90%;
-        top: 50%;
-
-        ion-item.input-plure {
-            --background: #fff  !important;
-            color: #000 !important;
-        } 
-    }
-    
-    ion-button.btn-submit{  
-        width: 50%;
-    }    
-    
-    ion-row {
-        padding-bottom: 15px;        
-    }
-}
-
-
-ion-content.login {      
-
-    form {         
-        position: absolute;
-        margin: 0 5% 0 5%;
-        width: 90%;
-        top: 40%;
-
-        ion-item.input-plure {
-            --background: #fff  !important;
-            color: #000 !important;
-        } 
-    }
-    
-    ion-button.btn-submit{  
-        width: 50%;
-    }    
-    
-    ion-row {
-        padding-bottom: 15px;        
-    }
-}
-
-
-// Home
-ion-content {
-    .home-title {
-        padding: 10px 0 0;
-        ion-col {
-            color: #555555;
-            font-size: 12px;
-        }
-    }
-    .home-center {
-        .home-border {
-            background: $back-color;
-            box-shadow: 0px 0px 2px #000000;
-            font-size: 12px;
-            margin: 5px;
-            text-align: center;
-            padding: 25px 0;
-        }
-    }
-    .accorn {
-        padding: 0 0 10px 0;
-        .accorn-title {
-            background: #777777;
-            font-size: 12px;
-            padding: 10px 5px;
-        }
-        .accorn-body {
-            font-size: 12px;
-            margin: 10px 0 0;
-            .btn-align {
-                text-align: center;
-                padding: 0;
-                ion-button {
-                    display: inline-block;
-                }
-            }
-            ion-datetime {
-                padding: 0;
-            }
-        }
-    }
-    .accorn.accorn-fields-dynamics {
-        .accorn-fields-dynamics-title {
-            padding: 15px 0 0 5px;
-        }
-        ion-datetime {
-            padding: 10px;
-        }
-    }
-}
-
 // search component 
 btn-search {
     font-size: 12px;
@@ -205,6 +101,7 @@ btn-search {
         padding: 5px;
         .search-body {
             margin-top: 10px;
+            color: #000;
             ion-grid {
                 ion-row {
                     border-bottom: $search_border_row;
@@ -279,6 +176,24 @@ alert-message {
         }
         button.btn-plure-cancel {
             margin-left: 5px;
+        }
+    }
+}
+
+// sales-form
+.accorn {
+    color: #000;
+    font-size: 12px;
+    margin-top: 10px;
+    .accorn-title {
+        background: #ddd;
+        padding: 5px;
+        font-weight: bold;
+    }
+    .btn-accord {
+        text-align: center;
+        .accord-btn-add {
+            display: inline-block;
         }
     }
 }

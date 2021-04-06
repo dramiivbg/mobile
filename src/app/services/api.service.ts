@@ -15,6 +15,7 @@ export class ApiService {
 
     }
 
+    // method get for call processRequests in the plure api
     getData = async (method: string, params: string): Promise<any> => {
         const url = this.baseURI + this.version + method + '/' + params;
        
@@ -46,6 +47,7 @@ export class ApiService {
         });
     }
 
+    // method post for call processRequests in the plure api
     postData = async (method: string, params: string, object: any): Promise<any> => {
         const url = this.baseURI + this.version + method + '/' + params;
 
@@ -81,18 +83,18 @@ export class ApiService {
     }
 
     getHeader() : any {
-        let sessionLogin = JSON.parse(localStorage.getItem('SessionLogin'));
+        let sessionLogin = JSON.parse(localStorage.getItem('SESSION_LOGIN'));
         if ( sessionLogin !== null && sessionLogin !== undefined ) {
             return {
                 'Content-Type': 'application/json',
-                'plureApiKey': 'pk_xqR7ISh89zxhA0B0KDfPBFcpWieZ778TO2q7sOMQutEOvVqAepsJjMt3oCkANrbcBOCISEQ62yviby5a2OVQNxJcIyS1EmdcsCmQ',
+                'plureApiKey': 'pk_wJ0dUP8U574wS6FrXCqp9irWlhliEC7MG3hhclvrU0sPFXRCBbl5LZWnsn3MEZpB0qZZXxoMh9F01LqxzSRDrbbRf5ZZsSX5T1Qp',
                 'Authorization': `Bearer ${sessionLogin.token}`
 
             }
         } else {
             return {
                 'Content-Type': 'application/json',
-                'plureApiKey': 'pk_xqR7ISh89zxhA0B0KDfPBFcpWieZ778TO2q7sOMQutEOvVqAepsJjMt3oCkANrbcBOCISEQ62yviby5a2OVQNxJcIyS1EmdcsCmQ'
+                'plureApiKey': 'pk_wJ0dUP8U574wS6FrXCqp9irWlhliEC7MG3hhclvrU0sPFXRCBbl5LZWnsn3MEZpB0qZZXxoMh9F01LqxzSRDrbbRf5ZZsSX5T1Qp'
             }
         }
     }

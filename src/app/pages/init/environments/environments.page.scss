@@ -1,0 +1,33 @@
+ion-content {
+    .img-logo-plure {
+        padding: 10vh 0 5vh;
+        text-align: center;
+        img {
+            display: inline-block;
+        }
+        .textBC {
+            color: #4D4D4D !important;
+            font-weight: 800;
+            font-size: 1.35em;
+            padding: 3vh 0 0;
+            text-align: center;
+        }
+    }
+    .input-plure {
+        --background: #fff;
+        color: #4D4D4D;
+        border: none;
+        --inner-border-width: 0 !important;
+        ion-input {
+            border-radius: 22px;
+            background: #7CAEF3 !important;
+            color: #ffffff !important;
+            padding: 0 0.5vh !important;
+            --placeholder-color: #ffffff;
+            --placeholder-opacity: 1;
+        }
+    }
+    ion-button {
+        width: 120px;
+    }
+}

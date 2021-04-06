@@ -1,7 +1,7 @@
 <ion-header [hidden]="searchObj.title == undefined">
-  <ion-toolbar>
+  <ion-toolbar class="ion-toolbar-backg">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="" (click)="onBack()"></ion-back-button>
+      <ion-back-button class="ion-toolbar-button" defaultHref="" (click)="onBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>{{searchObj.title}}</ion-title>
   </ion-toolbar>
@@ -9,14 +9,21 @@
 
 <ion-content [hidden]="searchObj.title == undefined">
   <div class="search-content">
-    <ion-row>
-      <ion-input (ionInput)="onChange($event)" type="text" placeholder="Search"></ion-input>
-    </ion-row>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="item-native-plure">
+            <ion-label position="stacked">Search <span style="text-transform: lowercase">{{searchObj.name}}</span></ion-label>
+            <ion-input (ionInput)="onChange($event)" type="text" placeholder="Search"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <div class="search-body">
       {{searchObj.name}}
       <ion-grid>
         <ion-row *ngFor="let item of listsFilter" (click)="onClick(item)">
-          <ion-col>{{item.name}}</ion-col>
+          <ion-col>{{item.id}} - {{item.value}}</ion-col>
         </ion-row>
       </ion-grid>
     </div>

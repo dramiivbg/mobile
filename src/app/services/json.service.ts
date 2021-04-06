@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JsonService {
+
+  constructor(
+    private storage: Storage
+  ) { }
 
   // convert form to Json object
   formToJson = async (frm: FormGroup): Promise<any> => {
@@ -17,8 +22,48 @@ export class JsonService {
       } catch (error) {
         reject(error);
       }
-
     });
+  }
+
+  // Return obj with sessions
+  // example:
+  /*
+    return {
+      login: {
+        company: {
+          companyId: string, 
+          companyName: string
+        },
+        customerId: string,
+        environmentId: string,
+        environmentUserId: string,
+        expirationDateToken: string,
+        login: string,
+        token: string,
+        userId: string,
+        userName: string
+      },
+      customerId: string,
+      modules: {
+        description: string,
+        erpUserId: string,
+        moduleId: string,
+        moduleType: 0,
+        userType: 1
+      }
+    }
+  */
+  async getSession() : Promise<any> {
+    return {
+      login: JSON.parse(await this.storage.get('SESSION_LOGIN')),
+      customerId: await this.storage.get('SESSION_CUSTOMER_ID'),
+      modules: await this.storage.get('SESSION_MODULES'),
+    }
+  }
+
+  // Create Cache/session
+  async setCache(name, value) {
+    this.storage.set(name, value);
   }
 
   // create structure for alert message.

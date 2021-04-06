@@ -1,16 +1,21 @@
 import { getLocaleMonthNames } from '@angular/common';
+import { CommentStmt } from '@angular/compiler';
+import { CloneVisitor } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
 import { ApiService } from 'src/app/services/api.service';
 import { InterceptService } from 'src/app/services/intercept.service';
 import { JsonService } from 'src/app/services/json.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.page.html'
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
+  private scid: string; // Session Customer Id
   frm: FormGroup;
   public environments: Array<any> = [];
 
@@ -19,7 +24,8 @@ export class LoginPage implements OnInit {
     private apiConnect: ApiService,
     private formBuilder: FormBuilder,
     private jsonServ: JsonService,
-    private router: Router    
+    private router: Router,
+    private storage: Storage
   ) { 
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
@@ -32,25 +38,12 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-    let sessionCustomerId = localStorage.getItem('SessionCustomerId');
-    if ( sessionCustomerId === null ) {
-      this.router.navigateByUrl('enviroments');
-    } else {
-      this.apiConnect.getData('mobile', `getenvironments/${sessionCustomerId}`)
-      .then(
-        get => {
-          if ( get.length > 0 ) {
-            this.environments = get;
-          } else {
-            this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', `No response from the server.`));
-          }
-        }
-      )
-      .catch(error => {
-        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${JSON.stringify(error)}`));
-        this.intServ.loadingFunc(false);
-      });
-    }
+    this.storage.get('SESSION_CUSTOMER_ID').then(
+      val => {
+        this.scid = val;
+        this.onGetEnvironments();
+      }
+    );
   }
 
   // login to the application is performed.
@@ -62,7 +55,7 @@ export class LoginPage implements OnInit {
           this.apiConnect.postData('loginuser', 'authentication', json).then(
             rsl => {
               if ( rsl.token != null ) {
-                localStorage.setItem("SessionLogin", JSON.stringify(rsl));
+                this.storage.set('SESSION_LOGIN', JSON.stringify(rsl));
                 this.intServ.alertFunc(this.jsonServ.getAlert(
                   'success', 
                   'Success', 
@@ -107,20 +100,7 @@ export class LoginPage implements OnInit {
       this.intServ.loadingFunc(false);
     }
   }
-
-  // Test
-  onCallMethods(obj: any) {
-    let o: any = {
-      returnUrl: 'http://192.168.39.146:8100/login',
-      customerId: obj.customerId
-    }
-    this.apiConnect.postData('customers', 'getcustomerportal', o).then(
-      rsl => {
-        console.log(rsl);
-      }
-    );
-  }
-
+  
   // remove environment with confirm
   onRemoveEnvironment() {
     this.intServ.alertFunc(this.jsonServ.getAlert(
@@ -128,10 +108,27 @@ export class LoginPage implements OnInit {
       'Confirm', 
       `Do you want to change company ?`,
       () => {
-        localStorage.removeItem('SessionCustomerId');
+        this.storage.remove('SESSION_CUSTOMER_ID');
         this.router.navigateByUrl('enviroments');
       })
     );
+  }
+
+  onGetEnvironments() {
+    this.apiConnect.getData('mobile', `getenvironments/${this.scid}`)
+    .then(
+      get => {
+        if ( get.length > 0 ) {
+          this.environments = get;
+        } else {
+          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', `No response from the server.`));
+        }
+      }
+    )
+    .catch(error => {
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${JSON.stringify(error)}`));
+      this.intServ.loadingFunc(false);
+    });
   }
 
   onTest() {

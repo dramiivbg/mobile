@@ -4,9 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EnviromentsPageRoutingModule } from './enviroments-routing.module';
+import { EnviromentsPageRoutingModule } from './environments-routing.module';
 
-import { EnviromentsPage } from './enviroments.page';
+import { EnvironmentsPage } from './environments.page';
 
 @NgModule({
   imports: [
@@ -16,6 +16,6 @@ import { EnviromentsPage } from './enviroments.page';
     ReactiveFormsModule,
     EnviromentsPageRoutingModule
   ],
-  declarations: [EnviromentsPage]
+  declarations: [EnvironmentsPage]
 })
-export class EnviromentsPageModule {}
+export class EnvironmentsPageModule {}

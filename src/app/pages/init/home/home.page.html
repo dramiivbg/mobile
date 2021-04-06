@@ -1,14 +1,31 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar class="ion-toolbar-backg">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button class="ion-toolbar-button"></ion-menu-button>
     </ion-buttons>
     <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  
+  <ion-row class="home-title" *ngFor="let module of modules">
+    <ion-col>
+      {{module.description}}
+    </ion-col>
+  </ion-row>
+  <ion-row class="home-center">
+    <ion-col class="home-border" (click)="onSalesForm()">
+      New
+    </ion-col>
+    <ion-col class="home-border" (click)="onSalesOrder(module)">
+      View
+    </ion-col>
+    <ion-col class="home-border">
+      Temporaly
+    </ion-col>
+  </ion-row>
+<!-- 
   <ion-row class="home-title">
     <ion-col>
       Sales orders
@@ -75,27 +92,41 @@
     <ion-col class="home-border">
       Temporaly
     </ion-col>
-  </ion-row>
+  </ion-row> -->
 
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar>
-    <ion-buttons slot="secondary">
+  <ion-toolbar class="ion-toolbar-backg">
+    <ion-buttons slot="primary" class="ion-toolbar-button">
       <ion-button>
-        Sales
-        <!-- <ion-icon slot="icon-only" name="person-circle"></ion-icon> -->
+        <ion-icon class="ion-toolbar-button" name="document-text-outline"></ion-icon>
       </ion-button>
       <ion-button>
-        WMS
-        <!-- <ion-icon slot="icon-only" name="search"></ion-icon> -->
+        <ion-icon class="ion-toolbar-button" name="sync-outline"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-icon class="ion-toolbar-button" name="albums-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <!-- <ion-title>Default Buttons</ion-title>
-    <ion-buttons slot="primary">
-      <ion-button color="secondary">
-        <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
-      </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-footer>
+
+<!-- 
+<ion-buttons slot="secondary">
+  <ion-button>
+    <ion-icon name="sync-outline"></ion-icon>
+  </ion-button>
+  <ion-button>
+    <ion-icon name="sync-outline"></ion-icon>
+  </ion-button>
+  <ion-button>
+    WMS
+  </ion-button>
+</ion-buttons> -->
+<!-- <ion-title>Default Buttons</ion-title>
+<ion-buttons slot="primary">
+  <ion-button color="secondary">
+    <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+  </ion-button>
+</ion-buttons> -->

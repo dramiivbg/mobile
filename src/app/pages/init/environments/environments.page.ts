@@ -1,7 +1,9 @@
 import { ThrowStmt } from '@angular/compiler';
+import { typeWithParameters } from '@angular/compiler/src/render3/util';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
 import { ApiService } from 'src/app/services/api.service';
 import { InterceptService } from 'src/app/services/intercept.service';
 import { JsonService } from 'src/app/services/json.service';
@@ -9,9 +11,10 @@ import { SqlitePlureService } from 'src/app/services/sqlite-plure.service';
 
 @Component({
   selector: 'app-enviroments',
-  templateUrl: './enviroments.page.html'
+  templateUrl: './environments.page.html',
+  styleUrls: ['./environments.page.scss']
 })
-export class EnviromentsPage implements OnInit {
+export class EnvironmentsPage implements OnInit {
   frm: FormGroup;
 
   constructor(
@@ -21,6 +24,7 @@ export class EnviromentsPage implements OnInit {
     , private jsonServ: JsonService
     , private router: Router
     , private sqlLite: SqlitePlureService
+    , private storage: Storage
   ) { 
     this.frm = this.formBuilder.group(
       {
@@ -29,13 +33,7 @@ export class EnviromentsPage implements OnInit {
     );
   }
 
-  ngOnInit() {
-    if ( localStorage.getItem('SessionCustomerId') !== null ) {
-      this.router.navigateByUrl('login');
-    }
-
-    this.sqlLite.onTest();
-  }
+  ngOnInit() { }
 
   onSubmit() {
     this.intServ.loadingFunc(true);
@@ -48,7 +46,7 @@ export class EnviromentsPage implements OnInit {
               this.intServ.loadingFunc(false);
               if ( get.length > 0 ) {
                 let txtEnviroment = get.length === 1 ? 'environment' : 'environments';
-                localStorage.setItem('SessionCustomerId', formJson.CustomerId);
+                this.storage.set('SESSION_CUSTOMER_ID', formJson.CustomerId);
                 this.intServ.alertFunc(this.jsonServ.getAlert(
                   'success', 'Success', 
                   `You customerId '${this.frm.controls.CustomerId.value}' has ${get.length} ${txtEnviroment}.`,

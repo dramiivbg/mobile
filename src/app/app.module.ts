@@ -19,6 +19,9 @@ import { SearchComponent } from './components/search/search.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { SqlitePlureService } from './services/sqlite-plure.service';
+import { AuthGuardService } from './services/auth-guard.service';
+import { IonicStorageModule } from '@ionic/storage';
+import { GeneralService } from './services/general.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,8 @@ import { SqlitePlureService } from './services/sqlite-plure.service';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    IonicStorageModule.forRoot()
   ],
   providers: [
     StatusBar,
@@ -43,9 +47,11 @@ import { SqlitePlureService } from './services/sqlite-plure.service';
     JsonService,
     MenuService,
     SqlitePlureService,
+    GeneralService,
     SearchComponent,
     LoadingComponent,
-    AlertsComponent
+    AlertsComponent,
+    IonicStorageModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
