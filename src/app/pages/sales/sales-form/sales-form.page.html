@@ -1,87 +1,83 @@
 <ion-header>
-  <ion-toolbar class="ion-toolbar-backg">
+  <ion-toolbar color="plureMain">
     <ion-buttons slot="start">
-      <ion-back-button class="ion-toolbar-button" defaultHref="" (click)="onBack()"></ion-back-button>
+      <ion-back-button class="ion-toolbar-button" defaultHref="init/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>New</ion-title>
+    <ion-title *ngIf="new">New - {{module.description}}</ion-title>
+    <ion-title *ngIf="!new">{{module.description}} - {{order.id}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="frm">
+  <form [formGroup]="frm" (ngSubmit)="onSubmit()">
 
-    <div class="accorn">
-      <div class="accorn-title">
-        General
-      </div>
-      <div class="accorn-body">
-
-        <!-- customer  -->
-        <ion-row>
-          <ion-col>Customer</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="3">
-            <ion-input placeholder="No" formControlName="customerNo"></ion-input>
-          </ion-col>
-          <ion-col size="2" class="btn-align">
-            <ion-button class="btn btn-plure" (click)="onCustomer()" type="button">...</ion-button>
-          </ion-col>
-          <ion-col>
-            <ion-input placeholder="Customer name" formControlName="customerName" readonly></ion-input>
-          </ion-col>
-        </ion-row>
-
-        <!-- ship to -->
-
-        <ion-row>
-          <ion-col>Ship to</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="3">
-            <ion-input formControlName="shippingNo" placeholder="No"></ion-input>
-          </ion-col>
-          <ion-col size="2" class="btn-align">
-            <ion-button class="btn btn-plure" (click)="onShipAddress()" type="button">...</ion-button>
-          </ion-col>
-          <ion-col>
-            <ion-input formControlName="shippingName" placeholder="Shipping name" readonly></ion-input>
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col>Sales person</ion-col>
-          <ion-col>Location</ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col>Delivery date</ion-col>
-          <ion-col>
-            <ion-datetime display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
-          </ion-col>
-          <ion-col>Order date</ion-col>
-          <ion-col>
-            <ion-datetime disabled display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col>
-            Amount ($)
-          </ion-col>
-          <ion-col>
-            Discount ($)
-          </ion-col>
-          <ion-col>
-            Quantity ($)
-          </ion-col>
-        </ion-row>
-      </div>
+    <div class="designform-header">
+      <ion-row>
+        <ion-col *ngIf="new" (click)="onCustomer()">
+          <ion-label class="customerName" *ngIf="frm.controls.customerNo.value == ''">____________</ion-label>
+          <ion-label class="customerName" *ngIf="frm.controls.customerNo.value != ''">{{frm.controls.customerName.value}}</ion-label>
+        </ion-col>
+        <ion-col *ngIf="!new">
+          <ion-label class="customerName">{{frm.controls.customerName.value}}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row class="customerNo">
+        <ion-col>
+          <ion-label class="smallfont">Customer No {{frm.controls.customerNo.value}}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row class="shipTop">
+        <ion-col (click)="onShipAddress()" *ngIf="new">
+          <ion-label class="smallfont">Ship-to Address.</ion-label>
+          <ion-label class="smallfont" *ngIf="frm.controls.shippingNo.value == ''"> ___________</ion-label>
+          <ion-label class="smallfont" *ngIf="frm.controls.shippingNo.value != ''"> {{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+        </ion-col>
+        <ion-col *ngIf="!new">
+          <ion-label class="smallfont">Ship-to Address. </ion-label>
+          <ion-label class="smallfont">{{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row class="orderDate">
+        <ion-col size="4">
+          <ion-label class="smallfont">
+            Order date: 
+          </ion-label>
+        </ion-col>
+        <ion-col size="3">
+          <ion-label class="smallfont" *ngIf="new">
+            <ion-datetime class="smallfont" formControlName="orderDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
+          </ion-label>
+          <ion-label class="smallfont" *ngIf="!new">
+            {{ frm.controls.orderDate.value | date: 'dd/MM/yyyy' }}
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row class="delivery">
+        <ion-col size="4">
+          <ion-label class="smallfont">
+            Delivery date: 
+          </ion-label>
+        </ion-col>
+        <ion-col size="3">
+          <ion-label class="smallfont" *ngIf="new">
+            <ion-datetime class="smallfont" formControlName="requestedDeliveryDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
+          </ion-label>
+          <ion-label class="smallfont" *ngIf="!new">
+            {{ frm.controls.requestedDeliveryDate.value | date: 'dd/MM/yyyy' }}
+          </ion-label>
+        </ion-col>
+            <!-- {{ today | date: 'dd/MM/yyyy' }} -->
+      </ion-row>
+      <ion-row class="total-for-pay">
+        <ion-col>
+          <ion-label>${{total}}</ion-label>
+        </ion-col>
+      </ion-row>
     </div>
 
     <div class="accorn">
-      <div class="accorn-title">
-        Lines
+      <div class="order-details">
+        Order details
       </div>
       <div  class="accorn-body">
         <div formArrayName="lines" class="lines">
@@ -90,40 +86,53 @@
             <div [formGroupName]="i" *ngIf="item.controls.title.value != ''">
               
               <ion-item-sliding>
-                <ion-item-options side="start">
-                  <ion-item-option color="danger" (click)="onDeleteLine(item)">Delete</ion-item-option>
+                <ion-item-options *ngIf="new" side="start">
+                  <ion-item-option color="danger" (click)="onDeleteLine(i)" style="padding: 0 50px;">Delete</ion-item-option>
                 </ion-item-options>
 
                 <ion-item>
                   <ion-label class="label-lines">
                     <ion-row>
-                      <ion-col size="6" class="label-line-title">
-                        {{item.controls.title.value}}
+                      <ion-col size="2" class="label-line-title">
+                        <img *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'" src="../../../../assets/img/NOIMAGE.jpg" />
+                        <img *ngIf="item.controls.picture.value != 'data:image/jpeg;base64,NOIMAGE'" src="{{item.controls.picture.value}}" />
                       </ion-col>
-                      <ion-col class="label-line-title" style="text-align: right;">
-                        Total ${{item.controls.total.value}}
+                      <ion-col size="10">
+                        <ion-row>
+                          <ion-col size="7" style="overflow: hidden;" class="label-line-title">
+                            {{item.controls.title.value}}
+                          </ion-col>
+                          <ion-col size="5" class="label-line-title" style="text-align: right;">
+                            Total ${{item.controls.total.value}}
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="4" class="label-line">
+                            Item No: {{item.controls.id.value}}
+                          </ion-col>
+                          <ion-col class="label-line">
+                            Discount: {{item.controls.lineDiscountPercentage.value}}%
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="4" class="label-line">
+                            Quantity: {{item.controls.quantity.value}}
+                          </ion-col>
+                          <ion-col class="label-line">
+                            Unit price: ${{item.controls.unitPrice.value}}
+                          </ion-col>
+                        </ion-row>
                       </ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col size="4" class="label-line">
-                        Item No: {{item.controls.id.value}}
-                      </ion-col>
-                      <ion-col class="label-line">
-                        Category: {{item.controls.categoryNo.value}}
-                      </ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col size="4" class="label-line">
-                        Quantity: {{item.controls.quantity.value}}
-                      </ion-col>
-                      <ion-col class="label-line">
-                        Unit price: ${{item.controls.unitPrice.value}}
-                      </ion-col>
-                    </ion-row>
+                    </ion-row>                    
                   </ion-label>
                 </ion-item>
 
-                <ion-item-options side="end">
+                <ion-item-options side="end" *ngIf="new">
+                  <ion-item-option color="danger">
+                    <ion-select style="width: 150px;" (ionChange)="ionMeasure(i)" formControlName="unitOfMeasureCode">
+                      <ion-select-option *ngFor="let measure of unitMeasureList[i]">{{measure.id}}</ion-select-option>
+                    </ion-select>
+                  </ion-item-option>
                   <ion-item-option class="item-lines" color="plureBlack">
                     <ion-button color="plureGrey" class="btn-decrement" (click)="onIncDec(i, 0)">-</ion-button>
                     <ion-input color="plureBlack" formControlName="quantity" type="number"></ion-input>
@@ -134,13 +143,44 @@
             </div>
           </ion-list>
         </div>
-        <div class="btn-accord">
+        <div class="btn-accord" *ngIf="new">
           <ion-button class="btn btn-plure accord-btn-add" (click)="onItem()" type="button">+</ion-button>
         </div>
       </div>
     </div>
 
-    <div class="accorn accorn-fields-dynamics">
+    <div class="accorn">
+      <ion-row>
+        <ion-col size="7"></ion-col>
+        <ion-col size="2">
+          <ion-label>Subtotal</ion-label>
+        </ion-col>
+        <ion-col size="2" style="text-align: right;">${{subTotal}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="7"></ion-col>
+        <ion-col size="2">
+          <ion-label>Tax</ion-label>
+        </ion-col>
+        <ion-col size="2" style="text-align: right;">${{taxTotal}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="7"></ion-col>
+        <ion-col size="2">
+          <ion-label>Discount</ion-label>
+        </ion-col>
+        <ion-col size="2" style="text-align: right;">${{discountTotal}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="7"></ion-col>
+        <ion-col size="2">
+          <ion-label>Total</ion-label>
+        </ion-col>
+        <ion-col size="2" style="text-align: right;">${{total}}</ion-col>
+      </ion-row>
+    </div>
+
+    <div class="accorn accorn-fields-dynamics" style="display: none;">
       <div class="accorn-title">
         Fields
       </div>
@@ -171,9 +211,11 @@
       </div>
     </div>
 
-    <ion-row>
+    <ion-row *ngIf="new">
       <ion-col>
-        <ion-button class="btn btn-plure">Submit</ion-button>
+        <ion-button type="submit" color="light" class="btn-submit">
+          Submit
+        </ion-button>
       </ion-col>
     </ion-row>
 
@@ -181,3 +223,11 @@
   </form>
 
 </ion-content>
+
+<ion-toolbar color="plureMain">
+  <ion-buttons slot="primary">
+    <ion-button (click)="onBarCode()">
+      <ion-icon name="barcode-outline"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>

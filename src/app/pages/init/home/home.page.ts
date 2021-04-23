@@ -1,6 +1,6 @@
 import { ArrayType, ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { copyFileSync } from 'fs';
 import { MenuService } from 'src/app/data/menu.service';
 import { ApiService } from 'src/app/services/api.service';
@@ -16,6 +16,10 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./home.page.scss']
 })
 export class HomePage implements OnInit {
+  private customerId: string;
+
+  // List
+  private customers: any;
   private session: any;
   private modules: [];
   private salesOrders: any;
@@ -36,7 +40,13 @@ export class HomePage implements OnInit {
       this.intServ.modifyMenu(menu);
     }
 
-  async ngOnInit() {
+  async ngOnInit() { }
+
+  async ionViewWillEnter() {
+    this.initOrders();
+  }
+
+  async initOrders() {
     this.intServ.loadingFunc(true);
     this.session = await this.js.getSession();
     if (this.session.modules === null)
@@ -45,8 +55,11 @@ export class HomePage implements OnInit {
       await this.createOptions();
 
     await this.syncerp.testConnection();
-    let process = await this.syncerp.processRequest('GetSalesOrders', "2", "", "");
-    this.salesOrders = await this.syncerp.setRequest(process);
+    // let process = await this.syncerp.processRequest('GetSalesOrders', "", "", "CA");
+    let process = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: 'sales order', pageSize:'', position:'', salesPerson: 'CA' }]);
+    let salesOrders = await this.syncerp.setRequest(process);
+    this.salesOrders = await this.general.salesOrderList(salesOrders.SalesOrders);
+    await this.getCustomers();
     this.intServ.loadingFunc(false);
   }
 
@@ -69,19 +82,55 @@ export class HomePage implements OnInit {
       )
   }
 
+  // Create options per user
   async createOptions() {
     this.modules = this.session.modules;
   }
 
-  async onSalesOrder(item) {
-    let list: any = await this.general.salesOrderList(this.salesOrders.SalesOrders);
-    this.general.fieldsToJson(this.salesOrders.SalesOrders);
-    let obj = this.general.structSearch(list, 'Search sales order', 'Sales Order');
+  async onSalesOrder(module) {
+    let salesType = (module.description.toLowerCase() === 'credit memo' || module.description.toLowerCase() === 'return order') ? 'sales ' + module.description.toLowerCase() : module.description.toLowerCase();
+    this.intServ.loadingFunc(true);
+    let process = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: salesType, pageSize:'', position:'', salesPerson: 'CA' }]);
+    let sales = await this.syncerp.setRequest(process);
+    let salesList = await this.general.salesOrderList(sales.SalesOrders);
+    this.intServ.loadingFunc(false);
+    let obj = this.general.structSearch(salesList, `Search ${module.description}`, module.description, async (order) => {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          order,
+          module,
+          new: false
+        }
+      };
+      this.router.navigate(['sales/sales-form'], navigationExtras);
+    });
     this.intServ.searchShowFunc(obj);
   }
 
-  onSalesForm() {
-    this.router.navigate(['sales/sales-form']);
+  async onSalesForm(module) {
+    this.onCustomer(module);
+  }
+
+  async getCustomers() {
+    let process = await this.syncerp.processRequest('GetCustomers', "10", "", "");
+    let customers = await this.syncerp.setRequest(process);
+    this.customers = await this.general.customerList(customers.Customers);
+  }
+
+  // load search component
+  onCustomer(module) {
+    let obj = this.general.structSearch(this.customers, 'Search customers', 'Customers', (customer) => {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          customer,
+          module,
+          new: true
+        }
+      };
+      this.router.navigate(['sales/sales-form'], navigationExtras);
+      // this.router.navigate([`sales/sales-form/${item.id}`]);
+    });
+    this.intServ.searchShowFunc(obj);
   }
 
 }

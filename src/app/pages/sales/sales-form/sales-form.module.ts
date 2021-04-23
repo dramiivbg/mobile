@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { SalesFormPageRoutingModule } from './sales-form-routing.module';
 import { SalesFormPage } from './sales-form.page';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @NgModule({
   imports: [
@@ -11,7 +12,7 @@ import { SalesFormPage } from './sales-form.page';
     FormsModule,
     IonicModule,
     SalesFormPageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   declarations: [SalesFormPage]
 })

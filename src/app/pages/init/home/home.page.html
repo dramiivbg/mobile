@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar class="ion-toolbar-backg">
+  <ion-toolbar color="plureMain">
     <ion-buttons slot="start">
       <ion-menu-button class="ion-toolbar-button"></ion-menu-button>
     </ion-buttons>
@@ -8,23 +8,25 @@
 </ion-header>
 
 <ion-content>
+  <ion-list *ngFor="let module of modules">
+    <ion-row class="home-title" >
+      <ion-col>
+        {{module.description}}
+      </ion-col>
+    </ion-row>
+    <ion-row class="home-center">
+      <ion-col class="home-border">
+        <ion-button (click)="onSalesForm(module)" color="plureMain">New</ion-button>
+      </ion-col>
+      <ion-col class="home-border">
+        <ion-button (click)="onSalesOrder(module)" color="plureMain">View</ion-button>
+      </ion-col>
+      <ion-col class="home-border">
+        <ion-button color="plureMain">Offline</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-list>
   
-  <ion-row class="home-title" *ngFor="let module of modules">
-    <ion-col>
-      {{module.description}}
-    </ion-col>
-  </ion-row>
-  <ion-row class="home-center">
-    <ion-col class="home-border" (click)="onSalesForm()">
-      New
-    </ion-col>
-    <ion-col class="home-border" (click)="onSalesOrder(module)">
-      View
-    </ion-col>
-    <ion-col class="home-border">
-      Temporaly
-    </ion-col>
-  </ion-row>
 <!-- 
   <ion-row class="home-title">
     <ion-col>

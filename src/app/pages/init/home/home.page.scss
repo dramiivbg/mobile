@@ -9,13 +9,8 @@ ion-content {
         }
     }
     .home-center {
-        .home-border {
-            background: $back-color;
-            box-shadow: 0px 0px 2px #000000;
-            font-size: 12px;
-            margin: 5px;
-            text-align: center;
-            padding: 25px 0;
+        ion-button {
+            width: 100%;
         }
     }
     .accorn {

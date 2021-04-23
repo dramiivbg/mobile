@@ -4,6 +4,14 @@
     align-items: center;
 }
 
+.ion-color-plureMain {
+    --ion-color-base: var(--ion-color-plureMain) !important;
+    --ion-color-base-rgb: var(--ion-color-plureMain-rgb) !important;
+    --ion-color-contrast: var(--ion-color-plureMain-contrast) !important;
+    --ion-color-contrast-rgb: var(--ion-color-plureMain-contrast-rgb) !important;
+    --ion-color-shade: var(--ion-color-plureMain-shade) !important;
+    --ion-color-tint: var(--ion-color-plureMain-tint) !important;
+}
 
 .ion-color-plure {
     --ion-color-base: var(--ion-color-plure) !important;
@@ -13,7 +21,6 @@
     --ion-color-shade: var(--ion-color-plure-shade) !important;
     --ion-color-tint: var(--ion-color-plure-tint) !important;
 }
-
 
 .ion-color-plureBlack {
     --ion-color-base: var(--ion-color-plureBlack) !important;

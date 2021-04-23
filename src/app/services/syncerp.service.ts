@@ -21,7 +21,7 @@ export class SyncerpService {
       processMethod: processMethod,
       userId: this.session.login.userId,
       CompanyId: this.session.login.company.companyId,
-      JsonRequest: JSON.stringify({
+      jsonRequest: JSON.stringify({
         ProcessMethod: processMethod,
         Parameters:[
           {
@@ -42,7 +42,7 @@ export class SyncerpService {
       processMethod: processMethod,
       userId: this.session.login.userId,
       CompanyId: this.session.login.company.companyId,
-      JsonRequest: JSON.stringify({
+      jsonRequest: JSON.stringify({
         ProcessMethod: processMethod,
         Parameters
       })

@@ -1,3 +1,5 @@
+@import "~src/sass/variables";
+
 ion-item::part(native){
     --background: #ffffff;
     padding: 0;
@@ -48,4 +50,51 @@ ion-item ion-input {
         font-size: 10px; 
         padding: 0 10px;
     }
+}
+
+// design
+.designform-header {
+    background: var(--ion-color-plureMain) !important;
+    margin-bottom: 2em;
+    padding: 1.5em 0.2em 2.5em;
+    position: relative;
+    color: #ffffff;
+    ion-col.customer-margin {
+        margin: 5px 0 0;
+    }
+    ion-label.customerName {
+        font-size: 1.3rem;
+    }
+    ion-label.smallfont {
+        font-size: 0.8rem;
+        .datetime-text {
+            font-size: 0.8rem;
+        }
+    }
+    ion-row.total-for-pay {
+        position: absolute;
+        padding: 0.5em 1.2em;
+        background: rgb(38, 74, 109);
+        right: 0;
+        bottom: -1.37em;
+        ion-label {
+            font-size: 1.4rem;
+        }
+    }
+    ion-row.customerNo {
+        margin-top: -0.8em;
+        ion-label.smallfont {
+            font-size: 0.65rem;
+        }
+    }
+    ion-datetime {
+        border-bottom: 1px solid #fff;
+        padding: 3px 0 0 !important;
+        text-align: center;
+    }
+}
+
+.order-details {
+    color: #aaaaaa;
+    padding: 0 0.2em 0;
 }

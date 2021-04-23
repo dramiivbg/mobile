@@ -22,6 +22,7 @@ export class SearchComponent implements OnInit {
       obj => {
         this.searchObj = obj;
         this.listsFilter = obj.data;
+        this.lists = obj.data;
       }
     )
   }
@@ -30,11 +31,15 @@ export class SearchComponent implements OnInit {
 
   onChange(e) {
     let val = e.target.value;
-    this.listsFilter = this.lists.filter(
-      x => {
-        return (x.name.toLowerCase().indexOf(val.toLowerCase()) != -1);
-      }
-    )
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.value.toLowerCase().includes(val.toLowerCase()) || (x.id.toLowerCase().includes(val.toLowerCase())));
+        }
+      )
+    } 
   }
 
   onBack() {
