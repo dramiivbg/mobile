@@ -1,4 +1,5 @@
 
+
 // design general
 body {
     color: #bbbbbb !important;
@@ -37,11 +38,17 @@ ion-input, ion-select {
 // end form
 
 ion-button.btn-plure {
-    --background: #797979;
-    --background-activated: #dedede;
-    color: #fff;
-    height: 27px;
-    text-transform: lowercase;
+    border-radius: 25px;
+    background: var(--ion-color-plure);
+    padding: 10px;
+    height: 35px;
+    width: 140px !important;
+    button {
+        background: #fff;
+    }
+}
+ion-button.btn-plure::part(native){
+    box-shadow: none;
 }
 
 ion-button:active {

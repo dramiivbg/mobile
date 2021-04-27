@@ -1,6 +1,6 @@
 <ion-content class="environment content-init-background">  
   <div class="img-logo-plure">
-    <img src="../../../../assets/img/img-logo-plure.png" />
+    <img src="../../../../assets/img/img-logo-plure.svg" />
     <div class="textBC">Microsft Business Central</div>
   </div>
   <form [formGroup]="frm" (ngSubmit)="onSubmit()">
@@ -9,14 +9,14 @@
         <ion-col size="12">
           <ion-item class="input-plure" lines="none">
             <ion-label position="stacked">Customer ID</ion-label>
-            <ion-input type="text" placeholder="Enter your user name" formControlName="CustomerId"></ion-input>
+            <ion-input type="text" color="plureMain" placeholder="Enter your user name" formControlName="CustomerId"></ion-input>
           </ion-item>      
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12">
           <div class="center">
-            <ion-button type="submit" color="light" class="btn-submit">
+            <ion-button type="submit" color="plure" class="btn-plure">
               Submit
             </ion-button>
           </div>  

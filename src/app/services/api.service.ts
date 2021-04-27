@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ApiService {
-    private baseURI = 'http://192.168.0.10:8181/api/';
+    private baseURI = 'http://192.170.1.146:8181/api/';
     private version = 'v1.0/'
     private timeOut = 120000;
     private msgTimeOut = 'The waiting time for execution has been exceeded';

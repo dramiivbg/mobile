@@ -1,3 +1,13 @@
+@font-face {
+    font-family: SourceSansProRegular;
+    src: url("../assets/fonts/source_sans_pro/SourceSansPro-Regular.ttf"); //change url accordingly
+}
+
+@font-face {
+    font-family: SourceSansProBold;
+    src: url("../assets/fonts/source_sans_pro/SourceSansPro-Bold.ttf"); //change url accordingly
+}
+
 .center{
     display: flex;
     justify-content: center;
@@ -56,3 +66,4 @@ ion-content.content-init-background {
 ion-input {
     --placeholder-color: var(--ion-color-plure);
 }
+
