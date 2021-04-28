@@ -43,7 +43,7 @@ export class AuthGuardService implements CanActivate {
   isLogin() : boolean {
 
     if (this.login !== undefined && this.login !== null){
-      this.router.navigate(["init/home"]);
+      this.router.navigate(["modules"]);
       return false;
     } else {
       if (this.customerId === undefined || this.customerId === null){

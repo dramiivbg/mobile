@@ -31,6 +31,10 @@ const routes: Routes = [
     path: 'environments',
     loadChildren: () => import('./pages/init/environments/environments.module').then( m => m.EnvironmentsPageModule),
     canActivate: [AuthGuardService]
+  },
+  {
+    path: 'modules',
+    loadChildren: () => import('./pages/init/modules/modules.module').then( m => m.ModulesPageModule)
   }
 ];
 

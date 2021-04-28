@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ApiService {
-    private baseURI = 'http://192.170.1.146:8181/api/';
+    private baseURI = 'http://192.168.1.102:8181/api/';
     private version = 'v1.0/'
     private timeOut = 120000;
     private msgTimeOut = 'The waiting time for execution has been exceeded';
@@ -89,7 +89,6 @@ export class ApiService {
                 'Content-Type': 'application/json',
                 'plureApiKey': 'pk_wJ0dUP8U574wS6FrXCqp9irWlhliEC7MG3hhclvrU0sPFXRCBbl5LZWnsn3MEZpB0qZZXxoMh9F01LqxzSRDrbbRf5ZZsSX5T1Qp',
                 'Authorization': `Bearer ${sessionLogin.token}`
-
             }
         } else {
             return {
