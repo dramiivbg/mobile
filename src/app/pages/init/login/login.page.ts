@@ -4,10 +4,19 @@ import { CloneVisitor } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
-import { ApiService } from 'src/app/services/api.service';
-import { InterceptService } from 'src/app/services/intercept.service';
-import { JsonService } from 'src/app/services/json.service';
+import { Device } from '@ionic-native/device/ngx'
+import { sha512 } from 'js-sha512'
+
+// import services
+import { ApiService } from '@svc/api.service';
+import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
+
+// import vars
+import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID, SK_SESSION_LOGIN } from '@var/consts';
+import { error } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-login',
@@ -19,29 +28,27 @@ export class LoginPage implements OnInit {
   frm: FormGroup;
   public environments: Array<any> = [];
 
-  constructor(
-    private intServ: InterceptService,
+  constructor(private intServ: InterceptService,
     private apiConnect: ApiService,
     private formBuilder: FormBuilder,
     private jsonServ: JsonService,
     private router: Router,
-    private storage: Storage
-  ) { 
+    private storage: Storage,
+    private device: Device) { 
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
       {
         EnviromentId: ['', Validators.required],
         User: ['', Validators.required],
         Password: ['', Validators.required],
-      }
+      }      
     )
   }
 
   ngOnInit() {
-    this.storage.get('SESSION_CUSTOMER_ID').then(
-      val => {
-        this.scid = val;
-        this.onGetEnvironments();
+    this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT).then(
+      res => {
+        this.scid = JSON.parse(res).customerId;
       }
     );
   }
@@ -50,47 +57,41 @@ export class LoginPage implements OnInit {
   onSubmit() {
     this.intServ.loadingFunc(true);
     if (this.frm.valid) {
-      this.jsonServ.formToJson(this.frm).then(
-        json => {
-          this.apiConnect.postData('loginuser', 'authentication', json).then(
-            rsl => {
-              if ( rsl.token != null ) {
-                this.storage.set('SESSION_LOGIN', JSON.stringify(rsl));
-                this.intServ.alertFunc(this.jsonServ.getAlert(
-                  'success', 
-                  'Success', 
-                  `The entry was successful.`,
-                  () => {
-                    this.intServ.loadingFunc(false);
-                    this.router.navigateByUrl('init/home');
-                  })
-                );
-              } else {
-                this.intServ.alertFunc(this.jsonServ.getAlert(
-                  'alert', 
-                  'Error', 
-                  `The user or password is not correct.`,
-                  () => {
-                    this.intServ.loadingFunc(false);
-                  })
-                );
-              }
-            }
-          )
-          .catch(
-            error => {
-              this.intServ.alertFunc(this.jsonServ.getAlert(
-                'alert', 
-                'Error', 
-                `${JSON.stringify(error)}`,
-                () => {
-                  this.intServ.loadingFunc(false);
-                })
-              );
-            }
-          );
+      let secretKey = sha512(`${this.frm.value.User}@${this.scid}:${sha512(this.frm.value.Password)}`);
+      let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
+      let data = {
+        appSource: environment.appSource,
+        secretKey: secretKey,
+        authorizationToken: authorizationToken,
+        environmentId: this.frm.value.EnviromentId,
+        uuid: this.device.uuid
+      };
+      this.apiConnect.postData('loginuser', 'authentication', data).then(
+        res => {
+          if ( res.token != null ) {
+            this.storage.set(SK_SESSION_LOGIN, JSON.stringify(res));
+            this.intServ.loadingFunc(false);
+            this.router.navigateByUrl('/modules', {replaceUrl: true});
+
+          } else {
+            this.intServ.alertFunc(this.jsonServ.getAlert(
+              'alert', 
+              'Error', 
+              `The user or password is not correct.`,
+              () => {
+                this.intServ.loadingFunc(false);
+              })
+            );
+          }
         }
       )
+      .catch(
+        err => {
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
+          );
+        }
+      );
     } else {
       this.intServ.alertFunc(this.jsonServ.getAlert(
         'alert', 
@@ -108,26 +109,41 @@ export class LoginPage implements OnInit {
       'Confirm', 
       `Do you want to change company ?`,
       () => {
-        this.storage.remove('SESSION_CUSTOMER_ID');
+        this.storage.remove(SK_SESSION_CUSTOMER_ID);
         this.router.navigateByUrl('enviroments');
       })
     );
   }
 
-  onGetEnvironments() {
-    this.apiConnect.getData('mobile', `getenvironments/${this.scid}`)
+  onBack() {
+    this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
+  }
+
+  onChangeUser(event: any){
+    let data = {
+      "customerId": this.scid,
+      "login": this.frm.value.User,
+      "platformCode": environment.platformCode
+    };
+
+    this.onGetEnvironments(data);
+  }
+
+  onGetEnvironments(data: any) {
+    this.intServ.loadingFunc(true);
+    this.apiConnect.postData('mobile', 'getenvironments', data)
     .then(
-      get => {
-        if ( get.length > 0 ) {
-          this.environments = get;
-        } else {
-          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', `No response from the server.`));
-        }
+      res => {     
+        this.intServ.loadingFunc(false);   
+        if(res.length > 0) {
+          this.environments = res;
+        } 
       }
     )
-    .catch(error => {
-      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${JSON.stringify(error)}`));
+    .catch(err => {
       this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
+      this.frm.controls['User'].setValue('');
     });
   }
 

@@ -5,11 +5,11 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { ActivatedRoute, ChildrenOutletContexts, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Guid } from 'guid-typescript';
-import { ApiService } from 'src/app/services/api.service';
-import { GeneralService } from 'src/app/services/general.service';
-import { InterceptService } from 'src/app/services/intercept.service';
-import { JsonService } from 'src/app/services/json.service';
-import { SyncerpService } from 'src/app/services/syncerp.service';
+import { ApiService } from '@svc/api.service';
+import { GeneralService } from '@svc/general.service';
+import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
+import { SyncerpService } from '@svc/syncerp.service';
 import { runInThisContext } from 'vm';
 
 @Component({

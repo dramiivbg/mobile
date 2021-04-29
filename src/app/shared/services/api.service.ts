@@ -1,23 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment} from '@env/environment';
 
 @Injectable()
 export class ApiService {
-    private baseURI = 'http://192.168.1.102:8181/api/';
-    private version = 'v1.0/'
+    private apiBaseUrl: string = `${environment.apiUrl}/${environment.apiVersion}`;
     private timeOut = 120000;
     private msgTimeOut = 'The waiting time for execution has been exceeded';
 
-    constructor(
-            private httpClient: HttpClient,
-        ) 
-        {
-
+    constructor(private httpClient: HttpClient) {
     }
 
     // method get for call processRequests in the plure api
     getData = async (method: string, params: string): Promise<any> => {
-        const url = this.baseURI + this.version + method + '/' + params;
+        const url = `${this.apiBaseUrl}/${method}/${params}`;
        
         return new Promise((resolve, reject) => {
             try {
@@ -49,7 +45,9 @@ export class ApiService {
 
     // method post for call processRequests in the plure api
     postData = async (method: string, params: string, object: any): Promise<any> => {
-        const url = this.baseURI + this.version + method + '/' + params;
+        const url = `${this.apiBaseUrl}/${method}/${params}`;
+
+        console.log(url);
 
         return new Promise((resolve, reject) => {
             try {
@@ -87,13 +85,13 @@ export class ApiService {
         if ( sessionLogin !== null && sessionLogin !== undefined ) {
             return {
                 'Content-Type': 'application/json',
-                'plureApiKey': 'pk_wJ0dUP8U574wS6FrXCqp9irWlhliEC7MG3hhclvrU0sPFXRCBbl5LZWnsn3MEZpB0qZZXxoMh9F01LqxzSRDrbbRf5ZZsSX5T1Qp',
+                'plureApiKey': environment.apiKey,
                 'Authorization': `Bearer ${sessionLogin.token}`
             }
         } else {
             return {
                 'Content-Type': 'application/json',
-                'plureApiKey': 'pk_wJ0dUP8U574wS6FrXCqp9irWlhliEC7MG3hhclvrU0sPFXRCBbl5LZWnsn3MEZpB0qZZXxoMh9F01LqxzSRDrbbRf5ZZsSX5T1Qp'
+                'plureApiKey': environment.apiKey
             }
         }
     }

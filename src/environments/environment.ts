@@ -4,7 +4,12 @@
 
 export const environment = {
   production: false,
-  platformCode: 'D365BC'
+  appSource: 'Mobile',
+  platformCode: 'D365BC',
+  apiUrl: "https://localhost:5001/api",
+  apiVersion: "v1.0",
+  apiKey: "pk_C9QNBm0Onr14Nnlwg3ZAfgxynhJSyhRD5JO4L1bnj8wPPGKDCdTnyH2vKrAuNrpfKw9dIrVp2LqiTRTRHfpvyDfxRtstARK3Rrfs",
+  passphrase: 'TUJ&!FN@fn7$rq1SuPWCN3$XNFuMdS2G6GcnZV2kJA&&!9hXoR'
 };
 
 /*

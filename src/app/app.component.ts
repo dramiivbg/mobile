@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 // Services
-import { InterceptService } from './services/intercept.service';
+import { InterceptService } from './shared/services/intercept.service';
 import { Router } from '@angular/router';
 import { convertActionBinding } from '@angular/compiler/src/compiler_util/expression_converter';
 

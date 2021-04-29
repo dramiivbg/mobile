@@ -1,6 +1,6 @@
 import { CONTEXT_NAME } from '@angular/compiler/src/render3/view/util';
 import { Component, OnInit } from '@angular/core';
-import { InterceptService } from 'src/app/services/intercept.service';
+import { InterceptService } from '@svc/intercept.service';
 
 @Component({
   selector: 'btn-search',

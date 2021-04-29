@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { copyFileSync } from 'fs';
 import { MenuService } from 'src/app/data/menu.service';
-import { ApiService } from 'src/app/services/api.service';
-import { GeneralService } from 'src/app/services/general.service';
-import { InterceptService } from 'src/app/services/intercept.service';
-import { JsonService } from 'src/app/services/json.service';
-import { SyncerpService } from 'src/app/services/syncerp.service';
+import { ApiService } from '@svc/api.service';
+import { GeneralService } from '@svc/general.service';
+import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
+import { SyncerpService } from '@svc/syncerp.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

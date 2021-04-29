@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 // Services
-import { InterceptService } from '../services/intercept.service';
+import { InterceptService } from '../shared/services/intercept.service';
 
 
 @Component({

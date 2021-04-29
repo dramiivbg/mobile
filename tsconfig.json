@@ -3,6 +3,11 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "paths": {
+      "@env/*": ["src/environments/*"],
+      "@svc/*": ["src/app/shared/services/*"],
+      "@var/*": ["src/app/shared/vars/*"],
+    },
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,

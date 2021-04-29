@@ -8,19 +8,20 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { InterceptService } from './services/intercept.service';
-import { ApiService } from './services/api.service';
+import { InterceptService } from './shared/services/intercept.service';
+import { ApiService } from './shared/services/api.service';
 import { HttpClientModule } from '@angular/common/http';
-import { JsonService } from './services/json.service';
+import { JsonService } from './shared/services/json.service';
 import { MenuService } from './data/menu.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
 import { SearchComponent } from './components/search/search.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
-import { SqlitePlureService } from './services/sqlite-plure.service';
+import { SqlitePlureService } from './shared/services/sqlite-plure.service';
 import { IonicStorageModule } from '@ionic/storage';
-import { GeneralService } from './services/general.service';
+import { GeneralService } from './shared/services/general.service';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { Device } from '@ionic-native/device/ngx'
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
     LoadingComponent,
     AlertsComponent,
     IonicStorageModule,
-    BarcodeScanner
+    BarcodeScanner,
+    Device
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

@@ -3,6 +3,7 @@ import { convertActionBinding } from '@angular/compiler/src/compiler_util/expres
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_LOGIN } from '@var/consts';
 import { CONNREFUSED } from 'dns';
 import { promise } from 'selenium-webdriver';
 
@@ -10,8 +11,8 @@ import { promise } from 'selenium-webdriver';
   providedIn: 'root'
 })
 export class AuthGuardService implements CanActivate {
-  private customerId: String;
-  private login: String;
+  private authorizeAccessClient: any;
+  private login: string;
 
   constructor(
     private router: Router,
@@ -19,10 +20,10 @@ export class AuthGuardService implements CanActivate {
     ) {   }
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
-    this.customerId = await this.storage.get('SESSION_CUSTOMER_ID');
-    this.login = await this.storage.get('SESSION_LOGIN');
+    this.authorizeAccessClient = await this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT);
+    this.login = await this.storage.get(SK_SESSION_LOGIN);
 
-    switch(route.routeConfig.path){
+    switch(route.routeConfig.path) {
       case 'environments':
         return this.isEnvironments();
       case 'login':
@@ -33,7 +34,7 @@ export class AuthGuardService implements CanActivate {
   }
 
   isEnvironments() : boolean {
-    if (this.customerId !== undefined && this.customerId !== null){
+    if (this.authorizeAccessClient !== undefined && this.authorizeAccessClient !== null){
       this.router.navigate(["login"]);
       return false;
     }
@@ -46,7 +47,7 @@ export class AuthGuardService implements CanActivate {
       this.router.navigate(["modules"]);
       return false;
     } else {
-      if (this.customerId === undefined || this.customerId === null){
+      if (this.authorizeAccessClient === undefined || this.authorizeAccessClient === null){
         this.router.navigate(["environments"]);
         return false;
       }

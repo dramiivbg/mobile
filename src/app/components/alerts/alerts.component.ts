@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { getDefaultSettings } from 'http2';
 import { BrowserStack } from 'protractor/built/driverProviders';
-import { InterceptService } from 'src/app/services/intercept.service';
+import { InterceptService } from '@svc/intercept.service';
 
 @Component({
   selector: 'alert-message',
