@@ -8,14 +8,16 @@ export class GeneralService {
   constructor() { }
 
   // Structure for search component
-  structSearch(array: any, title: string, name: string, func: any = null, clear: boolean =  true) {
+  structSearch(array: any, title: string, name: string, func: any = null, clear: boolean =  true, type: Number = 0, module: any = {}) {
     return {
       show: true,
       data: array,
       title,
       name,
       func,
-      clear
+      clear,
+      type,
+      module
     }
   }
 

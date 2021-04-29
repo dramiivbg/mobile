@@ -1,0 +1,14 @@
+ion-list.list {
+    padding: 0 15px;
+    ion-row {
+        background: var(--ion-color-plureMain);
+        border-radius: 5px;
+        color: var(--ion-color-plureGrey-contrast);
+        margin: 20px 0;
+        padding: 10px;
+        ion-col.list-txt-bold {
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+}

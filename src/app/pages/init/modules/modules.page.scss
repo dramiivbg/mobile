@@ -1,4 +1,14 @@
 ion-content {
+    ion-row.icon-grid {
+        ion-col {
+            text-align: right;
+            ion-icon {
+                color: var(--ion-color-plureMain);
+                font-size: 20px;
+                padding: 5px 5px 0;
+            }
+        }
+    }
     ion-list.list {
         ion-row {
             padding: 10px 0;

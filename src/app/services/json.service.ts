@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Storage } from '@ionic/storage';
+import { environment } from 'src/environments/environment';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,8 @@ import { Storage } from '@ionic/storage';
 export class JsonService {
 
   constructor(
-    private storage: Storage
+    private storage: Storage,
+    private apiConnect: ApiService
   ) { }
 
   // convert form to Json object
@@ -59,6 +62,29 @@ export class JsonService {
       customerId: await this.storage.get('SESSION_CUSTOMER_ID'),
       modules: await this.storage.get('SESSION_MODULES'),
     }
+  }
+
+  async getModules(session) : Promise<any> {
+    return new Promise(
+      async (resolve, reject) => {
+        let obj = {
+          platformCode: environment.platformCode,
+          environmentUserId: session.login.environmentUserId
+        }
+        this.apiConnect
+          .postData('mobile', 'getmodules', obj)
+          .then(
+            async rsl => {
+              this.setCache('SESSION_MODULES', rsl);
+              let session = await this.getSession();
+              resolve(session);
+            }
+          )
+          .catch(
+            error => reject(error)
+          )
+      }
+    )
   }
 
   // Create Cache/session

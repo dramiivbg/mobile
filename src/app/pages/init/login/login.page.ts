@@ -62,7 +62,7 @@ export class LoginPage implements OnInit {
                   `The entry was successful.`,
                   () => {
                     this.intServ.loadingFunc(false);
-                    this.router.navigateByUrl('init/home');
+                    this.router.navigateByUrl('modules');
                   })
                 );
               } else {

@@ -209,3 +209,25 @@ alert-message {
         }
     }
 }
+
+// sales
+ion-content {
+    ion-row.avatar {
+        padding: 10px;
+        ion-col.avatar-img {
+            padding: 10px;
+            img {
+                border: 0.8px solid var(--ion-color-plureMain);
+                border-radius: 100%;
+                width: 100%;
+            }
+        }
+        ion-col.avatar-txt {
+            padding-top: 30px;
+            ion-label {
+                color: var(--ion-color-plureMain);
+                font-weight: 600;
+            }
+        }
+    }
+}

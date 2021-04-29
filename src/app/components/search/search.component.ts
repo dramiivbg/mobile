@@ -1,6 +1,11 @@
+import { computeMsgId } from '@angular/compiler';
 import { CONTEXT_NAME } from '@angular/compiler/src/render3/view/util';
 import { Component, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
+import { GeneralService } from 'src/app/services/general.service';
 import { InterceptService } from 'src/app/services/intercept.service';
+import { SyncerpService } from 'src/app/services/syncerp.service';
 
 @Component({
   selector: 'btn-search',
@@ -12,17 +17,31 @@ export class SearchComponent implements OnInit {
   searchObj: any = {};
   listsFilter: Array<any> = [];
   lists: Array<any> = [];
-  title: string;
-  name: string;
+  module: any = {};
+  height: Number;
+  // type: Number = 0; // 0. Standar - 1. Sales Orders
 
   constructor(
-    private interceptService: InterceptService
+    private interceptService: InterceptService,
+    private platform: Platform,
+    private syncerp: SyncerpService,
+    private general: GeneralService,
+    private router: Router,
+    private intServ: InterceptService
   ) {
+    platform.ready().then(
+      () => {
+        let height = platform.height();
+        height = height - 112;
+        this.height = height;
+      }
+    )
     interceptService.searchShow$.subscribe(
       obj => {
         this.searchObj = obj;
         this.listsFilter = obj.data;
         this.lists = obj.data;
+        this.module = this.searchObj.module
       }
     )
   }
@@ -50,5 +69,39 @@ export class SearchComponent implements OnInit {
     this.searchObj.func(item);
     if (this.searchObj.clear) this.onBack();
   }
+
+  // Start Sales Orders
+
+  async getCustomers() : Promise<any> {
+    return new Promise(
+      async (resolve, reject) => {
+        let process = await this.syncerp.processRequest('GetCustomers', "10", "", "");
+        let customers = await this.syncerp.setRequest(process);
+        let customersArray = await this.general.customerList(customers.Customers);
+        resolve(customersArray);
+      }
+    )
+    
+  }
+
+  async onAddSalesOrder() {
+    this.intServ.loadingFunc(true);
+    let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          customer,
+          module: this.module,
+          new: true
+        }
+      };
+      this.router.navigate(['sales/sales-form'], navigationExtras);
+    });
+    this.searchObj = obj;
+    this.listsFilter = obj.data;
+    this.lists = obj.data;
+    this.intServ.loadingFunc(false);
+  }
+
+  // End Sales Orders
 
 }
