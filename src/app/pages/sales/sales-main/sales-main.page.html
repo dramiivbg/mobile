@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar color="plureMain">
+    <ion-buttons slot="start">
+      <ion-back-button class="ion-toolbar-button" defaultHref="modules"></ion-back-button>
+    </ion-buttons>
+    <ion-title mode="ios">Sales</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row class="avatar">
+    <ion-col size="3" class="avatar-img">
+      <img src="../../../../assets/img/No_Image_Available.jpg" />
+    </ion-col>
+    <ion-col class="avatar-txt">
+      <ion-label>{{sessionLogin.userName}}</ion-label>
+    </ion-col>
+  </ion-row>
+
+  <ion-list class="list">
+    <ion-row *ngFor="let module of modules" (click)="onSales(module)" >
+      <ion-col size="6">
+        <ion-label>{{module.description}}</ion-label>
+      </ion-col>
+      <ion-col class="list-txt-bold">
+        <ion-label>10</ion-label>
+      </ion-col>
+      <ion-col class="list-txt-bold">
+        <ion-label>$0</ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-list>
+</ion-content>

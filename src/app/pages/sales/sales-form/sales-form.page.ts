@@ -69,7 +69,7 @@ export class SalesFormPage implements OnInit {
         }
       } else {
         this.initNew();
-        this.router.navigate(['init/home']);
+        this.router.navigate(['modules']);
       }
     });
   }

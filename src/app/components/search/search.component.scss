@@ -10,3 +10,37 @@
 ion-item::part(native){
     padding: 0;
 }
+
+ion-row.search-salesOrder {
+    ion-col {
+        ion-searchbar {
+            padding: 0;
+            color: var(--ion-color-plureMain);
+            --placeholder-opacity: 1;
+            font-family: SourceSansProBold;
+            font-size: 20px;
+            ion-icon {
+                color: var(--ion-color-plureMain) !important;
+                font-size: 20px;
+            }
+        }
+        ion-list.listOrders {
+            ion-row {
+                border-bottom: 1px solid var(--ion-color-plureMain);
+                padding: 20px 0;
+                ion-col {
+                    padding: 2px 20px;
+                }
+                ion-col.listOrder-no {
+                    color: var(--ion-color-plure);
+                }
+                ion-col.listOrder-txt {
+                    color: var(--ion-color-plureMain) !important;
+                    font-weight: 600;
+                    text-align: right;
+                }
+                
+            }
+        }
+    }
+}

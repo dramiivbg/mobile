@@ -8,8 +8,14 @@
 </ion-header>
 
 <ion-content>
-  <ion-list class="list">
-    <ion-row>
+  <ion-row class="icon-grid">
+    <ion-col>
+      <ion-icon name="list-outline" (click)="onGrid(false)" *ngIf="grid"></ion-icon>
+      <ion-icon name="grid-outline" (click)="onGrid(true)" *ngIf="!grid"></ion-icon>
+    </ion-col>
+  </ion-row>
+  <ion-list class="list" *ngIf="!grid">
+    <ion-row (click)="onSales()">
       <ion-col size="4" class="img">
         <img src="../../../../assets/img/modules/sales.svg" />
       </ion-col>
@@ -43,7 +49,7 @@
     </ion-row>
   </ion-list>
 
-  <ion-list class="grid">
+  <ion-list class="grid" *ngIf="grid">
     <ion-row>
       <ion-col size="6" class="img">
         <div class="icon">

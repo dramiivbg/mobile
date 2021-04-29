@@ -3,12 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button class="ion-toolbar-button" defaultHref="" (click)="onBack()"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{searchObj.title}}</ion-title>
+    <ion-title mode="ios">{{searchObj.title}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [hidden]="searchObj.title == undefined">
-  <div class="search-content">
+<ion-content [hidden]="searchObj.title == undefined" :style="height: {{ height }}px">
+  <div class="search-content" *ngIf="searchObj.type == 0">
     <ion-grid>
       <ion-row>
         <ion-col size="12">
@@ -28,5 +28,40 @@
       </ion-grid>
     </div>
   </div>
-  
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 1">  <!-- sales order -->
+    <ion-col size="12">
+        <ion-row>
+          <ion-col size="12">
+              <ion-searchbar (ionInput)="onChange($event)" placeholder="Search by {{searchObj.name}}"></ion-searchbar>
+              <!-- <ion-input  type="text" placeholder="Search by {{searchObj.name}}"></ion-input> -->
+          </ion-col>
+        </ion-row>
+    </ion-col>
+    <ion-col size="12">
+      <ion-list class="listOrders">
+        <ion-row *ngFor="let item of listsFilter" (click)="onClick(item)">
+          <ion-col size="4" class="listOrder-no">{{item.id}}</ion-col>
+          <ion-col size="8"></ion-col>
+          <ion-col size="4" class="listOrder-date">{{item.fields.DocumentDate}}</ion-col>
+          <ion-col size="8" class="listOrder-txt">{{item.value}}</ion-col>
+        </ion-row>
+      </ion-list>
+    </ion-col>
+  </ion-row>
 </ion-content>
+
+<ion-footer *ngIf="searchObj.type == 1"> <!-- sales order -->
+  <ion-toolbar color="plureMain">
+    <ion-buttons slot="primary" class="ion-toolbar-button">
+      <ion-button (click)="onAddSalesOrder()">
+        <ion-icon class="ion-toolbar-button" name="add-outline"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-icon class="ion-toolbar-button" name="close-outline"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-icon class="ion-toolbar-button" name="eye-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
