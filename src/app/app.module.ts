@@ -8,20 +8,22 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { InterceptService } from './shared/services/intercept.service';
-import { ApiService } from './shared/services/api.service';
 import { HttpClientModule } from '@angular/common/http';
-import { JsonService } from './shared/services/json.service';
 import { MenuService } from './data/menu.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
 import { SearchComponent } from './components/search/search.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
-import { SqlitePlureService } from './shared/services/sqlite-plure.service';
 import { IonicStorageModule } from '@ionic/storage';
-import { GeneralService } from './shared/services/general.service';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Device } from '@ionic-native/device/ngx'
+
+// import services
+import { InterceptService } from '@svc/intercept.service';
+import { ApiService } from '@svc/api.service';
+import { JsonService } from '@svc/json.service';
+import { SqlitePlureService } from '@svc/sqlite-plure.service';
+import { GeneralService } from '@svc/general.service';
 
 @NgModule({
   declarations: [

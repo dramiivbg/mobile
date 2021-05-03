@@ -14,6 +14,16 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+@font-face {
+    font-family: SourceSansProRegular;
+    src: url("../assets/fonts/source_sans_pro/SourceSansPro-Regular.ttf"); //change url accordingly
+}
+
+@font-face {
+    font-family: SourceSansProBold;
+    src: url("../assets/fonts/source_sans_pro/SourceSansPro-Bold.ttf"); //change url accordingly
+}
+
 @import "./var";
 @import "./_design_root";
 @import "./_variables";

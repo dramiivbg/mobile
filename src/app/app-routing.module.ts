@@ -1,13 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from './shared/services/auth-guard.service';
+import { AuthGuardService } from '@guard/auth-guard.service';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'environments',
-    pathMatch: 'full'
-  },
   {
     path: 'folder/:id',
     loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
@@ -40,6 +35,11 @@ const routes: Routes = [
   {
     path: 'sales/sales-main',
     loadChildren: () => import('./pages/sales/sales-main/sales-main.module').then( m => m.SalesMainPageModule)
+  },
+  {
+    path: '',
+    loadChildren: () => import('./pages/main/main.module').then( m => m.MainPageModule),
+    canActivate: [AuthGuardService]    
   }
 ];
 

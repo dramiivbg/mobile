@@ -1,0 +1,22 @@
+<ion-split-pane contentId="menu-content">
+  <ion-menu contentId="menu-content" menuId="menu-content" side="start" type="overlay">
+    <ion-content>      
+      <ion-item lines="none" detail="false" class="plure-avatar">        
+        <ion-avatar>
+          <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
+        </ion-avatar>        
+      </ion-item>      
+      <ion-item lines="none" detail="false" class="plure-user-info">
+        <h1>{{userSession.userName}}</h1>
+      </ion-item>
+      <ion-note>{{info}}</ion-note>
+      <ion-list>        
+          <ion-item *ngFor="let mi of menuContent" [routerLink]="mi.url" lines="none" detail="false">
+            <ion-icon slot="start" [src]="mi.icon"></ion-icon>
+            <ion-label>{{ mi.description }}</ion-label>
+          </ion-item>        
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="menu-content" main></ion-router-outlet>
+</ion-split-pane>

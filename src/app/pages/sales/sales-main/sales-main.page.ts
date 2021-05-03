@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { GeneralService } from 'src/app/services/general.service';
-import { InterceptService } from 'src/app/services/intercept.service';
-import { JsonService } from 'src/app/services/json.service';
-import { SyncerpService } from 'src/app/services/syncerp.service';
+import { GeneralService } from '@svc/general.service';
+import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
+import { SyncerpService } from '@svc/syncerp.service';
 
 @Component({
   selector: 'app-sales-main',

@@ -71,7 +71,7 @@ export class LoginPage implements OnInit {
           if ( res.token != null ) {
             this.storage.set(SK_SESSION_LOGIN, JSON.stringify(res));
             this.intServ.loadingFunc(false);
-            this.router.navigateByUrl('/modules', {replaceUrl: true});
+            this.router.navigateByUrl('', { replaceUrl: true });
 
           } else {
             this.intServ.alertFunc(this.jsonServ.getAlert(

@@ -6,7 +6,9 @@
     "paths": {
       "@env/*": ["src/environments/*"],
       "@svc/*": ["src/app/shared/services/*"],
+      "@guard/*": ["src/app/shared/guards/*"],
       "@var/*": ["src/app/shared/vars/*"],
+      "@asset/*": ["src/assets/*"],
     },
     "sourceMap": true,
     "declaration": false,
