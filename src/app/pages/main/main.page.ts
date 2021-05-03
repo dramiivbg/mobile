@@ -5,9 +5,9 @@ import { Router, RouterEvent } from '@angular/router';
 import { AuthService } from '@svc/auth.service';
 
 export interface MenuItem {
-  url: string,
   description: string,
-  icon: string
+  icon: string,
+  action: string
 }
 
 @Component({
@@ -19,44 +19,66 @@ export class MainPage implements OnInit {
   
   info: string;
   userSession: any = {};
-  menuContent: Array<MenuItem> = [];
+  menuContent: Array<MenuItem> = [
+    {
+      description: "Modules",
+      icon: "../../assets/img/modules/modules.svg",
+      action: "modules"
+    },
+    {
+      description: "Change Company",
+      icon: "../../assets/img/modules/change_company.svg",
+      action: "change_company",
+    },
+    {
+      description: "Sign out",
+      icon: "../../assets/img/modules/sign_out.svg",
+      action: "sign_out"
+    }
+  ];
   selectedPath = '';
 
   constructor(private authService: AuthService,               
-            private router: Router) {  
-              this.test();             
-  }
-
-  async test() {
-    await this.authService.getUserSession().then( async (res: any) => {
-      this.userSession = res;
-      console.log(this.userSession);
-      this.info = `${this.userSession.defaultCompany.companyName}${this.userSession.defaultCompany.companyId}`;
-    });   
+            private router: Router) {      
   }
 
   async ngOnInit() {
-             
+    await this.authService.getUserSession().then(
+      res => {
+        this.userSession = res
+      }
+    );         
 
     this.router.events.subscribe((event: RouterEvent) => {
       this.selectedPath = event.url;
     });
+  }
 
-    this.menuContent.push({
-      description: "Modules",
-      icon: "../../assets/img/modules/modules.svg",
-      url: "/main/home"
-    });
-    this.menuContent.push({
-      description: "Change Company",
-      icon: "../../assets/img/modules/change_company.svg",
-      url: "/main/change_company"
-    });
-    this.menuContent.push({
-      description: "Modules",
-      icon: "../../assets/img/modules/sign_out.svg",
-      url: "/main/sign_out"
-    });
+  onClick(action: string){
+    switch(action)
+    {
+      case "modules": 
+          this.router.navigateByUrl('', { replaceUrl: true });
+        break;
+
+      case "change_company":
+        break;
+
+      case "sign_out":
+        this.onSignout();
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  async onSignout() {
+    this.authService.signout().then(
+      res => {
+        this.router.navigateByUrl('/login', { replaceUrl: true});
+      }
+    );
   }
 
 }

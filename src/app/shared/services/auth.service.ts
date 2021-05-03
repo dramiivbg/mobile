@@ -9,11 +9,13 @@ import { SK_SESSION_LOGIN } from '@var/consts';
 })
 export class AuthService {
 
-  private userSession: any;
+  private userSession: any = {};
 
-  constructor(private storage: Storage) { }
+  constructor(private storage: Storage) { 
+    //this.storage.get(SK_SESSION_LOGIN).then(res => this.userSession = JSON.parse(res));
+  }
 
-  async getUserSession(): Promise<any> {
+  /*getUserSession(): Promise<any> {
     return  new Promise((resolve, reject) => {this.storage.get(SK_SESSION_LOGIN)
     .then(
       res => {
@@ -21,5 +23,13 @@ export class AuthService {
         resolve(this.userSession);        
       });          
     })
+  }*/
+
+  async getUserSession(): Promise<any> {
+    return this.storage.get(SK_SESSION_LOGIN).then(res => this.userSession = JSON.parse(res));
+  }
+
+  async signout(): Promise<any> {
+    return this.storage.remove(SK_SESSION_LOGIN);    
   }
 }

@@ -11,7 +11,7 @@
       </ion-item>
       <ion-note>{{info}}</ion-note>
       <ion-list>        
-          <ion-item *ngFor="let mi of menuContent" [routerLink]="mi.url" lines="none" detail="false">
+          <ion-item *ngFor="let mi of menuContent" lines="none" detail="false" (click)="onClick(mi.action)">
             <ion-icon slot="start" [src]="mi.icon"></ion-icon>
             <ion-label>{{ mi.description }}</ion-label>
           </ion-item>        
