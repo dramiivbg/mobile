@@ -15,7 +15,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 
 // import vars
-import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID, SK_SESSION_LOGIN } from '@var/consts';
+import { SK_AUTHORIZE_ACCESS_CLIENT, SK_DEFAULT_COMPANY, SK_SESSION_CUSTOMER_ID, SK_SESSION_LOGIN } from '@var/consts';
 import { error } from 'selenium-webdriver';
 
 @Component({
@@ -70,6 +70,7 @@ export class LoginPage implements OnInit {
         res => {
           if ( res.token != null ) {
             this.storage.set(SK_SESSION_LOGIN, JSON.stringify(res));
+            this.storage.set(SK_DEFAULT_COMPANY, JSON.stringify(res.defaultCompany));
             this.intServ.loadingFunc(false);
             this.router.navigateByUrl('', { replaceUrl: true });
 
