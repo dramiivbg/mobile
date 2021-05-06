@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
   searchObj: any = {};
   listsFilter: Array<any> = [];
   lists: Array<any> = [];
-  module: any = {};
+  process: any = {};
   height: Number;
   // type: Number = 0; // 0. Standar - 1. Sales Orders
 
@@ -43,7 +43,8 @@ export class SearchComponent implements OnInit {
         this.searchObj = obj;
         this.listsFilter = obj.data;
         this.lists = obj.data;
-        this.module = this.searchObj.module
+        this.process = this.searchObj.process
+        console.log(obj);
       }
     )
   }
@@ -87,12 +88,13 @@ export class SearchComponent implements OnInit {
   }
 
   async onAddSalesOrder() {
+    console.log(this.process);
     this.intServ.loadingFunc(true);
     let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
       let navigationExtras: NavigationExtras = {
         state: {
           customer,
-          module: this.module,
+          process: this.process,
           new: true
         }
       };

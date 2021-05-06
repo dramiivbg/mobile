@@ -12,7 +12,11 @@ ion-item::part(native){
 }
 
 ion-row.search-salesOrder {
+    ion-col:nth-child(2) {
+        padding-top: 10px;
+    }
     ion-col {
+        padding: 0;
         ion-searchbar {
             padding: 0;
             color: var(--ion-color-plureMain);
@@ -26,10 +30,9 @@ ion-row.search-salesOrder {
         }
         ion-list.listOrders {
             ion-row {
-                border-bottom: 1px solid var(--ion-color-plureMain);
-                padding: 20px 0;
+                padding: 0 0 20px;
                 ion-col {
-                    padding: 2px 20px;
+                    padding: 2px 10px;
                 }
                 ion-col.listOrder-no {
                     color: var(--ion-color-plure);

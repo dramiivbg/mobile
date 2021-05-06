@@ -29,7 +29,7 @@ const routes: Routes = [
   },
   {
     path: 'modules',
-    loadChildren: () => import('./pages/init/modules/modules.module').then( m => m.ModulesPageModule),
+    loadChildren: () => import('./pages/main/modules/modules.module').then( m => m.ModulesPageModule),
     canActivate: [AuthGuardService]    
   },
   {

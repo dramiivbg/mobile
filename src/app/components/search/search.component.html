@@ -40,10 +40,21 @@
     <ion-col size="12">
       <ion-list class="listOrders">
         <ion-row *ngFor="let item of listsFilter" (click)="onClick(item)">
-          <ion-col size="4" class="listOrder-no">{{item.id}}</ion-col>
-          <ion-col size="8"></ion-col>
-          <ion-col size="4" class="listOrder-date">{{item.fields.DocumentDate}}</ion-col>
-          <ion-col size="8" class="listOrder-txt">{{item.value}}</ion-col>
+          <ion-item-sliding>
+            <ion-item-options side="start">
+              <ion-item-option color="danger" (click)="onDeleteLine(i)" style="padding: 0 50px;">Delete</ion-item-option>
+            </ion-item-options>
+
+            <ion-item>
+              <ion-row>
+                <ion-col size="12" class="listOrder-no">{{item.id}}</ion-col>
+                <ion-col size="12" class="listOrder-date">{{item.fields.SelltoCustomerNo}}</ion-col>
+                <ion-col size="4" class="listOrder-date">{{item.fields.DocumentDate}}</ion-col>
+                <ion-col size="8" class="listOrder-txt">{{item.value}}</ion-col>
+              </ion-row>
+            </ion-item>
+          </ion-item-sliding>
+          
         </ion-row>
       </ion-list>
     </ion-col>
@@ -55,12 +66,6 @@
     <ion-buttons slot="primary" class="ion-toolbar-button">
       <ion-button (click)="onAddSalesOrder()">
         <ion-icon class="ion-toolbar-button" name="add-outline"></ion-icon>
-      </ion-button>
-      <ion-button>
-        <ion-icon class="ion-toolbar-button" name="close-outline"></ion-icon>
-      </ion-button>
-      <ion-button>
-        <ion-icon class="ion-toolbar-button" name="eye-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

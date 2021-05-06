@@ -8,7 +8,7 @@ export class GeneralService {
   constructor() { }
 
   // Structure for search component
-  structSearch(array: any, title: string, name: string, func: any = null, clear: boolean =  true, type: Number = 0, module: any = {}) {
+  structSearch(array: any, title: string, name: string, func: any = null, clear: boolean =  true, type: Number = 0, process: any = {}) {
     return {
       show: true,
       data: array,
@@ -17,7 +17,7 @@ export class GeneralService {
       func,
       clear,
       type,
-      module
+      process
     }
   }
 

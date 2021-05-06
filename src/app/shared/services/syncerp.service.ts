@@ -1,3 +1,4 @@
+import { computeMsgId } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { JsonService } from './json.service';
@@ -17,10 +18,11 @@ export class SyncerpService {
   async  processRequest(processMethod, pageSize, position, salesPerson) {
     this.session = await this.js.getSession();
     return {
-      environmentId: this.session.login.environmentId,
+      customerId: this.session.login.customerId,
+      environmentId: this.session.login.environment.environmentId,
       processMethod: processMethod,
       userId: this.session.login.userId,
-      CompanyId: this.session.login.company.companyId,
+      company: this.session.login.defaultCompany,
       jsonRequest: JSON.stringify({
         ProcessMethod: processMethod,
         Parameters:[
@@ -38,10 +40,11 @@ export class SyncerpService {
   async processRequestParams(processMethod, Parameters: any) {
     this.session = await this.js.getSession();
     return {
-      environmentId: this.session.login.environmentId,
+      customerId: this.session.login.customerId,
+      environmentId: this.session.login.environment.environmentId,
       processMethod: processMethod,
       userId: this.session.login.userId,
-      CompanyId: this.session.login.company.companyId,
+      company: this.session.login.defaultCompany,
       jsonRequest: JSON.stringify({
         ProcessMethod: processMethod,
         Parameters
