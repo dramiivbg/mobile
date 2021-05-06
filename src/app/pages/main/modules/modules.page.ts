@@ -1,5 +1,8 @@
+import { computeMsgId } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
+import { JsonService } from '@svc/json.service';
+import { copyFileSync } from 'fs';
 
 import { ApiService } from '@svc/api.service';
 
@@ -10,12 +13,16 @@ import { ApiService } from '@svc/api.service';
 })
 export class ModulesPage implements OnInit {
   grid: boolean = false;
+  modules: any = [];
   
-  constructor(private router: Router,
-    private apiConnect: ApiService
+  constructor(
+    private router: Router,
+    private js: JsonService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let session = await this.js.getSession();
+    this.modules = session.login.environment.modules;
   }
 
   onGrid(b) {
@@ -23,38 +30,14 @@ export class ModulesPage implements OnInit {
   }
 
   onSales() {
-    //this.router.navigate(['sales/sales-main']);
-    this.onTest();
-  }
-
-
-  onTest()
-  {
-    let data = {
-      customerId: "cus_JKL02gDkbYz0sG",
-      environmentId: "env_70767ef6d2f8417e8594e375d5e81634",
-      processMethod: "GetSalesOrders",
-      userId: "mob_5fe9450c26fe4176b5856afa9663fcbc",
-      company:
-      {
-          companyId: "6138faaf-a208-eb11-bbf6-000d3a042aab",
-          companyName: "MS Cloud Experts, LLC",
-          apiPage: "0c705e10-5d96-41fc-b281-a1539cc77ac2",
-          active: true,
-          default: true
-      },
-      jsonRequest: "{\"ProcessMethod\":\"GetSalesOrders\",\"Parameters\":[{\"type\":\"sales order\",\"pageSize\":\"\",\"position\":\"\",\"salesPerson\":\"CA\"}]}"
-    }
-
-    this.apiConnect.postData('erp', 'processrequest', data).then(
-      res => {
-        console.log(res);                  
-      })
-      .catch(
-        err => {
-          console.log(err);          
-        }
-      );
+    console.log(this.modules);
+    let module = this.modules[0];
+    let navigationExtras: NavigationExtras = {
+      state: {
+        module
+      }
+    };
+    this.router.navigate(['sales/sales-main'], navigationExtras);
   }
 
 }

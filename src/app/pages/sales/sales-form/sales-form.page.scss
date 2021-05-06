@@ -52,9 +52,18 @@ ion-item ion-input {
     }
 }
 
+ion-button.add-lines {
+    height: 33px;
+    font-size: 24px;
+    width: 52px;
+}
+ion-button.add-lines::part(native){
+    border-radius: 10px;
+}
+
 // design
 .designform-header {
-    background: var(--ion-color-plureMain) !important;
+    background: var(--ion-color-plure) !important;
     margin-bottom: 2em;
     padding: 1.5em 0.2em 2.5em;
     position: relative;
@@ -72,9 +81,10 @@ ion-item ion-input {
         }
     }
     ion-row.total-for-pay {
+        border-radius: 10px 0 0 10px;
         position: absolute;
         padding: 0.5em 1.2em;
-        background: rgb(38, 74, 109);
+        background: var(--ion-color-plureMain) !important;
         right: 0;
         bottom: -1.37em;
         ion-label {
@@ -97,4 +107,10 @@ ion-item ion-input {
 .order-details {
     color: #aaaaaa;
     padding: 0 0.2em 0;
+    ion-col.txt {
+        padding-top: 14px;
+        ion-label {
+            font-size: 20px;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
@@ -14,44 +14,57 @@ import { SyncerpService } from '@svc/syncerp.service';
 export class SalesMainPage implements OnInit {
   sessionLogin: any = {};
   session: any = {};
-  modules: any = [];
+  module: any = [];
 
   constructor(
     private syncerp: SyncerpService,
     private general: GeneralService,
     private intServ: InterceptService,
     private js: JsonService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { 
+    this.route.queryParams.subscribe(async params => {
+      if (this.router.getCurrentNavigation().extras.state){
+        this.module = this.router.getCurrentNavigation().extras.state.module;
+      } else {
+        this.router.navigate(['modules']);
+      }
+    });
   }
 
   async ngOnInit() {
     this.session = await this.js.getSession();
-    this.sessionLogin = this.session.login;
-    if (this.session.modules === null) {
-      await this.js.getModules(this.session).then(rsl => this.session = rsl);
+  }
+
+  async onSales(process) {
+    let salesType = '';
+    switch(process.processId) {
+      case 'P001':
+        salesType = 'Sales Order';
+        break;
+      case 'P002':
+        salesType = 'Sales Return Order';
+        break;
+      case 'P003':
+        salesType = 'Sales Invoice';
+        break;
+      case 'P004':
+        salesType = 'Sales Credit Memo';
+        break;
     }
-    await this.createOptions();
-  }
-
-   // Create options per user
-   async createOptions() {
-    this.modules = this.session.modules;
-  }
-
-  async onSales(module) {
-    let salesType = (module.description.toLowerCase() === 'credit memo' || module.description.toLowerCase() === 'return order') ? 'sales ' + module.description.toLowerCase() : module.description.toLowerCase();
     this.intServ.loadingFunc(true);
-    let process = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: salesType, pageSize:'', position:'', salesPerson: 'CA' }]);
-    let sales = await this.syncerp.setRequest(process);
+    let p = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: salesType, pageSize:'', position:'', salesPerson: 'CA' }]);
+    let sales = await this.syncerp.setRequest(p);
     let salesList = await this.general.salesOrderList(sales.SalesOrders);
     this.intServ.loadingFunc(false);
     let obj = this.general.structSearch(salesList, `Search ${salesType}`, salesType, async (sell) => {
       let navigationExtras: NavigationExtras = {
         state: {
           order: sell,
-          module,
-          new: false
+          process,
+          new: false,
+          salesType
         }
       };
       this.router.navigate(['sales/sales-form'], navigationExtras);
@@ -60,7 +73,7 @@ export class SalesMainPage implements OnInit {
           this.intServ.searchShowFunc({});
         }, 1000
       )
-    }, false, 1, module);
+    }, false, 1, process);
     this.intServ.searchShowFunc(obj);
   }
 

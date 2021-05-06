@@ -1,8 +1,6 @@
-import { CommentStmt, computeMsgId } from '@angular/compiler';
-import { convertUpdateArguments } from '@angular/compiler/src/compiler_util/expression_converter';
-import { Component, OnInit, ɵSWITCH_COMPILE_INJECTABLE__POST_R3__ } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, ChildrenOutletContexts, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Guid } from 'guid-typescript';
 import { ApiService } from '@svc/api.service';
@@ -10,7 +8,6 @@ import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
-import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'app-sales-form',
@@ -22,13 +19,14 @@ export class SalesFormPage implements OnInit {
   private customers: any;
   private customer: any = {};
   private order: any = {};
-  private module: any = {};
+  private process: any = {};
   private shipAddress: any;
   private items: any = {};
   private allItems: any = [];
   private categories: any;
   private unitMeasureList: any = [];
   private listPrices: any = [];
+  private salesType: string;
 
   frm = new FormGroup({});
   orderDate: string = new Date().toDateString();
@@ -58,12 +56,14 @@ export class SalesFormPage implements OnInit {
         this.new = this.router.getCurrentNavigation().extras.state.new;
         if (this.new) {
           this.customer = this.router.getCurrentNavigation().extras.state.customer;
-          this.module = this.router.getCurrentNavigation().extras.state.module;
+          this.process = this.router.getCurrentNavigation().extras.state.process;
+          this.salesType = this.router.getCurrentNavigation().extras.state.salesType;
           await this.initNew();
           await this.setCustomer();
         } else {
-          this.module = this.router.getCurrentNavigation().extras.state.module;
+          this.process = this.router.getCurrentNavigation().extras.state.process;
           this.order = this.router.getCurrentNavigation().extras.state.order;
+          this.salesType = this.router.getCurrentNavigation().extras.state.salesType;
           await this.initForm();
           await this.initSalesOrder();
         }
@@ -157,7 +157,8 @@ export class SalesFormPage implements OnInit {
 
   // on click - search items
   onItem() {
-    if (this.customer.id === undefined || this.shipAddress.id === undefined) {
+    console.log(this.shipAddress);
+    if (this.customer === undefined || this.shipAddress === undefined) {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Please, select any customer and ship-to address'));
     } else {
       let obj = this.general.structSearch(this.categories, 'Search category', 'Categories', async (category) => {
@@ -246,15 +247,7 @@ export class SalesFormPage implements OnInit {
         this.jsonServ.formToJson(this.frm, ['picture', 'shippingName', 'customerName', 'categoryNo', 'title']).then(
           async json => {
             json['orderDate'] = json['orderDate'].substring(0, 10);
-            if (this.module.description.toLowerCase() == 'sales order') {
-              json['documentType'] = 'Sales Order';
-            } if (this.module.description.toLowerCase() == 'sales invoice') {
-              json['documentType'] = 'Sales Invoice';
-            } if (this.module.description.toLowerCase() == 'return order') {
-              json['documentType'] = 'Sales Return Order';
-            } if (this.module.description.toLowerCase() == 'credit memo') {
-              json['documentType'] = 'Sales Credit Memo';
-            }
+            json['documentType'] = this.salesType;
             json['postingDate'] = json.orderDate;
             json['documentDate'] = json.orderDate;
             json['requestedDeliveryDate'] = json.requestedDeliveryDate.substring(0, 10);
