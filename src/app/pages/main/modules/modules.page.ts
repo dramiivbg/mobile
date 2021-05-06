@@ -4,6 +4,8 @@ import { NavigationExtras, Router } from '@angular/router';
 import { JsonService } from '@svc/json.service';
 import { copyFileSync } from 'fs';
 
+import { ApiService } from '@svc/api.service';
+
 @Component({
   selector: 'app-modules',
   templateUrl: './modules.page.html',

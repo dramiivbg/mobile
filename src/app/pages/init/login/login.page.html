@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="login content-init-background">
+<ion-content class="login content-init-background">  
   <div class="img-logo-plure">
     <img src="../../../../assets/img/img-logo-plure.svg" />
     <div class="textBC">Microsft Business Central</div>
@@ -15,7 +15,7 @@
     <ion-grid>      
       <ion-row>
         <ion-col size="12">
-          <ion-item class="input-plure" lines="none">
+          <ion-item class="input-plure" lines="none">            
             <ion-label position="stacked">User Name</ion-label>
             <ion-input type="text" placeholder="Enter your user name" formControlName="User" (ionBlur)="onChangeUser($event)"></ion-input>
           </ion-item>
@@ -25,7 +25,7 @@
         <ion-col size="12">
           <ion-item class="input-plure" lines="none">
             <ion-label position="stacked">Password</ion-label>
-            <ion-input type="password" placeholder="Enter your password" formControlName="Password"></ion-input>
+            <ion-input type="password" placeholder="Enter your password" formControlName="Password"></ion-input>            
           </ion-item>
         </ion-col>
       </ion-row>
@@ -38,7 +38,7 @@
             </ion-select>
           </ion-item>
         </ion-col>
-      </ion-row>
+      </ion-row>      
       <ion-row>
         <ion-col size="12">
           <div class="center">
@@ -48,6 +48,27 @@
           </div>  
         </ion-col>
       </ion-row>
+      <ion-row class="plure-footer">        
+          <ion-col size="12">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="6">
+                  <label><input type="checkbox" [(ngModel)]="rememberMe" [ngModelOptions]="{standalone: true}"> Remember me</label>                
+                </ion-col>
+                <ion-col size="6">
+                  <a href="/login">Forgot you password?</a>
+                </ion-col>
+              </ion-row>
+              <ion-row class="home-page">
+                <ion-col size="12">
+                  <div class="center">
+                    <a href="https://www.plur-e.com">www.plur-e.com</a>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>                   
+          </ion-col>
+      </ion-row>      
     </ion-grid>
   </form>
-</ion-content>
+</ion-content>  

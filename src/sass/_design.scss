@@ -1,9 +1,9 @@
 
 
 // design general
-body {
+/*body {
     color: #bbbbbb !important;
-}
+}*/
 
 // toolbar
 .ion-toolbar-backg {
@@ -124,11 +124,15 @@ btn-search {
     }
 }
 
+.glass-fx {
+    background-color: rgb(85, 85, 105, 0.3);    
+    backdrop-filter: blur(12px);    
+}
+
 // loading
 loading-plure {
-    .alert-plure {
-        align-items: center;
-        background: $alert-back;
+    .container {
+        align-items: center;        
         display: flex;
         justify-content: center;
         height: 100%;
@@ -150,31 +154,29 @@ loading-plure {
 }
 
 alert-message {
-    .alert-plure {
-        align-items: center;
-        background: $alert-back;
+    .container {
+        align-items: center;        
         display: flex;
         justify-content: center;
         height: 100%;
-        left: 0;
+        //left: 0;
         width: 100%;
         position: absolute;
-        top: 0;
-        .alert-content {
-            display: inline-block;
-            padding: 10%;
+        //top: 0;
+        .alert-content {   
+            border: solid 1px rgb(85, 85, 105, 0.5);       
+            border-radius: 5px;        
+            background: white;    
+            margin: 10%;
             width: 90%;
-            .alert-header {
-                background: $alert-header-back;
-                color: $alert-header-color;
+            .alert-header {                
                 text-align: center;
                 padding: 10px;
                 h1 {
                     font-weight: bold;
                 }
             }
-            .alert-body {
-                background: $alert-body-back;
+            .alert-body {                
                 color: $alert-body-color;
                 text-align: center;
                 padding: 0 30px 30px;
