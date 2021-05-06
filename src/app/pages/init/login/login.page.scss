@@ -43,4 +43,19 @@ ion-content {
     ion-button {
         width: 120px;
     }
+
+    ion-row.plure-footer {
+        margin: 15px 5% 0 5%;        
+        
+        ion-row.home-page {
+            margin-top: 10px;
+            border-top: 1px solid var(--ion-color-plureMain);
+        }
+
+        label, input, a {
+            color: var(--ion-color-plureMain) !important;
+            font-size: 13px;
+            line-height: 16px;
+        }
+    }
 }

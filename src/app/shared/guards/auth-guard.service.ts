@@ -1,11 +1,7 @@
-import { templateJitUrl } from '@angular/compiler';
-import { convertActionBinding } from '@angular/compiler/src/compiler_util/expression_converter';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_LOGIN } from '@var/consts';
-import { CONNREFUSED } from 'dns';
-import { promise } from 'selenium-webdriver';
+import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION,  } from '@var/consts';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +17,7 @@ export class AuthGuardService implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     this.authorizeAccessClient = await this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT);
-    this.login = await this.storage.get(SK_SESSION_LOGIN);
+    this.login = await this.storage.get(SK_USER_SESSION);
 
     console.log(route.routeConfig.path);
 

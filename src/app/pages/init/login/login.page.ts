@@ -15,8 +15,9 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 
 // import vars
-import { SK_AUTHORIZE_ACCESS_CLIENT, SK_DEFAULT_COMPANY, SK_SESSION_CUSTOMER_ID, SK_SESSION_LOGIN } from '@var/consts';
+import { SK_AUTHORIZE_ACCESS_CLIENT, SK_REMEMBER_ME, SK_SESSION_CUSTOMER_ID, SK_USER_LOGIN, SK_USER_SESSION } from '@var/consts';
 import { error } from 'selenium-webdriver';
+import { AuthService } from '@svc/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +28,7 @@ export class LoginPage implements OnInit {
   private scid: string; // Session Customer Id
   frm: FormGroup;
   public environments: Array<any> = [];
+  rememberMe: boolean = false;
 
   constructor(private intServ: InterceptService,
     private apiConnect: ApiService,
@@ -34,7 +36,8 @@ export class LoginPage implements OnInit {
     private jsonServ: JsonService,
     private router: Router,
     private storage: Storage,
-    private device: Device) { 
+    private device: Device,
+    private authSvc: AuthService) { 
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
       {
@@ -50,6 +53,59 @@ export class LoginPage implements OnInit {
       res => {
         this.scid = JSON.parse(res).customerId;
       }
+    );    
+  }
+
+  async onRememberMe() {
+    this.rememberMe = await this.storage.get(SK_REMEMBER_ME);
+    if(this.rememberMe) {
+      let secretKey = await this.storage.get(SK_USER_LOGIN);
+      this.signIn(secretKey);
+    }    
+  }
+
+  signIn(secretKey: string) {
+    let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
+    let data = {
+      appSource: environment.appSource,
+      secretKey: secretKey,
+      authorizationToken: authorizationToken,
+      environmentId: this.frm.value.EnviromentId,
+      uuid: this.device.uuid
+    };
+    this.apiConnect.postData('loginuser', 'authentication', data).then(
+      res => {
+        if ( res.token != null ) {
+
+          console.log(`remember_me => ${this.rememberMe}`);
+
+          this.storage.set(SK_REMEMBER_ME, this.rememberMe);
+          if(this.rememberMe)
+            this.storage.set(SK_USER_LOGIN, secretKey);
+
+          this.storage.set(SK_USER_SESSION, JSON.stringify(res));
+
+          this.router.navigateByUrl('', { replaceUrl: true });
+          this.intServ.loadingFunc(false);
+
+        } else {
+          this.intServ.alertFunc(this.jsonServ.getAlert(
+            'alert', 
+            'Error', 
+            `The user or password is not correct.`,
+            () => {
+              this.intServ.loadingFunc(false);
+            })
+          );
+        }
+      }
+    )
+    .catch(
+      err => {
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
+        );
+      }
     );
   }
 
@@ -58,41 +114,7 @@ export class LoginPage implements OnInit {
     this.intServ.loadingFunc(true);
     if (this.frm.valid) {
       let secretKey = sha512(`${this.frm.value.User}@${this.scid}:${sha512(this.frm.value.Password)}`);
-      let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
-      let data = {
-        appSource: environment.appSource,
-        secretKey: secretKey,
-        authorizationToken: authorizationToken,
-        environmentId: this.frm.value.EnviromentId,
-        uuid: this.device.uuid
-      };
-      this.apiConnect.postData('loginuser', 'authentication', data).then(
-        res => {
-          if ( res.token != null ) {
-            this.storage.set(SK_SESSION_LOGIN, JSON.stringify(res));
-            this.storage.set(SK_DEFAULT_COMPANY, JSON.stringify(res.defaultCompany));
-            this.intServ.loadingFunc(false);
-            this.router.navigateByUrl('', { replaceUrl: true });
-
-          } else {
-            this.intServ.alertFunc(this.jsonServ.getAlert(
-              'alert', 
-              'Error', 
-              `The user or password is not correct.`,
-              () => {
-                this.intServ.loadingFunc(false);
-              })
-            );
-          }
-        }
-      )
-      .catch(
-        err => {
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
-          );
-        }
-      );
+      this.signIn(secretKey);
     } else {
       this.intServ.alertFunc(this.jsonServ.getAlert(
         'alert', 
