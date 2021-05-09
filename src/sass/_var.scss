@@ -20,6 +20,9 @@ $alert-body-btn-back: #777;
 
 // input, select colors
 $input-sel-color: #ededed;
-
-
 // end input, select colors
+
+$plure-label-color: var(--ion-color-plureMain) !important;
+$plure-init-input-bg: var(--ion-color-plureMain) !important;
+$plure-init-input-color: var(--ion-color-plureMain-contrast) !important;
+$plure-init-button-bg: var(--ion-color-plure) !important;

@@ -1,4 +1,119 @@
+ion-content.login, ion-content.intro {
 
+    div.plure-brand {
+        position: fixed;        
+        width: 100%;
+        height: 26.5%;
+        top: 12.3%;        
+
+        div.plure-brand-logo {
+            display: block;
+            margin: auto;            
+            width: 44%;
+            height: 71.2%;
+            background: url(../assets/img/img-logo-plure.svg) no-repeat center;
+            background-size: 100% 100%;  
+        }
+
+        div.plure-brand-tittle {
+            text-align: center;            
+
+            h1 {
+                display: inline-block;
+                color: $plure-label-color;             
+                font-style: normal;
+                font-weight: bold;
+                font-size: 24.5px;
+                line-height: 31px;
+            }
+        }
+    }
+
+    form {         
+        position: fixed;
+        margin: 0px 9.25% 0 9.25%;
+        padding-top: 5px;
+        width: 81.5%;
+        top: 41.5%; 
+        height: 35%;
+    }
+
+    ion-label.plure-label { 
+
+        p {            
+            color: $plure-label-color;             
+            font-style: normal;
+            font-weight: normal;
+            font-size: 16px;
+            line-height: 20px;            
+
+            margin-bottom: 5px !important;
+        }                
+    }
+    
+    ion-item.plure-input {        
+
+        --background: none;
+        background: $plure-init-input-bg;
+        border-radius: 50px;            
+        
+        ion-input, ion-select {            
+            color: $plure-init-input-color;
+            --padding-top: 5px !important;            
+            --padding-bottom: 5px !important;                       
+            width: 100%;
+
+            font-size: 16px;
+            line-height: 20px; 
+        }
+    }
+
+    ion-button.plure-button {
+        margin: 20px 0 0 0 !important;
+        font-style: normal;
+        font-weight: bold;
+        color: $plure-init-input-color;     
+        font-size: 18px;
+        line-height: 23px;
+        width: 57.25% !important;
+    }
+
+    ion-grid.plure-footer {
+        position: fixed;
+        top: 85%;
+        width: 100%;
+        height: 10%;
+        text-align: center;    
+        font-size: 13px;
+        line-height: 16.34px;
+        color: $plure-label-color;        
+    
+        margin: 0px 9.25% 0 9.25%;
+        padding-top: 5px;
+        width: 81.5%;
+    
+        ion-row.hm-pg {        
+            border-top: 1px solid $plure-init-input-bg;            
+            vertical-align: bottom;                   
+            a {
+                display: inline-block;
+                margin: 5px 0px 0px 0px !important; 
+                color: $plure-label-color;                
+            }
+        }   
+
+        a {
+            text-decoration: none;
+        }
+    }
+    
+
+}
+
+.glass-fx {
+    background-color: rgb(85, 85, 105, 0.3);    
+    backdrop-filter: blur(12px);    
+}
 
 // design general
 /*body {
@@ -6,38 +121,44 @@
 }*/
 
 // toolbar
+/* 
+rocampo
 .ion-toolbar-backg {
     --background: rgb(109, 167, 234);
     .ion-toolbar-button {
         color: #fff;
     }
-}
+}*/
 // toolbar
-
+/*
+rocampo
 ion-content, host {
     background: #ffffff;
     --background: #ffffff;
-}
+}*/
 
+/*
+rocampo
 ion-input {
     border: none !important;
     input {
         border: none !important;
     }
-}
+}*/
 
 // form
-ion-input, ion-select {
+// rocampo  
+/*ion-input, ion-select {
     background: $input_back !important;
     color:$input_color !important;
     font-size: 13px !important;
     input {
         font-size: 13px !important;
     }
-}
+}*/
 // end form
 
-ion-button.btn-plure {
+/*ion-button.btn-plure {
     border-radius: 25px;
     background: var(--ion-color-plure);
     padding: 10px;
@@ -58,13 +179,17 @@ ion-button:active {
 
 ion-button:focus {
     color: #999999;
-}
+}*/
 
 
+/*
+rocampo
 ion-label { 
     padding-bottom: 20px;
-}
+}*/
 
+/*
+rocampo
 .login {
     ion-row{
         height: 100%;
@@ -104,10 +229,10 @@ ion-label {
         }
     }
     
-}
+}*/
 
 // search component 
-btn-search {
+/*btn-search {
     font-size: 12px;
     .search-content {
         padding: 5px;
@@ -122,12 +247,9 @@ btn-search {
             }
         }
     }
-}
+}*/
 
-.glass-fx {
-    background-color: rgb(85, 85, 105, 0.3);    
-    backdrop-filter: blur(12px);    
-}
+
 
 // loading
 loading-plure {

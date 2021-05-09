@@ -39,10 +39,12 @@ export class AuthService {
     return isExpired;
   }  
 
-  saveUserSession(userSession: any): void {
+  saveUserSession(userSession: any): boolean {
     this.isAuthenticated.next(true);
     this.storage.set(SK_USER_SESSION, JSON.stringify(userSession));
     this.storage.set(SK_SELECTED_COMPANY, JSON.stringify(userSession.defaultCompany));
+
+    return true;
   }
 
   async getUserSession(): Promise<any> {

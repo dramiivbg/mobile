@@ -1,6 +1,6 @@
 ion-content { 
-    font-family:SourceSansPro-Regular !important;
-    font-size:1.1em;
+    font-family: SourceSansProRegular !important;
+    //font-size:1.1em;
 }
 
 .center{
@@ -45,6 +45,8 @@ ion-content {
     --ion-color-tint: var(--ion-color-plureGrey-tint) !important;
 }
 
+/*
+rocampo
 .input-plure {    
     border-radius: 5px;    
 }
@@ -60,5 +62,5 @@ ion-content.content-init-background {
 
 ion-input {
     --placeholder-color: var(--ion-color-plure);
-}
+}*/
 

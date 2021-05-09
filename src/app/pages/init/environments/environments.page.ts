@@ -77,4 +77,8 @@ export class EnvironmentsPage implements OnInit {
     }
   }
 
+  onReadQR(): void {
+
+  }
+
 }

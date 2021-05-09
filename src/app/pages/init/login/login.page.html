@@ -1,74 +1,73 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
+  <ion-toolbar>    
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="environments"  (click)="onBack()"></ion-back-button>
+      <ion-back-button defaultHref="environments" (click)="onBack()" text="" ></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="login content-init-background">  
-  <div class="img-logo-plure">
-    <img src="../../../../assets/img/img-logo-plure.svg" />
-    <div class="textBC">Microsft Business Central</div>
+<ion-content class="login"> 
+  
+  <div class="plure-brand">
+    <div class="plure-brand-logo"></div>
+    <div class="plure-brand-tittle">
+      <h1>Microsoft Bussiness Central</h1>
+    </div>
   </div>
+  
   <form [formGroup]="frm" (ngSubmit)="onSubmit()">
     <ion-grid>      
       <ion-row>
-        <ion-col size="12">
-          <ion-item class="input-plure" lines="none">            
-            <ion-label position="stacked">User Name</ion-label>
-            <ion-input type="text" placeholder="Enter your user name" formControlName="User" (ionBlur)="onChangeUser($event)"></ion-input>
+        <ion-col size="12">          
+          <ion-label class="plure-label"><p>User name</p></ion-label>          
+          <ion-item class="plure-input" lines="none" detail="false">            
+            <ion-input type="text" placeholder="User name" formControlName="User" (ionBlur)="onChangeUser($event)"></ion-input>
+            <ion-icon slot="end" name="person" color="light"></ion-icon>
           </ion-item>
         </ion-col>
-      </ion-row>
+      </ion-row>      
       <ion-row>
         <ion-col size="12">
-          <ion-item class="input-plure" lines="none">
-            <ion-label position="stacked">Password</ion-label>
-            <ion-input type="password" placeholder="Enter your password" formControlName="Password"></ion-input>            
+          <ion-label class="plure-label"><p>Password</p></ion-label>          
+          <ion-item class="plure-input" lines="none" detail="false">
+            <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Enter your password" formControlName="Password"></ion-input> 
+            <ion-icon slot="end" [name]="passwordToggleIcon" (click)="togglePassword()" color="light"></ion-icon>           
           </ion-item>
         </ion-col>
-      </ion-row>
+      </ion-row>      
       <ion-row>
         <ion-col size="12">
-          <ion-item class="input-plure" lines="none">
-            <ion-label position="stacked">Environment</ion-label>
+          <ion-label class="plure-label"><p>Environment</p></ion-label>          
+          <ion-item class="plure-input" lines="none">            
             <ion-select interface="action-sheet" formControlName="EnviromentId" placeholder="Select environment">
               <ion-select-option *ngFor="let item of environments" value="{{item.environmentId}}">{{item.description}}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>
-      </ion-row>      
+      </ion-row>            
       <ion-row>
         <ion-col size="12">
           <div class="center">
-            <ion-button type="submit" color="plure" class="btn-plure">
+            <ion-button type="submit" class="plure-button" shape="round" [disabled]="!frm.valid">
               Login
             </ion-button>
           </div>  
         </ion-col>
-      </ion-row>
-      <ion-row class="plure-footer">        
-          <ion-col size="12">
-            <ion-grid>
-              <ion-row>
-                <ion-col size="6">
-                  <label><input type="checkbox" [(ngModel)]="rememberMe" [ngModelOptions]="{standalone: true}"> Remember me</label>                
-                </ion-col>
-                <ion-col size="6">
-                  <a href="/login">Forgot you password?</a>
-                </ion-col>
-              </ion-row>
-              <ion-row class="home-page">
-                <ion-col size="12">
-                  <div class="center">
-                    <a href="https://www.plur-e.com">www.plur-e.com</a>
-                  </div>
-                </ion-col>
-              </ion-row>
-            </ion-grid>                   
-          </ion-col>
-      </ion-row>      
+      </ion-row>     
     </ion-grid>
   </form>
+
+  <ion-grid class="plure-footer" >
+    <ion-row>
+      <ion-col size="12">
+        <span>Forgot your <a href="http://">password?</a></span>
+      </ion-col>      
+    </ion-row>
+    <ion-row class="hm-pg">
+      <ion-col size="12">
+        <a href="http://">www.plur-e.com</a>
+      </ion-col>      
+    </ion-row>
+  </ion-grid>
+
 </ion-content>  

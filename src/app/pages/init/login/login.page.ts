@@ -13,11 +13,10 @@ import { sha512 } from 'js-sha512'
 import { ApiService } from '@svc/api.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+import { AuthService } from '@svc/auth.service';
 
 // import vars
-import { SK_AUTHORIZE_ACCESS_CLIENT, SK_REMEMBER_ME, SK_SESSION_CUSTOMER_ID, SK_USER_LOGIN, SK_USER_SESSION } from '@var/consts';
-import { error } from 'selenium-webdriver';
-import { AuthService } from '@svc/auth.service';
+import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts';
 
 @Component({
   selector: 'app-login',
@@ -25,10 +24,14 @@ import { AuthService } from '@svc/auth.service';
   styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
-  private scid: string; // Session Customer Id
-  frm: FormGroup;
+
+  showPassword = false;
+  passwordToggleIcon = 'eye';
+
+  private scid: string; 
+  private userName: string;
   public environments: Array<any> = [];
-  rememberMe: boolean = false;
+  frm: FormGroup;
 
   constructor(private intServ: InterceptService,
     private apiConnect: ApiService,
@@ -56,12 +59,9 @@ export class LoginPage implements OnInit {
     );    
   }
 
-  async onRememberMe() {
-    this.rememberMe = await this.storage.get(SK_REMEMBER_ME);
-    if(this.rememberMe) {
-      let secretKey = await this.storage.get(SK_USER_LOGIN);
-      this.signIn(secretKey);
-    }    
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+    this.passwordToggleIcon = this.showPassword ? 'eye-off' : 'eye';
   }
 
   signIn(secretKey: string) {
@@ -73,21 +73,14 @@ export class LoginPage implements OnInit {
       environmentId: this.frm.value.EnviromentId,
       uuid: this.device.uuid
     };
+
     this.apiConnect.postData('loginuser', 'authentication', data).then(
       res => {
         if ( res.token != null ) {
-
-          console.log(`remember_me => ${this.rememberMe}`);
-
-          this.storage.set(SK_REMEMBER_ME, this.rememberMe);
-          if(this.rememberMe)
-            this.storage.set(SK_USER_LOGIN, secretKey);
-
-          this.storage.set(SK_USER_SESSION, JSON.stringify(res));
-
-          this.router.navigateByUrl('', { replaceUrl: true });
+          if(this.authSvc.saveUserSession(res)) {
+            this.router.navigateByUrl('', { replaceUrl: true });            
+          }
           this.intServ.loadingFunc(false);
-
         } else {
           this.intServ.alertFunc(this.jsonServ.getAlert(
             'alert', 
@@ -143,13 +136,20 @@ export class LoginPage implements OnInit {
   }
 
   onChangeUser(event: any){
-    let data = {
-      "customerId": this.scid,
-      "login": this.frm.value.User,
-      "platformCode": environment.platformCode
-    };
 
-    this.onGetEnvironments(data);
+    if(this.frm.value.User != "") {    
+      if(this.userName != this.frm.value.User) {
+        this.userName = this.frm.value.User;        
+        if(this.frm.value.User !== "") {
+          let data = {
+            "customerId": this.scid,
+            "login": this.userName ,
+            "platformCode": environment.platformCode
+          };      
+          this.onGetEnvironments(data);
+        }
+      }    
+    }
   }
 
   onGetEnvironments(data: any) {
@@ -164,9 +164,11 @@ export class LoginPage implements OnInit {
       }
     )
     .catch(err => {
+      this.userName = '';
+      this.frm.controls['User'].setValue(this.userName);
+      
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
-      this.frm.controls['User'].setValue('');
     });
   }
 
