@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
 import { Device } from '@ionic-native/device/ngx'
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 // import services
 import { InterceptService } from '@svc/intercept.service';
@@ -33,7 +34,8 @@ export class EnvironmentsPage implements OnInit {
     , private router: Router
     , private sqlLite: SqlitePlureService
     , private storage: Storage
-    , private device: Device
+    , private device: Device    
+    , private barcodeScanner: BarcodeScanner
   ) { 
     this.frm = this.formBuilder.group(
       {
@@ -45,30 +47,34 @@ export class EnvironmentsPage implements OnInit {
   ngOnInit() {     
   }
 
+  authororizeAccessClient(customerId: string) {
+    let data = {
+      customerId: customerId,
+      platformCode: environment.platformCode,
+      uuid: this.device.uuid
+    }
+
+    this.apiConnect.postData('mobile', 'authorizeaccessclient', data)
+    .then(
+      res => {
+        this.intServ.loadingFunc(false);                            
+        this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));
+        this.router.navigateByUrl('/login', {replaceUrl: true });                            
+      }
+    )
+    .catch(error => {
+      console.log(error);
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${JSON.stringify(error)}`));
+      this.intServ.loadingFunc(false);
+    });
+  }
+
   onSubmit() {
     this.intServ.loadingFunc(true);
     if ( this.frm.valid ) {
       this.jsonServ.formToJson(this.frm).then(
         formJson => {
-          let data = {
-            customerId: this.frm.value.CustomerId,
-            platformCode: environment.platformCode,
-            uuid: this.device.uuid
-          }
-
-          this.apiConnect.postData('mobile', 'authorizeaccessclient', data)
-          .then(
-            res => {
-              this.intServ.loadingFunc(false);                            
-              this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));
-              this.router.navigateByUrl('/login', {replaceUrl: true });                            
-            }
-          )
-          .catch(error => {
-            console.log(error);
-            this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${JSON.stringify(error)}`));
-            this.intServ.loadingFunc(false);
-          });
+          this.authororizeAccessClient(this.frm.value.CustomerId);
         }
       )
     } else {
@@ -78,7 +84,18 @@ export class EnvironmentsPage implements OnInit {
   }
 
   onReadQR(): void {
-
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        this.intServ.loadingFunc(true);
+        let customerId = barCodeData.text;
+        this.authororizeAccessClient(customerId);
+      }
+    ).catch(
+      err => {
+        console.log(err);
+        this.intServ.loadingFunc(false);
+      }
+    )
   }
 
 }
