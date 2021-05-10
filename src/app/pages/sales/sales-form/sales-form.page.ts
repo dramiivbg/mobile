@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
@@ -38,6 +38,10 @@ export class SalesFormPage implements OnInit {
   taxTotal: Number = 0;
   discountTotal: Number = 0;
   total: Number = 0;
+
+  // viewChild
+  @ViewChild('dateOrder') dateOrderTime;
+  @ViewChild('dateDelivery') dateDeliveryTime;
 
   constructor(
     private apiConnect: ApiService,
@@ -237,6 +241,13 @@ export class SalesFormPage implements OnInit {
         console.log(err);
       }
     )
+  }
+
+  onDate(n) {
+    if (this.new) {
+      if(n === 0) this.dateOrderTime.open();
+      if(n === 1) this.dateDeliveryTime.open();
+    }
   }
 
   // login to the application is performed.

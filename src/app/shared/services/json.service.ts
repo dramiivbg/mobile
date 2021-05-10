@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Storage } from '@ionic/storage';
+import { SK_USER_SESSION } from '@var/consts';
 import { environment } from 'src/environments/environment';
 import { ApiService } from './api.service';
 
@@ -58,9 +59,7 @@ export class JsonService {
   */
   async getSession() : Promise<any> {
     return {
-      login: JSON.parse(await this.storage.get('SESSION_LOGIN')),
-      customerId: await this.storage.get('SESSION_CUSTOMER_ID'),
-      modules: await this.storage.get('SESSION_MODULES'),
+      login: JSON.parse(await this.storage.get(SK_USER_SESSION))
     }
   }
 

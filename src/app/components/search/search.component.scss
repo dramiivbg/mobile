@@ -4,7 +4,49 @@
     padding: 0;
     --background: #ffffff;
     color: #000;
-    
+    --border-color: #fff !important;
+    --inner-padding-end: 50px;
+    div.search-all {
+        background: rgba(85, 85, 105, 0.1);
+        border-radius: 15px;
+        width: 100%;
+        div.icon {
+            float: left;
+            padding: 10px 10px 7px 15px;
+        }
+        div.input {
+            float: left;
+            padding-top: 3px;
+        }
+    }
+}
+
+.search-body {
+    .title {
+        color: rgb(170, 170, 180);
+        padding-left: 10px;
+    }
+    ion-grid {
+        padding: 0;
+        ion-row {
+            border-bottom: 0.5px solid var(--ion-color-plureMain);
+            padding: 10px 15px;
+            .text-id {
+                color: var(--ion-color-plureMain);
+                font-weight: 600;
+            }
+            .text-value {
+                color: rgb(170, 170, 180);
+            }
+        }
+    }
+}
+
+.searchbar-input {
+    background: rgba(85, 85, 105, 0.1);
+    border: 1px solid rgba(85, 85, 105, 0.1);
+    color: var(--ion-color-plureMain);
+    border-radius: 15px;
 }
 
 ion-item::part(native){
@@ -12,9 +54,6 @@ ion-item::part(native){
 }
 
 ion-row.search-salesOrder {
-    ion-col:nth-child(2) {
-        padding-top: 10px;
-    }
     ion-col {
         padding: 0;
         ion-searchbar {
@@ -30,7 +69,6 @@ ion-row.search-salesOrder {
         }
         ion-list.listOrders {
             ion-row {
-                padding: 0 0 20px;
                 ion-col {
                     padding: 2px 10px;
                 }
@@ -43,6 +81,13 @@ ion-row.search-salesOrder {
                     text-align: right;
                 }
                 
+            }
+            ion-item {
+                --inner-border-width: 0;
+                ion-row {
+                    border-bottom: 0.7px solid var(--ion-color-plureMain);
+                    padding: 20px 0;
+                }
             }
         }
     }

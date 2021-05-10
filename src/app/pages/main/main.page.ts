@@ -46,7 +46,6 @@ export class MainPage implements OnInit {
     await this.authService.getUserSession().then(
       res => {
         this.userSession = res;
-        console.log(res);
       }
     );         
 

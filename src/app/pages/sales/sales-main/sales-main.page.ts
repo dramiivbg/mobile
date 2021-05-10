@@ -34,7 +34,9 @@ export class SalesMainPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.session = await this.js.getSession();
+    await this.js.getSession().then(
+      rsl => this.session = rsl.login
+    );
   }
 
   async onSales(process) {

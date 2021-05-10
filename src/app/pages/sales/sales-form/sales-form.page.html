@@ -27,50 +27,67 @@
         </ion-col>
       </ion-row>
       <ion-row class="shipTop">
-        <ion-col (click)="onShipAddress()" *ngIf="new">
-          <ion-label class="smallfont">Ship-to Address.</ion-label>
-          <ion-label class="smallfont" *ngIf="frm.controls.shippingNo.value == ''"> ___________</ion-label>
-          <ion-label class="smallfont" *ngIf="frm.controls.shippingNo.value != ''"> {{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+        <ion-col (click)="onShipAddress()" *ngIf="new" size="11">
+          <div class="icon-header">
+            <img src="../../../../assets/img/modules/sales/ship-to-address.svg" width="100%" />
+          </div>
+          <div class="text-header">
+            <ion-label class="smallfont">Ship-to: </ion-label>
+            <ion-label class="smallfont" *ngIf="frm.controls.shippingNo.value != ''">{{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+          </div>
         </ion-col>
-        <ion-col *ngIf="!new">
-          <ion-label class="smallfont">Ship-to Address. </ion-label>
-          <ion-label class="smallfont">{{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+        <ion-col *ngIf="!new" size="11">
+          <div class="icon-header">
+            <img src="../../../../assets/img/modules/sales/ship-to-address.svg" width="100%" />
+          </div>
+          <div class="text-header">
+            <ion-label class="smallfont">Ship-to: </ion-label>
+            <ion-label class="smallfont">{{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+          </div>
         </ion-col>
-      </ion-row>
-      <ion-row class="orderDate">
-        <ion-col size="4">
-          <ion-label class="smallfont">
-            Order date: 
-          </ion-label>
-        </ion-col>
-        <ion-col size="3">
-          <ion-label class="smallfont" *ngIf="new">
-            <ion-datetime class="smallfont" formControlName="orderDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
-          </ion-label>
-          <ion-label class="smallfont" *ngIf="!new">
-            {{ frm.controls.orderDate.value | date: 'dd/MM/yyyy' }}
-          </ion-label>
+        <ion-col size="1" *ngIf="new" class="edit-header">
+          <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
         </ion-col>
       </ion-row>
+      <hr />
+      <ion-row class="orderDate" (click)="onDate(0)">
+        <ion-col size="11">
+          <div class="icon-header">
+            <img src="../../../../assets/img/modules/sales/order-date.svg" width="100%" />
+          </div>
+          <div class="text-header lines">
+            <ion-label class="smallfont">Order date: </ion-label>
+            <ion-label class="smallfont">{{ frm.controls.orderDate.value | date: 'MM/dd/yyyy' }}</ion-label>
+          </div>
+        </ion-col>
+        <ion-col size="1" *ngIf="new" class="edit-header" (click)="onDate(0)">
+          <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
+        </ion-col>
+      </ion-row>
+      <hr />
       <ion-row class="delivery">
-        <ion-col size="4">
-          <ion-label class="smallfont">
-            Delivery date: 
-          </ion-label>
+        <ion-col size="11" (click)="onDate(1)">
+          <div class="icon-header">
+            <img src="../../../../assets/img/modules/sales/delivery-date.svg" width="100%" />
+          </div>
+          <div class="text-header">
+            <ion-label class="smallfont">Delivery date: </ion-label>
+            <ion-label class="smallfont" (click)="onDate(1)">{{ frm.controls.requestedDeliveryDate.value | date: 'MM/dd/yyyy' }}</ion-label>
+          </div>
         </ion-col>
-        <ion-col size="3">
-          <ion-label class="smallfont" *ngIf="new">
-            <ion-datetime class="smallfont" formControlName="requestedDeliveryDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
-          </ion-label>
-          <ion-label class="smallfont" *ngIf="!new">
-            {{ frm.controls.requestedDeliveryDate.value | date: 'dd/MM/yyyy' }}
-          </ion-label>
+        <ion-col size="1" *ngIf="new" class="edit-header" (click)="onDate(1)">
+          <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
         </ion-col>
-            <!-- {{ today | date: 'dd/MM/yyyy' }} -->
       </ion-row>
       <ion-row class="total-for-pay">
         <ion-col>
           <ion-label>${{total}}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row style="display: none;">
+        <ion-col>
+          <ion-datetime #dateOrder class="smallfont" formControlName="orderDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
+          <ion-datetime #dateDelivery class="smallfont" formControlName="requestedDeliveryDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
         </ion-col>
       </ion-row>
     </div>
