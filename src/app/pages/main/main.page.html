@@ -1,21 +1,28 @@
 <ion-split-pane contentId="menu-content">
   <ion-menu contentId="menu-content" menuId="menu-content" side="start" type="overlay">
-    <ion-content class="main">      
-      <ion-item lines="none" detail="false" class="plure-avatar">        
-        <ion-avatar>
-          <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
-        </ion-avatar>        
-      </ion-item>      
-      <ion-item lines="none" detail="false" class="plure-user-info">
-        <h1>{{userSession.userName}}</h1>
-      </ion-item>
-      <ion-note>{{info}}</ion-note>
-      <ion-list>        
-          <ion-item *ngFor="let mi of menuContent" lines="none" detail="false" (click)="onClick(mi.action)">
-            <ion-icon slot="start" [src]="mi.icon"></ion-icon>
-            <ion-label>{{ mi.description }}</ion-label>
-          </ion-item>        
-      </ion-list>
+    <ion-content class="main">    
+      <div class="main-menu">
+        <div class="main-menu-header">
+          <ion-avatar>
+            <img *ngIf="userSession.avatar == ''" src="../../../assets/img/img-robot.svg" />                  
+            <img *ngIf="userSession.avatar != ''" src="{{userSession.avatar}}" />                  
+          </ion-avatar>        
+        </div>  
+        <div class="main-menu-content">          
+          <ion-list>        
+              <ion-item *ngFor="let mi of menuContent" lines="none" detail="false" (click)="onClick(mi.action)">
+                <div class="main-menu-item">
+                  <div class="main-menu-item-icon">
+                    <img src="{{mi.icon}}" alt="">
+                  </div>
+                  <div class="main-menu-item-title">
+                    <h1>{{ mi.description }}</h1>
+                  </div>
+                </div>            
+              </ion-item>        
+          </ion-list>
+        </div>
+      </div>          
     </ion-content>
   </ion-menu>
   <ion-router-outlet id="menu-content" main></ion-router-outlet>
