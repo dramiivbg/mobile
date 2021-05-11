@@ -1,90 +1,50 @@
 <ion-header>
   <ion-toolbar color="plureMain">
-    <ion-title>Home</ion-title>
     <ion-buttons slot="start">
       <ion-menu-button menu="menu-content"></ion-menu-button>
     </ion-buttons>
+    <ion-title>Modules</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <ion-row class="icon-grid">
-    <ion-col>
-      <ion-icon name="list-outline" (click)="onGrid(false)" *ngIf="grid"></ion-icon>
-      <ion-icon name="grid-outline" (click)="onGrid(true)" *ngIf="!grid"></ion-icon>
-    </ion-col>
-  </ion-row>
-  <ion-list class="list" *ngIf="!grid">
-    <ion-row (click)="onSales()">
-      <ion-col size="4" class="img">
-        <img src="../../../../assets/img/modules/sales.svg" />
-      </ion-col>
-      <ion-col class="txt">
-        Sales
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="4" class="img">
-        <img src="../../../../assets/img/modules/purchase.svg" />
-      </ion-col>
-      <ion-col class="txt">
-        Purchase Order
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="4" class="img">
-        <img src="../../../../assets/img/modules/manufacturing.svg" />
-      </ion-col>
-      <ion-col class="txt">
-        Manufacturing
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="4" class="img">
-        <img src="../../../../assets/img/modules/wms.svg" />
-      </ion-col>
-      <ion-col class="txt">
-        WMS
-      </ion-col>
-    </ion-row>
+<ion-content class="modules">
+
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="onGrid(false)" *ngIf="grid">
+        <ion-icon slot="icon-only" name="list-outline" color="warning"></ion-icon>
+      </ion-button>
+      <ion-button (click)="onGrid(true)" *ngIf="!grid">
+        <ion-icon slot="icon-only" name="grid-outline" color="warning"></ion-icon>
+      </ion-button>      
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-list *ngIf="!grid">
+    <ion-item *ngFor="let mod of modules" class="ion-no-padding">
+      <div class="module-item" (click)="onClick(mod.moduleType)">
+        <div class="module-item-icon">
+          <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">            
+        </div>
+        <div class="module-item-title"> 
+          <h1>{{mod.description}}</h1>
+        </div>
+      </div>
+    </ion-item>
   </ion-list>
 
-  <ion-list class="grid" *ngIf="grid">
+  <ion-grid *ngIf="grid">
     <ion-row>
-      <ion-col size="6" class="img">
-        <div class="icon">
-          <ion-row>
-            <ion-col class="title" size="12">Sales</ion-col>
-            <ion-col size="12"><img src="../../../../assets/img/modules/sales.svg" /></ion-col>
-          </ion-row>
-        </div>
-      </ion-col>
-      <ion-col size="6" class="img">
-        <div class="icon">
-          <ion-row>
-            <ion-col class="title" size="12">Purchase Order</ion-col>
-            <ion-col size="12"><img src="../../../../assets/img/modules/purchase.svg" /></ion-col>
-          </ion-row>
-        </div>
-      </ion-col>
+      <ion-col *ngFor="let mod of modules" size-lg="3" size-md="4" size-sm="6" size="6">
+        <div class="module-item" (click)="onClick(mod.moduleType)">
+          <div class="module-item-title">
+            <h1>{{mod.description}}</h1>
+          </div>
+          <div class="module-item-icon">
+            <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">            
+          </div>
+        </div>        
+      </ion-col>      
     </ion-row>
-    <ion-row>
-      <ion-col size="6" class="img">
-        <div class="icon">
-          <ion-row>
-            <ion-col class="title" size="12">Manufacturing</ion-col>
-            <ion-col size="12"><img src="../../../../assets/img/modules/manufacturing.svg" /></ion-col>
-          </ion-row>
-        </div>
-      </ion-col>
-      <ion-col size="6" class="img">
-        <div class="icon">
-          <ion-row>
-            <ion-col class="title" size="12">WMS</ion-col>
-            <ion-col size="12"><img src="../../../../assets/img/modules/wms.svg" /></ion-col>
-          </ion-row>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-list>
+  </ion-grid>
 
 </ion-content>

@@ -45,8 +45,7 @@ export class MainPage implements OnInit {
   async ngOnInit() {
     await this.authService.getUserSession().then(
       res => {
-        this.userSession = res;
-        console.log(res);
+        this.userSession = res;        
       }
     );         
 

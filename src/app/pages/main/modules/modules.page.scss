@@ -1,61 +1,79 @@
-ion-content {
-    ion-row.icon-grid {
-        ion-col {
-            text-align: right;
-            ion-icon {
-                color: var(--ion-color-plureMain);
-                font-size: 20px;
-                padding: 5px 5px 0;
-            }
-        }
-    }
-    ion-list.list {
-        ion-row {
-            padding: 10px 0;
-            border-bottom: 0.5px solid var(--ion-color-plureMain);
-            ion-col {
-                padding: 0 10px;
-                img {
-                    display: inline-block;
-                    width: 60%;
+@import '../../../../sass/var';
+
+ion-content.modules {    
+
+    ion-list {
+        ion-item {
+            div.module-item {
+                display: flex;
+                width: 100%;                
+                padding-left: 28px;
+                margin: 10px 0 10px 0;
+                //border: 1px solid black;  
+
+                div.module-item-icon {                    
+                    width: 50px;                    
+                    margin: auto 0;                  
+                    //border: 1px solid black; 
+                    
+                    img {
+                        display: block;
+                        //border: 1px solid black;         
+                    }
                 }
+
+                div.module-item-title {                                        
+                    text-align: left;
+                    margin: auto 0 auto 35px;                             
+                    //border: 1px solid black;         
+
+                    h1 {
+                        color: $plure-label-color;             
+                        font-family: SourceSansProRegular !important;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 30px;
+                    } 
+                }
+
             }
-            ion-col.img {
-                text-align: center;
-            }
-            ion-col.txt {
-                color: var(--ion-color-plureMain);
-                font-family: SourceSansProRegular;
-                padding: 20px 0;
-            }
+
         }
     }
 
-    ion-list.grid {
+    ion-grid {
         ion-row {
-            padding: 0 10px;
-            ion-col.img {
-                padding: 10px;
-                div.icon {
-                    border: 0.7px solid var(--ion-color-plureMain);
-                    border-radius: 10px;
-                    --inner-border-width: 0;
-                    ion-row{
-                        ion-col {
-                            padding: 10px 0 20px;
-                            text-align: center;
-                            img {
-                                display: inline-block;
-                            }
-                        }
-                        ion-col.title {
-                            color: var(--ion-color-plureMain);
-                            font-family: SourceSansProRegular;
-                            padding: 10px 0 20px;
-                        }
+            ion-col {
+                padding: 15px;
+
+                div.module-item {        
+                    border: 0.6px solid rgba(85, 85, 105, 0.35);
+                    box-sizing: border-box;
+                    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
+                    border-radius: 15px;
+                    padding-bottom: 10px;
+            
+                    div.module-item-title {            
+                        text-align: center;
+                        h1 {
+                            color: $plure-label-color;             
+                            font-family: SourceSansProRegular !important;
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 18px;
+                            line-height: 23px;
+                        }            
+                    }
+            
+                    div.module-item-icon {            
+                        text-align: center;            
+                        display: block;
+                        margin: auto;
+                        padding-bottom: 10px;
                     }
                 }
             }
         }
-    }
+    }    
 }
