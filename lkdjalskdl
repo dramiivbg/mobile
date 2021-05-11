@@ -1,0 +1,20 @@
+[33m5bde219[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m se ajusta sales order y se agregan iconos
+[33m74d723b[m[33m ([m[1;31morigin/dev_210428[m[33m)[m funcionalidad ReadQR
+[33mb773f1c[m diseno del login y environment
+[33m1c48c11[m Merge branch 'master' into dev_210428
+[33mc487218[m Merge branch 'master' of https://dev.azure.com/MSCloudExperts/plur-e%20Mobile/_git/Plur-e%20Mobile%20BC into master
+[33m9a4823f[m Se cambia modules a process
+[33m3c83b2f[m checkuot con la master
+[33mb19098f[m se crea la el servicio authService
+[33m95cccdd[m Se elimina la carpeta modules de init
+[33m3eaa404[m .
+[33m935c00d[m Se ajustar el login con el api de plure, se ajusta el menu de la aplicacion
+[33m7652ffa[m[33m ([m[1;32mdev_210423[m[33m)[m Merge branch 'master' into dev_210423
+[33m0ee3476[m se ajusta el inicio de sesion
+[33ma3fc450[m Design
+[33mf399a60[m Grid
+[33md1ae00c[m Se agrega font
+[33m3ed837f[m Se agrega font
+[33ma86748a[m[33m ([m[1;31morigin/dev_210423[m[33m)[m .
+[33mfc392f6[m Se agrega lines to sales.
+[33m62b7e30[m .
