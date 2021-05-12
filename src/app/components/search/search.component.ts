@@ -90,12 +90,14 @@ export class SearchComponent implements OnInit {
 
   async onAddSalesOrder() {
     this.intServ.loadingFunc(true);
+    let salesType: string = await this.typeReturn(this.process);
     let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
       let navigationExtras: NavigationExtras = {
         state: {
           customer,
           process: this.process,
-          new: true
+          new: true,
+          salesType
         }
       };
       this.router.navigate(['sales/sales-form'], navigationExtras);
@@ -109,22 +111,8 @@ export class SearchComponent implements OnInit {
   async onDeleteLine(sell, i) {
     this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
       async () =>{
-        let type = '';
-        switch(sell.fields.DocumentType){
-          case 'Order':
-            type = 'Sales Order';
-            break;
-          case 'Invoice':
-            type = 'Sales Invoice';
-            break;
-          case 'Credit Memo':
-            type = 'Sales Credit Memo';
-            break;
-          case 'Return Order':
-            type = 'Sales Return Order';
-            break;
-        } 
-        let process = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: type, documentNo: sell.id, salesPerson: "CA" }]);
+        let salesType: string = await this.typeReturn(this.process);
+        let process = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: salesType, documentNo: sell.id, salesPerson: "CA" }]);
         let dropOrder = await this.syncerp.setRequest(process);
         this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
           () => {
@@ -133,6 +121,25 @@ export class SearchComponent implements OnInit {
         ));
       }
     ));
+  }
+
+  async typeReturn(process: any) : Promise<string> {
+    let salesType = '';
+    switch(process.processId) {
+      case 'P001':
+        salesType = 'Sales Order';
+        break;
+      case 'P002':
+        salesType = 'Sales Return Order';
+        break;
+      case 'P003':
+        salesType = 'Sales Invoice';
+        break;
+      case 'P004':
+        salesType = 'Sales Credit Memo';
+        break;
+    }
+    return salesType;
   }
 
   // End Sales Orders

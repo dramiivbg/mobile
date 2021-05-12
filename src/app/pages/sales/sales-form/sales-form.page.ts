@@ -271,7 +271,7 @@ export class SalesFormPage implements OnInit {
               this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
             } else {
               this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The order No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                this.router.navigate(['init/home']);
+                this.router.navigate(['modules']);
               }));
             }
           }
