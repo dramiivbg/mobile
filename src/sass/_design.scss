@@ -260,7 +260,7 @@ loading-plure {
         height: 100%;
         left: 0;
         width: 100%;
-        position: absolute;
+        position: fixed;
         top: 0;
         z-index: 10;
         .loading {
@@ -281,10 +281,10 @@ alert-message {
         display: flex;
         justify-content: center;
         height: 100%;
-        //left: 0;
+        left: 0;
         width: 100%;
-        position: absolute;
-        //top: 0;
+        position: fixed;
+        top: 0;
         .alert-content {   
             border: solid 1px rgb(85, 85, 105, 0.5);       
             border-radius: 5px;        

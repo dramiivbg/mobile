@@ -1,4 +1,5 @@
 import { computeMsgId } from '@angular/compiler';
+import { compilePipeFromRender2 } from '@angular/compiler/src/render3/r3_pipe_compiler';
 import { CONTEXT_NAME } from '@angular/compiler/src/render3/view/util';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
@@ -7,6 +8,7 @@ import { Platform } from '@ionic/angular';
 // import services
 import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 
 @Component({
@@ -24,12 +26,12 @@ export class SearchComponent implements OnInit {
   // type: Number = 0; // 0. Standar - 1. Sales Orders
 
   constructor(
-    private interceptService: InterceptService,
     private platform: Platform,
     private syncerp: SyncerpService,
     private general: GeneralService,
     private router: Router,
-    private intServ: InterceptService
+    private intServ: InterceptService,
+    private js: JsonService,
   ) {
     platform.ready().then(
       () => {
@@ -38,13 +40,12 @@ export class SearchComponent implements OnInit {
         this.height = height;
       }
     )
-    interceptService.searchShow$.subscribe(
+    intServ.searchShow$.subscribe(
       obj => {
         this.searchObj = obj;
         this.listsFilter = obj.data;
         this.lists = obj.data;
         this.process = this.searchObj.process
-        console.log(obj);
       }
     )
   }
@@ -88,7 +89,6 @@ export class SearchComponent implements OnInit {
   }
 
   async onAddSalesOrder() {
-    console.log(this.process);
     this.intServ.loadingFunc(true);
     let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
       let navigationExtras: NavigationExtras = {
@@ -104,6 +104,35 @@ export class SearchComponent implements OnInit {
     this.listsFilter = obj.data;
     this.lists = obj.data;
     this.intServ.loadingFunc(false);
+  }
+
+  async onDeleteLine(sell, i) {
+    this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
+      async () =>{
+        let type = '';
+        switch(sell.fields.DocumentType){
+          case 'Order':
+            type = 'Sales Order';
+            break;
+          case 'Invoice':
+            type = 'Sales Invoice';
+            break;
+          case 'Credit Memo':
+            type = 'Sales Credit Memo';
+            break;
+          case 'Return Order':
+            type = 'Sales Return Order';
+            break;
+        } 
+        let process = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: type, documentNo: sell.id, salesPerson: "CA" }]);
+        let dropOrder = await this.syncerp.setRequest(process);
+        this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
+          () => {
+            this.listsFilter.splice(i, 1);
+          }
+        ));
+      }
+    ));
   }
 
   // End Sales Orders

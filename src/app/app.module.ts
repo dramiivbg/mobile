@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -10,7 +10,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { MenuService } from './data/menu.service';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
 import { SearchComponent } from './components/search/search.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';

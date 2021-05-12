@@ -4,10 +4,6 @@ import { AuthGuardService } from '@guard/auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
-  },
-  {
     path: 'login',
     loadChildren: () => import('./pages/init/login/login.module').then( m => m.LoginPageModule),
     canActivate: [AuthGuardService]

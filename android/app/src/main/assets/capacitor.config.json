@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "com.plure.app",
   "appName": "plur-e mobile",
   "bundledWebRuntime": false,
   "npmClient": "npm",

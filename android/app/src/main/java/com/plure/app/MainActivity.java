@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.plure.app;
 
 import android.os.Bundle;
 
