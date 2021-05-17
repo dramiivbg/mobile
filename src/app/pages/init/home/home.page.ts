@@ -21,8 +21,8 @@ export class HomePage implements OnInit {
   // List
   private customers: any;
   private session: any;
-  private modules: [];
   private salesOrders: any;
+  modules: [];
 
   constructor(
     private intServ: InterceptService,

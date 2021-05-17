@@ -15,19 +15,20 @@ import { SyncerpService } from '@svc/syncerp.service';
   styleUrls: ['./sales-form.page.scss']
 })
 export class SalesFormPage implements OnInit {
-  private new: boolean;
   private customers: any;
   private customer: any = {};
-  private order: any = {};
-  private process: any = {};
   private shipAddress: any;
   private items: any = {};
   private allItems: any = [];
   private categories: any;
-  private unitMeasureList: any = [];
   private listPrices: any = [];
   private salesType: string;
 
+  new: boolean;
+  process: any = {};
+  order: any = {};
+  unitMeasureList: any = [];
+  
   frm = new FormGroup({});
   orderDate: string = new Date().toDateString();
   deliveryDate: string = new Date().toDateString();
@@ -270,7 +271,7 @@ export class SalesFormPage implements OnInit {
               this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
             } else {
               this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The order No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                this.router.navigate(['init/home']);
+                this.router.navigate(['modules']);
               }));
             }
           }
