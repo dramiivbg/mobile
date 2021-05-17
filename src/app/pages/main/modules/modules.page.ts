@@ -5,6 +5,8 @@ import { JsonService } from '@svc/json.service';
 import { copyFileSync } from 'fs';
 
 import { ApiService } from '@svc/api.service';
+import { SqlitePlureService } from '@svc/sqlite-plure.service';
+import { __awaiter } from 'tslib';
 
 @Component({
   selector: 'app-modules',
@@ -17,7 +19,8 @@ export class ModulesPage implements OnInit {
   
   constructor(
     private router: Router,
-    private js: JsonService
+    private js: JsonService,
+    private sqLite: SqlitePlureService
   ) { }
 
   async ngOnInit() {
@@ -25,6 +28,10 @@ export class ModulesPage implements OnInit {
     this.modules = session.login.environment.modules;
   }
 
+  /**
+   * Grid
+   * @param b 
+   */
   onGrid(b) {
     this.grid = b;
   }
@@ -38,6 +45,16 @@ export class ModulesPage implements OnInit {
       }
     };
     this.router.navigate(['sales/sales-main'], navigationExtras);
+  }
+
+  async onTestSqLite() {
+    await this.sqLite.init();
+    await this.sqLite.openStorageOptions();
+    let store = await this.sqLite.openStore();
+    if (store) {
+      // await this.sqLite.setItem('GetCustomers', 'Hola');
+      let test = await this.sqLite.getItem('GetCustomers');
+    }
   }
 
 }
