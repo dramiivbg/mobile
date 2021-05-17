@@ -6,10 +6,8 @@ import { copyFileSync } from 'fs';
 
 // import services
 import { ApiService } from '@svc/api.service';
-<<<<<<< HEAD
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { __awaiter } from 'tslib';
-=======
 import { AuthService } from '@svc/auth.service';
 
 // import vars
@@ -20,7 +18,6 @@ export interface Module {
   icon: string,
   moduleType: E_MODULETYPE
 }
->>>>>>> 35ced91266e63f65f3cb6cf3542566366610805c
 
 @Component({
   selector: 'app-modules',
@@ -34,12 +31,9 @@ export class ModulesPage implements OnInit {
   
   constructor(
     private router: Router,
-<<<<<<< HEAD
     private js: JsonService,
-    private sqLite: SqlitePlureService
-=======
+    private sqLite: SqlitePlureService,
     private authService: AuthService
->>>>>>> 35ced91266e63f65f3cb6cf3542566366610805c
   ) { }
 
   async ngOnInit() {
