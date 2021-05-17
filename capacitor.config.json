@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "com.plure.app",
   "appName": "plur-e mobile",
   "bundledWebRuntime": false,
   "npmClient": "npm",
@@ -10,7 +10,10 @@
     }
   },
   "cordova": {},
-  "server": {    
-    "cleartext": true
+  "server": {
+    "url": "http://192.168.1.102:8100",
+    "cleartext": true,
+    "originalUrl": "http://192.168.1.102:8100",
+    "originalCleartext": true
   }
 }

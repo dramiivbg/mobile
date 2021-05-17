@@ -1,8 +1,8 @@
 {
   "name": "plur-e-mobile",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Plur-E",
+  "homepage": "https://plur-e.com/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
