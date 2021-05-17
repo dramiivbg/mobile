@@ -19,8 +19,6 @@ export class AuthGuardService implements CanActivate {
     this.authorizeAccessClient = await this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT);
     this.login = await this.storage.get(SK_USER_SESSION);
 
-    console.log(route.routeConfig.path);
-
     switch(route.routeConfig.path) {
       case 'environments':
         return this.isEnvironments();
