@@ -8,6 +8,7 @@ import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
+import { debug } from 'console';
 
 @Component({
   selector: 'app-sales-form',
@@ -176,6 +177,8 @@ export class SalesFormPage implements OnInit {
   onDeleteLine(i) {
     let lines: any = this.frm.controls.lines;
     lines.removeAt(i);
+    // this.frm.controls.lines.setValue(lines);
+    this.setTotals();
   }
 
   onIncDec(i, dec) {
@@ -195,14 +198,22 @@ export class SalesFormPage implements OnInit {
   }
 
   ionMeasure(i) {
+    let lineDiscount: Number = 0;
     let val: any = event.target;
     let lines = this.frm.controls.lines.value;
     let price = this.listPrices[i].find(x => (x.UnitofMeasureCode == val.value));
     
-    lines[i].unitPrice = price.UnitPrice;
-    lines[i].lineDiscountPercentage = (price['LineDiscount%'] === null) ? 0 : Number(price['LineDiscount%']);
+    if (price === undefined) {
+      lines[i].unitPrice = 0
+      lines[i].lineDiscountPercentage = 0;
+      lineDiscount = 0;
+    } else {
+      lineDiscount = (lineDiscount === null) ? 0 : Number(lineDiscount);
+      lines[i].unitPrice = price.UnitPrice;
+      lines[i].lineDiscountPercentage = lineDiscount;
+    }
     let totalWithoutDiscount = Number(Number(lines[i].quantity * lines[i].unitPrice).toFixed(2));
-    let discount = totalWithoutDiscount * (price['LineDiscount%'] / 100 );
+    let discount = totalWithoutDiscount * (Number(lineDiscount) / 100 );
     let total = totalWithoutDiscount - discount;
     lines[i].lineDiscountAmount = discount;
     lines[i].totalWithoutDiscount = totalWithoutDiscount;
@@ -264,15 +275,20 @@ export class SalesFormPage implements OnInit {
             json['documentDate'] = json.orderDate;
             json['requestedDeliveryDate'] = json.requestedDeliveryDate.substring(0, 10);
             let process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
-            console.log(JSON.stringify(process));
-            let salesOrder = await this.syncerp.setRequest(process);
-            this.intServ.loadingFunc(false);
-            if (salesOrder.error !== undefined) {
-              this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
+            if (json.lines.length > 0) {
+              let salesOrder = await this.syncerp.setRequest(process);
+              this.intServ.loadingFunc(false);
+              if (salesOrder.error !== undefined) {
+                this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
+              } else {
+                this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The order No. ${salesOrder.SalesOrder} has been created successfully`, () => {
+                  this.router.navigate(['modules']);
+                  this.frm.reset();
+                }));
+              }
             } else {
-              this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The order No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                this.router.navigate(['modules']);
-              }));
+              this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This order does not have lines`));
+              this.intServ.loadingFunc(false);
             }
           }
         )
@@ -280,7 +296,7 @@ export class SalesFormPage implements OnInit {
         this.intServ.loadingFunc(false);
       } 
     } catch (error) {
-      
+      this.intServ.loadingFunc(false);
     }
   }
 
@@ -305,12 +321,16 @@ export class SalesFormPage implements OnInit {
     this.intServ.searchShowFunc(obj);
   }
 
-  // Add item to the cart
+  /**
+   * Add item to the cart
+   * @param item 
+   */
   async addItem(item) {
     var now = new Date();
-    item['unitPrice'] = 0.00;
-    item['total'] = 0.00;
-    item['measure'] = item.unitOfMeasures[0].id;
+    item['unitPrice'] = 0;
+    item['discountPerc'] = 0;
+    item['total'] = 0;
+    item['measure'] = item.fields.SalesUnitofMeasure;
     item['priceListC'] = [];
     item.listPrice.forEach(x => {
       let sDate = (x.fields.StartingDate !== null) ? x.fields.StartingDate.split('-') : null;
@@ -335,6 +355,10 @@ export class SalesFormPage implements OnInit {
         }
       }
     });
+    if (item.unitPrice === 0) {
+      item['measure']
+      item['unitPrice'] = item.fields.unitPrice;
+    }
     item['quantity'] = 1;
     this.linesS.push(item);
     this.frm.controls.lines = this.setLines(item);
@@ -435,6 +459,7 @@ export class SalesFormPage implements OnInit {
     let process = await this.syncerp.processRequest('GetItemCategories', "10", "", "");
     let categories = await this.syncerp.setRequest(process);
     this.categories = await this.general.categories(categories.Categories);
+    console.log(this.categories);
     this.categories.forEach(
       category => {
         category.items.forEach(

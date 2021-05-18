@@ -15,12 +15,12 @@ export class SyncerpService {
   ) { }
 
   // Process Request structure
-  async  processRequest(processMethod, pageSize, position, salesPerson) {
+  async processRequest(processMethod, pageSize, position, salesPerson) {
     this.session = await this.js.getSession();
     return {
       customerId: this.session.login.customerId,
       environmentId: this.session.login.environment.environmentId,
-      processMethod: processMethod,
+      processMethod,
       userId: this.session.login.userId,
       company: this.session.login.defaultCompany,
       jsonRequest: JSON.stringify({

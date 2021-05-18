@@ -24,7 +24,7 @@ import { JsonService } from '@svc/json.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { GeneralService } from '@svc/general.service';
 import { ApiBaseUrlInterceptor } from '@svc/api-base-url-interceptor';
-import { HttpErrorInterceptor } from '@svc/http-error-interceptor';
+import { HttpInterceptorService } from '@svc/http-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -59,7 +59,7 @@ import { HttpErrorInterceptor } from '@svc/http-error-interceptor';
     Device,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },    
     { provide: HTTP_INTERCEPTORS, useClass: ApiBaseUrlInterceptor, multi: true},
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true}
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

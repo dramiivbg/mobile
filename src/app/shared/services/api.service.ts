@@ -47,8 +47,6 @@ export class ApiService {
     postData = async (method: string, params: string, object: any): Promise<any> => {
         const url = `${this.apiBaseUrl}/${method}/${params}`;
 
-        console.log(url);
-
         return new Promise((resolve, reject) => {
             try {
                 let subscription: any;
@@ -75,6 +73,7 @@ export class ApiService {
                         } 
                     )
             } catch (err) {
+                console.log(err);
                 reject(err);
             }
         });
