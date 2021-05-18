@@ -27,6 +27,7 @@ export class SalesMainPage implements OnInit {
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
         this.module = this.router.getCurrentNavigation().extras.state.module;
+        console.log(this.module);
       } else {
         this.router.navigate(['modules']);
       }
