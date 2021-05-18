@@ -43,7 +43,6 @@ export class ModulesPage implements OnInit {
         this.environment = res.environment;
         this.environment.modules.forEach((module: any) => {
           let moduleType: E_MODULETYPE = module.moduleType;
-          console.log(module);
           this.modules.push({
             description: module.description,
             icon: E_MODULETYPE[moduleType].toLowerCase(),
@@ -52,8 +51,6 @@ export class ModulesPage implements OnInit {
         });
       }
     );
-    
-    console.log(this.modules);
   }  
 
   /**
@@ -86,7 +83,6 @@ export class ModulesPage implements OnInit {
   }
 
   onSales() {
-    console.log(this.modules);
     let module = this.modules[0];
     let navigationExtras: NavigationExtras = {
       state: {
