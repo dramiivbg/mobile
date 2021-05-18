@@ -6,6 +6,8 @@ import { copyFileSync } from 'fs';
 
 // import services
 import { ApiService } from '@svc/api.service';
+import { SqlitePlureService } from '@svc/sqlite-plure.service';
+import { __awaiter } from 'tslib';
 import { AuthService } from '@svc/auth.service';
 
 // import vars
@@ -29,6 +31,8 @@ export class ModulesPage implements OnInit {
   
   constructor(
     private router: Router,
+    private js: JsonService,
+    private sqLite: SqlitePlureService,
     private authService: AuthService
   ) { }
 
@@ -49,7 +53,11 @@ export class ModulesPage implements OnInit {
     );    
   }  
 
-  onGrid(b: boolean) {
+  /**
+   * Grid
+   * @param b 
+   */
+  onGrid(b) {
     this.grid = b;
   }
 
@@ -86,5 +94,15 @@ export class ModulesPage implements OnInit {
     };
     this.router.navigate(['sales/sales-main'], navigationExtras);    
   }
+
+  /*async onTestSqLite() {
+    await this.sqLite.init();
+    await this.sqLite.openStorageOptions();
+    let store = await this.sqLite.openStore();
+    if (store) {
+      // await this.sqLite.setItem('GetCustomers', 'Hola');
+      let test = await this.sqLite.getItem('GetCustomers');
+    }
+  }*/
 
 }

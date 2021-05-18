@@ -8,7 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MenuService } from './data/menu.service';
 import { SearchComponent } from './components/search/search.component';
 import { LoadingComponent } from './components/loading/loading.component';
@@ -23,6 +23,8 @@ import { ApiService } from '@svc/api.service';
 import { JsonService } from '@svc/json.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { GeneralService } from '@svc/general.service';
+import { ApiBaseUrlInterceptor } from '@svc/api-base-url-interceptor';
+import { HttpErrorInterceptor } from '@svc/http-error-interceptor';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,10 @@ import { GeneralService } from '@svc/general.service';
     AlertsComponent,
     IonicStorageModule,
     BarcodeScanner,
-    Device
+    Device,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },    
+    { provide: HTTP_INTERCEPTORS, useClass: ApiBaseUrlInterceptor, multi: true},
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
