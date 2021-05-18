@@ -13,7 +13,7 @@ import { AuthService } from '@svc/auth.service';
 // import vars
 import { E_MODULETYPE } from '@var/enums';
 
-export interface Module {
+export interface Module {  
   description: string,
   icon: string,
   moduleType: E_MODULETYPE
@@ -39,18 +39,18 @@ export class ModulesPage implements OnInit {
   async ngOnInit() {
     this.authService.getUserSession()
     .then(
-      res => {
+      res => {        
         this.environment = res.environment;
         this.environment.modules.forEach((module: any) => {
-          let moduleType: E_MODULETYPE = module.moduleType;
-          this.modules.push({
+          let moduleType: E_MODULETYPE = module.moduleType;          
+          this.modules.push({            
             description: module.description,
             icon: E_MODULETYPE[moduleType].toLowerCase(),
             moduleType: moduleType
-          });
+          });          
         });
       }
-    );
+    );    
   }  
 
   /**
@@ -62,10 +62,13 @@ export class ModulesPage implements OnInit {
   }
 
   onClick(moduleType: E_MODULETYPE) {
+
+    let module = this.environment.modules.find((mod: any) => mod.moduleType === moduleType );    
+
     switch(moduleType)
     {
       case E_MODULETYPE.Sales:
-        this.onSales();
+        this.onSales(module);
         break;
 
       case E_MODULETYPE.Purchases:
@@ -82,14 +85,14 @@ export class ModulesPage implements OnInit {
     }
   }
 
-  onSales() {
-    let module = this.modules[0];
+  onSales(module: any) {
+    console.log(module);    
     let navigationExtras: NavigationExtras = {
       state: {
         module
       }
     };
-    this.router.navigate(['sales/sales-main'], navigationExtras);
+    this.router.navigate(['sales/sales-main'], navigationExtras);    
   }
 
   async onTestSqLite() {
