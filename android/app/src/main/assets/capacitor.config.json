@@ -10,8 +10,7 @@
     }
   },
   "cordova": {},
-  "server": {    
-    "cleartext": true,    
-    "originalCleartext": true
+  "server": {
+    "cleartext": true
   }
 }
