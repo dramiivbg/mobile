@@ -98,6 +98,9 @@ export class SalesFormPage implements OnInit {
     this.getMethods();
   }
 
+  /**
+   * Initializate form
+   */
   async initForm() {
     let guid: any = Guid.create();
     this.frm.addControl('id', new FormControl(guid.value));
@@ -281,9 +284,9 @@ export class SalesFormPage implements OnInit {
               if (salesOrder.error !== undefined) {
                 this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
               } else {
+                this.frm.reset();
                 this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The order No. ${salesOrder.SalesOrder} has been created successfully`, () => {
                   this.router.navigate(['modules']);
-                  this.frm.reset();
                 }));
               }
             } else {
