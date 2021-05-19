@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { JsonService } from '@svc/json.service';
 import { copyFileSync } from 'fs';
+import { __awaiter } from 'tslib';
 
 // import services
 import { ApiService } from '@svc/api.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
-import { __awaiter } from 'tslib';
 import { AuthService } from '@svc/auth.service';
+import { ModuleService } from '@svc/gui/module.service';
 
 // import vars
 import { E_MODULETYPE } from '@var/enums';
@@ -29,12 +30,10 @@ export class ModulesPage implements OnInit {
   modules: Array<Module> = [];  
   environment: any = {};
   
-  constructor(
-    private router: Router,
-    private js: JsonService,
+  constructor(private router: Router,
     private sqLite: SqlitePlureService,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+    private moduleService: ModuleService) { }
 
   async ngOnInit() {
     this.authService.getUserSession()
@@ -57,13 +56,14 @@ export class ModulesPage implements OnInit {
    * Grid
    * @param b 
    */
-  onGrid(b) {
+  onGrid(b: boolean) {
     this.grid = b;
   }
 
   onClick(moduleType: E_MODULETYPE) {
 
-    let module = this.environment.modules.find((mod: any) => mod.moduleType === moduleType );    
+    let module = this.environment.modules.find((mod: any) => mod.moduleType === moduleType );   
+    this.moduleService.setSelectedModule(module); 
 
     switch(moduleType)
     {

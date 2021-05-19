@@ -6,6 +6,7 @@
     "paths": {
       "@env/*": ["src/environments/*"],
       "@svc/*": ["src/app/shared/services/*"],
+      "@mdl/*": ["src/app/shared/models/*"],
       "@guard/*": ["src/app/shared/guards/*"],
       "@var/*": ["src/app/shared/vars/*"],
       "@asset/*": ["src/assets/*"],

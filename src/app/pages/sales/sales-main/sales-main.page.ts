@@ -1,10 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+// import services
 import { GeneralService } from '@svc/general.service';
+import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
+// import vars
+import { E_MODULETYPE } from '@var/enums';
+// import models
+import { Module, Process } from '@mdl/module';
 
 @Component({
   selector: 'app-sales-main',
@@ -14,24 +20,26 @@ import { SyncerpService } from '@svc/syncerp.service';
 export class SalesMainPage implements OnInit {
   sessionLogin: any = {};
   session: any = {};
-  module: any = [];
+  module: Module = { 
+    subscriptionId: '',
+    moduleId: '',
+    description: '',
+    moduleType: E_MODULETYPE.None,
+    userType: 0,
+    erpUserId: '',
+    active: true,
+    processes: []
+  };
 
-  constructor(
-    private syncerp: SyncerpService,
+  constructor(private syncerp: SyncerpService,
     private general: GeneralService,
     private intServ: InterceptService,
     private js: JsonService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private moduleService: ModuleService
   ) { 
-    this.route.queryParams.subscribe(async params => {
-      if (this.router.getCurrentNavigation().extras.state){
-        this.module = this.router.getCurrentNavigation().extras.state.module;
-        console.log(this.module);
-      } else {
-        this.router.navigate(['modules']);
-      }
-    });
+    this.module = this.moduleService.getSelectedModule();    
   }
 
   async ngOnInit() {
@@ -40,7 +48,7 @@ export class SalesMainPage implements OnInit {
     );
   }
 
-  async onSales(process) {
+  async onSales(process: Process) {
     let salesType = '';
     switch(process.processId) {
       case 'P001':
