@@ -10,7 +10,7 @@
         </div>  
         <div class="main-menu-content">          
           <ion-list>        
-              <ion-item *ngFor="let mi of menuContent" lines="none" detail="false" (click)="onClick(mi.action)">
+              <ion-item *ngFor="let mi of menuContent" lines="none" detail="false" (click)="onClick(mi.action)" class="ion-no-padding">
                 <div class="main-menu-item">
                   <div class="main-menu-item-icon">
                     <img src="{{mi.icon}}" alt="">
