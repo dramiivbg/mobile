@@ -35,8 +35,8 @@ export class ModuleService {
     )
   }
 
-  setSelectedModule(module: Module) {
-    this.storage.set(SK_SELECTED_MODULE, JSON.stringify(module));
+  async setSelectedModule(module: Module) : Promise<void> {
+    await this.storage.set(SK_SELECTED_MODULE, JSON.stringify(module));
   }
 
   getSelectedModule(): Module {

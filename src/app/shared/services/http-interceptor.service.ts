@@ -30,8 +30,9 @@ export class HttpInterceptorService implements HttpInterceptor {
         return event;
       }),
       catchError(err => {
-        return this.offline.getProcess(req.body).then(
+        return this.offline.getProcess(req.body).then(          
           (event: any) => {
+            debugger;
             if (event !== null) return event;
             else {
               let message: string = '';

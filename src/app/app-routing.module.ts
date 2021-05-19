@@ -25,7 +25,8 @@ const routes: Routes = [
   },
   {
     path: 'sales/sales-main',
-    loadChildren: () => import('./pages/sales/sales-main/sales-main.module').then( m => m.SalesMainPageModule)
+    loadChildren: () => import('./pages/sales/sales-main/sales-main.module').then( m => m.SalesMainPageModule),
+    canActivate: [AuthGuardService]
   },
   {
     path: '',
