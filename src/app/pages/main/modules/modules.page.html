@@ -21,7 +21,7 @@
 
   <ion-list *ngIf="!grid">
     <ion-item *ngFor="let mod of modules" class="ion-no-padding">
-      <div class="module-item" (click)="onClick(mod.moduleType, mod.data)">
+      <div class="module-item" (click)="onClick(mod.moduleType)">
         <div class="module-item-icon">
           <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">            
         </div>
@@ -35,7 +35,7 @@
   <ion-grid *ngIf="grid">
     <ion-row>
       <ion-col *ngFor="let mod of modules" size-lg="3" size-md="4" size-sm="6" size="6">
-        <div class="module-item" (click)="onClick(mod.moduleType, mod.data)">
+        <div class="module-item" (click)="onClick(mod.moduleType)">
           <div class="module-item-title">
             <h1>{{mod.description}}</h1>
           </div>

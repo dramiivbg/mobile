@@ -16,74 +16,44 @@ export class HttpInterceptorService implements HttpInterceptor {
   ) { }
 
   /**
-   * Intercept http Request
+   * Intercept http
    * @param req 
    * @param next 
    * @returns 
    */
-   intercept(req: HttpRequest<any>, next: HttpHandler) {
+  intercept(req: HttpRequest<any>, next: HttpHandler){ 
     return next.handle(req).pipe(
       map((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
           this.offline.setProcess(req.body, event);
-          // console.log(`Event: <!--${JSON.stringify(event)}-->`);
-          // console.log(`Req: <!--${JSON.stringify(req)}-->`);
         }
         return event;
       }),
       catchError(err => {
-        let message: string;
-        // return this.Test(req);
-        return throwError(message);
-        // return new Promise<HttpEvent<any>>(
-        //   (resolve, reject) => {
-        //     this.offline.getProcess(req.body).then(
-        //       (event:  HttpEvent<any>) => {
-        //         debugger;
-        //         console.log('Quien PRIMERO')
-        //         console.log(event)
-        //         if (event !== null) {
-        //           resolve(event);
-        //         } else {
-        //           if (err instanceof ErrorEvent) {          
-        //             message = `ErrorEvent: ${err.error.message}`;
-        //           } else if (err.error instanceof ProgressEvent) {
-        //             switch(err.status)
-        //             {
-        //               case 0:
-        //                 message = 'Unable to connect to plur-e.com';
-        //                 break;
-
-        //               default:
-        //                 message = `ProgressEvent: ${err.message}`;        
-        //                 break;
-        //             }
-                    
-        //           } else {
-        //             message = `${err.error.message}`;
-        //           }
-        //           console.log(message);
-        //           reject(message);
-        //         }
-        //       }
-        //     )
-        //   }
-        // )
+        return this.offline.getProcess(req.body).then(
+          (event: any) => {
+            if (event !== null) return event;
+            else {
+              let message: string = '';
+              if (err instanceof ErrorEvent) {
+                message = `ErrorEvent: ${err.error.message}`;
+              } else if (err.error instanceof ProgressEvent) {
+                switch(err.status)
+                {
+                  case 0:
+                    message = 'Unable to connect to plur-e.com';
+                    break;
+            
+                  default:
+                    message = `ProgressEvent: ${err.message}`;        
+                    break;
+                }
+              }
+              return message;
+            }
+          }
+        );
       })
-    );
+    )
   }
-
-  // Test(req: HttpRequest<any>) : Observable<HttpEvent<any>> {
-  //   from(this.offline.getProcess(req.body)).pipe(
-  //     map((event: HttpEvent<any>) => {
-  //       debugger;
-  //       if (event instanceof HttpResponse) {
-  //         this.offline.setProcess(req.body, event);
-  //         // console.log(`Event: <!--${JSON.stringify(event)}-->`);
-  //         // console.log(`Req: <!--${JSON.stringify(req)}-->`);
-  //       }
-  //       return event;
-  //     })
-  //   );
-  // }
 }

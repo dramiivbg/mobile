@@ -11,6 +11,11 @@ export class OfflineService {
     private sqLite: SqlitePlureService
   ) { }
 
+  /**
+   * Set methods for event
+   * @param req 
+   * @param event 
+   */
   async setProcess(req: any, event: HttpEvent<any>) : Promise<void> {
     await this.sqLite.init();
     await this.sqLite.openStorageOptions();
@@ -25,6 +30,11 @@ export class OfflineService {
     }
   }
 
+  /**
+   * Get method process.
+   * @param req 
+   * @returns 
+   */
   async getProcess(req: any) : Promise<any> {
     await this.sqLite.init();
     await this.sqLite.openStorageOptions();
