@@ -20,16 +20,7 @@ import { Module, Process } from '@mdl/module';
 export class SalesMainPage implements OnInit {
   sessionLogin: any = {};
   session: any = {};
-  module: Module = { 
-    subscriptionId: '',
-    moduleId: '',
-    description: '',
-    moduleType: E_MODULETYPE.None,
-    userType: 0,
-    erpUserId: '',
-    active: true,
-    processes: []
-  };
+  module: any = {};
 
   constructor(private syncerp: SyncerpService,
     private general: GeneralService,
@@ -65,7 +56,7 @@ export class SalesMainPage implements OnInit {
         break;
     }
     this.intServ.loadingFunc(true);
-    let p = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: salesType, pageSize:'', position:'', salesPerson: 'CA' }]);
+    let p = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
     let sales = await this.syncerp.setRequest(p);
     let salesList = await this.general.salesOrderList(sales.SalesOrders);
     this.intServ.loadingFunc(false);

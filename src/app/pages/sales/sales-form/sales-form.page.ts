@@ -9,6 +9,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { debug } from 'console';
+import { ModuleService } from '@svc/gui/module.service';
 
 @Component({
   selector: 'app-sales-form',
@@ -55,7 +56,8 @@ export class SalesFormPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private jsonServ: JsonService,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
+    private moduleService: ModuleService
   ) { 
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
@@ -272,6 +274,7 @@ export class SalesFormPage implements OnInit {
       if (this.frm.valid) {
         this.jsonServ.formToJson(this.frm, ['picture', 'shippingName', 'customerName', 'categoryNo', 'title']).then(
           async json => {
+            json['salesPerson'] = this.moduleService.getSelectedModule().erpUserId;
             json['orderDate'] = json['orderDate'].substring(0, 10);
             json['documentType'] = this.salesType;
             json['postingDate'] = json.orderDate;
