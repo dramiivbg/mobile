@@ -60,10 +60,10 @@ export class ModulesPage implements OnInit {
     this.grid = b;
   }
 
-  onClick(moduleType: E_MODULETYPE) {
+  async onClick(moduleType: E_MODULETYPE) {
 
     let module = this.environment.modules.find((mod: any) => mod.moduleType === moduleType );   
-    this.moduleService.setSelectedModule(module); 
+    await this.moduleService.setSelectedModule(module); 
 
     switch(moduleType)
     {
