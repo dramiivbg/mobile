@@ -156,7 +156,7 @@ export class LoginPage implements OnInit {
     this.intServ.loadingFunc(true);
     this.apiConnect.postData('mobile', 'getenvironments', data)
     .then(
-      res => {     
+      res => { 
         this.intServ.loadingFunc(false);   
         if(res.length > 0) {
           this.environments = res;

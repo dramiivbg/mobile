@@ -13,17 +13,18 @@ export class OfflineService {
 
   /**
    * Set methods for event
-   * @param req 
+   * @param method 
    * @param event 
    */
-  async setProcess(req: any, event: HttpEvent<any>) : Promise<void> {
+  async setProcess(method: string, event: HttpEvent<any>) : Promise<void> {
+    if (method === undefined || method === null || method.length === 0) return null;
     await this.sqLite.init();
     await this.sqLite.openStorageOptions();
     let store = await this.sqLite.openStore();
     if (store) {
-      switch(req.processMethod) {
+      switch(method) {
         case 'GetSalesOrders':
-          await this.sqLite.setItem(req.processMethod, JSON.stringify(event));
+          await this.sqLite.setItem(method, JSON.stringify(event));
         default:
           Promise.resolve(null);
       }
@@ -32,15 +33,16 @@ export class OfflineService {
 
   /**
    * Get method process.
-   * @param req 
+   * @param method 
    * @returns 
    */
-  async getProcess(req: any) : Promise<any> {
+  async getProcess(method: string) : Promise<any> {
+    if (method === undefined || method === null || method.length === 0) return null;
     await this.sqLite.init();
     await this.sqLite.openStorageOptions();
     let store = await this.sqLite.openStore();
     if (store) {
-      let obj: any =  await this.sqLite.getItem(req.processMethod);
+      let obj: any =  await this.sqLite.getItem(method);
       if (obj !== null) {
         let event: HttpEvent<any> = JSON.parse(obj);
         return event;

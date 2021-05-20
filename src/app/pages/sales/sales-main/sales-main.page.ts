@@ -27,13 +27,13 @@ export class SalesMainPage implements OnInit {
     private intServ: InterceptService,
     private js: JsonService,
     private router: Router,
-    private route: ActivatedRoute,
     private moduleService: ModuleService
-  ) { 
-    this.module = this.moduleService.getSelectedModule();    
-  }
+  ) { }
 
-  async ngOnInit() {
+  async ngOnInit() {}
+
+  async ionViewWillEnter() {
+    this.module = this.moduleService.getSelectedModule();
     await this.js.getSession().then(
       rsl => this.session = rsl.login
     );

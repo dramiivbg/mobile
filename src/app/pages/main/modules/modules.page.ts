@@ -13,6 +13,7 @@ import { ModuleService } from '@svc/gui/module.service';
 
 // import vars
 import { E_MODULETYPE } from '@var/enums';
+import { timeStamp } from 'console';
 
 export interface Module {  
   description: string,
@@ -27,7 +28,7 @@ export interface Module {
 })
 export class ModulesPage implements OnInit {
   grid: boolean = false;
-  modules: Array<Module> = [];  
+  modules: any = [];  
   environment: any = {};
   
   constructor(private router: Router,
@@ -40,14 +41,21 @@ export class ModulesPage implements OnInit {
     .then(
       res => {        
         this.environment = res.environment;
-        this.environment.modules.forEach((module: any) => {
-          let moduleType: E_MODULETYPE = module.moduleType;          
-          this.modules.push({            
-            description: module.description,
-            icon: E_MODULETYPE[moduleType].toLowerCase(),
-            moduleType: moduleType
-          });          
-        });
+        for(let i in this.environment.modules) {
+          let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
+          let obj: any = this.environment.modules[i];
+          obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
+          this.modules.push(obj);      
+        }
+        // this.environment.modules.forEach((module: any) => {
+        //   let moduleType: E_MODULETYPE = module.moduleType;
+          
+        //   this.modules.push({            
+        //     description: module.description,
+        //     icon: E_MODULETYPE[moduleType].toLowerCase(),
+        //     moduleType: moduleType
+        //   });          
+        // });
       }
     );    
   }  
@@ -60,15 +68,13 @@ export class ModulesPage implements OnInit {
     this.grid = b;
   }
 
-  async onClick(moduleType: E_MODULETYPE) {
+  async onClick(mod: any) {
+    await this.moduleService.setSelectedModule(mod); 
 
-    let module = this.environment.modules.find((mod: any) => mod.moduleType === moduleType );   
-    await this.moduleService.setSelectedModule(module); 
-
-    switch(moduleType)
+    switch(mod.moduleType)
     {
       case E_MODULETYPE.Sales:
-        this.onSales(module);
+        this.onSales(mod);
         break;
 
       case E_MODULETYPE.Purchases:
@@ -86,7 +92,6 @@ export class ModulesPage implements OnInit {
   }
 
   onSales(module: any) {
-    console.log(module);    
     let navigationExtras: NavigationExtras = {
       state: {
         module

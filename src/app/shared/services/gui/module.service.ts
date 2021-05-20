@@ -30,13 +30,13 @@ export class ModuleService {
     await this.storage.get(SK_SELECTED_MODULE).then(
      res => {
         this.selectedModule = JSON.parse(res);
-        console.log(this.selectedModule.processes);
       }
     )
   }
 
   async setSelectedModule(module: Module) : Promise<void> {
     await this.storage.set(SK_SELECTED_MODULE, JSON.stringify(module));
+    await this.initSelectedModule();
   }
 
   getSelectedModule(): Module {

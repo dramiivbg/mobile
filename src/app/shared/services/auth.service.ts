@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import { JwtHelperService} from '@auth0/angular-jwt';
 
 // import vars
-import { SK_REMEMBER_ME, SK_SELECTED_COMPANY, SK_USER_LOGIN, SK_USER_SESSION } from '@var/consts';
+import { SK_REMEMBER_ME, SK_SELECTED_COMPANY, SK_SELECTED_MODULE, SK_USER_LOGIN, SK_USER_SESSION } from '@var/consts';
 import { BehaviorSubject } from 'rxjs';
 
 const helper = new JwtHelperService();
@@ -53,6 +53,7 @@ export class AuthService {
 
   async signout(): Promise<any> {
     this.isAuthenticated.next(false);
+    this.storage.remove(SK_SELECTED_MODULE);
     return this.storage.remove(SK_USER_SESSION);    
   }
 }

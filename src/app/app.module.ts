@@ -23,8 +23,6 @@ import { ApiService } from '@svc/api.service';
 import { JsonService } from '@svc/json.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { GeneralService } from '@svc/general.service';
-import { ApiBaseUrlInterceptor } from '@svc/api-base-url-interceptor';
-import { HttpInterceptorService } from '@svc/http-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -56,10 +54,7 @@ import { HttpInterceptorService } from '@svc/http-interceptor.service';
     AlertsComponent,
     IonicStorageModule,
     BarcodeScanner,
-    Device,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },    
-    { provide: HTTP_INTERCEPTORS, useClass: ApiBaseUrlInterceptor, multi: true},
-    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true}
+    Device
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
