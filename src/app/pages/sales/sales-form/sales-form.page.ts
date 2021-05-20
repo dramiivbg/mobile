@@ -138,18 +138,19 @@ export class SalesFormPage implements OnInit {
     });
   }
 
-  // load search component
+  /**
+   * load search component
+   */
   onCustomer() {
-    let obj = this.general.structSearch(this.customers, 'Search customers', 'Customers', (item) => {
-      if (item.shipAddress.length >0) {
+    if (this.frm.controls.lines.value.length < 1) {
+      let obj = this.general.structSearch(this.customers, 'Search customers', 'Customers', (item) => {
         this.customer = item;
         this.setCustomer();
-      } else {
-        this.onClear();
-        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'this customer don\'t have ship-to Address.'));
-      }
-    });
-    this.intServ.searchShowFunc(obj);
+      });
+      this.intServ.searchShowFunc(obj);
+    } else {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Customer cannot be changed because has items on order'));
+    }
   }
 
   onShipAddress() {
@@ -168,8 +169,7 @@ export class SalesFormPage implements OnInit {
 
   // on click - search items
   onItem() {
-    console.log(this.shipAddress);
-    if (this.customer === undefined || this.shipAddress === undefined) {
+    if (this.customer === undefined || (this.customer.shipAddress === undefined || this.customer.shipAddress.length < 1)) {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Please, select any customer and ship-to address'));
     } else {
       let obj = this.general.structSearch(this.categories, 'Search category', 'Categories', async (category) => {
@@ -480,11 +480,23 @@ export class SalesFormPage implements OnInit {
   async setCustomer() {
     this.frm.controls['customerNo'].setValue(this.customer.id);
     this.frm.controls['customerName'].setValue(this.customer.value);
+    if (this.customer.shipAddress.length < 1) {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'alert', `This customer does not have ship-to Address`));
+      this.clearShipAdress();
+    }
   }
 
   setShipAdress() {
     this.frm.controls['shippingNo'].setValue(this.shipAddress.id);
     this.frm.controls['shippingName'].setValue(this.shipAddress.value);
+  }
+
+  /**
+   * Clear Ship-to Address
+   */
+  clearShipAdress() {
+    this.frm.controls['shippingNo'].setValue('');
+    this.frm.controls['shippingName'].setValue('');
   }
 
   async getFields() {
