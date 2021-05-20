@@ -169,7 +169,7 @@ export class SalesFormPage implements OnInit {
 
   // on click - search items
   onItem() {
-    if (this.customer === undefined || (this.customer.shipAddress === undefined || this.customer.shipAddress.length < 1)) {
+    if (this.customer === undefined || (this.customer.shipAddress === undefined || this.customer.shipAddress.length < 1) || this.shipAddress === undefined) {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Please, select any customer and ship-to address'));
     } else {
       let obj = this.general.structSearch(this.categories, 'Search category', 'Categories', async (category) => {
@@ -195,7 +195,7 @@ export class SalesFormPage implements OnInit {
     }
     let subTotal = lines[i].quantity * lines[i].unitPrice;
     let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
-    lines[i].lineDiscountAmount = discountAmount;
+    lines[i].lineDiscountAmount = discountAmount.toFixed(2);
     lines[i].totalWithoutDiscount = subTotal.toFixed(2);
     lines[i].total = Number(subTotal - discountAmount).toFixed(2);
     this.frm.controls.lines.setValue(lines);
@@ -306,19 +306,25 @@ export class SalesFormPage implements OnInit {
     }
   }
 
-  // calcule totals
+  /**
+   * calcule totals
+   */
   setTotals() {
     let lines = this.frm.controls.lines.value;
     this.subTotal = 0;
     this.discountTotal = 0;
     this.total = 0;
     for (let i in lines) {
-      this.subTotal = Number(this.subTotal) + Number(lines[i].totalWithoutDiscount);
-      this.discountTotal = Number(this.discountTotal) + Number(lines[i].lineDiscountAmount);
+      this.subTotal = Number((Number(this.subTotal) + Number(lines[i].totalWithoutDiscount)).toFixed(2));
+      this.discountTotal = Number((Number(this.discountTotal) + Number(lines[i].lineDiscountAmount)).toFixed(2));
     }
     this.total = Number((Number(this.subTotal) - Number(this.discountTotal)).toFixed(2));
   }
 
+  /**
+   * Items by category
+   * @param category 
+   */
   async itemsPerCategory(category) {
     this.items = category.items;
     let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
@@ -350,9 +356,9 @@ export class SalesFormPage implements OnInit {
         if (x.fields.UnitofMeasureCode == item.measure) {
           item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);
           if (x.fields['LineDiscount%'] !== null) {
-            item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);
+            item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);            
             item['discountPerc'] = x.fields['LineDiscount%'];
-            item['total'] = item['unitPrice'];
+            item['total'] = Number((item['unitPrice'] - (item['unitPrice'] * (item['discountPerc'] / 100))).toFixed(2));
           } else {
             item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);
             item['discountPerc'] = 0;
@@ -423,7 +429,7 @@ export class SalesFormPage implements OnInit {
           quantity: lines[i].fields.Quantity,
           unitPrice: lines[i].fields.UnitPrice,
           total: lines[i].fields.Amount,
-          totalWithoutDiscount: lines[i].fields.Amount,
+          totalWithoutDiscount: lines[i].fields.Amount + lines[i].fields.LineDiscountAmount,
           picture: (item !== undefined) ? `data:image/jpeg;base64,${item.fields.Picture}` : 'data:image/jpeg;base64,NOIMAGE',
           unitOfMeasureCode: lines[i].fields.UnitofMeasureCode,
           lineDiscountAmount: lines[i].fields.LineDiscountAmount,

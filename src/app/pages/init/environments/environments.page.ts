@@ -47,14 +47,14 @@ export class EnvironmentsPage implements OnInit {
   ngOnInit() {     
   }
 
-  authororizeAccessClient(customerId: string) {
+  async authororizeAccessClient(customerId: string) {
     let data = {
       customerId: customerId,
       platformCode: environment.platformCode,
       uuid: this.device.uuid
     }
 
-    this.apiConnect.postData('mobile', 'authorizeaccessclient', data)
+    await this.apiConnect.postData('mobile', 'authorizeaccessclient', data)
     .then(
       res => {
         this.intServ.loadingFunc(false);                            
@@ -83,12 +83,15 @@ export class EnvironmentsPage implements OnInit {
     }
   }
 
-  onReadQR(): void {
-    this.barcodeScanner.scan().then(
-      barCodeData => {
-        this.intServ.loadingFunc(true);
+  async onReadQR(): Promise<void> {
+    await this.barcodeScanner.scan().then(
+      async barCodeData => {
         let customerId = barCodeData.text;
-        this.authororizeAccessClient(customerId);
+        if (customerId !== "") {
+          this.intServ.loadingFunc(true);
+          await this.authororizeAccessClient(customerId);
+          this.intServ.loadingFunc(false);
+        }
       }
     ).catch(
       err => {
