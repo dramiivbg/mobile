@@ -16,6 +16,7 @@ import { AlertsComponent } from './components/alerts/alerts.component';
 import { IonicStorageModule } from '@ionic/storage';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Device } from '@ionic-native/device/ngx'
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 // import services
 import { InterceptService } from '@svc/intercept.service';
@@ -54,7 +55,8 @@ import { GeneralService } from '@svc/general.service';
     AlertsComponent,
     IonicStorageModule,
     BarcodeScanner,
-    Device
+    Device,
+    AppVersion
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

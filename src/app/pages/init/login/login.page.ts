@@ -8,6 +8,7 @@ import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
 import { Device } from '@ionic-native/device/ngx'
 import { sha512 } from 'js-sha512'
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 // import services
 import { ApiService } from '@svc/api.service';
@@ -25,6 +26,7 @@ import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts'
 })
 export class LoginPage implements OnInit {
 
+  version: string = "";
   showPassword = false;
   passwordToggleIcon = 'eye';
 
@@ -33,14 +35,15 @@ export class LoginPage implements OnInit {
   public environments: Array<any> = [];
   frm: FormGroup;
 
-  constructor(private intServ: InterceptService,
-    private apiConnect: ApiService,
-    private formBuilder: FormBuilder,
-    private jsonServ: JsonService,
-    private router: Router,
-    private storage: Storage,
-    private device: Device,
-    private authSvc: AuthService) { 
+  constructor(private intServ: InterceptService
+    , private apiConnect: ApiService
+    , private formBuilder: FormBuilder
+    , private jsonServ: JsonService
+    , private router: Router
+    , private storage: Storage
+    , private device: Device
+    , private authSvc: AuthService
+    , private appVersion: AppVersion) { 
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
       {
@@ -49,6 +52,8 @@ export class LoginPage implements OnInit {
         Password: ['', Validators.required],
       }      
     )
+
+    this.getVersion();
   }
 
   ngOnInit() {
@@ -182,6 +187,16 @@ export class LoginPage implements OnInit {
       desc: 'this is an alert for test this window'
     }
     this.intServ.alertFunc(obj);
+  }
+
+  getVersion(): void {    
+    this.appVersion.getVersionNumber().then(
+      res => {
+        this.version = `v${res}`;
+      }
+    ).catch(
+      err => this.version = `v0.0`
+    );
   }
 
 }

@@ -5,7 +5,7 @@ div.login {
     position: absolute;
     left: 0;
     right: 0;
-    top: 12.2%;    
+    top: calc(100vh * 0.112);     
     //border: 1px solid red;
 
     div.plure-brand {
@@ -49,7 +49,7 @@ div.login {
 
     ion-item.plure-input {
         
-        margin: 0px 9.25% 10px 9.25%;        
+        margin: 0px 9.25% calc(100vh * 0.01) 9.25%;        
         --background: none;
         background: $plure-init-input-bg;
         border-radius: 50px; 
@@ -78,7 +78,7 @@ div.login {
     }
 
     ion-button.plure-button {
-        margin: 20px 0 0 0 !important;
+        margin: calc(100vh * 0.03) 0 0 0 !important;
         font-family: SourceSansProRegular !important;                        
         font-style: normal;
         font-weight: bold;
@@ -91,7 +91,7 @@ div.login {
 
     div.plure-footer {
         color: $plure-label-color;                
-        margin: 10% 9.25% 10px 9.25%; 
+        margin: calc(100vh * 0.05) 9.25% 10px 9.25%; 
         text-align: center;
         //margin-top: 5%;
         font-size: 13px;

@@ -7,12 +7,14 @@ import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
 import { Device } from '@ionic-native/device/ngx'
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 // import services
 import { InterceptService } from '@svc/intercept.service';
 import { ApiService } from '@svc/api.service';
 import { JsonService } from '@svc/json.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
+
 
 // import vars
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts';
@@ -25,6 +27,7 @@ import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts'
 })
 export class EnvironmentsPage implements OnInit {
   frm: FormGroup;
+  version: string = "";
 
   constructor(
     private intServ: InterceptService
@@ -36,15 +39,17 @@ export class EnvironmentsPage implements OnInit {
     , private storage: Storage
     , private device: Device    
     , private barcodeScanner: BarcodeScanner
+    , private appVersion: AppVersion
   ) { 
     this.frm = this.formBuilder.group(
       {
         CustomerId: ['', Validators.required]
       }
     );        
+    this.getVersion();
   }
 
-  ngOnInit() {     
+  ngOnInit() {       
   }
 
   async authororizeAccessClient(customerId: string) {
@@ -83,22 +88,32 @@ export class EnvironmentsPage implements OnInit {
     }
   }
 
-  async onReadQR(): Promise<void> {
-    await this.barcodeScanner.scan().then(
-      async barCodeData => {
-        let customerId = barCodeData.text;
-        if (customerId !== "") {
+  async onReadQR(): Promise<void> {        
+    this.barcodeScanner.scan({
+      disableSuccessBeep: true
+    }).then(
+      async barCodeData => {        
+        if (barCodeData.text !== "") {
           this.intServ.loadingFunc(true);
-          await this.authororizeAccessClient(customerId);
+          await this.authororizeAccessClient(barCodeData.text);
           this.intServ.loadingFunc(false);
         }
       }
     ).catch(
-      err => {
-        console.log(err);
+      err => {        
         this.intServ.loadingFunc(false);
       }
     )
+  }
+
+  getVersion(): void {    
+    this.appVersion.getVersionNumber().then(
+      res => {
+        this.version = `v${res}`;
+      }
+    ).catch(
+      err => this.version = `v0.0`
+    );
   }
 
 }

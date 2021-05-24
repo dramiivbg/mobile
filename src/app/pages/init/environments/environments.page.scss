@@ -1,11 +1,11 @@
 @import '../../../../sass/var';
 
 div.intro {
-    font-family: SourceSansProRegular !important;
+    font-family: SourceSansProRegular !important;    
     position: absolute;
     left: 0;
     right: 0;
-    top: 12.2%;    
+    top: calc(100vh * 0.112);    
     //border: 1px solid red;
 
     div.plure-brand {
@@ -36,20 +36,20 @@ div.intro {
 
         p {            
             font-family: SourceSansProRegular !important;
-            margin: 0px 9.25% 0 9.25%;
+            margin: 0px 9.25% 5px 9.25%;
             color: $plure-label-color;             
             font-style: normal;
             font-weight: normal;
             font-size: 16px;
             line-height: 20px;            
 
-            margin-bottom: 5px !important;
+            //margin-bottom: 5px !important;
         }                
     }
 
     ion-item.plure-input {
         
-        margin: 0px 9.25% 10px 9.25%;        
+        margin: 0px 9.25% calc(100vh * 0.01) 9.25%;        
         --background: none;
         background: $plure-init-input-bg;
         border-radius: 50px; 
@@ -78,7 +78,7 @@ div.intro {
     }
 
     ion-button.plure-button {
-        margin: 20px 0 0 0 !important;
+        margin: calc(100vh * 0.015) 0 0 0 !important;
         font-family: SourceSansProRegular !important;                        
         font-style: normal;
         font-weight: bold;
@@ -91,7 +91,7 @@ div.intro {
 
     div.plure-footer {        
         color: $plure-label-color;                
-        margin: 34.1% 9.25% 10px 9.25%; 
+        margin: calc(100vh * 0.214) 9.25% 10px 9.25%; 
         text-align: center;        
         font-size: 13px;
         line-height: 16.34px;

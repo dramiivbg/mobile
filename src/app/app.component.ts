@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
 
 // Services
-import { InterceptService } from './shared/services/intercept.service';
-import { Router } from '@angular/router';
-import { convertActionBinding } from '@angular/compiler/src/compiler_util/expression_converter';
+import { InterceptService } from '@svc/intercept.service';
+import { throwIfEmpty } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ export class AppComponent implements OnInit {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private interceptService: InterceptService,
-    private router: Router
+    private router: Router,
+    private zone: NgZone
   ) {
     this.initializeApp();
     this.initializeSubscribe();
@@ -41,6 +43,18 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+    });
+
+    this.onUniversalLink();
+  }
+
+  onUniversalLink(): void{
+    App.addListener('appUrlOpen', (data: any) => {
+      this.zone.run(() => {
+        const slug = data.url.split(".app").pop();
+        if(slug)
+          console.log(slug);
+      });
     });
   }
 
