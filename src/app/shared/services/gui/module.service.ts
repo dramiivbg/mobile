@@ -2,28 +2,20 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 
 // import vars
-import { SK_SELECTED_MODULE } from '@var/consts';
+import { SK_SELECTED_MODULE, SK_SELECTED_PROCESS } from '@var/consts';
 import { E_MODULETYPE } from '@var/enums';
-import { Module } from '@mdl/module';
+import { Module, Process } from '@mdl/module';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModuleService {
-
-  private selectedModule: Module = { 
-    subscriptionId: '',
-    moduleId: '',
-    description: '',
-    moduleType: E_MODULETYPE.None,
-    userType: 0,
-    erpUserId: '',
-    active: true,
-    processes: []
-  };
+  private selectedProcess: Process;
+  private selectedModule: Module;
 
   constructor(private storage: Storage) { 
     this.initSelectedModule();
+    this.initSelectedProcess();
   }
 
   async initSelectedModule() {
@@ -34,12 +26,33 @@ export class ModuleService {
     )
   }
 
+  async initSelectedProcess() {
+    this.selectedProcess = JSON.parse(await this.storage.get(SK_SELECTED_PROCESS));
+  }
+
+  /**
+   * set module
+   * @param module 
+   */
   async setSelectedModule(module: Module) : Promise<void> {
     await this.storage.set(SK_SELECTED_MODULE, JSON.stringify(module));
     await this.initSelectedModule();
   }
 
+  /**
+   * get module
+   */
   getSelectedModule(): Module {
     return this.selectedModule;
   }
+
+  async setSelectedProcess(process: any): Promise<void> {
+    await this.storage.set(SK_SELECTED_PROCESS, JSON.stringify(process));
+    await this.initSelectedProcess();
+  }
+
+  getSelectedProcess(): Process {
+    return this.selectedProcess;
+  }
+
 }

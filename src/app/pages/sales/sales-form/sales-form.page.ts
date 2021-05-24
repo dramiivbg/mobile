@@ -10,6 +10,10 @@ import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { debug } from 'console';
 import { ModuleService } from '@svc/gui/module.service';
+import { E_PROCESSTYPE } from '@var/enums';
+import { runInThisContext } from 'vm';
+import { Module, Process } from '@mdl/module';
+import { combineAll } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sales-form',
@@ -17,6 +21,7 @@ import { ModuleService } from '@svc/gui/module.service';
   styleUrls: ['./sales-form.page.scss']
 })
 export class SalesFormPage implements OnInit {
+  private module: Module;
   private customers: any;
   private customer: any = {};
   private shipAddress: any;
@@ -27,9 +32,11 @@ export class SalesFormPage implements OnInit {
   private salesType: string;
 
   new: boolean;
-  process: any = {};
+  edit: boolean = false;
+  permissions: Array<E_PROCESSTYPE>;
   order: any = {};
   unitMeasureList: any = [];
+  process: Process;
   
   frm = new FormGroup({});
   orderDate: string = new Date().toDateString();
@@ -59,19 +66,22 @@ export class SalesFormPage implements OnInit {
     private barcodeScanner: BarcodeScanner,
     private moduleService: ModuleService
   ) { 
+    
+    this.module = this.moduleService.getSelectedModule();
+    this.process = this.moduleService.getSelectedProcess();
+    this.salesType = this.process.salesType;
+    this.permissions = this.process.sysPermits;
+    if (this.permissions.indexOf(E_PROCESSTYPE.Edit)) this.edit = true;
+
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
         this.new = this.router.getCurrentNavigation().extras.state.new;
         if (this.new) {
           this.customer = this.router.getCurrentNavigation().extras.state.customer;
-          this.process = this.router.getCurrentNavigation().extras.state.process;
-          this.salesType = this.router.getCurrentNavigation().extras.state.salesType;
           await this.initNew();
           await this.setCustomer();
         } else {
-          this.process = this.router.getCurrentNavigation().extras.state.process;
           this.order = this.router.getCurrentNavigation().extras.state.order;
-          this.salesType = this.router.getCurrentNavigation().extras.state.salesType;
           await this.initForm();
           await this.initSalesOrder();
         }
@@ -82,11 +92,13 @@ export class SalesFormPage implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  async ngOnInit() {}
+
+  async ionViewWillEnter() {
     this.intServ.loadingFunc(true);
     await this.getCustomers();
-    // await this.getItems();
     await this.getCategories();
+    this.editSales();
     this.intServ.loadingFunc(false);
   }
 
@@ -116,17 +128,34 @@ export class SalesFormPage implements OnInit {
     this.frm.addControl('lines', this.formBuilder.array([]));
   }
 
-  // Get sales
+  /**
+   * Get sales
+   */
   async initSalesOrder() {
     this.frm.controls.shippingName.setValue(this.order.fields.ShiptoName);
     this.frm.controls.shippingNo.setValue(this.order.fields.ShiptoCode);
     this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
     this.frm.controls.customerName.setValue(this.order.fields.SelltoCustomerName);
-    this.frm.controls.orderDate.setValue(this.order.fields.DocumentDate);
+    this.frm.controls.orderDate.setValue(this.order.fields.OrderDate);
     this.frm.controls.requestedDeliveryDate.setValue(this.order.fields.RequestedDeliveryDate);
     this.frm.addControl('lines', this.formBuilder.array([]));
     this.frm.controls.lines = await this.setSalesOrderLines(this.order.lines);
     this.setTotals();
+  }
+
+  async editSales(){
+    if (this.edit) {
+      if (this.frm.controls.customerNo.value !== '') {
+        this.customer = this.customers.find(x => x.id === this.frm.controls.customerNo.value);
+        if (this.customer.shipAddress !== undefined) {
+          if (this.customer.shipAddress.length === 0) {
+            this.shipAddress = this.customer.shipAddress[0];
+          } else {
+            this.shipAddress = this.customer.shipAddress.find(x => x.id === this.frm.controls.shippingNo.value);
+          }
+        }
+      }
+    }
   }
 
   initLines() {
@@ -260,8 +289,12 @@ export class SalesFormPage implements OnInit {
     )
   }
 
+  /**
+   * Change date
+   * @param n 
+   */
   onDate(n) {
-    if (this.new) {
+    if (this.new || this.edit) {
       if(n === 0) this.dateOrderTime.open();
       if(n === 1) this.dateDeliveryTime.open();
     }
@@ -269,18 +302,23 @@ export class SalesFormPage implements OnInit {
 
   // login to the application is performed.
   onSubmit() {
+    let process: any;
     this.intServ.loadingFunc(true);
     try {
       if (this.frm.valid) {
         this.jsonServ.formToJson(this.frm, ['picture', 'shippingName', 'customerName', 'categoryNo', 'title']).then(
           async json => {
-            json['salesPerson'] = this.moduleService.getSelectedModule().erpUserId;
+            json['salesPerson'] = this.module.erpUserId;
             json['orderDate'] = json['orderDate'].substring(0, 10);
             json['documentType'] = this.salesType;
             json['postingDate'] = json.orderDate;
             json['documentDate'] = json.orderDate;
             json['requestedDeliveryDate'] = json.requestedDeliveryDate.substring(0, 10);
-            let process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
+            if (!this.new) {
+              json['documentNo'] = this.order.fields.No;
+              process = await this.syncerp.processRequestParams('UpdateSalesOrders', [json]);
+            } else
+              process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
             if (json.lines.length > 0) {
               let salesOrder = await this.syncerp.setRequest(process);
               this.intServ.loadingFunc(false);
@@ -452,7 +490,7 @@ export class SalesFormPage implements OnInit {
   }
 
   async getCustomers() {
-    let process = await this.syncerp.processRequest('GetCustomers', "10", "", "");
+    let process = await this.syncerp.processRequest('GetCustomers', "0", "", this.module.erpUserId);
     let customers = await this.syncerp.setRequest(process);
     this.customers = await this.general.customerList(customers.Customers);
     // this.fields = await this.general.createFields(customers.Customers);

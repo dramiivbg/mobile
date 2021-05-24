@@ -63,6 +63,9 @@ export class SyncerpService {
           value = obj;
         }
       )
+      .catch((error) => {
+        value = error;
+      })
       return value;
   }
 

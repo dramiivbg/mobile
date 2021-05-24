@@ -40,33 +40,20 @@ export class SalesMainPage implements OnInit {
   }
 
   async onSales(process: Process) {
-    let salesType = '';
-    switch(process.processId) {
-      case 'P001':
-        salesType = 'Sales Order';
-        break;
-      case 'P002':
-        salesType = 'Sales Return Order';
-        break;
-      case 'P003':
-        salesType = 'Sales Invoice';
-        break;
-      case 'P004':
-        salesType = 'Sales Credit Memo';
-        break;
-    }
+    process.salesType = await this.general.typeSalesBC(process);
+    process.sysPermits = await this.general.getPermissions(process.permissions);
+    await this.moduleService.setSelectedProcess(process);
+
     this.intServ.loadingFunc(true);
-    let p = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
+    let p = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: process.salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
     let sales = await this.syncerp.setRequest(p);
     let salesList = await this.general.salesOrderList(sales.SalesOrders);
     this.intServ.loadingFunc(false);
-    let obj = this.general.structSearch(salesList, `Search ${salesType}`, salesType, async (sell) => {
+    let obj = this.general.structSearch(salesList, `Search ${process.salesType}`, process.salesType, async (sell) => {
       let navigationExtras: NavigationExtras = {
         state: {
           order: sell,
-          process,
-          new: false,
-          salesType
+          new: false
         }
       };
       this.router.navigate(['sales/sales-form'], navigationExtras);
