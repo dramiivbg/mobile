@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { E_MODULETYPE, E_PROCESSTYPE } from '@var/enums';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -117,21 +119,6 @@ export class GeneralService {
       obj['unitOfMeasures'] = await this.UnitOfMeasuresList(lists[i].UnitOfMeasures);
       objLst.push(obj);
     }
-    // lists.forEach(async item => {
-    //   let obj = {};
-    //   item.fields.forEach(async field => {
-    //     if (field.name === 'No'){
-    //       obj['id'] = field.value
-    //     }
-    //     if (field.name === 'Description'){
-    //       obj['value'] = field.value
-    //     }
-    //     obj['fields'] = await this.fieldsToJson(item.fields);
-    //   });
-    //   obj['listPrice'] = await this.listPrice(item.ListPrices);
-    //   obj['unitOfMeasures'] = await this.UnitOfMeasuresList(item.UnitOfMeasures);
-    //   objLst.push(obj);
-    // });
     return objLst;
   }
 
@@ -152,20 +139,6 @@ export class GeneralService {
       obj['items'] = await this.item(lists[i].Items);
       objLst.push(obj);
     }
-    // lists.forEach(async item => {
-    //   let obj = {};
-    //   item.fields.forEach(async field => {
-    //     if (field.name === 'Code'){
-    //       obj['id'] = field.value
-    //     }
-    //     if (field.name === 'Description'){
-    //       obj['value'] = field.value
-    //     }
-    //     obj['fields'] = await this.fieldsToJson(item.fields);
-    //   });
-    //   obj['items'] = await this.item(item.Items);
-    //   objLst.push(obj);
-    // });
     return objLst;
   }
 
@@ -237,5 +210,68 @@ export class GeneralService {
     });
     return objLst;
   }
+
+  /**
+   * get permissions
+   * @param p Process
+   * @returns 
+   */
+  async getPermissions(p: any) : Promise<Array<E_PROCESSTYPE>> {
+    let types: Array<E_PROCESSTYPE> = [];
+    try {
+      for (let i in p) {
+        let id: string = p[i].permissionId;
+        let allow: boolean = p[i].allow;
+        if (allow) {
+          let permissionEnum: E_PROCESSTYPE = await this.obtainPermissions(id);
+          if (permissionEnum !== null) types.push(permissionEnum);
+        }
+      }
+      return types;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  /**
+   * Types Business Central
+   * @param process 
+   * @returns 
+   */
+  async typeSalesBC(process: any) : Promise<string> {
+    switch(process.processId) {
+      case 'P001':
+        return 'Sales Order';
+      case 'P002':
+        return 'Sales Return Order';
+      case 'P003':
+        return 'Sales Invoice';
+      case 'P004':
+        return 'Sales Credit Memo';
+    }
+  }
+
+  /**
+   * Start Privates
+   */
+
+  private async obtainPermissions(id: string) : Promise<E_PROCESSTYPE> {
+    switch(id) {
+      case 'Create':
+        return E_PROCESSTYPE.New;
+      case 'Update':
+        return E_PROCESSTYPE.Edit;
+      case 'Delete':
+        return E_PROCESSTYPE.Delete;
+      case 'Post':
+        return E_PROCESSTYPE.Read;
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * End Privates
+   */
 
 }

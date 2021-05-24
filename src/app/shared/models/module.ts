@@ -1,4 +1,4 @@
-import { E_MODULETYPE } from "@var/enums";
+import { E_MODULETYPE, E_PROCESSTYPE } from "@var/enums";
 
 export interface Permission {
     permissionId: string;
@@ -10,6 +10,8 @@ export interface Process {
     processId: string;
     processName: string;
     permissions: Array<Permission>;
+    salesType?: string;
+    sysPermits?: Array<E_PROCESSTYPE>
 }
 
 export interface Module {

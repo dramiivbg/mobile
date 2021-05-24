@@ -1,15 +1,20 @@
 import { computeMsgId } from '@angular/compiler';
 import { compilePipeFromRender2 } from '@angular/compiler/src/render3/r3_pipe_compiler';
 import { CONTEXT_NAME } from '@angular/compiler/src/render3/view/util';
+import { calcPossibleSecurityContexts } from '@angular/compiler/src/template_parser/binding_parser';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
+import { Module, Process } from '@mdl/module';
 
 // import services
 import { GeneralService } from '@svc/general.service';
+import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
+import { E_PROCESSTYPE } from '@var/enums';
+import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'btn-search',
@@ -17,13 +22,19 @@ import { SyncerpService } from '@svc/syncerp.service';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+  private module: Module;
+  private process: Process;
   private obj: any = {};
+  
+  /**
+   * var publics
+   */
   searchObj: any = {};
   listsFilter: Array<any> = [];
   lists: Array<any> = [];
-  process: any = {};
   height: Number;
-  // type: Number = 0; // 0. Standar - 1. Sales Orders
+  new: boolean = false;
+  delete: boolean = false;
 
   constructor(
     private platform: Platform,
@@ -32,6 +43,7 @@ export class SearchComponent implements OnInit {
     private router: Router,
     private intServ: InterceptService,
     private js: JsonService,
+    private moduleService: ModuleService
   ) {
     platform.ready().then(
       () => {
@@ -45,7 +57,12 @@ export class SearchComponent implements OnInit {
         this.searchObj = obj;
         this.listsFilter = obj.data;
         this.lists = obj.data;
-        this.process = this.searchObj.process
+        this.module = this.moduleService.getSelectedModule();
+        this.process = this.moduleService.getSelectedProcess();
+        /** start permissions for sales */
+        this.onResetPermissions();
+        this.getPermissions();
+        /** end permissions for sales */
       }
     )
   }
@@ -65,6 +82,14 @@ export class SearchComponent implements OnInit {
     } 
   }
 
+  onResetPermissions() {
+    this.new = false;
+    this.delete = false;
+  }
+
+  /**
+   * Return to the another page
+   */
   onBack() {
     this.searchObj = {};
   }
@@ -74,12 +99,32 @@ export class SearchComponent implements OnInit {
     if (this.searchObj.clear) this.onBack();
   }
 
+  getPermissions() {
+    let process = this.moduleService.getSelectedProcess();
+    let permits: Array<E_PROCESSTYPE> = process.sysPermits;
+    for (let i in permits) {
+      switch (permits[i]) {
+        case E_PROCESSTYPE.New:
+          this.new = true;
+          break;
+        
+        case E_PROCESSTYPE.Delete:
+          this.delete = true;
+          break;
+      }
+    }
+  }
+
   // Start Sales Orders
 
+  /**
+   * get customers
+   * @returns 
+   */
   async getCustomers() : Promise<any> {
     return new Promise(
       async (resolve, reject) => {
-        let process = await this.syncerp.processRequest('GetCustomers', "10", "", "");
+        let process = await this.syncerp.processRequest('GetCustomers', "0", "", this.module.erpUserId);
         let customers = await this.syncerp.setRequest(process);
         let customersArray = await this.general.customerList(customers.Customers);
         resolve(customersArray);
@@ -88,16 +133,16 @@ export class SearchComponent implements OnInit {
     
   }
 
+  /**
+   * Create new sales order
+   */
   async onAddSalesOrder() {
-    this.intServ.loadingFunc(true);
-    let salesType: string = await this.typeReturn(this.process);
+    this.intServ.loadingFunc(true);    
     let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
       let navigationExtras: NavigationExtras = {
         state: {
           customer,
-          process: this.process,
-          new: true,
-          salesType
+          new: true
         }
       };
       this.router.navigate(['sales/sales-form'], navigationExtras);
@@ -108,12 +153,16 @@ export class SearchComponent implements OnInit {
     this.intServ.loadingFunc(false);
   }
 
+  /**
+   * Delete any sales
+   * @param sell sales
+   * @param i 
+   */
   async onDeleteLine(sell, i) {
     this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
       async () =>{
-        let salesType: string = await this.typeReturn(this.process);
-        let process = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: salesType, documentNo: sell.id, salesPerson: "CA" }]);
-        let dropOrder = await this.syncerp.setRequest(process);
+        let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
+        let dropOrder = await this.syncerp.setRequest(params);
         this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
           () => {
             this.listsFilter.splice(i, 1);
@@ -121,25 +170,6 @@ export class SearchComponent implements OnInit {
         ));
       }
     ));
-  }
-
-  async typeReturn(process: any) : Promise<string> {
-    let salesType = '';
-    switch(process.processId) {
-      case 'P001':
-        salesType = 'Sales Order';
-        break;
-      case 'P002':
-        salesType = 'Sales Return Order';
-        break;
-      case 'P003':
-        salesType = 'Sales Invoice';
-        break;
-      case 'P004':
-        salesType = 'Sales Credit Memo';
-        break;
-    }
-    return salesType;
   }
 
   // End Sales Orders
