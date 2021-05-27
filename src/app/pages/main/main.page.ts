@@ -32,7 +32,7 @@ export class MainPage implements OnInit {
     },
     {
       description: "Sync",
-      icon: "../../assets/img/modules/change_company.svg",
+      icon: "",
       action: "Sync",
     },
     {
@@ -50,8 +50,8 @@ export class MainPage implements OnInit {
   async ngOnInit() {
     await this.authService.getUserSession().then(
       res => {
-        this.userSession = res; 
-        console.log(this.userSession);       
+        console.log(res);
+        this.userSession = res;  
       }
     );         
 
@@ -61,7 +61,6 @@ export class MainPage implements OnInit {
   }
 
   async onClick(action: string){
-    console.log(action)
     switch(action)
     {
       case "modules": 

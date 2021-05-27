@@ -4,15 +4,23 @@
       <div class="main-menu">
         <div class="main-menu-header">
           <ion-avatar>
-            <img *ngIf="userSession.avatar == ''" src="../../../assets/img/img-robot.svg" />                  
+            <img *ngIf="userSession.avatar == ''" src="../../../assets/img/img-robot.svg" />
             <img *ngIf="userSession.avatar != ''" src="{{userSession.avatar}}" />                  
-          </ion-avatar>        
+          </ion-avatar>
+          <div class="txt-title">
+            {{ userSession.userName }}
+          </div>
         </div>  
         <div class="main-menu-content">          
           <ion-list>        
               <ion-item *ngFor="let mi of menuContent" lines="none" detail="false" (click)="onClick(mi.action)" class="ion-no-padding">
                 <div class="main-menu-item">
-                  <div class="main-menu-item-icon">
+                  <div class="main-menu-item-icon" *ngIf="mi.action == 'Sync'">
+                    <div class="icon-outline">
+                      <ion-icon name="sync-circle-outline"></ion-icon>
+                    </div>
+                  </div>
+                  <div class="main-menu-item-icon" *ngIf="mi.action != 'Sync'">
                     <img src="{{mi.icon}}" alt="">
                   </div>
                   <div class="main-menu-item-title">
