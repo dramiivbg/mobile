@@ -30,6 +30,7 @@ export class SalesFormPage implements OnInit {
   private categories: any;
   private listPrices: any = [];
   private salesType: string;
+  private extras: boolean = false;
 
   new: boolean;
   edit: boolean = false;
@@ -72,9 +73,9 @@ export class SalesFormPage implements OnInit {
     this.salesType = this.process.salesType;
     this.permissions = this.process.sysPermits;
     if (this.permissions.indexOf(E_PROCESSTYPE.Edit)) this.edit = true;
-
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
+        this.extras = true;
         this.new = this.router.getCurrentNavigation().extras.state.new;
         if (this.new) {
           this.customer = this.router.getCurrentNavigation().extras.state.customer;
@@ -83,7 +84,6 @@ export class SalesFormPage implements OnInit {
         } else {
           this.order = this.router.getCurrentNavigation().extras.state.order;
           await this.initForm();
-          await this.initSalesOrder();
         }
       } else {
         this.initNew();
@@ -95,11 +95,14 @@ export class SalesFormPage implements OnInit {
   async ngOnInit() {}
 
   async ionViewWillEnter() {
-    this.intServ.loadingFunc(true);
-    await this.getCustomers();
-    await this.getCategories();
-    this.editSales();
-    this.intServ.loadingFunc(false);
+    if (this.extras) {
+      this.intServ.loadingFunc(true);
+      await this.getCustomers();
+      await this.getCategories();
+      if (!this.new) await this.initSalesOrder();
+      this.editSales();
+      this.intServ.loadingFunc(false);
+    }
   }
 
   // Create new sale
@@ -143,6 +146,9 @@ export class SalesFormPage implements OnInit {
     this.setTotals();
   }
 
+  /**
+   * Edit sales
+   */
   async editSales(){
     if (this.edit) {
       if (this.frm.controls.customerNo.value !== '') {
@@ -156,15 +162,6 @@ export class SalesFormPage implements OnInit {
         }
       }
     }
-  }
-
-  initLines() {
-    return this.formBuilder.group({
-      title: [''],
-      quantity: 1,
-      unitPrice: 0.00,
-      total: 0.00
-    });
   }
 
   /**
@@ -242,6 +239,7 @@ export class SalesFormPage implements OnInit {
       lines[i].lineDiscountPercentage = 0;
       lineDiscount = 0;
     } else {
+      lineDiscount = price['LineDiscount%'];
       lineDiscount = (lineDiscount === null) ? 0 : Number(lineDiscount);
       lines[i].unitPrice = price.UnitPrice;
       lines[i].lineDiscountPercentage = lineDiscount;
@@ -375,7 +373,8 @@ export class SalesFormPage implements OnInit {
    * Add item to the cart
    * @param item 
    */
-  async addItem(item) {
+  async addItem(item: any, newSales: boolean = true) {
+    console.log(item);
     var now = new Date();
     item['unitPrice'] = 0;
     item['discountPerc'] = 0;
@@ -411,16 +410,18 @@ export class SalesFormPage implements OnInit {
     }
     item['quantity'] = 1;
     this.linesS.push(item);
-    this.frm.controls.lines = this.setLines(item);
-    this.setTotals();
-    this.intServ.searchShowFunc({});
+    if (newSales) {
+      this.frm.controls.lines = this.setLines(item);
+      this.setTotals();
+      this.intServ.searchShowFunc({});
+    }
   }
 
-  Test(){
-    alert(1);
-  }
-
-  // lines in new item
+  /**
+   * set lines for news sales
+   * @param item 
+   * @returns 
+   */
   setLines(item) {
     let arr = new FormArray([]);
     if (this.frm.controls.lines.value.length > 0) {
@@ -453,11 +454,16 @@ export class SalesFormPage implements OnInit {
     return arr;  
   }
 
-  // view sales order
+  /**
+   * sales order lines
+   * @param lines 
+   * @returns 
+   */
   async setSalesOrderLines(lines) {
     let arr = new FormArray([]);
     for(let i in lines) {
       let item = await this.allItems.find(x => (x.id === lines[i].id));
+      await this.addItem(item, false);
       arr.push(
         this.formBuilder.group({
           title: lines[i].value,
@@ -471,9 +477,11 @@ export class SalesFormPage implements OnInit {
           picture: (item !== undefined) ? `data:image/jpeg;base64,${item.fields.Picture}` : 'data:image/jpeg;base64,NOIMAGE',
           unitOfMeasureCode: lines[i].fields.UnitofMeasureCode,
           lineDiscountAmount: lines[i].fields.LineDiscountAmount,
-          lineDiscountPercentage: 0
+          lineDiscountPercentage: lines[i].fields['LineDiscount%']
         })
       );
+      this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
+      this.listPrices[arr.length - 1] = item.priceListC;
     }
     return arr;
   }
@@ -506,10 +514,9 @@ export class SalesFormPage implements OnInit {
   }
 
   async getCategories() {
-    let process = await this.syncerp.processRequest('GetItemCategories', "10", "", "");
+    let process = await this.syncerp.processRequest('GetItemCategories', "0", "", "");
     let categories = await this.syncerp.setRequest(process);
     this.categories = await this.general.categories(categories.Categories);
-    console.log(this.categories);
     this.categories.forEach(
       category => {
         category.items.forEach(

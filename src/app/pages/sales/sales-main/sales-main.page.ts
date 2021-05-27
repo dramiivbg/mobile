@@ -11,6 +11,7 @@ import { SyncerpService } from '@svc/syncerp.service';
 import { E_MODULETYPE } from '@var/enums';
 // import models
 import { Module, Process } from '@mdl/module';
+import { ConnectableObservable } from 'rxjs';
 
 @Component({
   selector: 'app-sales-main',
@@ -22,7 +23,8 @@ export class SalesMainPage implements OnInit {
   session: any = {};
   module: any = {};
 
-  constructor(private syncerp: SyncerpService,
+  constructor(
+    private syncerp: SyncerpService,
     private general: GeneralService,
     private intServ: InterceptService,
     private js: JsonService,
@@ -40,30 +42,20 @@ export class SalesMainPage implements OnInit {
   }
 
   async onSales(process: Process) {
+    this.intServ.loadingFunc(true);
     process.salesType = await this.general.typeSalesBC(process);
     process.sysPermits = await this.general.getPermissions(process.permissions);
     await this.moduleService.setSelectedProcess(process);
-
-    this.intServ.loadingFunc(true);
     let p = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: process.salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
     let sales = await this.syncerp.setRequest(p);
     let salesList = await this.general.salesOrderList(sales.SalesOrders);
+    let navg: NavigationExtras = {
+      state: {
+        salesList
+      }
+    }
+    this.router.navigate(['sales/sales-page'], navg);
     this.intServ.loadingFunc(false);
-    let obj = this.general.structSearch(salesList, `Search ${process.salesType}`, process.salesType, async (sell) => {
-      let navigationExtras: NavigationExtras = {
-        state: {
-          order: sell,
-          new: false
-        }
-      };
-      this.router.navigate(['sales/sales-form'], navigationExtras);
-      setTimeout(
-        () => {
-          this.intServ.searchShowFunc({});
-        }, 1000
-      )
-    }, false, 1, process);
-    this.intServ.searchShowFunc(obj);
   }
 
 }

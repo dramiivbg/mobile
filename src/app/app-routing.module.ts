@@ -14,6 +14,20 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'init/sync',
+    loadChildren: () => import('./pages/init/sync/sync.module').then( m => m.SyncPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'sales/sales-main',
+    loadChildren: () => import('./pages/sales/sales-main/sales-main.module').then( m => m.SalesMainPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'sales/sales-page',
+    loadChildren: () => import('./pages/sales/sales-page/sales-page.module').then( m => m.SalesPagePageModule)
+  },
+  {
     path: 'sales/sales-form',
     loadChildren: () => import('./pages/sales/sales-form/sales-form.module').then( m => m.SalesFormPageModule),
     canActivate: [AuthGuardService]
@@ -24,14 +38,9 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
-    path: 'sales/sales-main',
-    loadChildren: () => import('./pages/sales/sales-main/sales-main.module').then( m => m.SalesMainPageModule),
-    canActivate: [AuthGuardService]
-  },
-  {
     path: '',
     loadChildren: () => import('./pages/main/main.module').then( m => m.MainPageModule),
-    canActivate: [AuthGuardService]    
+    canActivate: [AuthGuardService]
   }
 ];
 

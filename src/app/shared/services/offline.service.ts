@@ -1,14 +1,21 @@
 import { HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ModuleService } from './gui/module.service';
 import { SqlitePlureService } from './sqlite-plure.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OfflineService {
+  private methods: Array<string> = [
+    'GetSalesOrders', 
+    'GetCustomers',
+    'GetItemCategories'
+  ]
 
   constructor(
-    private sqLite: SqlitePlureService
+    private sqLite: SqlitePlureService,
+    private moduleService: ModuleService
   ) { }
 
   /**
@@ -22,12 +29,16 @@ export class OfflineService {
     await this.sqLite.openStorageOptions();
     let store = await this.sqLite.openStore();
     if (store) {
-      switch(method) {
-        case 'GetSalesOrders':
-          await this.sqLite.setItem(method, JSON.stringify(event));
-        default:
-          Promise.resolve(null);
+      if (this.methods.indexOf(method) !== -1) {
+        await this.sqLite.setItem(method, JSON.stringify(event));
       }
+      // switch(method) {
+      //   case 'GetSalesOrders':
+      //   case 'GetCustomers':
+      //   case 'GetItemCategories':
+      //     await this.sqLite.setItem(method, JSON.stringify(event));
+      //     break;
+      // }
     }
   }
 
@@ -49,5 +60,31 @@ export class OfflineService {
       }
     }
     return null;
+  }
+
+  async getAll() {
+    await this.sqLite.init();
+    await this.sqLite.openStorageOptions();
+    let test = await this.sqLite.getAllKeysValues();
+  }
+
+  async sycnAll() : Promise<boolean> {
+
+    await this.sqLite.init();
+    await this.sqLite.openStorageOptions();
+    for (let i in this.methods) {
+      switch(this.methods[i]) {
+        case 'GetSalesOrders':
+          // let process = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: salesType, pageSize:'', position:'', salesPerson: 'CA' }]);
+          // let sales = await this.syncerp.setRequest(process);
+          break;
+        default:
+          // let process = await this.syncerp.processRequest('GetCustomers', "0", "", this.module.erpUserId);
+          // let customers = await this.syncerp.setRequest(process);
+          break;
+      }
+    }
+    
+    return false;
   }
 }

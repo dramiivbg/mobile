@@ -130,7 +130,6 @@ export class SearchComponent implements OnInit {
         resolve(customersArray);
       }
     )
-    
   }
 
   /**

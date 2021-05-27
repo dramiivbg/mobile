@@ -93,6 +93,19 @@ export class SqlitePlureService {
   }
 
   /**
+   * gwet all keys
+   * @returns
+   */
+  async getAllKeysValues(): Promise<Array<any>> {
+    if(this.isService) {
+      const {keysvalues} = await this.store.keysvalues();
+      return keysvalues;
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * Remove the Value for a given Key
    * @param key string 
    */

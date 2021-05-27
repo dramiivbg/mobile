@@ -16,6 +16,10 @@ const routes: Routes = [
       {
         path: 'settings',
         loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
+      },
+      {
+        path: 'init/sync',
+        loadChildren: () => import('../../pages/init/sync/sync.module').then( m => m.SyncPageModule)
       }
     ]
   },

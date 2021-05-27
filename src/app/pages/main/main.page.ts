@@ -31,6 +31,11 @@ export class MainPage implements OnInit {
       action: "change_company",
     },
     {
+      description: "Sync",
+      icon: "../../assets/img/modules/change_company.svg",
+      action: "Sync",
+    },
+    {
       description: "Sign out",
       icon: "../../assets/img/modules/sign_out.svg",
       action: "sign_out"
@@ -55,7 +60,8 @@ export class MainPage implements OnInit {
     });
   }
 
-  onClick(action: string){
+  async onClick(action: string){
+    console.log(action)
     switch(action)
     {
       case "modules": 
@@ -63,6 +69,11 @@ export class MainPage implements OnInit {
         break;
 
       case "change_company":
+        break;
+
+      case "Sync":
+        console.log(1);
+        await this.router.navigate(['init/sync'], { replaceUrl: true });
         break;
 
       case "sign_out":
