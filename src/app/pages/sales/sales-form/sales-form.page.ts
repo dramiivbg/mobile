@@ -8,12 +8,9 @@ import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
-import { debug } from 'console';
 import { ModuleService } from '@svc/gui/module.service';
 import { E_PROCESSTYPE } from '@var/enums';
-import { runInThisContext } from 'vm';
 import { Module, Process } from '@mdl/module';
-import { combineAll } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sales-form',
@@ -228,6 +225,17 @@ export class SalesFormPage implements OnInit {
     this.setTotals();
   }
 
+  async onQuantity(i) {
+    let lines = this.frm.controls.lines.value;
+    let subTotal = lines[i].quantity * lines[i].unitPrice;
+    let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
+    lines[i].lineDiscountAmount = discountAmount.toFixed(2);
+    lines[i].totalWithoutDiscount = subTotal.toFixed(2);
+    lines[i].total = Number(subTotal - discountAmount).toFixed(2);
+    this.frm.controls.lines.setValue(lines);
+    this.setTotals();
+  }
+
   ionMeasure(i) {
     let lineDiscount: Number = 0;
     let val: any = event.target;
@@ -298,6 +306,21 @@ export class SalesFormPage implements OnInit {
     }
   }
 
+  /**
+   * Return to the main.
+   */
+  onBack() {
+    if (this.new || this.edit) {
+      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Are you sure you want to leave?',
+        () => {
+          this.router.navigate(['sales/sales-main']);
+        }
+      ));
+    } else {
+      this.router.navigate(['sales/sales-main']);
+    }
+  }
+
   // login to the application is performed.
   onSubmit() {
     let process: any;
@@ -365,6 +388,11 @@ export class SalesFormPage implements OnInit {
     this.items = category.items;
     let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
       await this.addItem(item);
+      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to continue adding more items in the same category?',
+        () => {
+          this.itemsPerCategory(category);
+        }
+      ));
     }, false);
     this.intServ.searchShowFunc(obj);
   }
@@ -374,7 +402,6 @@ export class SalesFormPage implements OnInit {
    * @param item 
    */
   async addItem(item: any, newSales: boolean = true) {
-    console.log(item);
     var now = new Date();
     item['unitPrice'] = 0;
     item['discountPerc'] = 0;
@@ -394,8 +421,9 @@ export class SalesFormPage implements OnInit {
           item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);
           if (x.fields['LineDiscount%'] !== null) {
             item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);            
-            item['discountPerc'] = x.fields['LineDiscount%'];
-            item['total'] = Number((item['unitPrice'] - (item['unitPrice'] * (item['discountPerc'] / 100))).toFixed(2));
+            item['discountPerc'] = Number(x.fields['LineDiscount%']);
+            item['total'] = Number(item['unitPrice']).toFixed(2);
+            // item['total'] = Number((item['unitPrice'] - (item['unitPrice'] * (item['discountPerc'] / 100))).toFixed(2));
           } else {
             item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);
             item['discountPerc'] = 0;
@@ -405,7 +433,6 @@ export class SalesFormPage implements OnInit {
       }
     });
     if (item.unitPrice === 0) {
-      item['measure']
       item['unitPrice'] = item.fields.unitPrice;
     }
     item['quantity'] = 1;
@@ -431,7 +458,7 @@ export class SalesFormPage implements OnInit {
         }
       )
     }
-    let discountPerc = (item.discountPerc) ? 0 : item.discountPerc;
+    let discountPerc = (item.discountPerc === null) ? 0 : item.discountPerc;
     let discountAmount = item.total * (discountPerc / 100);
     arr.push(
       this.formBuilder.group({
@@ -449,9 +476,27 @@ export class SalesFormPage implements OnInit {
         lineDiscountPercentage: item.discountPerc
       })
     );
-    this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
-    this.listPrices[arr.length - 1] = item.priceListC;
+    // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
+    this.measureList(item.unitOfMeasures, item.priceListC, (arr.length - 1));
+    // this.listPrices[arr.length - 1] = item.priceListC;
     return arr;  
+  }
+
+  /**
+   * Add measures with price.
+   * @param unitOfMeasures 
+   * @param priceListC 
+   * @param i 
+   */
+  measureList(unitOfMeasures: any, priceListC: any, i: number) {
+    this.unitMeasureList[i] = [];
+    for(let y in unitOfMeasures) {
+      let x = priceListC.filter(x => {
+        return (x.UnitofMeasureCode === unitOfMeasures[y].id);
+      })
+      if (x.length > 0) this.unitMeasureList[i].push(unitOfMeasures[y]);
+    }
+    this.listPrices[i] = priceListC;
   }
 
   /**

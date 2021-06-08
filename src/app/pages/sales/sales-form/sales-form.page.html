@@ -1,7 +1,10 @@
 <ion-header>
   <ion-toolbar color="plureMain">
     <ion-buttons slot="start">
-      <ion-back-button class="ion-toolbar-button" defaultHref="modules"></ion-back-button>
+      <!-- <ion-back-button class="ion-toolbar-button" (click)="onBack()" defaultHref="undefined"></ion-back-button> -->
+      <ion-button (click)="onBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title *ngIf="new">New - {{process.processName}}</ion-title>
     <ion-title *ngIf="!new">{{process.processName}} - {{order.id}}</ion-title>
@@ -98,9 +101,9 @@
           <ion-col size="3" class="txt">
             <ion-label>Lines</ion-label>
           </ion-col>
-          <ion-col *ngIf="new || edit">
+          <!-- <ion-col *ngIf="new || edit">
             <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
-          </ion-col>
+          </ion-col> -->
         </ion-row>
       </div>
       <div  class="accorn-body">
@@ -159,7 +162,11 @@
                   </ion-item-option>
                   <ion-item-option class="item-lines" color="plureBlack">
                     <ion-button color="plureGrey" class="btn-decrement" (click)="onIncDec(i, 0)">-</ion-button>
-                    <ion-input color="plureBlack" style="color: #ffffff !important; width: 24px !important;" formControlName="quantity" type="number"></ion-input>
+                    <ion-input color="plureBlack" 
+                      style="color: #ffffff !important; width: 44px !important;" 
+                      formControlName="quantity"
+                      (focusout)="onQuantity(i)"
+                      type="number"></ion-input>
                     <ion-button color="plureGrey" class="btn-increment" (click)="onIncDec(i, 1)">+</ion-button>
                   </ion-item-option>
                 </ion-item-options>
@@ -172,32 +179,32 @@
 
     <div class="accorn">
       <ion-row>
-        <ion-col size="7"></ion-col>
+        <ion-col size="6"></ion-col>
         <ion-col size="2">
           <ion-label>Subtotal</ion-label>
         </ion-col>
-        <ion-col size="2" style="text-align: right;">${{subTotal}}</ion-col>
+        <ion-col size="3" style="text-align: right;">${{subTotal}}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="7"></ion-col>
+        <ion-col size="6"></ion-col>
         <ion-col size="2">
           <ion-label>Tax</ion-label>
         </ion-col>
-        <ion-col size="2" style="text-align: right;">${{taxTotal}}</ion-col>
+        <ion-col size="3" style="text-align: right;">${{taxTotal}}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="7"></ion-col>
+        <ion-col size="6"></ion-col>
         <ion-col size="2">
           <ion-label>Discount</ion-label>
         </ion-col>
-        <ion-col size="2" style="text-align: right;">${{discountTotal}}</ion-col>
+        <ion-col size="3" style="text-align: right;">${{discountTotal}}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="7"></ion-col>
+        <ion-col size="6"></ion-col>
         <ion-col size="2">
           <ion-label>Total</ion-label>
         </ion-col>
-        <ion-col size="2" style="text-align: right;">${{total}}</ion-col>
+        <ion-col size="3" style="text-align: right;">${{total}}</ion-col>
       </ion-row>
     </div>
 
@@ -232,14 +239,13 @@
       </div>
     </div>
 
-    <ion-row *ngIf="new || edit">
+    <!-- <ion-row *ngIf="new || edit">
       <ion-col>
         <ion-button type="submit" color="light" class="btn-submit">
           Submit
         </ion-button>
       </ion-col>
-    </ion-row>
-
+    </ion-row> -->
 
   </form>
 
@@ -247,8 +253,14 @@
 
 <ion-toolbar color="plureMain" *ngIf="new || edit">
   <ion-buttons slot="primary">
-    <ion-button (click)="onBarCode()">
-      <ion-icon name="barcode-outline"></ion-icon>
+    <ion-button (click)="onItem()" *ngIf="new || edit">
+      <img src="../../../../assets/img/modules/add-lines.svg" />
+    </ion-button>
+    <ion-button (click)="onSubmit()" *ngIf="new || edit">
+      <img src="../../../../assets/img/modules/save.svg" />
+    </ion-button>
+    <ion-button (click)="onBarCode()" *ngIf="new || edit">
+      <img src="../../../../assets/img/modules/bar-code-line.svg" />
     </ion-button>
   </ion-buttons>
 </ion-toolbar>
