@@ -10,7 +10,8 @@ export class OfflineService {
   private methods: Array<string> = [
     'GetSalesOrders', 
     'GetCustomers',
-    'GetItemCategories'
+    'GetItemCategories',
+    'GetSalesCount'
   ]
 
   constructor(

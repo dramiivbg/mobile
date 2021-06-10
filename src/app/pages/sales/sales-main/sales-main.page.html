@@ -26,10 +26,16 @@
         <ion-label>{{process.processName}}</ion-label>
       </ion-col>
       <ion-col class="list-txt-bold">
-        <ion-label>--</ion-label>
+        <ion-label *ngIf="process.processId == 'P001'">{{salesCount.Count_Order}}</ion-label>
+        <ion-label *ngIf="process.processId == 'P002'">{{salesCount.Count_Return_Order}}</ion-label>
+        <ion-label *ngIf="process.processId == 'P003'">{{salesCount.Count_Invoice}}</ion-label>
+        <ion-label *ngIf="process.processId == 'P004'">{{salesCount.Count_Credit_Memo}}</ion-label>
       </ion-col>
       <ion-col class="list-txt-bold">
-        <ion-label>$--</ion-label>
+        <ion-label *ngIf="process.processId == 'P001'">${{salesCount.Amount_Order}}</ion-label>
+        <ion-label *ngIf="process.processId == 'P002'">${{salesCount.Amount_Return_Order}}</ion-label>
+        <ion-label *ngIf="process.processId == 'P003'">${{salesCount.Amount_Invoice}}</ion-label>
+        <ion-label *ngIf="process.processId == 'P004'">${{salesCount.Amount_Credit_Memo}}</ion-label>
       </ion-col>
     </ion-row>
   </ion-list>

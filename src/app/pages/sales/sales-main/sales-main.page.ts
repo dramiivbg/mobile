@@ -22,6 +22,7 @@ export class SalesMainPage implements OnInit {
   sessionLogin: any = {};
   session: any = {};
   module: any = {};
+  salesCount: any = {};
 
   constructor(
     private syncerp: SyncerpService,
@@ -36,9 +37,12 @@ export class SalesMainPage implements OnInit {
 
   async ionViewWillEnter() {
     this.module = this.moduleService.getSelectedModule();
+    console.log(this.module);
     await this.js.getSession().then(
       rsl => this.session = rsl.login
     );
+    let salesCountStr = await this.syncerp.processRequestParams('GetSalesCount', [{ pageSize:'', salesPerson: this.module.erpUserId }]);
+    this.salesCount = (await this.syncerp.setRequest(salesCountStr)).Sales[0];
   }
 
   async onSales(process: Process) {
