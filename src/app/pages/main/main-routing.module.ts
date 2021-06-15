@@ -8,7 +8,7 @@ const routes: Routes = [
     path: 'main',
     component: MainPage
     ,
-    children: [      
+    children: [
       {
         path: 'modules',
         loadChildren: () => import('./modules/modules.module').then( m => m.ModulesPageModule)
@@ -27,6 +27,7 @@ const routes: Routes = [
     path: '',
     redirectTo: '/main/modules'
   }
+
 ];
 
 @NgModule({

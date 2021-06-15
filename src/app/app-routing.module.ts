@@ -38,6 +38,11 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'change-password',
+    loadChildren: () => import('./pages/init/change-password/change-password.module').then( m => m.ChangePasswordPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
     path: '',
     loadChildren: () => import('./pages/main/main.module').then( m => m.MainPageModule),
     canActivate: [AuthGuardService]

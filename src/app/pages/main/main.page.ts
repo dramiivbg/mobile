@@ -16,7 +16,7 @@ export interface MenuItem {
   styleUrls: ['./main.page.scss'],
 })
 export class MainPage implements OnInit {
-  
+
   info: string;
   userSession: any = {};
   menuContent: Array<MenuItem> = [
@@ -43,17 +43,18 @@ export class MainPage implements OnInit {
   ];
   selectedPath = '';
 
-  constructor(private authService: AuthService,               
-            private router: Router) {      
+  constructor(private authService: AuthService,
+            private router: Router) {
   }
 
   async ngOnInit() {
     await this.authService.getUserSession().then(
       res => {
-        console.log(res);
-        this.userSession = res;  
+        this.userSession = res;
       }
-    );         
+    );
+
+    this.onChangePassword();
 
     this.router.events.subscribe((event: RouterEvent) => {
       this.selectedPath = event.url;
@@ -63,11 +64,14 @@ export class MainPage implements OnInit {
   async onClick(action: string){
     switch(action)
     {
-      case "modules": 
+      case "modules":
           this.router.navigateByUrl('', { replaceUrl: true });
         break;
 
       case "change_company":
+        break;
+
+      case "change_password":
         break;
 
       case "Sync":
@@ -90,6 +94,14 @@ export class MainPage implements OnInit {
         this.router.navigateByUrl('/login', { replaceUrl: true});
       }
     );
+  }
+
+  onChangePassword() {
+    /*if(this.userSession.temporaryPassword) {
+      console.log('onChangePassowrd => ', this.userSession);
+      this.router.navigateByUrl('/main/change-password', { replaceUrl: true});
+    }*/
+
   }
 
 }

@@ -8,7 +8,7 @@ import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION,  } from '@var/consts';
 })
 export class AuthGuardService implements CanActivate {
   private authorizeAccessClient: any;
-  private login: string;
+  private login: any = {};
 
   constructor(
     private router: Router,
@@ -17,13 +17,15 @@ export class AuthGuardService implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     this.authorizeAccessClient = await this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT);
-    this.login = await this.storage.get(SK_USER_SESSION);
+    this.login = JSON.parse(await this.storage.get(SK_USER_SESSION));
 
     switch(route.routeConfig.path) {
       case 'environments':
         return this.isEnvironments();
       case 'login':
         return this.isLogin();
+      case 'change-password':
+        return this.isChangePassword();
       default:
         return this.isDefault();
     }
@@ -38,7 +40,6 @@ export class AuthGuardService implements CanActivate {
   }
 
   isLogin() : boolean {
-
     if (this.login !== undefined && this.login !== null){
       this.router.navigateByUrl('', { replaceUrl: true });
       return false;
@@ -47,7 +48,16 @@ export class AuthGuardService implements CanActivate {
         this.router.navigate(["environments"]);
         return false;
       }
-    } 
+    }
+    return true;
+  }
+
+  isChangePassword() : boolean {
+    if (!this.login.temporaryPassword){
+      this.router.navigateByUrl('', { replaceUrl: true });
+      return false;
+    }
+
     return true;
   }
 
@@ -56,6 +66,18 @@ export class AuthGuardService implements CanActivate {
       this.router.navigate(["environments"]);
       return false;
     }
+    else {
+      try {
+        if(this.login.temporaryPassword)
+        {
+          this.router.navigate(["change-password"]);
+          return false;
+        }
+      } catch (error) {
+        return true;
+      }
+    }
+
     return true;
   }
 
