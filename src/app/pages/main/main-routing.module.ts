@@ -20,6 +20,10 @@ const routes: Routes = [
       {
         path: 'init/sync',
         loadChildren: () => import('../../pages/init/sync/sync.module').then( m => m.SyncPageModule)
+      },
+      {
+        path: 'change-company',
+        loadChildren: () => import('./change-company/change-company.module').then( m => m.ChangeCompanyPageModule)
       }
     ]
   },
@@ -27,7 +31,6 @@ const routes: Routes = [
     path: '',
     redirectTo: '/main/modules'
   }
-
 ];
 
 @NgModule({

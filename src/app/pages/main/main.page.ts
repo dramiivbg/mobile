@@ -6,7 +6,8 @@ import { AuthService } from '@svc/auth.service';
 
 export interface MenuItem {
   description: string,
-  icon: string,
+  iconName: string,
+  iconPath: string,
   action: string
 }
 
@@ -22,22 +23,32 @@ export class MainPage implements OnInit {
   menuContent: Array<MenuItem> = [
     {
       description: "Modules",
-      icon: "../../assets/img/modules/modules.svg",
+      iconName: "",
+      iconPath: "../../assets/img/modules/modules.svg",
       action: "modules"
     },
     {
       description: "Change Company",
-      icon: "../../assets/img/modules/change_company.svg",
+      iconName: "",
+      iconPath: "../../assets/img/modules/change_company.svg",
       action: "change_company",
     },
     {
+      description: "Settings",
+      iconName: "settings-outline",
+      iconPath: "",
+      action: "settings",
+    },
+    {
       description: "Sync",
-      icon: "",
+      iconName: "sync-circle-outline",
+      iconPath: "",
       action: "Sync",
     },
     {
       description: "Sign out",
-      icon: "../../assets/img/modules/sign_out.svg",
+      iconName: "",
+      iconPath: "../../assets/img/modules/sign_out.svg",
       action: "sign_out"
     }
   ];
@@ -54,8 +65,6 @@ export class MainPage implements OnInit {
       }
     );
 
-    this.onChangePassword();
-
     this.router.events.subscribe((event: RouterEvent) => {
       this.selectedPath = event.url;
     });
@@ -69,14 +78,15 @@ export class MainPage implements OnInit {
         break;
 
       case "change_company":
+        this.router.navigateByUrl('main/change-company', { replaceUrl: true });
         break;
 
-      case "change_password":
+      case "settings":
+        this.router.navigateByUrl('main/settings', { replaceUrl: true });
         break;
 
-      case "Sync":
-        console.log(1);
-        await this.router.navigate(['init/sync'], { replaceUrl: true });
+      case "sync":
+        this.router.navigate(['init/sync'], { replaceUrl: true });
         break;
 
       case "sign_out":
@@ -94,14 +104,6 @@ export class MainPage implements OnInit {
         this.router.navigateByUrl('/login', { replaceUrl: true});
       }
     );
-  }
-
-  onChangePassword() {
-    /*if(this.userSession.temporaryPassword) {
-      console.log('onChangePassowrd => ', this.userSession);
-      this.router.navigateByUrl('/main/change-password', { replaceUrl: true});
-    }*/
-
   }
 
 }
