@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterEvent } from '@angular/router';
+import { Storage } from '@ionic/storage';
 
 // import services
 import { AuthService } from '@svc/auth.service';
+import { SK_SELECTED_COMPANY } from '@var/consts';
 
 export interface MenuItem {
   description: string,
@@ -18,8 +20,9 @@ export interface MenuItem {
 })
 export class MainPage implements OnInit {
 
-  info: string;
   userSession: any = {};
+  selectedCompany: any = {};
+
   menuContent: Array<MenuItem> = [
     {
       description: "Modules",
@@ -55,7 +58,8 @@ export class MainPage implements OnInit {
   selectedPath = '';
 
   constructor(private authService: AuthService,
-            private router: Router) {
+            private router: Router,
+            private storage: Storage) {
   }
 
   async ngOnInit() {
@@ -64,6 +68,12 @@ export class MainPage implements OnInit {
         this.userSession = res;
       }
     );
+
+    this.storage.get(SK_SELECTED_COMPANY).then(
+      res => {
+        this.selectedCompany = JSON
+      }
+    )
 
     this.router.events.subscribe((event: RouterEvent) => {
       this.selectedPath = event.url;

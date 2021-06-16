@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { AuthService } from '@svc/auth.service';
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION,  } from '@var/consts';
 
 @Injectable({
@@ -8,16 +9,17 @@ import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION,  } from '@var/consts';
 })
 export class AuthGuardService implements CanActivate {
   private authorizeAccessClient: any;
-  private login: any = {};
+  private userSession: any = {};
 
-  constructor(
-    private router: Router,
-    private storage: Storage
-    ) {   }
+  constructor(private router: Router,
+    private storage: Storage,
+    private authService: AuthService) { }
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     this.authorizeAccessClient = await this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT);
-    this.login = JSON.parse(await this.storage.get(SK_USER_SESSION));
+    await this.authService.getUserSession().then(
+      res => this.userSession = res
+    );
 
     switch(route.routeConfig.path) {
       case 'environments':
@@ -40,7 +42,7 @@ export class AuthGuardService implements CanActivate {
   }
 
   isLogin() : boolean {
-    if (this.login !== undefined && this.login !== null){
+    if (this.userSession !== undefined && this.userSession !== null){
       this.router.navigateByUrl('', { replaceUrl: true });
       return false;
     } else {
@@ -53,7 +55,7 @@ export class AuthGuardService implements CanActivate {
   }
 
   isChangePassword() : boolean {
-    if (!this.login.temporaryPassword){
+    if (!this.userSession.temporaryPassword){
       this.router.navigateByUrl('', { replaceUrl: true });
       return false;
     }
@@ -62,13 +64,13 @@ export class AuthGuardService implements CanActivate {
   }
 
   isDefault() : boolean {
-    if (this.login === undefined || this.login === null){
+    if (this.userSession === undefined || this.userSession === null){
       this.router.navigate(["environments"]);
       return false;
     }
     else {
       try {
-        if(this.login.temporaryPassword)
+        if(this.userSession.temporaryPassword)
         {
           this.router.navigate(["change-password"]);
           return false;
