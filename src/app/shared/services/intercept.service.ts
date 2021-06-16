@@ -50,7 +50,7 @@ export class InterceptService {
     this.loadingSource.next(bool);
   }
 
-  // load alerts or confirms. 
+  // load alerts or confirms.
   // structure:
   // obj: {
   //   type: 'confirm', (confirm|alert|success|error)
@@ -61,7 +61,6 @@ export class InterceptService {
   //   desc: 'description'
   // }
   alertFunc(obj: any) {
-    console.log(obj);
     this.alertSource.next(obj);
   }
 

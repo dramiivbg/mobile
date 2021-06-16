@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="plureMain">
+    <ion-buttons slot="start">
+      <ion-menu-button menu="menu-content"></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="onSyncCompanies()">
+        <ion-icon slot="start" name="sync-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Change Company</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <ion-list>
+    <ion-list-header>
+      Selected company
+    </ion-list-header>
+
+    <ion-item>
+        <img src="../../../../assets/img/business-outline.svg" slot="start">
+      <ion-label>
+        <h2>{{selectedCompany.companyName}}</h2>
+        <h3>id: {{selectedCompany.companyId}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      Other companies
+    </ion-list-header>
+
+    <ion-item *ngFor="let oc of otherCompanies">
+      <img src="../../../../assets/img/business-outline.svg" slot="start">
+      <ion-label>
+        <h2>{{oc.companyName}}</h2>
+        <h3>id: {{oc.companyId}}</h3>
+      </ion-label>
+      <ion-button (click)="onChangeCompany(oc)"><ion-icon slot="start" name="enter-outline"></ion-icon>Change</ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

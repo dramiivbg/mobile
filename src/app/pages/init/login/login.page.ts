@@ -30,7 +30,7 @@ export class LoginPage implements OnInit {
   showPassword = false;
   passwordToggleIcon = 'eye';
 
-  private scid: string; 
+  private scid: string;
   private userName: string;
   public environments: Array<any> = [];
   frm: FormGroup;
@@ -43,14 +43,14 @@ export class LoginPage implements OnInit {
     , private storage: Storage
     , private device: Device
     , private authSvc: AuthService
-    , private appVersion: AppVersion) { 
+    , private appVersion: AppVersion) {
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
       {
         EnviromentId: ['', Validators.required],
         User: ['', Validators.required],
         Password: ['', Validators.required],
-      }      
+      }
     )
 
     this.getVersion();
@@ -61,7 +61,7 @@ export class LoginPage implements OnInit {
       res => {
         this.scid = JSON.parse(res).customerId;
       }
-    );    
+    );
   }
 
   togglePassword(): void {
@@ -83,13 +83,13 @@ export class LoginPage implements OnInit {
       res => {
         if ( res.token != null ) {
           if(this.authSvc.saveUserSession(res)) {
-            this.router.navigateByUrl('', { replaceUrl: true });            
+            this.router.navigateByUrl('change-password', { replaceUrl: true });
           }
           this.intServ.loadingFunc(false);
         } else {
           this.intServ.alertFunc(this.jsonServ.getAlert(
-            'alert', 
-            'Error', 
+            'alert',
+            'Error',
             `The user or password is not correct.`,
             () => {
               this.intServ.loadingFunc(false);
@@ -115,19 +115,19 @@ export class LoginPage implements OnInit {
       this.signIn(secretKey);
     } else {
       this.intServ.alertFunc(this.jsonServ.getAlert(
-        'alert', 
-        'Error', 
+        'alert',
+        'Error',
         'plase fill fields.'
       ));
       this.intServ.loadingFunc(false);
     }
   }
-  
+
   // remove environment with confirm
   onRemoveEnvironment() {
     this.intServ.alertFunc(this.jsonServ.getAlert(
-      'confirm', 
-      'Confirm', 
+      'confirm',
+      'Confirm',
       `Do you want to change company ?`,
       () => {
         this.storage.remove(SK_SESSION_CUSTOMER_ID);
@@ -141,19 +141,18 @@ export class LoginPage implements OnInit {
   }
 
   onChangeUser(event: any){
-
-    if(this.frm.value.User != "") {    
+    if(this.frm.value.User != "") {
       if(this.userName != this.frm.value.User) {
-        this.userName = this.frm.value.User;        
+        this.userName = this.frm.value.User;
         if(this.frm.value.User !== "") {
           let data = {
             "customerId": this.scid,
             "login": this.userName ,
             "platformCode": environment.platformCode
-          };      
+          };
           this.onGetEnvironments(data);
         }
-      }    
+      }
     }
   }
 
@@ -161,17 +160,17 @@ export class LoginPage implements OnInit {
     this.intServ.loadingFunc(true);
     this.apiConnect.postData('mobile', 'getenvironments', data)
     .then(
-      res => { 
-        this.intServ.loadingFunc(false);   
+      res => {
+        this.intServ.loadingFunc(false);
         if(res.length > 0) {
           this.environments = res;
-        } 
+        }
       }
     )
     .catch(err => {
       this.userName = '';
       this.frm.controls['User'].setValue(this.userName);
-      
+
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
     });
@@ -189,7 +188,7 @@ export class LoginPage implements OnInit {
     this.intServ.alertFunc(obj);
   }
 
-  getVersion(): void {    
+  getVersion(): void {
     this.appVersion.getVersionNumber().then(
       res => {
         this.version = `v${res}`;

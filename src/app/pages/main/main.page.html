@@ -1,36 +1,41 @@
 <ion-split-pane contentId="menu-content">
   <ion-menu contentId="menu-content" menuId="menu-content" side="start" type="overlay">
-    <ion-content class="main">    
+    <ion-content class="main">
       <div class="main-menu">
         <div class="main-menu-header">
           <ion-avatar>
             <img *ngIf="userSession.avatar == ''" src="../../../assets/img/img-robot.svg" />
-            <img *ngIf="userSession.avatar != ''" src="{{userSession.avatar}}" />                  
+            <img *ngIf="userSession.avatar != ''" src="{{userSession.avatar}}" />
           </ion-avatar>
           <div class="txt-title">
             {{ userSession.userName }}
           </div>
-        </div>  
-        <div class="main-menu-content">          
-          <ion-list>        
+          <ion-label>
+            <h2>test</h2>
+            <h3>Move Along</h3>
+            <p>These aren't the droids you're looking for...</p>
+          </ion-label>
+        </div>
+        <div class="main-menu-content">
+          <ion-list>
+            <ion-menu-toggle auto-hide="true" >
               <ion-item *ngFor="let mi of menuContent" lines="none" detail="false" (click)="onClick(mi.action)" class="ion-no-padding">
                 <div class="main-menu-item">
-                  <div class="main-menu-item-icon" *ngIf="mi.action == 'Sync'">
-                    <div class="icon-outline">
-                      <ion-icon name="sync-circle-outline"></ion-icon>
+                  <div class="main-menu-item-icon" >
+                    <div *ngIf="mi.iconName !== ''" class="icon-outline">
+                      <ion-icon name="{{mi.iconName}}"></ion-icon>
                     </div>
-                  </div>
-                  <div class="main-menu-item-icon" *ngIf="mi.action != 'Sync'">
-                    <img src="{{mi.icon}}" alt="">
+                    <img *ngIf="mi.iconName === ''" src="{{mi.iconPath}}" alt="">
                   </div>
                   <div class="main-menu-item-title">
                     <h1>{{ mi.description }}</h1>
                   </div>
-                </div>            
-              </ion-item>        
+                </div>
+              </ion-item>
+            </ion-menu-toggle>
           </ion-list>
         </div>
-      </div>          
+      </div>
     </ion-content>
   </ion-menu>
   <ion-router-outlet id="menu-content" main></ion-router-outlet>

@@ -13,10 +13,10 @@ const helper = new JwtHelperService();
 })
 export class AuthService {
 
-  isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);  
+  isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   private userSession: any = {};
 
-  constructor(private storage: Storage) { 
+  constructor(private storage: Storage) {
     this.checkUserSession();
   }
 
@@ -31,13 +31,13 @@ export class AuthService {
         this.isAuthenticated.next(true);
       }
     })
-    .finally(() => this.isAuthenticated.next(false));        
+    .finally(() => this.isAuthenticated.next(false));
   }
 
-  private checkToken(token: string) : boolean {    
+  private checkToken(token: string) : boolean {
     const isExpired = helper.isTokenExpired(token);
     return isExpired;
-  }  
+  }
 
   saveUserSession(userSession: any): boolean {
     this.isAuthenticated.next(true);
@@ -54,6 +54,6 @@ export class AuthService {
   async signout(): Promise<any> {
     this.isAuthenticated.next(false);
     this.storage.remove(SK_SELECTED_MODULE);
-    return this.storage.remove(SK_USER_SESSION);    
+    return this.storage.remove(SK_USER_SESSION);
   }
 }

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment} from '@env/environment';
-import { concatAll } from 'rxjs/operators';
-import { convertUpdateArguments } from '@angular/compiler/src/compiler_util/expression_converter';
+import { Storage } from '@ionic/storage';
+
 import { OfflineService } from './offline.service';
-import { conditionallyCreateMapObjectLiteral } from '@angular/compiler/src/render3/view/util';
-import { CommentStmt, computeMsgId } from '@angular/compiler';
+import { SK_USER_SESSION } from '@var/consts';
 
 @Injectable()
 export class ApiService {
@@ -13,21 +12,20 @@ export class ApiService {
     private timeOut = 60000;
     private msgTimeOut = 'The waiting time for execution has been exceeded';
 
-    constructor(
-        private httpClient: HttpClient,
-        private offline: OfflineService
-    ) {
-    }
+    constructor(private httpClient: HttpClient,
+        private offline: OfflineService,
+        private storage: Storage) {}
 
     /**
      * Method GET for call processRequests in the plure api
-     * @param type 
-     * @param params 
-     * @returns 
+     * @param type
+     * @param params
+     * @returns
      */
     getData = async (type: string, method: string): Promise<any> => {
         const url = `${this.apiBaseUrl}/${type}/${method}`;
-       
+        let headers = await this.getHeaders();
+
         return new Promise((resolve, reject) => {
             try {
                 let subscription: any;
@@ -39,7 +37,7 @@ export class ApiService {
                 }, this.timeOut);
 
                 subscription = this.httpClient
-                    .get(url, { headers : this.getHeader() })
+                    .get(url, { headers : headers })
                     .subscribe(
                         rsl => {
                             resolve(rsl);
@@ -54,13 +52,15 @@ export class ApiService {
 
     /**
      * Method POST for call processRequests in the plure api
-     * @param type 
-     * @param method 
-     * @param params 
-     * @returns 
+     * @param type
+     * @param method
+     * @param params
+     * @returns
      */
     postData = async (type: string, method: string, params: any): Promise<any> => {
         const url = `${this.apiBaseUrl}/${type}/${method}`;
+        let headers = await this.getHeaders();
+
         return new Promise((resolve, reject) => {
             try {
                 let subscription: any;
@@ -72,7 +72,7 @@ export class ApiService {
                 }, this.timeOut);
 
                 subscription = this.httpClient
-                    .post(url, params,{ headers : this.getHeader() })
+                    .post(url, params, { headers : headers })
                     .subscribe(
                     async (rsl: any) => {
                             await this.offline.setProcess(params.processMethod, rsl);
@@ -86,7 +86,7 @@ export class ApiService {
                                 console.log(222)
                                 reject(err);
                             }
-                        } 
+                        }
                     )
             } catch (err) {
                 reject(err);
@@ -96,21 +96,20 @@ export class ApiService {
 
     /**
      * Header Struct
-     * @returns 
+     * @returns
      */
-    getHeader() : any {
-        let sessionLogin = JSON.parse(localStorage.getItem('SESSION_LOGIN'));
-        if ( sessionLogin !== null && sessionLogin !== undefined ) {
-            return {
-                'Content-Type': 'application/json',
-                'plureApiKey': environment.apiKey,
-                'Authorization': `Bearer ${sessionLogin.token}`
-            }
-        } else {
-            return {
-                'Content-Type': 'application/json',
-                'plureApiKey': environment.apiKey
-            }
-        }
+    async getHeaders() : Promise<any> {
+        let headers: HttpHeaders = new HttpHeaders();
+        headers = headers.set('Content-Type', 'application/json; charset=utf-8').set('plureApiKey', environment.apiKey);
+
+        try {
+            await this.storage.get(SK_USER_SESSION)
+            .then(res => {
+                let userSession = JSON.parse(res);
+                headers = headers.set('Authorization', `Bearer ${userSession.token}`);
+            });
+        } catch (error) {}
+
+        return headers;
     }
 }
