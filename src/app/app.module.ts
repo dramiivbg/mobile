@@ -24,6 +24,8 @@ import { ApiService } from '@svc/api.service';
 import { JsonService } from '@svc/json.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { GeneralService } from '@svc/general.service';
+import { SyncerpService } from '@svc/syncerp.service';
+import { OfflineService } from '@svc/offline.service';
 
 @NgModule({
   declarations: [
@@ -56,7 +58,9 @@ import { GeneralService } from '@svc/general.service';
     IonicStorageModule,
     BarcodeScanner,
     Device,
-    AppVersion
+    AppVersion,
+    OfflineService,
+    SyncerpService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

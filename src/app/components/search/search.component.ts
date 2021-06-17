@@ -160,8 +160,10 @@ export class SearchComponent implements OnInit {
   async onDeleteLine(sell, i) {
     this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
       async () =>{
+        this.intServ.loadingFunc(true);
         let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
         let dropOrder = await this.syncerp.setRequest(params);
+        this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
           () => {
             this.listsFilter.splice(i, 1);

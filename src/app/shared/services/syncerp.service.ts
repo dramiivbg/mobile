@@ -3,11 +3,16 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { JsonService } from './json.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SyncerpService {
   private session: any;
+  private module: any = {};
+  private methods: Array<string> = [
+    'GetSalesOrders', 
+    'GetCustomers',
+    'GetItemCategories',
+    'GetSalesCount'
+  ]
 
   constructor(
     private apiConnect: ApiService,
@@ -86,4 +91,30 @@ export class SyncerpService {
       )
     return value;
   }
+
+  async sycnAll(module) : Promise<boolean> {
+    this.module = module;
+    for (let i in this.methods) {
+      switch(this.methods[i]) {
+        case 'GetSalesOrders':
+          this.syncSales(this.methods[i]);
+          break;
+        default:
+          let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+          let customers = await this.setRequest(process);
+          break;
+      }
+    }
+    return false;
+  }
+
+  async syncSales(method: string) {
+    let processes = this.module.processes;
+    processes.forEach(async p => {
+      let process = await this.processRequestParams(method, [{ type: p.processName, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
+      let sales = await this.setRequest(process);
+    });
+    // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
+  }
+
 }

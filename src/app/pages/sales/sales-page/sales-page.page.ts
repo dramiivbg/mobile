@@ -5,6 +5,7 @@ import { Module, Process } from '@mdl/module';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 
 @Component({
@@ -18,6 +19,7 @@ export class SalesPagePage implements OnInit {
   process: Process;
   sales: any = undefined;
   temporaly: any = undefined;
+  session: any = {};
 
   constructor(
     private syncerp: SyncerpService,
@@ -25,7 +27,8 @@ export class SalesPagePage implements OnInit {
     private intServ: InterceptService,
     private router: Router,
     private route: ActivatedRoute,
-    private moduleService: ModuleService
+    private moduleService: ModuleService,
+    private js: JsonService
   ) {
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
@@ -44,6 +47,7 @@ export class SalesPagePage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    this.session = (await this.js.getSession()).login;
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
   }

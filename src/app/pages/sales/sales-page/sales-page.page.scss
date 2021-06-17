@@ -5,7 +5,7 @@ ion-content {
         font-size: 20px;
     }
     .add {
-        padding: 50px 10% 40px;
+        padding: 20px 10% 30px;
         ion-input {
             border: 0.5px solid var(--ion-color-plureMain);
             border-radius: 15px;
@@ -40,7 +40,7 @@ ion-content {
                 width: 100%;
                 ion-row {
                     ion-col.icon {
-                        padding: 5px 0;
+                        padding: 20px 0 15px;
                     }
                     ion-col.sales {
                         text-align: right;
@@ -57,6 +57,23 @@ ion-content {
                             color: var(--ion-color-plure);
                         }
                     }
+                }
+            }
+        }
+        div.temporaly {
+            div.icon-temporaly {
+                padding-bottom: 5px;
+            }
+
+            div.txt-temporaly {
+                padding-bottom: 15px;
+            }
+
+            div.progress-temporaly {
+                padding-bottom: 10px;
+                ion-progress-bar {
+                    height: 15px;
+                    border-radius: 10px;
                 }
             }
         }

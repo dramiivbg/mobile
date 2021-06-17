@@ -46,7 +46,7 @@ export class MainPage implements OnInit {
       description: "Sync",
       iconName: "sync-circle-outline",
       iconPath: "",
-      action: "Sync",
+      action: "sync",
     },
     {
       description: "Sign out",

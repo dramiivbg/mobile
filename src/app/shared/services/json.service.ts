@@ -29,10 +29,9 @@ export class JsonService {
     });
   }
 
-  // Return obj with sessions
-  // example:
-  /*
-    return {
+  /**
+   * Return obj with sessions
+   * @returns {
       login: {
         company: {
           companyId: string, 
@@ -56,7 +55,7 @@ export class JsonService {
         userType: 1
       }
     }
-  */
+   */
   async getSession() : Promise<any> {
     return {
       login: JSON.parse(await this.storage.get(SK_USER_SESSION))

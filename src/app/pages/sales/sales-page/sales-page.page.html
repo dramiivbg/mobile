@@ -8,6 +8,18 @@
 </ion-header>
 
 <ion-content>
+  <ion-row class="avatar">
+    <ion-col size="3" class="avatar-img">
+      <ion-avatar>
+        <img *ngIf="session.avatar == ''" src="../../../../assets/img/img-robot.svg" />
+        <img *ngIf="session.avatar != ''" src="{{session.avatar}}" />                  
+      </ion-avatar>
+    </ion-col>
+    <ion-col class="avatar-txt">
+      <ion-label>{{session.userName}}</ion-label>
+    </ion-col>
+  </ion-row>
+
   <ion-row>
     <ion-col>
       <div class="add">
@@ -24,7 +36,7 @@
       </div>
     </ion-col>
   </ion-row>
-  <ion-row class="title" *ngIf="sales != undefined">
+  <ion-row class="title">
     <ion-col>View</ion-col>
   </ion-row>
   <ion-row *ngIf="sales != undefined">
@@ -37,7 +49,10 @@
                 <img src="../../../../assets/img/modules/sales/view-sales.png" />
               </ion-col>
               <ion-col size="8" class="sales">
-                <div>{{sales.value}}</div>
+                <div>
+                  Open sales <br />
+                  {{sales.value}}
+                </div>
                 <div>{{sales.id}}</div>
                 <div>{{sales.fields.SelltoCustomerNo}}</div>
                 <div>{{sales.fields.OrderDate}}</div>
@@ -48,23 +63,72 @@
       </div>
     </ion-col>
   </ion-row>
-  <ion-row class="title" *ngIf="temporaly != undefined">
-    <ion-col>View</ion-col>
-  </ion-row>
-  <ion-row *ngIf="temporaly != undefined">
+
+  <ion-row *ngIf="sales == undefined">
     <ion-col>
       <div class="list-orders">
-        <ion-input (click)="onSalesList()">
+        <ion-input>
           <div class="btn-list-orders">
             <ion-row>
               <ion-col size="4" class="icon">
                 <img src="../../../../assets/img/modules/sales/view-sales.png" />
               </ion-col>
               <ion-col size="8" class="sales">
-                <div>{{sales.value}}</div>
-                <div>{{sales.id}}</div>
-                <div>{{sales.fields.SelltoCustomerNo}}</div>
-                <div>{{sales.fields.OrderDate}}</div>
+                <div>Open sales</div>
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-input>
+      </div>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="title">
+    <ion-col>Temporaly</ion-col>
+  </ion-row>
+  <ion-row *ngIf="temporaly != undefined">
+    <ion-col>
+      <div class="list-orders">
+        <ion-input>
+          <div class="btn-list-orders">
+            <ion-row>
+              <ion-col>
+                <div class="temporaly">
+                  <div class="icon-temporaly">
+                    <img src="../../../../assets/img/modules/times.svg" />
+                  </div>
+                  <div class="txt-temporaly">Times</div>
+                  <div class="progress-temporaly">
+                    <ion-progress-bar value="0.01"></ion-progress-bar>
+                  </div>
+                </div>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-input>
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngIf="temporaly == undefined">
+    <ion-col>
+      <div class="list-orders">
+        <ion-input>
+          <div class="btn-list-orders">
+            <ion-row>
+              <ion-col>
+                <div class="temporaly">
+                  <div class="icon-temporaly">
+                    <img src="../../../../assets/img/modules/times.svg" />
+                  </div>
+                  <div class="txt-temporaly">Times</div>
+                  <div class="progress-temporaly">
+                    <ion-progress-bar value="0.01"></ion-progress-bar>
+                  </div>
+                </div>
               </ion-col>
             </ion-row>
           </div>

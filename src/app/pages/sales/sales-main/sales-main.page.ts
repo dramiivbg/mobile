@@ -37,10 +37,7 @@ export class SalesMainPage implements OnInit {
 
   async ionViewWillEnter() {
     this.module = this.moduleService.getSelectedModule();
-    console.log(this.module);
-    await this.js.getSession().then(
-      rsl => this.session = rsl.login
-    );
+    this.session = (await this.js.getSession()).login;
     let salesCountStr = await this.syncerp.processRequestParams('GetSalesCount', [{ pageSize:'', salesPerson: this.module.erpUserId }]);
     this.salesCount = (await this.syncerp.setRequest(salesCountStr)).Sales[0];
   }

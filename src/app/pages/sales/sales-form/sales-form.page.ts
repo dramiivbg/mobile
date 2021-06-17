@@ -92,6 +92,7 @@ export class SalesFormPage implements OnInit {
   async ngOnInit() {}
 
   async ionViewWillEnter() {
+    this.onReset();
     if (this.extras) {
       this.intServ.loadingFunc(true);
       await this.getCustomers();
@@ -118,7 +119,7 @@ export class SalesFormPage implements OnInit {
   async initForm() {
     let guid: any = Guid.create();
     this.frm.addControl('id', new FormControl(guid.value));
-    this.frm.addControl('shippingName', new FormControl("", Validators.required));
+    this.frm.addControl('shippingName', new FormControl(""));
     this.frm.addControl('shippingNo', new FormControl("", Validators.required));
     this.frm.addControl('customerNo', new FormControl("", Validators.required));
     this.frm.addControl('customerName', new FormControl(""));
@@ -132,6 +133,7 @@ export class SalesFormPage implements OnInit {
    * Get sales
    */
   async initSalesOrder() {
+    console.log(this.order);
     this.frm.controls.shippingName.setValue(this.order.fields.ShiptoName);
     this.frm.controls.shippingNo.setValue(this.order.fields.ShiptoCode);
     this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
@@ -159,6 +161,17 @@ export class SalesFormPage implements OnInit {
         }
       }
     }
+  }
+
+  onReset() {
+    this.fields = [];
+    this.linesS = [];
+    this.today = '';
+    this.subTotal = 0;
+    this.taxTotal = 0;
+    this.discountTotal = 0;
+    this.total = 0;
+    this.unitMeasureList = [];
   }
 
   /**
@@ -240,7 +253,10 @@ export class SalesFormPage implements OnInit {
     let lineDiscount: Number = 0;
     let val: any = event.target;
     let lines = this.frm.controls.lines.value;
-    let price = this.listPrices[i].find(x => (x.UnitofMeasureCode == val.value));
+    let price = this.listPrices[i].find(x => (x.UnitofMeasureCode === val.value));
+    if (price === undefined) {
+      price = this.listPrices[i].find(x => (x.UnitofMeasureCode === null));
+    }
     
     if (price === undefined) {
       lines[i].unitPrice = 0
@@ -415,8 +431,11 @@ export class SalesFormPage implements OnInit {
       let startDate = (sDate !== null) ? new Date(sDate[0] + '/' + sDate[1] + '/' + sDate[2] + ' 00:00:00') : null;
       let endDate = (eDate !== null) ? new Date(eDate[0] + '/' + eDate[1] + '/' + eDate[2] + ' 23:59:59') : null;
 
-      if ((now >= startDate || startDate === null) && (now <= endDate || endDate === null) && item['unitPrice'] === 0) {
+      if ((now >= startDate || startDate === null) && (now <= endDate || endDate === null)) {
         item.priceListC.push(x.fields);
+      }
+
+      if ((now >= startDate || startDate === null) && (now <= endDate || endDate === null) && item['unitPrice'] === 0) {
         if (x.fields.UnitofMeasureCode == item.measure) {
           item['unitPrice'] = Number(x.fields.UnitPrice).toFixed(2);
           if (x.fields['LineDiscount%'] !== null) {
@@ -433,7 +452,16 @@ export class SalesFormPage implements OnInit {
       }
     });
     if (item.unitPrice === 0) {
-      item['unitPrice'] = item.fields.unitPrice;
+      let nullPrice = item.listPrice.find(x => x.fields.UnitofMeasureCode === null);
+      if (nullPrice !== undefined) {
+        item['unitPrice'] = nullPrice.fields.UnitPrice;
+        item['discountPerc'] = Number(nullPrice.fields['LineDiscount%']);
+        item['total'] = Number(nullPrice.fields.UnitPrice).toFixed(2);
+      } else {
+        item['unitPrice'] = item.fields.UnitPrice;
+        item['discountPerc'] = 0;
+        item['total'] = Number(item.fields.UnitPrice).toFixed(2);
+      }
     }
     item['quantity'] = 1;
     this.linesS.push(item);
@@ -490,12 +518,13 @@ export class SalesFormPage implements OnInit {
    */
   measureList(unitOfMeasures: any, priceListC: any, i: number) {
     this.unitMeasureList[i] = [];
-    for(let y in unitOfMeasures) {
-      let x = priceListC.filter(x => {
-        return (x.UnitofMeasureCode === unitOfMeasures[y].id);
-      })
-      if (x.length > 0) this.unitMeasureList[i].push(unitOfMeasures[y]);
-    }
+    // for(let y in unitOfMeasures) {
+    //   let x = priceListC.filter(x => {
+    //     return (x.UnitofMeasureCode === unitOfMeasures[y].id);
+    //   })
+    //   if (x.length > 0) this.unitMeasureList[i].push(unitOfMeasures[y]);
+    // }
+    this.unitMeasureList[i] = unitOfMeasures;
     this.listPrices[i] = priceListC;
   }
 
@@ -562,6 +591,7 @@ export class SalesFormPage implements OnInit {
     let process = await this.syncerp.processRequest('GetItemCategories', "0", "", "");
     let categories = await this.syncerp.setRequest(process);
     this.categories = await this.general.categories(categories.Categories);
+    console.log(this.categories);
     this.categories.forEach(
       category => {
         category.items.forEach(
