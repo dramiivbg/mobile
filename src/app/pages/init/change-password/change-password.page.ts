@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
@@ -34,13 +34,28 @@ export class ChangePasswordPage implements OnInit {
     , private intServ: InterceptService
     , private jsonServ: JsonService
     , private router: Router) {
-    this.frm = this.formBuilder.group(
-      {
+    this.frm = this.formBuilder.group({
         LastPassword: ['', Validators.required],
         NewPassword: ['', Validators.required],
         ConfirmNewPassword: ['', Validators.required],
+      }, {
+        validators: this.matchingPasswords('NewPassword', 'ConfirmNewPassword')
       }
     )
+  }
+
+  matchingPasswords(newPassword: string, confirmNewPassword: string) {
+    debugger
+    return (group: FormGroup): {[key: string]: any} => {
+      let password = group.controls[newPassword];
+      let confirmPassword = group.controls[confirmNewPassword];
+
+      if (password.value !== confirmPassword.value) {
+        return {
+          mismatchedPasswords: true
+        };
+      }
+    }
   }
 
   ngOnInit() {

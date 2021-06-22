@@ -12,6 +12,7 @@ export class InterceptService {
   private searchShowSource = new Subject<any>();
   private loadingSource = new Subject<boolean>();
   private alertSource = new Subject<boolean>();
+  private avatarSource = new Subject<any>();
 
   // Observable string streams
   routeMenuAnnounced$ = this.routeMenuAnnouncedSource.asObservable();
@@ -21,10 +22,15 @@ export class InterceptService {
   searchShow$ = this.searchShowSource.asObservable();
   loading$ = this.loadingSource.asObservable();
   alert$ = this.alertSource.asObservable();
+  avatar$ = this.avatarSource.asObservable();
 
   // Service message commands
   announceRouteMenu(data: string) {
     this.routeMenuAnnouncedSource.next(data);
+  }
+
+  avatarFuntion(data: any) {
+    this.avatarSource.next(data);
   }
 
   confirmRouteMenu(data: string) {

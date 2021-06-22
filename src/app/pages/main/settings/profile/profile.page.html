@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="plureMain">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="main/settings" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="avatar">
+    <ion-avatar>
+      <img [src]="avatar" />
+    </ion-avatar>
+    <ion-fab-button (click)="onChangeAvatar()">
+      <ion-icon name="camera-outline" color="light"></ion-icon>
+    </ion-fab-button>
+  </div>
+
+  <form [formGroup]="frm" (ngSubmit)="onSubmit()">
+    <ion-list lines="full">
+      <ion-item>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-label position="stacked">Name</ion-label>
+        <ion-input formControlName="UserName" type="name" [(ngModel)]="userSession.userName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input formControlName="Email" type="email" [(ngModel)]="userSession.email"></ion-input>
+      </ion-item>
+    </ion-list>
+    <div class="center">
+      <ion-button type="submit"  shape="round" [disabled]="!frm.valid">
+        Save
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

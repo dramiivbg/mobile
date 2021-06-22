@@ -35,15 +35,15 @@ export class LoginPage implements OnInit {
   public environments: Array<any> = [];
   frm: FormGroup;
 
-  constructor(private intServ: InterceptService
-    , private apiConnect: ApiService
-    , private formBuilder: FormBuilder
-    , private jsonServ: JsonService
-    , private router: Router
-    , private storage: Storage
-    , private device: Device
-    , private authSvc: AuthService
-    , private appVersion: AppVersion) {
+  constructor(private intServ: InterceptService,
+    private apiConnect: ApiService,
+    private formBuilder: FormBuilder,
+    private jsonServ: JsonService,
+    private router: Router,
+    private storage: Storage,
+    private device: Device,
+    private authSvc: AuthService,
+    private appVersion: AppVersion) {
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
       {

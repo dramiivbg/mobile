@@ -4,16 +4,13 @@
       <div class="main-menu">
         <div class="main-menu-header">
           <ion-avatar>
-            <img *ngIf="userSession.avatar == ''" src="../../../assets/img/img-robot.svg" />
-            <img *ngIf="userSession.avatar != ''" src="{{userSession.avatar}}" />
+            <img src="{{avatar}}" width="30px"/>
           </ion-avatar>
-          <div class="txt-title">
-            {{ userSession.userName }}
-          </div>
           <ion-label>
-            <h2>test</h2>
-            <h3>Move Along</h3>
-            <p>These aren't the droids you're looking for...</p>
+            <h1>{{userSession.userName}}</h1>
+            <p>{{userSession.email}}</p>
+            <p>{{selectedCompany.companyName}}</p>
+            <p>Id: {{selectedCompany.companyId}}</p>
           </ion-label>
         </div>
         <div class="main-menu-content">
@@ -37,6 +34,11 @@
         </div>
       </div>
     </ion-content>
+    <ion-footer class="ion-no-border">
+      <ion-text color="primary">
+        <p>{{version}}</p>
+      </ion-text>
+    </ion-footer>
   </ion-menu>
   <ion-router-outlet id="menu-content" main></ion-router-outlet>
 </ion-split-pane>

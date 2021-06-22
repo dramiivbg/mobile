@@ -15,7 +15,7 @@
       </ion-button>
       <ion-button (click)="onGrid(true)" *ngIf="!grid">
         <ion-icon slot="icon-only" name="grid-outline" color="warning"></ion-icon>
-      </ion-button>      
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 
@@ -23,9 +23,9 @@
     <ion-item *ngFor="let mod of modules" class="ion-no-padding">
       <div class="module-item" (click)="onClick(mod)">
         <div class="module-item-icon">
-          <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">            
+          <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">
         </div>
-        <div class="module-item-title"> 
+        <div class="module-item-title">
           <h1>{{mod.description}}</h1>
         </div>
       </div>
@@ -40,10 +40,10 @@
             <h1>{{mod.description}}</h1>
           </div>
           <div class="module-item-icon">
-            <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">            
+            <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">
           </div>
-        </div>        
-      </ion-col>      
+        </div>
+      </ion-col>
     </ion-row>
   </ion-grid>
 

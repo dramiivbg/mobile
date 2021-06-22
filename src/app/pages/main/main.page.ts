@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterEvent } from '@angular/router';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Storage } from '@ionic/storage';
 
 // import services
 import { AuthService } from '@svc/auth.service';
+import { InterceptService } from '@svc/intercept.service';
 import { SK_SELECTED_COMPANY } from '@var/consts';
 
 export interface MenuItem {
@@ -22,6 +24,8 @@ export class MainPage implements OnInit {
 
   userSession: any = {};
   selectedCompany: any = {};
+  version: string = "";
+  avatar: string = "../../assets/img/img-robot.svg";
 
   menuContent: Array<MenuItem> = [
     {
@@ -57,24 +61,42 @@ export class MainPage implements OnInit {
   ];
   selectedPath = '';
 
-  constructor(private authService: AuthService,
+  constructor(private intServ: InterceptService,
+            private authService: AuthService,
             private router: Router,
-            private storage: Storage) {
+            private storage: Storage,
+            private appVersion: AppVersion) {
+    this.getVersion();
+    this.init();
+
+    this.intServ.avatar$.subscribe(
+      obj => {
+        this.userSession = obj;
+        if(this.userSession.avatar != null && this.userSession.avatar != undefined && this.userSession.avatar != '') {
+          this.avatar = this.userSession.avatar;
+        }
+      }
+    )
   }
 
-  async ngOnInit() {
+  async init() {
     await this.authService.getUserSession().then(
       res => {
         this.userSession = res;
+        if(this.userSession.avatar != null && this.userSession.avatar != undefined && this.userSession.avatar != '') {
+          this.avatar = this.userSession.avatar;
+        }
       }
     );
 
     this.storage.get(SK_SELECTED_COMPANY).then(
       res => {
-        this.selectedCompany = JSON
+        this.selectedCompany = JSON.parse(res);
       }
     )
+  }
 
+  async ngOnInit() {
     this.router.events.subscribe((event: RouterEvent) => {
       this.selectedPath = event.url;
     });
@@ -113,6 +135,16 @@ export class MainPage implements OnInit {
       res => {
         this.router.navigateByUrl('/login', { replaceUrl: true});
       }
+    );
+  }
+
+  getVersion(): void {
+    this.appVersion.getVersionNumber().then(
+      res => {
+        this.version = `v${res}`;
+      }
+    ).catch(
+      err => this.version = `v0.0`
     );
   }
 
