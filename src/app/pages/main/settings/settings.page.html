@@ -8,5 +8,22 @@
 </ion-header>
 
 <ion-content>
-<p>hola mundo</p>
+  <ion-list lines="full">
+    <ion-item (click)="onClick('profile')">
+      <ion-avatar slot="start">
+        <img [src]="avatar" />
+      </ion-avatar>
+      <ion-label>
+        <h2>{{userSession.userName}}</h2>
+        <p>{{userSession.email}}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" (click)="onClick('change-password')">
+      <ion-icon slot="start" name="key-outline"></ion-icon>
+      <ion-label>
+        <h2>Security</h2>
+        <p>Change password</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

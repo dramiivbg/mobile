@@ -14,9 +14,14 @@ import { SearchComponent } from './components/search/search.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { IonicStorageModule } from '@ionic/storage';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { Base64 } from '@ionic-native/base64/ngx';
+//import { File } from '@ionic-native/file/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Device } from '@ionic-native/device/ngx'
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 // import services
 import { InterceptService } from '@svc/intercept.service';
@@ -60,7 +65,14 @@ import { OfflineService } from '@svc/offline.service';
     Device,
     AppVersion,
     OfflineService,
-    SyncerpService
+    SyncerpService,
+    FileChooser,
+    FilePath,
+    Base64,
+    ScreenOrientation, {
+      provide: RouteReuseStrategy,
+      useClass: IonicRouteStrategy
+    }
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

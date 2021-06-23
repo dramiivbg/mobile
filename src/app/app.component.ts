@@ -1,8 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Plugins } from '@capacitor/core';
 const { App } = Plugins;
 
@@ -18,23 +16,27 @@ import { throwIfEmpty } from 'rxjs/operators';
 })
 
 export class AppComponent implements OnInit {
-  
+
   loadingPlure: boolean = false;
 
   constructor(
     private interceptService: InterceptService,
     private router: Router,
-    private zone: NgZone
-  ) {
+    private zone: NgZone,
+    private screenOrientation: ScreenOrientation) {
     this.initializeApp();
     this.initializeSubscribe();
+  }
+
+  lockPortrait() {
+    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
   }
 
   initializeApp() {
     this.onUniversalLink();
   }
-  
-  ngOnInit() {    
+
+  ngOnInit() {
   }
 
   onUniversalLink(): void{
@@ -43,9 +45,9 @@ export class AppComponent implements OnInit {
         const slug = data.url.split(".app").pop();
         if(slug)
           console.log(slug);
-      });    
-    });  
-  }  
+      });
+    });
+  }
 
   // Initializes observable methods.
   initializeSubscribe() {

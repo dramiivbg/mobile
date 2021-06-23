@@ -18,6 +18,14 @@ const routes: Routes = [
         loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
       },
       {
+        path: 'settings/profile',
+        loadChildren: () => import('./settings/profile/profile.module').then( m => m.ProfilePageModule)
+      },
+      {
+        path: 'settings/change-password',
+        loadChildren: () => import('./settings/change-password/change-password.module').then( m => m.ChangePasswordPageModule)
+      },
+      {
         path: 'init/sync',
         loadChildren: () => import('../../pages/init/sync/sync.module').then( m => m.SyncPageModule)
       },

@@ -18,12 +18,13 @@ ion-content.main {
                     display: inline-block;
                 }
             }
-            .txt-title {
-                color: $plure-label-color;
-                font-family: SourceSansProBold;
-                font-size: 25px;
-                padding: 10px 0 10px 5px;
-                text-transform: capitalize;
+            ion-label {
+                h1 {
+                    color: $plure-label-color;
+                    font-family: SourceSansProBold;
+                    font-size: 25px;
+                    text-transform: capitalize;
+                }
             }
         }
 
@@ -79,5 +80,15 @@ ion-content.main {
         font-weight: normal !important;
         font-size: 24px !important;
         line-height: 30px !important;
+    }
+}
+
+ion-footer {
+    ion-text {
+        text-align: right;
+        p {
+            color: $plure-label-color;
+            margin-right: 10px;
+        }
     }
 }

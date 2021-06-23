@@ -1,0 +1,23 @@
+div.avatar {
+    //height: 190px;
+    padding: 20px 0;
+
+    ion-avatar {
+        margin: 0 auto;
+        width: 150px;
+        height: 150px;
+    }
+
+    ion-fab-button {
+        position: relative;
+        top: -50px;
+        left: 60%;
+        border-radius: 50px !important;
+    }
+}
+
+ion-button {
+    margin-top: 20px;
+    width: 50%;
+    color: white;
+}
