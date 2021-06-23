@@ -6,6 +6,7 @@ import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+import { OfflineService } from '@svc/offline.service';
 import { SyncerpService } from '@svc/syncerp.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class SalesPagePage implements OnInit {
   sales: any = undefined;
   temporaly: any = undefined;
   session: any = {};
+  tempPerc: number;
 
   constructor(
     private syncerp: SyncerpService,
@@ -28,7 +30,8 @@ export class SalesPagePage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private moduleService: ModuleService,
-    private js: JsonService
+    private js: JsonService,
+    private offline: OfflineService
   ) {
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
@@ -50,11 +53,11 @@ export class SalesPagePage implements OnInit {
     this.session = (await this.js.getSession()).login;
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
+    await this.getTemp();
   }
 
   async onSalesList() {
     this.intServ.loadingFunc(true);
-    console.log(this.process);
     let obj = this.general.structSearch(this.salesList, `Search ${this.process.salesType}`, this.process.salesType, async (sell) => {
       let navigationExtras: NavigationExtras = {
         state: {
@@ -91,6 +94,26 @@ export class SalesPagePage implements OnInit {
     this.intServ.loadingFunc(false);
   }
 
+  async onTemp() {
+    this.intServ.loadingFunc(true);
+    let obj = this.general.structSearch(this.temporaly, `Search temp ${this.process.salesType}`, this.process.salesType, async (temp) => {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          temp,
+          new: false
+        }
+      };
+      this.router.navigate(['sales/sales-form'], navigationExtras);
+      setTimeout(
+        () => {
+          this.intServ.searchShowFunc({});
+        }, 1000
+      )
+    }, false, 1, this.process);
+    this.intServ.searchShowFunc(obj);
+    this.intServ.loadingFunc(false);
+  }
+
   /**
    * get customers
    * @returns 
@@ -104,6 +127,20 @@ export class SalesPagePage implements OnInit {
         resolve(customersArray);
       }
     )
+  }
+
+  async getTemp() {
+    let temporaly = await this.offline.getProcess('ProcessSalesOrders');
+    this.temporaly = temporaly.filter(
+      x => {
+        return (x.documentType === this.process.salesType);
+      }
+    )
+    if (this.temporaly.length > 0) {
+      this.tempPerc = ((this.temporaly.length * 10) / 100);
+    } else {
+      this.temporaly = null;
+    }
   }
 
 }

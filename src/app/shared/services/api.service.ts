@@ -5,6 +5,11 @@ import { Storage } from '@ionic/storage';
 
 import { OfflineService } from './offline.service';
 import { SK_USER_SESSION } from '@var/consts';
+import { debug } from 'console';
+import { promise } from 'protractor';
+import { EBUSY } from 'constants';
+import { disableDebugTools } from '@angular/platform-browser';
+import { timingSafeEqual } from 'crypto';
 
 @Injectable()
 export class ApiService {
@@ -76,14 +81,16 @@ export class ApiService {
                     .subscribe(
                     async (rsl: any) => {
                             await this.offline.setProcess(params.processMethod, rsl);
+                            await this.methods(params, true);
                             resolve(rsl);
                         },
                         async err => {
+                            let save = await this.methods(params);
+                            if (save !== null)  resolve(save);
                             let rsl = await this.offline.getProcess(params.processMethod);
                             if (rsl !== null) {
                                 resolve(rsl);
                             } else {
-                                console.log(222)
                                 reject(err);
                             }
                         }
@@ -111,5 +118,84 @@ export class ApiService {
         } catch (error) {}
 
         return headers;
+    }
+
+    async methods(params, typeMethod: boolean = false): Promise<any> {
+        switch(params.processMethod){
+            case 'ProcessSalesOrders':
+                if (!typeMethod)
+                    return await this.processSalesOrders(params);
+                else 
+                    return await this.processRemoveSalesTemp(params);
+            break;
+        }
+        return null;
+    }
+
+    async processRemoveSalesTemp(params): Promise<void> {
+        let jsonParams = JSON.parse(params.jsonRequest);
+        let parameters = jsonParams.Parameters;
+        if (parameters[0].SalesOrder !== undefined) {
+            let json = {
+                SalesOrder: parameters[0].SalesOrder,
+                id: parameters[0].SalesOrder,
+                parameters: parameters[0],
+            }
+            this.offline.removeProcessSales(params.processMethod, json);
+        }        
+    }
+
+    async processSalesOrders(params): Promise<any> {
+        let salesOrders: any = [];
+        let tempId: string;
+        let jsonParams = JSON.parse(params.jsonRequest);
+        let parameters = jsonParams.Parameters;
+        if (parameters[0].SalesOrder === undefined) 
+            tempId = 'TEMP_' + (await this.generateId(10));
+        else 
+            tempId = parameters[0].SalesOrder;
+        let json = {
+            SalesOrder: tempId,
+            id: tempId,
+            value: parameters[0].customerName, 
+            documentType: parameters[0].documentType,
+            salesPerson: parameters[0].salesPerson,
+            parameters: parameters[0],
+            fields: {
+                SelltoCustomerNo: parameters[0].customerNo,
+                DocumentDate: parameters[0].orderDate
+            },
+            temp: true
+        }
+        salesOrders = await this.offline.getProcess(params.processMethod);
+        if (salesOrders !== undefined && salesOrders !== null) {
+            let salesOrder = salesOrders.find(x => x.id === json.id);
+            if (salesOrder !== null && salesOrder !== undefined) {
+                let edit = await this.offline.editProcessSales(params.processMethod, json);
+                if (edit) return json; else return null;
+            } else {
+                if (salesOrders.length === 0) salesOrders = [];
+                salesOrders.push(json);
+            }
+        } else {
+            salesOrders = [];
+            salesOrders.push(json);
+        }
+        await this.offline.setProcessSalesOrder(params.processMethod, salesOrders);
+        return json;
+    }
+
+    async generateId(n: Number = 10): Promise<string> {
+        let id: string = '';
+        let letters = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        for (let i = 0; i < n; i++) {
+            let num = this.getRandomInt(0, letters.length - 1);
+            id += letters.substr(num, 1);
+        }
+        return id;
+    }
+
+    private getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
     }
 }

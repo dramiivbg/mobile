@@ -25,6 +25,7 @@ export class GeneralService {
 
   // Create List sales ordeer
   async salesOrderList(lists: any) : Promise<any> {
+    console.log(lists);
     let objLst = [];
     for(let i in lists) {
       let obj = {};

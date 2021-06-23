@@ -90,10 +90,10 @@
   <ion-row class="title">
     <ion-col>Temporaly</ion-col>
   </ion-row>
-  <ion-row *ngIf="temporaly != undefined">
+  <ion-row *ngIf="temporaly != null">
     <ion-col>
       <div class="list-orders">
-        <ion-input>
+        <ion-input (click)="onTemp()">
           <div class="btn-list-orders">
             <ion-row>
               <ion-col>
@@ -103,7 +103,7 @@
                   </div>
                   <div class="txt-temporaly">Times</div>
                   <div class="progress-temporaly">
-                    <ion-progress-bar value="0.01"></ion-progress-bar>
+                    <ion-progress-bar value="{{tempPerc}}"></ion-progress-bar>
                   </div>
                 </div>
               </ion-col>
@@ -113,7 +113,7 @@
       </div>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="temporaly == undefined">
+  <ion-row *ngIf="temporaly == null">
     <ion-col>
       <div class="list-orders">
         <ion-input>
@@ -126,7 +126,7 @@
                   </div>
                   <div class="txt-temporaly">Times</div>
                   <div class="progress-temporaly">
-                    <ion-progress-bar value="0.01"></ion-progress-bar>
+                    <ion-progress-bar value="0"></ion-progress-bar>
                   </div>
                 </div>
               </ion-col>

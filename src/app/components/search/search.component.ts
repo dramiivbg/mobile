@@ -12,6 +12,7 @@ import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+import { OfflineService } from '@svc/offline.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_PROCESSTYPE } from '@var/enums';
 import { runInThisContext } from 'vm';
@@ -43,7 +44,8 @@ export class SearchComponent implements OnInit {
     private router: Router,
     private intServ: InterceptService,
     private js: JsonService,
-    private moduleService: ModuleService
+    private moduleService: ModuleService,
+    private offline: OfflineService
   ) {
     platform.ready().then(
       () => {
@@ -160,15 +162,20 @@ export class SearchComponent implements OnInit {
   async onDeleteLine(sell, i) {
     this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
       async () =>{
-        this.intServ.loadingFunc(true);
-        let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
-        let dropOrder = await this.syncerp.setRequest(params);
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
-          () => {
-            this.listsFilter.splice(i, 1);
-          }
-        ));
+        if (sell.parameters === undefined) {
+          this.intServ.loadingFunc(true);
+          let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
+          let dropOrder = await this.syncerp.setRequest(params);
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
+            () => {
+              this.listsFilter.splice(i, 1);
+            }
+          ));
+        } else {
+          this.offline.removeProcessSales('ProcessSalesOrders', this.listsFilter[i]);
+          this.listsFilter.splice(i, 1);
+        }
       }
     ));
   }

@@ -64,7 +64,12 @@ export class SyncerpService {
       .postData('erp', 'processrequest', obj)
       .then(
         rsl => {
-          var obj = JSON.parse(rsl.value);
+          let obj: any = {};
+          if (rsl.temp !== undefined) {
+            obj = rsl;
+          } else {
+            obj = JSON.parse(rsl.value);
+          }
           value = obj;
         }
       )

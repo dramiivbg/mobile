@@ -34,6 +34,21 @@ export class OfflineService {
   }
 
   /**
+   * Set methods for event
+   * @param method 
+   * @param event 
+   */
+   async setProcessSalesOrder(method: string, obj: Array<any>) : Promise<boolean> {
+    if (method === undefined || method === null || method.length === 0) return null;
+    await this.sqLite.init();
+    await this.sqLite.openStorageOptions();
+    let store = await this.sqLite.openStore();
+    if (store) {
+      await this.sqLite.setItem(method, JSON.stringify(obj));
+    }
+  }
+
+  /**
    * Get method process.
    * @param method 
    * @returns 
@@ -51,6 +66,38 @@ export class OfflineService {
       }
     }
     return null;
+  }
+
+  /**
+   * Remove process for sales
+   * @param method 
+   * @param obj 
+   * @returns 
+   */
+  async removeProcessSales(method: string, obj: any): Promise<boolean> {
+    let removeBool = false;
+    let list = await this.getProcess(method);
+    for(let l in list) {
+      if (list[l].id === obj.id && !removeBool) {
+        list.splice(l, 1);
+        removeBool = true;
+      }
+    }
+    await this.setProcessSalesOrder(method, list);
+    return removeBool;
+  }
+
+  async editProcessSales(method: string, obj: any): Promise<boolean> {
+    let editBool = false;
+    let list = await this.getProcess(method);
+    for(let l in list) {
+      if (list[l].id === obj.id && !editBool) {
+        list[l] = obj;
+        editBool = true;
+      }
+    }
+    await this.setProcessSalesOrder(method, list);
+    return editBool;
   }
 
   async getAll() {

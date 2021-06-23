@@ -33,8 +33,10 @@ export class SalesFormPage implements OnInit {
   edit: boolean = false;
   permissions: Array<E_PROCESSTYPE>;
   order: any = {};
+  temp: any = {};
   unitMeasureList: any = [];
   process: Process;
+  idSales: string;
   
   frm = new FormGroup({});
   orderDate: string = new Date().toDateString();
@@ -80,7 +82,10 @@ export class SalesFormPage implements OnInit {
           await this.setCustomer();
         } else {
           this.order = this.router.getCurrentNavigation().extras.state.order;
+          this.temp = this.router.getCurrentNavigation().extras.state.temp;
           await this.initForm();
+          console.log(this.order);
+          console.log(this.temp);
         }
       } else {
         this.initNew();
@@ -133,16 +138,30 @@ export class SalesFormPage implements OnInit {
    * Get sales
    */
   async initSalesOrder() {
-    console.log(this.order);
-    this.frm.controls.shippingName.setValue(this.order.fields.ShiptoName);
-    this.frm.controls.shippingNo.setValue(this.order.fields.ShiptoCode);
-    this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
-    this.frm.controls.customerName.setValue(this.order.fields.SelltoCustomerName);
-    this.frm.controls.orderDate.setValue(this.order.fields.OrderDate);
-    this.frm.controls.requestedDeliveryDate.setValue(this.order.fields.RequestedDeliveryDate);
-    this.frm.addControl('lines', this.formBuilder.array([]));
-    this.frm.controls.lines = await this.setSalesOrderLines(this.order.lines);
-    this.setTotals();
+    if (this.order !== undefined) {
+      this.idSales = this.order.id;
+      this.frm.controls.shippingName.setValue(this.order.fields.ShiptoName);
+      this.frm.controls.shippingNo.setValue(this.order.fields.ShiptoCode);
+      this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
+      this.frm.controls.customerName.setValue(this.order.fields.SelltoCustomerName);
+      this.frm.controls.orderDate.setValue(this.order.fields.OrderDate);
+      this.frm.controls.requestedDeliveryDate.setValue(this.order.fields.RequestedDeliveryDate);
+      this.frm.addControl('lines', this.formBuilder.array([]));
+      this.frm.controls.lines = await this.setSalesOrderLines(this.order.lines);
+      this.setTotals();
+    } else {
+      this.idSales = this.temp.id;
+      this.frm.controls.id.setValue(this.temp.parameters.id);
+      this.frm.controls.shippingName.setValue(this.temp.parameters.shippingName);
+      this.frm.controls.shippingNo.setValue(this.temp.parameters.shippingNo);
+      this.frm.controls.customerNo.setValue(this.temp.parameters.customerNo);
+      this.frm.controls.customerName.setValue(this.temp.value);
+      this.frm.controls.orderDate.setValue(this.temp.parameters.orderDate);
+      this.frm.controls.requestedDeliveryDate.setValue(this.temp.parameters.requestedDeliveryDate);
+      this.frm.addControl('lines', this.formBuilder.array([]));
+      this.frm.controls.lines = await this.setTempSalesLines(this.temp.parameters.lines);
+      this.setTotals();
+    }
   }
 
   /**
@@ -329,6 +348,7 @@ export class SalesFormPage implements OnInit {
     if (this.new || this.edit) {
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Are you sure you want to leave?',
         () => {
+          this.onReset();
           this.router.navigate(['sales/sales-main']);
         }
       ));
@@ -343,8 +363,11 @@ export class SalesFormPage implements OnInit {
     this.intServ.loadingFunc(true);
     try {
       if (this.frm.valid) {
-        this.jsonServ.formToJson(this.frm, ['picture', 'shippingName', 'customerName', 'categoryNo', 'title']).then(
+        this.jsonServ.formToJson(this.frm, ['picture', 'categoryNo', 'title']).then(
           async json => {
+            if (this.order === undefined || this.order === null) {
+              json['SalesOrder'] = this.temp.id;
+            }
             json['salesPerson'] = this.module.erpUserId;
             json['orderDate'] = json['orderDate'].substring(0, 10);
             json['documentType'] = this.salesType;
@@ -352,8 +375,12 @@ export class SalesFormPage implements OnInit {
             json['documentDate'] = json.orderDate;
             json['requestedDeliveryDate'] = json.requestedDeliveryDate.substring(0, 10);
             if (!this.new) {
-              json['documentNo'] = this.order.fields.No;
-              process = await this.syncerp.processRequestParams('UpdateSalesOrders', [json]);
+              if (this.order !== undefined && this.order !== null) {
+                json['documentNo'] = this.order.fields.No;
+                process = await this.syncerp.processRequestParams('UpdateSalesOrders', [json]);
+              } else {
+                process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);  
+              }
             } else
               process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
             if (json.lines.length > 0) {
@@ -363,7 +390,7 @@ export class SalesFormPage implements OnInit {
                 this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
               } else {
                 this.frm.reset();
-                this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The order No. ${salesOrder.SalesOrder} has been created successfully`, () => {
+                this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
                   this.router.navigate(['modules']);
                 }));
               }
@@ -560,6 +587,38 @@ export class SalesFormPage implements OnInit {
     return arr;
   }
 
+  /**
+   * temp sales lines
+   * @param lines 
+   * @returns 
+   */
+   async setTempSalesLines(lines) {
+    let arr = new FormArray([]);
+    for(let i in lines) {
+      let item = await this.allItems.find(x => (x.id === lines[i].id));
+      await this.addItem(item, false);
+      arr.push(
+        this.formBuilder.group({
+          title: item.value,
+          id: lines[i].id,
+          type: lines[i].type,
+          categoryNo: '',
+          quantity: lines[i].quantity,
+          unitPrice: lines[i].unitPrice,
+          total: lines[i].total,
+          totalWithoutDiscount: lines[i].totalWithoutDiscount,
+          picture: (item !== undefined) ? `data:image/jpeg;base64,${item.fields.Picture}` : 'data:image/jpeg;base64,NOIMAGE',
+          unitOfMeasureCode: lines[i].unitOfMeasureCode,
+          lineDiscountAmount: lines[i].lineDiscountAmount,
+          lineDiscountPercentage: lines[i].lineDiscountPercentage
+        })
+      );
+      this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
+      this.listPrices[arr.length - 1] = item.priceListC;
+    }
+    return arr;
+  }
+
   setLines2(item) {
     return {
       title: item.value,
@@ -591,7 +650,6 @@ export class SalesFormPage implements OnInit {
     let process = await this.syncerp.processRequest('GetItemCategories', "0", "", "");
     let categories = await this.syncerp.setRequest(process);
     this.categories = await this.general.categories(categories.Categories);
-    console.log(this.categories);
     this.categories.forEach(
       category => {
         category.items.forEach(
