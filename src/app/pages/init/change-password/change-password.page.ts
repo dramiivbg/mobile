@@ -45,7 +45,6 @@ export class ChangePasswordPage implements OnInit {
   }
 
   matchingPasswords(newPassword: string, confirmNewPassword: string) {
-    debugger
     return (group: FormGroup): {[key: string]: any} => {
       let password = group.controls[newPassword];
       let confirmPassword = group.controls[confirmNewPassword];
