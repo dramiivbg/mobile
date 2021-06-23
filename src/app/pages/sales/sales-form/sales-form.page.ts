@@ -12,6 +12,9 @@ import { ModuleService } from '@svc/gui/module.service';
 import { E_PROCESSTYPE } from '@var/enums';
 import { Module, Process } from '@mdl/module';
 
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
+
 @Component({
   selector: 'app-sales-form',
   templateUrl: './sales-form.page.html',
@@ -66,7 +69,10 @@ export class SalesFormPage implements OnInit {
     private barcodeScanner: BarcodeScanner,
     private moduleService: ModuleService
   ) { 
-    
+    App.removeAllListeners(); 
+    App.addListener('backButton', () => {
+      this.onBack();
+    });
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
     this.salesType = this.process.salesType;

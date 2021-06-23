@@ -11,6 +11,9 @@ import { JsonService } from '@svc/json.service';
 // import vars
 import { SK_SELECTED_COMPANY, SK_USER_SESSION } from '@var/consts';
 
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
+
 @Component({
   selector: 'app-change-company',
   templateUrl: './change-company.page.html',
@@ -27,7 +30,13 @@ export class ChangeCompanyPage implements OnInit {
     private intServ: InterceptService,
     private authService: AuthService,
     private jsonServ: JsonService,
-    private router: Router) { }
+    private router: Router
+  ) { 
+    App.removeAllListeners();
+    App.addListener('backButton', () => {
+      this.onBack();
+    });
+  }
 
   ngOnInit() {
     this.init();
@@ -63,6 +72,13 @@ export class ChangeCompanyPage implements OnInit {
         this.intServ.loadingFunc(false);
       }
     )
+  }
+
+  /**
+   * Return to the modules.
+   */
+   onBack() {
+    this.router.navigate(['modules']);
   }
 
   onChangeCompany(company: any) {

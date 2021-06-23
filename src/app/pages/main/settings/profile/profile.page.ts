@@ -14,6 +14,7 @@ import { JsonService } from '@svc/json.service';
 import { Router } from '@angular/router';
 
 const { Filesystem } = Plugins;
+const { App } = Plugins;
 
 
 @Component({
@@ -36,14 +37,19 @@ export class ProfilePage implements OnInit {
     private apiService: ApiService,
     private intServ: InterceptService,
     private jsonServ: JsonService,
-    private router: Router) {
-      this.frm = this.formBuilder.group(
-        {
-          UserName: ['', Validators.required],
-          Email: ['', Validators.required]
-        }
-      )
-    }
+    private router: Router) 
+  {
+    App.removeAllListeners();
+    App.addListener('backButton', () => {
+      this.onBack();
+    });
+    this.frm = this.formBuilder.group(
+      {
+        UserName: ['', Validators.required],
+        Email: ['', Validators.required]
+      }
+    )
+  }
 
   ngOnInit() {
     this.init();
@@ -60,6 +66,13 @@ export class ProfilePage implements OnInit {
         this.intServ.loadingFunc(false);
       }
     )
+  }
+
+  /**
+    * Return to the main/settings.
+    */
+  onBack() {
+    this.router.navigate(['main/settings']);
   }
 
   onSubmit() {

@@ -12,6 +12,9 @@ import { JsonService } from '@svc/json.service';
 // import vars
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION } from '@var/consts';
 
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
+
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.page.html',
@@ -31,7 +34,14 @@ export class ChangePasswordPage implements OnInit {
     private storage: Storage,
     private apiService: ApiService,
     private jsonServ: JsonService,
-    private router: Router) {
+    private router: Router
+  ) 
+  {
+    App.removeAllListeners();
+    App.addListener('backButton', () => {
+      if (this.router.url === '/change-password') this.onBack();
+    });
+    
     this.frm = this.formBuilder.group({
       LastPassword: ['', Validators.required],
       NewPassword: ['', Validators.required],
@@ -67,6 +77,13 @@ export class ChangePasswordPage implements OnInit {
       }
     );
   }
+
+   /**
+   * Return to the main/settings.
+   */
+    onBack() {
+      this.router.navigate(['main/settings']);
+    }
 
   onSubmit() {
     {

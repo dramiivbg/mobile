@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@svc/auth.service';
 
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
+
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
@@ -13,7 +16,12 @@ export class SettingsPage implements OnInit {
   avatar: string = "../../../../assets/img/img-robot.svg"
 
   constructor(private authService: AuthService,
-    private router: Router) {
+    private router: Router) 
+  {
+    App.removeAllListeners();
+    App.addListener('backButton', () => {
+      this.onBack();
+    });
     this.init();
   }
 
@@ -29,6 +37,13 @@ export class SettingsPage implements OnInit {
         }
       }
     )
+  }
+
+  /**
+    * Return to the modules.
+    */
+  onBack() {
+    this.router.navigate(['modules']);
   }
 
   onClick(setting: string) {

@@ -1,8 +1,5 @@
-import { computeMsgId } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { JsonService } from '@svc/json.service';
-import { copyFileSync } from 'fs';
 import { __awaiter } from 'tslib';
 
 // import services
@@ -13,7 +10,10 @@ import { ModuleService } from '@svc/gui/module.service';
 
 // import vars
 import { E_MODULETYPE } from '@var/enums';
-import { timeStamp } from 'console';
+import { Plugins } from '@capacitor/core';
+import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
+const { App } = Plugins;
 
 export interface Module {  
   description: string,
@@ -31,10 +31,23 @@ export class ModulesPage implements OnInit {
   modules: any = [];  
   environment: any = {};
   
-  constructor(private router: Router,
-    private sqLite: SqlitePlureService,
-    private authService: AuthService,
-    private moduleService: ModuleService) { }
+  constructor(private router: Router
+    , private sqLite: SqlitePlureService
+    , private authService: AuthService
+    , private moduleService: ModuleService
+    , private intServ: InterceptService
+    , private js: JsonService
+  ) 
+  {
+    App.removeAllListeners(); 
+    App.addListener('backButton', () => {
+      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+        () => {
+          App.exitApp();
+        }
+      ));
+    });
+  }
 
   async ngOnInit() {
     this.authService.getUserSession()
@@ -57,8 +70,8 @@ export class ModulesPage implements OnInit {
         //   });          
         // });
       }
-    );    
-  }  
+    );
+  }
 
   /**
    * Grid

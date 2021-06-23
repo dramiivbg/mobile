@@ -15,9 +15,11 @@ import { ApiService } from '@svc/api.service';
 import { JsonService } from '@svc/json.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 
-
 // import vars
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts';
+
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
 
 
 @Component({
@@ -40,7 +42,16 @@ export class EnvironmentsPage implements OnInit {
     , private device: Device    
     , private barcodeScanner: BarcodeScanner
     , private appVersion: AppVersion
-  ) { 
+    , private js: JsonService
+  ) {
+    App.removeAllListeners(); 
+    App.addListener('backButton', () => {
+      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+        () => {
+          App.exitApp();
+        }
+      ));
+    });
     this.frm = this.formBuilder.group(
       {
         CustomerId: ['', Validators.required]

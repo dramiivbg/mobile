@@ -1,4 +1,3 @@
-import { CommentStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Module, Process } from '@mdl/module';
@@ -8,6 +7,9 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
 import { SyncerpService } from '@svc/syncerp.service';
+
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
 
 @Component({
   selector: 'app-sales-page',
@@ -33,6 +35,10 @@ export class SalesPagePage implements OnInit {
     private js: JsonService,
     private offline: OfflineService
   ) {
+    App.removeAllListeners();
+    App.addListener('backButton', () => {
+      this.onBack();
+    });
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
         this.salesList = this.router.getCurrentNavigation().extras.state.salesList;
@@ -112,6 +118,13 @@ export class SalesPagePage implements OnInit {
     }, false, 1, this.process);
     this.intServ.searchShowFunc(obj);
     this.intServ.loadingFunc(false);
+  }
+
+  /**
+   * Return to the modules.
+   */
+   onBack() {
+    this.router.navigate(['modules']);
   }
 
   /**

@@ -19,6 +19,9 @@ import { AuthService } from '@svc/auth.service';
 // import vars
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts';
 
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -43,10 +46,16 @@ export class LoginPage implements OnInit {
     private storage: Storage,
     private device: Device,
     private authSvc: AuthService,
-    private appVersion: AppVersion) {
+    private appVersion: AppVersion
+  ) 
+  {
+    App.removeAllListeners(); 
+    App.addListener('backButton', () => {
+      this.onBack();
+    });
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
-      {
+    {
         EnviromentId: ['', Validators.required],
         User: ['', Validators.required],
         Password: ['', Validators.required],
@@ -138,6 +147,7 @@ export class LoginPage implements OnInit {
 
   onBack() {
     this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
+    this.router.navigate(['environments']);
   }
 
   onChangeUser(event: any){
