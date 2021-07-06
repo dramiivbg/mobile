@@ -11,8 +11,8 @@
   <ion-row class="avatar">
     <ion-col size="3" class="avatar-img">
       <ion-avatar>
-        <img *ngIf="session.avatar == ''" src="../../../../assets/img/img-robot.svg" />
-        <img *ngIf="session.avatar != ''" src="{{session.avatar}}" />                  
+        <img *ngIf="session.avatar == '' || session.avatar == null" src="../../../../assets/img/img-robot.svg" />
+        <img *ngIf="session.avatar != '' && session.avatar != null" src="{{session.avatar}}" />
       </ion-avatar>
     </ion-col>
     <ion-col class="avatar-txt">
@@ -23,7 +23,7 @@
   <ion-list class="list">
     <ion-row *ngFor="let process of module.processes" (click)="onSales(process)" >
       <ion-col size="6">
-        <ion-label>{{process.processName}}</ion-label>
+        <ion-label>{{process.description}}</ion-label>
       </ion-col>
       <ion-col class="list-txt-bold">
         <ion-label *ngIf="process.processId == 'P001'">{{salesCount.Count_Order}}</ion-label>

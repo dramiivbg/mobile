@@ -133,7 +133,7 @@ export class MainPage implements OnInit {
   async onSignout() {
     this.authService.signout().then(
       res => {
-        this.router.navigateByUrl('/login', { replaceUrl: true});
+        this.router.navigate(['login'], { replaceUrl: true});
       }
     );
   }

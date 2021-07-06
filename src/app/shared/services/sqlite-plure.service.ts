@@ -97,10 +97,14 @@ export class SqlitePlureService {
    * @returns
    */
   async getAllKeysValues(): Promise<Array<any>> {
-    if(this.isService) {
-      const {keysvalues} = await this.store.keysvalues();
-      return keysvalues;
-    } else {
+    try {
+      if(this.isService) {
+        const {keysvalues} = await this.store.keysvalues();
+        return keysvalues;
+      } else {
+        return null;
+      } 
+    } catch (error) {
       return null;
     }
   }

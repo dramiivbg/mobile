@@ -1,5 +1,7 @@
 import { HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { SK_OFFLINE } from '@var/consts';
 import { SqlitePlureService } from './sqlite-plure.service';
 
 @Injectable()
@@ -13,7 +15,8 @@ export class OfflineService {
   ]
 
   constructor(
-    private sqLite: SqlitePlureService
+    private sqLite: SqlitePlureService,
+    private storage: Storage
   ) { }
 
   /**
@@ -59,6 +62,7 @@ export class OfflineService {
     await this.sqLite.openStorageOptions();
     let store = await this.sqLite.openStore();
     if (store) {
+      this.addOfflineBool(method);
       let obj: any =  await this.sqLite.getItem(method);
       if (obj !== null) {
         let event: HttpEvent<any> = JSON.parse(obj);
@@ -104,6 +108,25 @@ export class OfflineService {
     await this.sqLite.init();
     await this.sqLite.openStorageOptions();
     let test = await this.sqLite.getAllKeysValues();
+  }
+
+  async removeAll() {
+    await this.sqLite.init();
+    await this.sqLite.openStorageOptions();
+    let keys  = await this.sqLite.getAllKeysValues();
+    for (let i in keys){
+      await this.sqLite.removeItem(keys[i].key);
+    }
+  }
+
+  /**
+   * offline true|false
+   * @param method 
+   */
+  private async addOfflineBool(method) {
+    if (this.methods.indexOf(method) !== -1) {
+      this.storage.set(SK_OFFLINE, true);
+    }
   }
 
 }

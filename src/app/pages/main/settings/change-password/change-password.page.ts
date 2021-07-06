@@ -37,10 +37,12 @@ export class ChangePasswordPage implements OnInit {
     private router: Router
   ) 
   {
-    App.removeAllListeners();
-    App.addListener('backButton', () => {
-      if (this.router.url === '/change-password') this.onBack();
-    });
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
     
     this.frm = this.formBuilder.group({
       LastPassword: ['', Validators.required],
@@ -82,7 +84,7 @@ export class ChangePasswordPage implements OnInit {
    * Return to the main/settings.
    */
     onBack() {
-      this.router.navigate(['main/settings']);
+      this.router.navigate(['main/settings'], {replaceUrl: true});
     }
 
   onSubmit() {

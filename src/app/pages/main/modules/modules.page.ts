@@ -10,9 +10,10 @@ import { ModuleService } from '@svc/gui/module.service';
 
 // import vars
 import { E_MODULETYPE } from '@var/enums';
-import { Plugins } from '@capacitor/core';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+
+import { Plugins } from '@capacitor/core';
 const { App } = Plugins;
 
 export interface Module {  
@@ -39,14 +40,16 @@ export class ModulesPage implements OnInit {
     , private js: JsonService
   ) 
   {
-    App.removeAllListeners(); 
-    App.addListener('backButton', () => {
-      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
-        () => {
-          App.exitApp();
-        }
-      ));
-    });
+    let objBack = {
+      func: () => {
+        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+          () => {
+            App.exitApp();
+          }
+        ));
+      }
+    }
+    this.intServ.appBackFunc(objBack);
   }
 
   async ngOnInit() {
@@ -60,15 +63,6 @@ export class ModulesPage implements OnInit {
           obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
           this.modules.push(obj);      
         }
-        // this.environment.modules.forEach((module: any) => {
-        //   let moduleType: E_MODULETYPE = module.moduleType;
-          
-        //   this.modules.push({            
-        //     description: module.description,
-        //     icon: E_MODULETYPE[moduleType].toLowerCase(),
-        //     moduleType: moduleType
-        //   });          
-        // });
       }
     );
   }
@@ -108,9 +102,10 @@ export class ModulesPage implements OnInit {
     let navigationExtras: NavigationExtras = {
       state: {
         module
-      }
+      },
+      replaceUrl: true
     };
-    this.router.navigate(['sales/sales-main'], navigationExtras);    
+    this.router.navigate(['sales/sales-main'], navigationExtras);
   }
 
   async onTestSqLite() {

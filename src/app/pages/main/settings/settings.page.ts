@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '@svc/auth.service';
 
 import { Plugins } from '@capacitor/core';
+import { InterceptService } from '@svc/intercept.service';
 const { App } = Plugins;
 
 @Component({
@@ -15,13 +16,16 @@ export class SettingsPage implements OnInit {
   userSession: any = {}
   avatar: string = "../../../../assets/img/img-robot.svg"
 
-  constructor(private authService: AuthService,
-    private router: Router) 
-  {
-    App.removeAllListeners();
-    App.addListener('backButton', () => {
-      this.onBack();
-    });
+  constructor(private authService: AuthService
+    , private router: Router
+    , private intServ: InterceptService
+  ) {
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
     this.init();
   }
 
@@ -43,7 +47,7 @@ export class SettingsPage implements OnInit {
     * Return to the modules.
     */
   onBack() {
-    this.router.navigate(['modules']);
+    this.router.navigate(['modules'], {replaceUrl: true});
   }
 
   onClick(setting: string) {

@@ -44,14 +44,16 @@ export class EnvironmentsPage implements OnInit {
     , private appVersion: AppVersion
     , private js: JsonService
   ) {
-    App.removeAllListeners(); 
-    App.addListener('backButton', () => {
-      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
-        () => {
-          App.exitApp();
-        }
-      ));
-    });
+    let objBack = {
+      func: () => {
+        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+          () => {
+            App.exitApp();
+          }
+        ));
+      }
+    }
+    this.intServ.appBackFunc(objBack);
     this.frm = this.formBuilder.group(
       {
         CustomerId: ['', Validators.required]
@@ -79,8 +81,8 @@ export class EnvironmentsPage implements OnInit {
       }
     )
     .catch(error => {
-      console.log(error);
-      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${JSON.stringify(error)}`));
+      error = error.error;
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${error.message}`));
       this.intServ.loadingFunc(false);
     });
   }

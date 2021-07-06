@@ -7,4 +7,5 @@ export const SK_SELECTED_MODULE = 'SELECTED_MODULE';
 export const SK_SELECTED_PROCESS = 'SELECTED_PROCESS';
 export const SK_REMEMBER_ME = 'REMEMBER_ME';
 export const SK_USER_LOGIN = 'USER_LOGIN';
+export const SK_OFFLINE = 'OFFLINE';
 

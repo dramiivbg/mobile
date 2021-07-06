@@ -38,21 +38,22 @@ export class LoginPage implements OnInit {
   public environments: Array<any> = [];
   frm: FormGroup;
 
-  constructor(private intServ: InterceptService,
-    private apiConnect: ApiService,
-    private formBuilder: FormBuilder,
-    private jsonServ: JsonService,
-    private router: Router,
-    private storage: Storage,
-    private device: Device,
-    private authSvc: AuthService,
-    private appVersion: AppVersion
-  ) 
-  {
-    App.removeAllListeners(); 
-    App.addListener('backButton', () => {
-      this.onBack();
-    });
+  constructor(private intServ: InterceptService
+    , private apiConnect: ApiService
+    , private formBuilder: FormBuilder
+    , private jsonServ: JsonService
+    , private router: Router
+    , private storage: Storage
+    , private device: Device
+    , private authSvc: AuthService
+    , private appVersion: AppVersion  
+  ) {
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
     {
@@ -140,14 +141,14 @@ export class LoginPage implements OnInit {
       `Do you want to change company ?`,
       () => {
         this.storage.remove(SK_SESSION_CUSTOMER_ID);
-        this.router.navigateByUrl('enviroments');
+        this.router.navigate(['enviroments'], {replaceUrl: true});
       })
     );
   }
 
   onBack() {
     this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
-    this.router.navigate(['environments']);
+    this.router.navigate(['environments'], {replaceUrl: true});
   }
 
   onChangeUser(event: any){

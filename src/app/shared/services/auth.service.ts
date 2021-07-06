@@ -5,6 +5,7 @@ import { JwtHelperService} from '@auth0/angular-jwt';
 // import vars
 import { SK_REMEMBER_ME, SK_SELECTED_COMPANY, SK_SELECTED_MODULE, SK_USER_LOGIN, SK_USER_SESSION } from '@var/consts';
 import { BehaviorSubject } from 'rxjs';
+import { OfflineService } from './offline.service';
 
 const helper = new JwtHelperService();
 
@@ -16,7 +17,9 @@ export class AuthService {
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   private userSession: any = {};
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage
+    , private offline: OfflineService
+  ) {
     this.checkUserSession();
   }
 
@@ -54,6 +57,7 @@ export class AuthService {
   async signout(): Promise<any> {
     this.isAuthenticated.next(false);
     this.storage.remove(SK_SELECTED_MODULE);
+    this.offline.removeAll();
     return this.storage.remove(SK_USER_SESSION);
   }
 }

@@ -32,10 +32,12 @@ export class ChangeCompanyPage implements OnInit {
     private jsonServ: JsonService,
     private router: Router
   ) { 
-    App.removeAllListeners();
-    App.addListener('backButton', () => {
-      this.onBack();
-    });
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
   }
 
   ngOnInit() {
@@ -52,6 +54,7 @@ export class ChangeCompanyPage implements OnInit {
     await this.storage.get(SK_USER_SESSION).then(
       res => {
         this.userSession = JSON.parse(res);
+        console.log(this.userSession.environment.companies);
         this.otherCompanies = this.userSession.environment.companies.filter((c: any) => c.companyId != this.selectedCompany.companyId);
       }
     )
@@ -84,6 +87,7 @@ export class ChangeCompanyPage implements OnInit {
   onChangeCompany(company: any) {
     this.intServ.alertFunc(this.jsonServ.getAlert('confirm', 'Confirm', `Do you want to change company ${company.companyName}?`,
       () => {
+        console.log(company);
         this.intServ.loadingFunc(true);
         this.storage.set(SK_SELECTED_COMPANY, JSON.stringify(company)).then(
           res => {

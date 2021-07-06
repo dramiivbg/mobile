@@ -4,12 +4,13 @@ import { environment} from '@env/environment';
 import { Storage } from '@ionic/storage';
 
 import { OfflineService } from './offline.service';
-import { SK_USER_SESSION } from '@var/consts';
+import { SK_OFFLINE, SK_USER_SESSION } from '@var/consts';
 import { debug } from 'console';
 import { promise } from 'protractor';
 import { EBUSY } from 'constants';
 import { disableDebugTools } from '@angular/platform-browser';
 import { timingSafeEqual } from 'crypto';
+import { ChildrenOutletContexts } from '@angular/router';
 
 @Injectable()
 export class ApiService {
@@ -79,7 +80,8 @@ export class ApiService {
                 subscription = this.httpClient
                     .post(url, params, { headers : headers })
                     .subscribe(
-                    async (rsl: any) => {
+                        async (rsl: any) => {
+                            this.storage.set(SK_OFFLINE, false);
                             await this.offline.setProcess(params.processMethod, rsl);
                             await this.methods(params, true);
                             resolve(rsl);

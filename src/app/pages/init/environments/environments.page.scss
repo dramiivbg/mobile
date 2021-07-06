@@ -74,7 +74,7 @@ div.intro {
     }
 
     div.space-blank {                
-        height: calc( 100vh * 0.04);
+        height: calc( 50vh * 0.04);
     }
 
     ion-button.plure-button {
@@ -87,22 +87,42 @@ div.intro {
         line-height: 23px;
         width: 57.25% !important;
         height: 40px;
+        text-transform: none;
     }
 
     div.plure-footer {        
         color: $plure-label-color;                
-        margin: calc(100vh * 0.214) 9.25% 10px 9.25%; 
+        margin: calc(50vh * 0.214) 0 10px 0;
         text-align: center;        
         font-size: 13px;
         line-height: 16.34px;
 
         div.plure-footer-hp {
             margin-top: 17px;
+            margin: 0 9.5% 0 9.5%; 
             border-top: 1px solid $plure-init-input-bg;
             a {
                 display: inline-block;
                 margin: 6px 0px 0px 0px !important;  
                 color: $plure-label-color;                               
+            }
+        }
+        div.plure-new-account {
+            ion-button {
+                margin-bottom: 31px !important;
+            }
+        }
+        div.plure-or {
+            margin: -17% 9.5% 8% 9.5%; 
+            border-top: 1px solid $plure-init-input-bg;
+            text-align: center;
+            position: relative;
+            div.plure-or2 {
+                background-color: #fff;
+                margin: -10px 0 0 -15px;
+                display: inline-block;
+                position: absolute;
+                padding: 0 10px;
             }
         }
 
