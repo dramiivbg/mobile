@@ -14,6 +14,8 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 
 import { Plugins } from '@capacitor/core';
+import { Storage } from '@ionic/storage';
+import { SK_ENVIRONMENT } from '@var/consts';
 const { App } = Plugins;
 
 export interface Module {  
@@ -31,6 +33,7 @@ export class ModulesPage implements OnInit {
   grid: boolean = false;
   modules: any = [];  
   environment: any = {};
+  envShort: string = '';
   
   constructor(private router: Router
     , private sqLite: SqlitePlureService
@@ -38,6 +41,7 @@ export class ModulesPage implements OnInit {
     , private moduleService: ModuleService
     , private intServ: InterceptService
     , private js: JsonService
+    , private storage: Storage
   ) 
   {
     let objBack = {
@@ -65,6 +69,9 @@ export class ModulesPage implements OnInit {
         }
       }
     );
+    let environment = await this.storage.get(SK_ENVIRONMENT);
+    if (environment === 'DEV') this.envShort = environment;
+    if (environment === 'TEST') this.envShort = environment;
   }
 
   /**
