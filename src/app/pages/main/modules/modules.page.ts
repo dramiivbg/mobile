@@ -15,7 +15,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 const { App } = Plugins;
 
-export interface Module {  
+export interface Module {
   description: string,
   icon: string,
   moduleType: E_MODULETYPE
@@ -28,18 +28,18 @@ export interface Module {
 })
 export class ModulesPage implements OnInit {
   grid: boolean = false;
-  modules: any = [];  
+  modules: any = [];
   environment: any = {};
-  
+
   constructor(private router: Router
     , private sqLite: SqlitePlureService
     , private authService: AuthService
     , private moduleService: ModuleService
     , private intServ: InterceptService
     , private js: JsonService
-  ) 
+  )
   {
-    App.removeAllListeners(); 
+    App.removeAllListeners();
     App.addListener('backButton', () => {
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
         () => {
@@ -52,22 +52,22 @@ export class ModulesPage implements OnInit {
   async ngOnInit() {
     this.authService.getUserSession()
     .then(
-      res => {        
+      res => {
         this.environment = res.environment;
         for(let i in this.environment.modules) {
           let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
           let obj: any = this.environment.modules[i];
           obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
-          this.modules.push(obj);      
+          this.modules.push(obj);
         }
         // this.environment.modules.forEach((module: any) => {
         //   let moduleType: E_MODULETYPE = module.moduleType;
-          
-        //   this.modules.push({            
+
+        //   this.modules.push({
         //     description: module.description,
         //     icon: E_MODULETYPE[moduleType].toLowerCase(),
         //     moduleType: moduleType
-        //   });          
+        //   });
         // });
       }
     );
@@ -75,14 +75,14 @@ export class ModulesPage implements OnInit {
 
   /**
    * Grid
-   * @param b 
+   * @param b
    */
   onGrid(b: boolean) {
     this.grid = b;
   }
 
   async onClick(mod: any) {
-    await this.moduleService.setSelectedModule(mod); 
+    await this.moduleService.setSelectedModule(mod);
 
     switch(mod.moduleType)
     {
@@ -99,7 +99,7 @@ export class ModulesPage implements OnInit {
       case E_MODULETYPE.Manufacturing:
         break;
 
-      default: 
+      default:
         break;
     }
   }
@@ -110,7 +110,7 @@ export class ModulesPage implements OnInit {
         module
       }
     };
-    this.router.navigate(['sales/sales-main'], navigationExtras);    
+    this.router.navigate(['sales/sales-main'], navigationExtras);
   }
 
   async onTestSqLite() {
@@ -121,6 +121,15 @@ export class ModulesPage implements OnInit {
       // await this.sqLite.setItem('GetCustomers', 'Hola');
       let test = await this.sqLite.getItem('GetCustomers');
     }
+  }
+
+  onStripePay() {
+    this.intServ.stripePayFunc({
+      CustomerId: 'cus_JdUmBlhv2Ofiey',
+      Currency: 'usd',
+      Amount: 5000,
+      DocumentNum: 'inv-2'
+    });
   }
 
 }

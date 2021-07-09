@@ -31,7 +31,7 @@ export class ChangeCompanyPage implements OnInit {
     private authService: AuthService,
     private jsonServ: JsonService,
     private router: Router
-  ) { 
+  ) {
     App.removeAllListeners();
     App.addListener('backButton', () => {
       this.onBack();
@@ -87,7 +87,6 @@ export class ChangeCompanyPage implements OnInit {
         this.intServ.loadingFunc(true);
         this.storage.set(SK_SELECTED_COMPANY, JSON.stringify(company)).then(
           res => {
-            this.router.navigateByUrl('', { replaceUrl: true });
             this.intServ.loadingFunc(false);
           }
         ).catch(

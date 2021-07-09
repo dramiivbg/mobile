@@ -9,21 +9,20 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MenuService } from './data/menu.service';
-import { SearchComponent } from './components/search/search.component';
-import { LoadingComponent } from './components/loading/loading.component';
-import { AlertsComponent } from './components/alerts/alerts.component';
 import { IonicStorageModule } from '@ionic/storage';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
-//import { File } from '@ionic-native/file/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Device } from '@ionic-native/device/ngx'
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { Stripe } from '@ionic-native/stripe/ngx';
+import { environment } from '@env/environment';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // import services
+import { MenuService } from './data/menu.service';
 import { InterceptService } from '@svc/intercept.service';
 import { ApiService } from '@svc/api.service';
 import { JsonService } from '@svc/json.service';
@@ -32,17 +31,26 @@ import { GeneralService } from '@svc/general.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { OfflineService } from '@svc/offline.service';
 
+// import components
+import { LoadingComponent } from './components/loading/loading.component';
+import { AlertsComponent } from './components/alerts/alerts.component';
+import { SearchComponent } from './components/search/search.component';
+import { StripePayComponent } from './components/stripe-pay/stripe-pay.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
     LoadingComponent,
-    AlertsComponent
+    AlertsComponent,
+    StripePayComponent
   ],
   entryComponents: [],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot()
@@ -60,6 +68,7 @@ import { OfflineService } from '@svc/offline.service';
     SearchComponent,
     LoadingComponent,
     AlertsComponent,
+    StripePayComponent,
     IonicStorageModule,
     BarcodeScanner,
     Device,
@@ -72,7 +81,8 @@ import { OfflineService } from '@svc/offline.service';
     ScreenOrientation, {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
-    }
+    },
+    Stripe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
