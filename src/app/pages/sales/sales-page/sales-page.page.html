@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button class="ion-toolbar-button" defaultHref="modules"></ion-back-button>
     </ion-buttons>
-    <ion-title mode="ios">Sales</ion-title>
+    <ion-title mode="ios">{{process.salesType}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,8 +11,8 @@
   <ion-row class="avatar">
     <ion-col size="3" class="avatar-img">
       <ion-avatar>
-        <img *ngIf="session.avatar == ''" src="../../../../assets/img/img-robot.svg" />
-        <img *ngIf="session.avatar != ''" src="{{session.avatar}}" />                  
+        <img *ngIf="session.avatar == '' || session.avatar == null" src="../../../../assets/img/img-robot.svg" />
+        <img *ngIf="session.avatar != '' && session.avatar != null" src="{{session.avatar}}" />
       </ion-avatar>
     </ion-col>
     <ion-col class="avatar-txt">
@@ -137,3 +137,13 @@
     </ion-col>
   </ion-row>
 </ion-content>
+
+<ion-footer *ngIf="temporaly != null"> <!-- sales order -->
+  <ion-toolbar color="plureMain">
+    <ion-buttons slot="primary" class="ion-toolbar-button">
+      <ion-button (click)="onSyncTemp()">
+        <ion-icon slot="start" name="sync-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

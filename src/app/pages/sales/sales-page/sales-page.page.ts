@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { cordovaInstance } from '@ionic-native/core';
 import { Module, Process } from '@mdl/module';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
@@ -7,9 +8,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
 import { SyncerpService } from '@svc/syncerp.service';
-
-import { Plugins } from '@capacitor/core';
-const { App } = Plugins;
+import { E_PROCESSTYPE } from '@var/enums';
 
 @Component({
   selector: 'app-sales-page',
@@ -18,8 +17,17 @@ const { App } = Plugins;
 })
 export class SalesPagePage implements OnInit {
   private salesList: Array<any> = [];
+  private permissions: Array<E_PROCESSTYPE>;
+  private new: boolean = false;
+
   module: Module;
-  process: Process;
+  process: Process = {
+    processId: '',
+    description: '',
+    permissions: [],
+    salesType: '',
+    sysPermits: []
+  };
   sales: any = undefined;
   temporaly: any = undefined;
   session: any = {};
@@ -35,10 +43,12 @@ export class SalesPagePage implements OnInit {
     private js: JsonService,
     private offline: OfflineService
   ) {
-    App.removeAllListeners();
-    App.addListener('backButton', () => {
-      this.onBack();
-    });
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
         this.salesList = this.router.getCurrentNavigation().extras.state.salesList;
@@ -56,10 +66,14 @@ export class SalesPagePage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    this.intServ.loadingFunc(true);
     this.session = (await this.js.getSession()).login;
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
+    this.permissions = this.process.sysPermits;
+    if (this.permissions.indexOf(E_PROCESSTYPE.New) !== -1) this.new = true;
     await this.getTemp();
+    this.intServ.loadingFunc(false);
   }
 
   async onSalesList() {
@@ -69,7 +83,8 @@ export class SalesPagePage implements OnInit {
         state: {
           order: sell,
           new: false
-        }
+        },
+        replaceUrl: true
       };
       this.router.navigate(['sales/sales-form'], navigationExtras);
       setTimeout(
@@ -86,18 +101,22 @@ export class SalesPagePage implements OnInit {
    * Create new sales order
    */
    async onAddSalesOrder() {
-    this.intServ.loadingFunc(true);    
-    let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
-      let navigationExtras: NavigationExtras = {
-        state: {
-          customer,
-          new: true
-        }
-      };
-      this.router.navigate(['sales/sales-form'], navigationExtras);
-    });
-    this.intServ.searchShowFunc(obj);
-    this.intServ.loadingFunc(false);
+    if (this.new) {
+      this.intServ.loadingFunc(true);
+      let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
+        let navigationExtras: NavigationExtras = {
+          state: {
+            customer,
+            new: true
+          }
+        };
+        this.router.navigate(['sales/sales-form'], navigationExtras);
+      });
+      this.intServ.searchShowFunc(obj);
+      this.intServ.loadingFunc(false);
+    } else {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have permissions to add new sales'));
+    }
   }
 
   async onTemp() {
@@ -124,7 +143,7 @@ export class SalesPagePage implements OnInit {
    * Return to the modules.
    */
    onBack() {
-    this.router.navigate(['modules']);
+    this.router.navigate(['sales/sales-main']);
   }
 
   /**
@@ -144,15 +163,37 @@ export class SalesPagePage implements OnInit {
 
   async getTemp() {
     let temporaly = await this.offline.getProcess('ProcessSalesOrders');
-    this.temporaly = temporaly.filter(
-      x => {
-        return (x.documentType === this.process.salesType);
+    if (temporaly !== null) {
+      this.temporaly = temporaly.filter(
+        x => {
+          return (x.documentType === this.process.salesType);
+        }
+      )
+      if (this.temporaly.length > 0) {
+        this.tempPerc = ((this.temporaly.length * 10) / 100);
+      } else {
+        this.temporaly = null;
       }
-    )
-    if (this.temporaly.length > 0) {
-      this.tempPerc = ((this.temporaly.length * 10) / 100);
     } else {
       this.temporaly = null;
+    }
+  }
+
+  async onSyncTemp() {
+    try {
+      this.intServ.loadingFunc(true);
+      for (let i in this.temporaly) {
+        this.temporaly[i].parameters['SalesOrder'] = this.temporaly[i].id;
+        let sell = await this.syncerp.setRequest(await this.syncerp.processRequestParams('ProcessSalesOrders', [this.temporaly[i].parameters]));
+        if (sell.temp !== undefined) {
+          throw new Error("You do not have a connection available.");
+        }
+      }
+      this.intServ.loadingFunc(false); 
+      this.ionViewWillEnter();
+    } catch (error) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
+      this.intServ.loadingFunc(false); 
     }
   }
 

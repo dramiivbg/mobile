@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar color="plureMain">
     <ion-buttons slot="start">
-      <ion-back-button class="ion-toolbar-button" defaultHref="modules"></ion-back-button>
+      <ion-button (click)="onBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title mode="ios">Sync</ion-title>
   </ion-toolbar>

@@ -11,9 +11,8 @@ import { SyncerpService } from '@svc/syncerp.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { E_PROCESSTYPE } from '@var/enums';
 import { Module, Process } from '@mdl/module';
-
-import { Plugins } from '@capacitor/core';
-const { App } = Plugins;
+import { Storage } from '@ionic/storage';
+import { SK_OFFLINE } from '@var/consts';
 
 @Component({
   selector: 'app-sales-form',
@@ -40,6 +39,7 @@ export class SalesFormPage implements OnInit {
   unitMeasureList: any = [];
   process: Process;
   idSales: string;
+  hideShipTo: boolean = false;
   
   frm = new FormGroup({});
   orderDate: string = new Date().toDateString();
@@ -56,28 +56,33 @@ export class SalesFormPage implements OnInit {
   @ViewChild('dateOrder') dateOrderTime;
   @ViewChild('dateDelivery') dateDeliveryTime;
 
-  constructor(
-    private apiConnect: ApiService,
-    private formBuilder: FormBuilder,
-    private intServ: InterceptService,
-    private syncerp: SyncerpService,
-    private general: GeneralService,
-    private js: JsonService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private jsonServ: JsonService,
-    private barcodeScanner: BarcodeScanner,
-    private moduleService: ModuleService
+  constructor(private apiConnect: ApiService
+    , private formBuilder: FormBuilder
+    , private intServ: InterceptService
+    , private syncerp: SyncerpService
+    , private general: GeneralService
+    , private js: JsonService
+    , private route: ActivatedRoute
+    , private router: Router
+    , private jsonServ: JsonService
+    , private barcodeScanner: BarcodeScanner
+    , private moduleService: ModuleService
+    , private storage: Storage
   ) { 
-    App.removeAllListeners(); 
-    App.addListener('backButton', () => {
-      this.onBack();
-    });
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
+    if (this.process.processId === 'P002' || this.process.processId === 'P004') {
+      this.hideShipTo = true;
+    }
     this.salesType = this.process.salesType;
     this.permissions = this.process.sysPermits;
-    if (this.permissions.indexOf(E_PROCESSTYPE.Edit)) this.edit = true;
+    if (this.permissions.indexOf(E_PROCESSTYPE.Edit) !== -1) this.edit = true;
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
         this.extras = true;
@@ -90,12 +95,10 @@ export class SalesFormPage implements OnInit {
           this.order = this.router.getCurrentNavigation().extras.state.order;
           this.temp = this.router.getCurrentNavigation().extras.state.temp;
           await this.initForm();
-          console.log(this.order);
-          console.log(this.temp);
         }
       } else {
         this.initNew();
-        this.router.navigate(['modules']);
+        this.router.navigate(['modules'], { replaceUrl: true });
       }
     });
   }
@@ -103,6 +106,7 @@ export class SalesFormPage implements OnInit {
   async ngOnInit() {}
 
   async ionViewWillEnter() {
+    let offline = await this.storage.get(SK_OFFLINE);
     this.onReset();
     if (this.extras) {
       this.intServ.loadingFunc(true);
@@ -110,6 +114,10 @@ export class SalesFormPage implements OnInit {
       await this.getCategories();
       if (!this.new) await this.initSalesOrder();
       this.editSales();
+      if (offline && this.edit && !this.new) {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have a connection available for editing.'));
+        this.edit = !offline;
+      }
       this.intServ.loadingFunc(false);
     }
   }
@@ -131,7 +139,7 @@ export class SalesFormPage implements OnInit {
     let guid: any = Guid.create();
     this.frm.addControl('id', new FormControl(guid.value));
     this.frm.addControl('shippingName', new FormControl(""));
-    this.frm.addControl('shippingNo', new FormControl("", Validators.required));
+    this.frm.addControl('shippingNo', new FormControl(""));
     this.frm.addControl('customerNo', new FormControl("", Validators.required));
     this.frm.addControl('customerName', new FormControl(""));
     this.frm.addControl('orderDate', new FormControl(""));
@@ -146,8 +154,10 @@ export class SalesFormPage implements OnInit {
   async initSalesOrder() {
     if (this.order !== undefined) {
       this.idSales = this.order.id;
-      this.frm.controls.shippingName.setValue(this.order.fields.ShiptoName);
-      this.frm.controls.shippingNo.setValue(this.order.fields.ShiptoCode);
+      if (!this.hideShipTo) {
+        this.frm.controls.shippingName.setValue(this.order.fields.ShiptoName);
+        this.frm.controls.shippingNo.setValue(this.order.fields.ShiptoCode);
+      }
       this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
       this.frm.controls.customerName.setValue(this.order.fields.SelltoCustomerName);
       this.frm.controls.orderDate.setValue(this.order.fields.OrderDate);
@@ -158,8 +168,10 @@ export class SalesFormPage implements OnInit {
     } else {
       this.idSales = this.temp.id;
       this.frm.controls.id.setValue(this.temp.parameters.id);
-      this.frm.controls.shippingName.setValue(this.temp.parameters.shippingName);
-      this.frm.controls.shippingNo.setValue(this.temp.parameters.shippingNo);
+      if (!this.hideShipTo) {
+        this.frm.controls.shippingName.setValue(this.temp.parameters.shippingName);
+        this.frm.controls.shippingNo.setValue(this.temp.parameters.shippingNo);
+      }
       this.frm.controls.customerNo.setValue(this.temp.parameters.customerNo);
       this.frm.controls.customerName.setValue(this.temp.value);
       this.frm.controls.orderDate.setValue(this.temp.parameters.orderDate);
@@ -230,7 +242,12 @@ export class SalesFormPage implements OnInit {
 
   // on click - search items
   onItem() {
-    if (this.customer === undefined || (this.customer.shipAddress === undefined || this.customer.shipAddress.length < 1) || this.shipAddress === undefined) {
+    if (this.hideShipTo) {
+      let obj = this.general.structSearch(this.categories, 'Search category', 'Categories', async (category) => {
+        await this.itemsPerCategory(category);
+      }, false);
+      this.intServ.searchShowFunc(obj);
+    } else if (this.customer === undefined || (this.customer.shipAddress === undefined || this.customer.shipAddress.length < 1) || this.shipAddress === undefined) {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Please, select any customer and ship-to address'));
     } else {
       let obj = this.general.structSearch(this.categories, 'Search category', 'Categories', async (category) => {
@@ -355,19 +372,25 @@ export class SalesFormPage implements OnInit {
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Are you sure you want to leave?',
         () => {
           this.onReset();
-          this.router.navigate(['sales/sales-main']);
+          this.router.navigate(['sales/sales-main'], { replaceUrl: true });
         }
       ));
     } else {
-      this.router.navigate(['sales/sales-main']);
+      this.router.navigate(['sales/sales-main'], { replaceUrl: true });
     }
   }
 
   // login to the application is performed.
-  onSubmit() {
+  async onSubmit() {
     let process: any;
+    let offline = await this.storage.get(SK_OFFLINE);
     this.intServ.loadingFunc(true);
     try {
+      if (offline && !this.new) {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have a connection available for editing.'));
+        this.intServ.loadingFunc(false);
+        return;
+      }
       if (this.frm.valid) {
         this.jsonServ.formToJson(this.frm, ['picture', 'categoryNo', 'title']).then(
           async json => {
@@ -397,7 +420,7 @@ export class SalesFormPage implements OnInit {
               } else {
                 this.frm.reset();
                 this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                  this.router.navigate(['modules']);
+                  this.router.navigate(['modules'], { replaceUrl: true });
                 }));
               }
             } else {

@@ -1,10 +1,7 @@
-import { computeMsgId } from '@angular/compiler';
-import { compilePipeFromRender2 } from '@angular/compiler/src/render3/r3_pipe_compiler';
-import { CONTEXT_NAME } from '@angular/compiler/src/render3/view/util';
-import { calcPossibleSecurityContexts } from '@angular/compiler/src/template_parser/binding_parser';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 import { Module, Process } from '@mdl/module';
 
 // import services
@@ -14,8 +11,9 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
 import { SyncerpService } from '@svc/syncerp.service';
+import { SK_OFFLINE } from '@var/consts';
 import { E_PROCESSTYPE } from '@var/enums';
-import { runInThisContext } from 'vm';
+import { constants } from 'buffer';
 
 @Component({
   selector: 'btn-search',
@@ -25,7 +23,6 @@ import { runInThisContext } from 'vm';
 export class SearchComponent implements OnInit {
   private module: Module;
   private process: Process;
-  private obj: any = {};
   
   /**
    * var publics
@@ -37,25 +34,26 @@ export class SearchComponent implements OnInit {
   new: boolean = false;
   delete: boolean = false;
 
-  constructor(
-    private platform: Platform,
-    private syncerp: SyncerpService,
-    private general: GeneralService,
-    private router: Router,
-    private intServ: InterceptService,
-    private js: JsonService,
-    private moduleService: ModuleService,
-    private offline: OfflineService
+  constructor(private platform: Platform
+    , private syncerp: SyncerpService
+    , private general: GeneralService
+    , private router: Router
+    , private intServ: InterceptService
+    , private js: JsonService
+    , private moduleService: ModuleService
+    , private offline: OfflineService
+    , private storage: Storage
   ) {
-    platform.ready().then(
-      () => {
-        let height = platform.height();
-        height = height - 112;
-        this.height = height;
-      }
-    )
     intServ.searchShow$.subscribe(
       obj => {
+        let objFunc = {
+          comp: true,
+          func: () => {
+            this.onBack();
+          }
+        };
+        this.intServ.appBackFunc(objFunc);
+
         this.searchObj = obj;
         this.listsFilter = obj.data;
         this.lists = obj.data;
@@ -64,6 +62,7 @@ export class SearchComponent implements OnInit {
         /** start permissions for sales */
         this.onResetPermissions();
         this.getPermissions();
+        this.onHeight();
         /** end permissions for sales */
       }
     )
@@ -84,6 +83,21 @@ export class SearchComponent implements OnInit {
     } 
   }
 
+  onHeight() {
+    this.platform.ready().then(
+      () => {
+        if (this.searchObj.type === 1) {
+          let height = this.platform.height();
+          height = height - 112;
+          this.height = height;
+        } else {
+          let height = this.platform.height();
+          this.height = height;
+        }
+      }
+    )
+  }
+
   onResetPermissions() {
     this.new = false;
     this.delete = false;
@@ -94,11 +108,19 @@ export class SearchComponent implements OnInit {
    */
   onBack() {
     this.searchObj = {};
+    let appBack = {
+      old: true
+    }
+    this.intServ.appBackFunc(appBack);
   }
 
   onClick(item) {
     this.searchObj.func(item);
     if (this.searchObj.clear) this.onBack();
+    let appBack = {
+      old: true
+    }
+    this.intServ.appBackFunc(appBack);
   }
 
   getPermissions() {
@@ -144,7 +166,8 @@ export class SearchComponent implements OnInit {
         state: {
           customer,
           new: true
-        }
+        },
+        replaceUrl: true
       };
       this.router.navigate(['sales/sales-form'], navigationExtras);
     });
@@ -160,24 +183,42 @@ export class SearchComponent implements OnInit {
    * @param i 
    */
   async onDeleteLine(sell, i) {
-    this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
-      async () =>{
-        if (sell.parameters === undefined) {
-          this.intServ.loadingFunc(true);
-          let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
-          let dropOrder = await this.syncerp.setRequest(params);
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
-            () => {
-              this.listsFilter.splice(i, 1);
-            }
-          ));
-        } else {
+    let offline = await this.storage.get(SK_OFFLINE);
+    
+    if (offline && sell.parameters === undefined) {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have an available connection.'));
+      return;
+    } 
+
+    if (sell.parameters !== undefined) {
+      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
+        async () =>{
           this.offline.removeProcessSales('ProcessSalesOrders', this.listsFilter[i]);
           this.listsFilter.splice(i, 1);
         }
+      ));
+      return;
+    }
+
+    if (sell.parameters === undefined) {
+      if (!this.delete) {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have permission to delete sales'));
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
+          async () =>{
+            this.intServ.loadingFunc(true);
+            let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
+            let dropOrder = await this.syncerp.setRequest(params);
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
+              () => {
+                this.listsFilter.splice(i, 1);
+              }
+            )); 
+          }
+        ));
       }
-    ));
+    }
   }
 
   // End Sales Orders

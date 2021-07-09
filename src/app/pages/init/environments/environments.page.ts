@@ -16,7 +16,7 @@ import { JsonService } from '@svc/json.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 
 // import vars
-import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts';
+import { SK_AUTHORIZE_ACCESS_CLIENT, SK_ENVIRONMENT, SK_SESSION_CUSTOMER_ID } from '@var/consts';
 
 import { Plugins } from '@capacitor/core';
 const { App } = Plugins;
@@ -44,14 +44,16 @@ export class EnvironmentsPage implements OnInit {
     , private appVersion: AppVersion
     , private js: JsonService
   ) {
-    App.removeAllListeners(); 
-    App.addListener('backButton', () => {
-      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
-        () => {
-          App.exitApp();
-        }
-      ));
-    });
+    let objBack = {
+      func: () => {
+        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+          () => {
+            App.exitApp();
+          }
+        ));
+      }
+    }
+    this.intServ.appBackFunc(objBack);
     this.frm = this.formBuilder.group(
       {
         CustomerId: ['', Validators.required]
@@ -79,20 +81,26 @@ export class EnvironmentsPage implements OnInit {
       }
     )
     .catch(error => {
-      console.log(error);
-      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${JSON.stringify(error)}`));
+      error = error.error;
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${error.message}`));
       this.intServ.loadingFunc(false);
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.intServ.loadingFunc(true);
     if ( this.frm.valid ) {
-      this.jsonServ.formToJson(this.frm).then(
-        formJson => {
-          this.authororizeAccessClient(this.frm.value.CustomerId);
-        }
-      )
+      let {CustomerId} = await this.jsonServ.formToJson(this.frm);
+      let indexof = CustomerId.indexOf('|');
+      if (indexof === -1) {
+        await this.storage.set(SK_ENVIRONMENT, 'LIVE');
+        this.authororizeAccessClient(CustomerId);
+      } else {
+        let customerSplit = CustomerId.split('|');
+        await this.storage.set(SK_ENVIRONMENT, customerSplit[0]);
+        this.authororizeAccessClient(customerSplit[1]);
+      }
+      this.intServ.loadingFunc(false);
     } else {
       this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', `You customerId '${this.frm.controls.CustomerId.value}' is not found.`));
       this.intServ.loadingFunc(false);
@@ -103,11 +111,18 @@ export class EnvironmentsPage implements OnInit {
     this.barcodeScanner.scan({
       disableSuccessBeep: true
     }).then(
-      async barCodeData => {        
+      async barCodeData => {
         if (barCodeData.text !== "") {
           this.intServ.loadingFunc(true);
-          await this.authororizeAccessClient(barCodeData.text);
-          this.intServ.loadingFunc(false);
+          let indexof = barCodeData.text.indexOf('|');
+          if (indexof === -1) {
+            await this.storage.set(SK_ENVIRONMENT, 'LIVE');
+            this.authororizeAccessClient(barCodeData.text);
+          } else {
+            let customerSplit = barCodeData.text.split('|');
+            await this.storage.set(SK_ENVIRONMENT, customerSplit[0]);
+            this.authororizeAccessClient(customerSplit[1]);
+          }
         }
       }
     ).catch(

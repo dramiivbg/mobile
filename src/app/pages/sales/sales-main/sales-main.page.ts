@@ -1,17 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
+import { NavigationExtras, Router } from '@angular/router';
 // import services
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
-// import vars
-import { E_MODULETYPE } from '@var/enums';
+
 // import models
-import { Module, Process } from '@mdl/module';
-import { ConnectableObservable } from 'rxjs';
+import { Process } from '@mdl/module';
 
 @Component({
   selector: 'app-sales-main',
@@ -31,7 +28,14 @@ export class SalesMainPage implements OnInit {
     private js: JsonService,
     private router: Router,
     private moduleService: ModuleService
-  ) { }
+  ) { 
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
+  }
 
   async ngOnInit() {}
 
@@ -53,10 +57,19 @@ export class SalesMainPage implements OnInit {
     let navg: NavigationExtras = {
       state: {
         salesList
-      }
+      },
+      replaceUrl: true
     }
     this.router.navigate(['sales/sales-page'], navg);
     this.intServ.loadingFunc(false);
   }
+
+  /**
+    * Return to the modules.
+    */
+  onBack() {
+    this.router.navigate(['modules'], { replaceUrl: true });
+  }
+  
 
 }

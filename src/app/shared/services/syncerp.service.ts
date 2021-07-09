@@ -1,7 +1,10 @@
 import { computeMsgId } from '@angular/compiler';
 import { Injectable } from '@angular/core';
+import { SK_SELECTED_COMPANY } from '@var/consts';
 import { ApiService } from './api.service';
 import { JsonService } from './json.service';
+
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class SyncerpService {
@@ -16,18 +19,20 @@ export class SyncerpService {
 
   constructor(
     private apiConnect: ApiService,
-    private js: JsonService
+    private js: JsonService,
+    private storage: Storage
   ) { }
 
   // Process Request structure
   async processRequest(processMethod, pageSize, position, salesPerson) {
     this.session = await this.js.getSession();
+    let defaultCompany = JSON.parse(await this.storage.get(SK_SELECTED_COMPANY));
     return {
       customerId: this.session.login.customerId,
       environmentId: this.session.login.environment.environmentId,
       processMethod,
       userId: this.session.login.userId,
-      company: this.session.login.defaultCompany,
+      company: defaultCompany,
       jsonRequest: JSON.stringify({
         ProcessMethod: processMethod,
         Parameters:[
@@ -44,12 +49,13 @@ export class SyncerpService {
   // Process Request structure
   async processRequestParams(processMethod, Parameters: any) {
     this.session = await this.js.getSession();
+    let defaultCompany = JSON.parse(await this.storage.get(SK_SELECTED_COMPANY));
     return {
       customerId: this.session.login.customerId,
       environmentId: this.session.login.environment.environmentId,
       processMethod: processMethod,
       userId: this.session.login.userId,
-      company: this.session.login.defaultCompany,
+      company: defaultCompany,
       jsonRequest: JSON.stringify({
         ProcessMethod: processMethod,
         Parameters
@@ -116,7 +122,7 @@ export class SyncerpService {
   async syncSales(method: string) {
     let processes = this.module.processes;
     processes.forEach(async p => {
-      let process = await this.processRequestParams(method, [{ type: p.processName, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
+      let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
       let sales = await this.setRequest(process);
     });
     // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);

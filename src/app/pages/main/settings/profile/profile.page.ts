@@ -29,20 +29,23 @@ export class ProfilePage implements OnInit {
 
   frm: FormGroup;
 
-  constructor(private authService: AuthService,
-    private formBuilder: FormBuilder,
-    private fileChooser: FileChooser,
-    private filePath: FilePath,
-    private platform: Platform,
-    private apiService: ApiService,
-    private intServ: InterceptService,
-    private jsonServ: JsonService,
-    private router: Router) 
-  {
-    App.removeAllListeners();
-    App.addListener('backButton', () => {
-      this.onBack();
-    });
+  constructor(private authService: AuthService
+    , private formBuilder: FormBuilder
+    , private fileChooser: FileChooser
+    , private filePath: FilePath
+    , private platform: Platform
+    , private apiService: ApiService
+    , private intServ: InterceptService
+    , private jsonServ: JsonService
+    , private router: Router
+  ) {
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
+    this.init();
     this.frm = this.formBuilder.group(
       {
         UserName: ['', Validators.required],
@@ -72,7 +75,7 @@ export class ProfilePage implements OnInit {
     * Return to the main/settings.
     */
   onBack() {
-    this.router.navigate(['main/settings']);
+    this.router.navigate(['main/settings'], {replaceUrl: true});
   }
 
   onSubmit() {

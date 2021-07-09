@@ -8,7 +8,7 @@ export interface Permission {
 
 export interface Process {
     processId: string;
-    processName: string;
+    description: string;
     permissions: Array<Permission>;
     salesType?: string;
     sysPermits?: Array<E_PROCESSTYPE>

@@ -10,9 +10,12 @@ import { ModuleService } from '@svc/gui/module.service';
 
 // import vars
 import { E_MODULETYPE } from '@var/enums';
-import { Plugins } from '@capacitor/core';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+
+import { Plugins } from '@capacitor/core';
+import { Storage } from '@ionic/storage';
+import { SK_ENVIRONMENT } from '@var/consts';
 const { App } = Plugins;
 
 export interface Module {
@@ -30,6 +33,7 @@ export class ModulesPage implements OnInit {
   grid: boolean = false;
   modules: any = [];
   environment: any = {};
+  envShort: string = '';
 
   constructor(private router: Router
     , private sqLite: SqlitePlureService
@@ -37,16 +41,19 @@ export class ModulesPage implements OnInit {
     , private moduleService: ModuleService
     , private intServ: InterceptService
     , private js: JsonService
+    , private storage: Storage
   )
   {
-    App.removeAllListeners();
-    App.addListener('backButton', () => {
-      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
-        () => {
-          App.exitApp();
-        }
-      ));
-    });
+    let objBack = {
+      func: () => {
+        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+          () => {
+            App.exitApp();
+          }
+        ));
+      }
+    }
+    this.intServ.appBackFunc(objBack);
   }
 
   async ngOnInit() {
@@ -60,17 +67,11 @@ export class ModulesPage implements OnInit {
           obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
           this.modules.push(obj);
         }
-        // this.environment.modules.forEach((module: any) => {
-        //   let moduleType: E_MODULETYPE = module.moduleType;
-
-        //   this.modules.push({
-        //     description: module.description,
-        //     icon: E_MODULETYPE[moduleType].toLowerCase(),
-        //     moduleType: moduleType
-        //   });
-        // });
       }
     );
+    let environment = await this.storage.get(SK_ENVIRONMENT);
+    if (environment === 'DEV') this.envShort = environment;
+    if (environment === 'TEST') this.envShort = environment;
   }
 
   /**
@@ -108,7 +109,8 @@ export class ModulesPage implements OnInit {
     let navigationExtras: NavigationExtras = {
       state: {
         module
-      }
+      },
+      replaceUrl: true
     };
     this.router.navigate(['sales/sales-main'], navigationExtras);
   }

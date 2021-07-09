@@ -38,10 +38,12 @@ export class ChangePasswordPage implements OnInit {
     , private jsonServ: JsonService
     , private router: Router) 
   {
-    App.removeAllListeners(); 
-    App.addListener('backButton', () => {
-      this.onBack();
-    });
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
     this.frm = this.formBuilder.group({
         LastPassword: ['', Validators.required],
         NewPassword: ['', Validators.required],
@@ -126,7 +128,7 @@ export class ChangePasswordPage implements OnInit {
 
   async onBack() {
     await this.storage.remove(SK_USER_SESSION);
-    this.router.navigate(['login']);
+    this.router.navigate(['login'], {replaceUrl: true});
   }
 
   togglePassword(idx: number): void {

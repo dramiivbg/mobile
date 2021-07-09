@@ -6,8 +6,8 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title *ngIf="new">New - {{process.processName}}</ion-title>
-    <ion-title *ngIf="!new">{{process.processName}} - {{idSales}}</ion-title>
+    <ion-title *ngIf="new">New - {{process.description}}</ion-title>
+    <ion-title *ngIf="!new">{{process.description}} - {{idSales}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -29,7 +29,7 @@
           <ion-label class="smallfont">Customer No {{frm.controls.customerNo.value}}</ion-label>
         </ion-col>
       </ion-row>
-      <ion-row class="shipTop">
+      <ion-row class="shipTop" *ngIf="!hideShipTo">
         <ion-col (click)="onShipAddress()" *ngIf="new || edit" size="11">
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/ship-to-address.svg" width="100%" />
@@ -52,7 +52,7 @@
           <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
         </ion-col>
       </ion-row>
-      <hr />
+      <hr *ngIf="!hideShipTo" />
       <ion-row class="orderDate" (click)="onDate(0)">
         <ion-col size="11">
           <div class="icon-header">
@@ -67,8 +67,8 @@
           <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
         </ion-col>
       </ion-row>
-      <hr />
-      <ion-row class="delivery" (click)="onDate(1)">
+      <hr *ngIf="!hideShipTo" />
+      <ion-row class="delivery" (click)="onDate(1)" *ngIf="!hideShipTo">
         <ion-col size="11" >
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/delivery-date.svg" width="100%" />

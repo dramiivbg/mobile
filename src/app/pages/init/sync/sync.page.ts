@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '@svc/auth.service';
 import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_MODULETYPE } from '@var/enums';
 
@@ -13,11 +15,19 @@ export class SyncPage implements OnInit {
   modules: any = [];
   environment: any = {};
 
-  constructor(
-    private syncErp: SyncerpService,
-    private intServ: InterceptService,
-    private authService: AuthService
-  ) { }
+  constructor(private syncErp: SyncerpService
+    , private intServ: InterceptService
+    , private authService: AuthService
+    , private router: Router
+    , private js: JsonService
+  ) {
+     let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
+  }
 
   async ngOnInit() {
     let res = await this.authService.getUserSession();
@@ -30,9 +40,17 @@ export class SyncPage implements OnInit {
     }
   }
 
+  /**
+    * Return to the modules.
+    */
+  onBack() {
+    this.router.navigate(['modules'], {replaceUrl: true});
+  }
+
   async onSyncTables(mod) : Promise<void> {
     this.intServ.loadingFunc(true);
     let b = await this.syncErp.sycnAll(mod);
+    this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Sales are correctly synchronized'));
     this.intServ.loadingFunc(false);
   }
 
