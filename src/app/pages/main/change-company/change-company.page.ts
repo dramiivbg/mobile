@@ -54,7 +54,8 @@ export class ChangeCompanyPage implements OnInit {
     await this.storage.get(SK_USER_SESSION).then(
       res => {
         this.userSession = JSON.parse(res);
-        console.log(this.userSession.environment.companies);
+        console.log('init', this.userSession);
+
         this.otherCompanies = this.userSession.environment.companies.filter((c: any) => c.companyId != this.selectedCompany.companyId);
       }
     )
@@ -62,11 +63,13 @@ export class ChangeCompanyPage implements OnInit {
 
   async onSyncCompanies() {
     this.intServ.loadingFunc(true);
+
     let data = {
       customerId: this.userSession.customerId,
       mobileUserId: this.userSession.userId,
       environmentId: this.userSession.environment.environmentId
     }
+
     await this.apiService.postData('mobileuser', 'getenvironment', data).then(
       res => {
         this.userSession.environment = res;
@@ -85,13 +88,27 @@ export class ChangeCompanyPage implements OnInit {
   }
 
   onChangeCompany(company: any) {
+
+    let data = {
+      customerId: this.userSession.customerId,
+      mobileUserId: this.userSession.userId,
+      environmentId: this.userSession.environment.environmentId,
+      companyId: company.companyId
+    }
+
     this.intServ.alertFunc(this.jsonServ.getAlert('confirm', 'Confirm', `Do you want to change company ${company.companyName}?`,
-      () => {
-        console.log(company);
+      async () => {
+
         this.intServ.loadingFunc(true);
-        this.storage.set(SK_SELECTED_COMPANY, JSON.stringify(company)).then(
-          res => {
-            this.intServ.loadingFunc(false);
+
+        await this.apiService.postData('mobileuser', 'changecompany', data).then(
+          async res => {
+            this.storage.set(SK_SELECTED_COMPANY, JSON.stringify(company)).then(
+              () => {
+                this.init();
+                this.intServ.changeCompanyFunc(company);
+                this.intServ.loadingFunc(false);
+            });
           }
         ).catch(
           err => {

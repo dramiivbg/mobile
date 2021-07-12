@@ -15,6 +15,7 @@ export class InterceptService {
   private avatarSource = new Subject<any>();
   private stripePaySource = new Subject<any>();
   private appBackSource = new Subject<any>();
+  private changeCompanySource = new Subject<any>();
 
   // Observable string streams
   routeMenuAnnounced$ = this.routeMenuAnnouncedSource.asObservable();
@@ -27,6 +28,7 @@ export class InterceptService {
   avatar$ = this.avatarSource.asObservable();
   stripePay$ = this.stripePaySource.asObservable();
   appBack$ = this.appBackSource.asObservable();
+  changeCompany$ = this.changeCompanySource.asObservable();
 
   // Service message commands
   announceRouteMenu(data: string) {
@@ -80,6 +82,10 @@ export class InterceptService {
 
   appBackFunc(obj: any) {
     this.appBackSource.next(obj);
+  }
+
+  changeCompanyFunc(obj: any) {
+    this.changeCompanySource.next(obj);
   }
 
 }

@@ -39,7 +39,7 @@ export class EnvironmentsPage implements OnInit {
     , private router: Router
     , private sqlLite: SqlitePlureService
     , private storage: Storage
-    , private device: Device    
+    , private device: Device
     , private barcodeScanner: BarcodeScanner
     , private appVersion: AppVersion
     , private js: JsonService
@@ -58,11 +58,11 @@ export class EnvironmentsPage implements OnInit {
       {
         CustomerId: ['', Validators.required]
       }
-    );        
+    );
     this.getVersion();
   }
 
-  ngOnInit() {       
+  ngOnInit() {
   }
 
   async authororizeAccessClient(customerId: string) {
@@ -75,9 +75,9 @@ export class EnvironmentsPage implements OnInit {
     await this.apiConnect.postData('mobile', 'authorizeaccessclient', data)
     .then(
       res => {
-        this.intServ.loadingFunc(false);                            
+        this.intServ.loadingFunc(false);
         this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));
-        this.router.navigateByUrl('/login', {replaceUrl: true });                            
+        this.router.navigateByUrl('/login', {replaceUrl: true });
       }
     )
     .catch(error => {
@@ -93,7 +93,7 @@ export class EnvironmentsPage implements OnInit {
       let {CustomerId} = await this.jsonServ.formToJson(this.frm);
       let indexof = CustomerId.indexOf('|');
       if (indexof === -1) {
-        await this.storage.set(SK_ENVIRONMENT, 'LIVE');
+        await this.storage.set(SK_ENVIRONMENT, 'TEST');
         this.authororizeAccessClient(CustomerId);
       } else {
         let customerSplit = CustomerId.split('|');
@@ -107,7 +107,7 @@ export class EnvironmentsPage implements OnInit {
     }
   }
 
-  async onReadQR(): Promise<void> {        
+  async onReadQR(): Promise<void> {
     this.barcodeScanner.scan({
       disableSuccessBeep: true
     }).then(
@@ -126,13 +126,13 @@ export class EnvironmentsPage implements OnInit {
         }
       }
     ).catch(
-      err => {        
+      err => {
         this.intServ.loadingFunc(false);
       }
     )
   }
 
-  getVersion(): void {    
+  getVersion(): void {
     this.appVersion.getVersionNumber().then(
       res => {
         this.version = `v${res}`;

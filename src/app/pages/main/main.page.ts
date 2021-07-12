@@ -77,6 +77,12 @@ export class MainPage implements OnInit {
         }
       }
     )
+
+    this.intServ.changeCompany$.subscribe(
+      obj => {
+        this.selectedCompany = obj
+      }
+    )
   }
 
   async init() {
