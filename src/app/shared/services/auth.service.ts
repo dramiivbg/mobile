@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import { JwtHelperService} from '@auth0/angular-jwt';
 
 // import vars
-import { SK_REMEMBER_ME, SK_SELECTED_COMPANY, SK_SELECTED_MODULE, SK_USER_LOGIN, SK_USER_SESSION } from '@var/consts';
+import { SK_REMEMBER_ME, SK_SELECTED_COMPANY, SK_SELECTED_MODULE, SK_SYNC, SK_USER_LOGIN, SK_USER_SESSION } from '@var/consts';
 import { BehaviorSubject } from 'rxjs';
 import { OfflineService } from './offline.service';
 
@@ -46,7 +46,7 @@ export class AuthService {
     this.isAuthenticated.next(true);
     this.storage.set(SK_USER_SESSION, JSON.stringify(userSession));
     this.storage.set(SK_SELECTED_COMPANY, JSON.stringify(userSession.defaultCompany));
-
+    this.storage.set(SK_SYNC, false);
     return true;
   }
 
@@ -56,8 +56,9 @@ export class AuthService {
 
   async signout(): Promise<any> {
     this.isAuthenticated.next(false);
-    this.storage.remove(SK_SELECTED_MODULE);
-    this.offline.removeAll();
-    return this.storage.remove(SK_USER_SESSION);
+    await this.storage.remove(SK_SELECTED_MODULE);
+    await this.storage.remove(SK_SYNC);
+    await this.offline.removeAll();
+    return await this.storage.remove(SK_USER_SESSION);
   }
 }

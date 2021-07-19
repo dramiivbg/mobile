@@ -137,11 +137,8 @@ export class MainPage implements OnInit {
   }
 
   async onSignout() {
-    this.authService.signout().then(
-      res => {
-        this.router.navigate(['login'], { replaceUrl: true});
-      }
-    );
+    await this.authService.signout();
+    this.router.navigate(['login'], { replaceUrl: true});
   }
 
   getVersion(): void {

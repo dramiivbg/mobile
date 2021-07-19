@@ -114,9 +114,11 @@ export class SalesFormPage implements OnInit {
       await this.getCategories();
       if (!this.new) await this.initSalesOrder();
       this.editSales();
-      if (offline && this.edit && !this.new) {
-        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have a connection available for editing.'));
-        this.edit = !offline;
+      if (this.order !== undefined) {
+        if (offline && this.edit && !this.new) {
+          this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have a connection available for editing.'));
+          this.edit = !offline;
+        }
       }
       this.intServ.loadingFunc(false);
     }
@@ -398,6 +400,7 @@ export class SalesFormPage implements OnInit {
               json['SalesOrder'] = this.temp.id;
             }
             json['salesPerson'] = this.module.erpUserId;
+            json['paymentMethod'] = '';
             json['orderDate'] = json['orderDate'].substring(0, 10);
             json['documentType'] = this.salesType;
             json['postingDate'] = json.orderDate;

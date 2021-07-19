@@ -104,19 +104,23 @@ export class SyncerpService {
   }
 
   async sycnAll(module) : Promise<boolean> {
-    this.module = module;
-    for (let i in this.methods) {
-      switch(this.methods[i]) {
-        case 'GetSalesOrders':
-          this.syncSales(this.methods[i]);
-          break;
-        default:
-          let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
-          let customers = await this.setRequest(process);
-          break;
+    try {
+      this.module = module;
+      for (let i in this.methods) {
+        switch(this.methods[i]) {
+          case 'GetSalesOrders':
+            this.syncSales(this.methods[i]);
+            break;
+          default:
+            let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+            await this.setRequest(process);
+            break;
+        }
       }
+      return true;
+    } catch (error) {
+      return false;
     }
-    return false;
   }
 
   async syncSales(method: string) {

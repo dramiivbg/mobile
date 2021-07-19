@@ -94,11 +94,11 @@ export class EnvironmentsPage implements OnInit {
       let indexof = CustomerId.indexOf('|');
       if (indexof === -1) {
         await this.storage.set(SK_ENVIRONMENT, 'TEST');
-        this.authororizeAccessClient(CustomerId);
+        await this.authororizeAccessClient(CustomerId);
       } else {
         let customerSplit = CustomerId.split('|');
         await this.storage.set(SK_ENVIRONMENT, customerSplit[0]);
-        this.authororizeAccessClient(customerSplit[1]);
+        await this.authororizeAccessClient(customerSplit[1]);
       }
       this.intServ.loadingFunc(false);
     } else {

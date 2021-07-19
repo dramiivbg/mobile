@@ -3,12 +3,12 @@ import { NavigationExtras, Router } from '@angular/router';
 import { __awaiter } from 'tslib';
 
 // import services
-import { ApiService } from '@svc/api.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { AuthService } from '@svc/auth.service';
 import { ModuleService } from '@svc/gui/module.service';
 
 // import vars
+import { SK_SYNC } from '@var/consts';
 import { E_MODULETYPE } from '@var/enums';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -16,6 +16,7 @@ import { JsonService } from '@svc/json.service';
 import { Plugins } from '@capacitor/core';
 import { Storage } from '@ionic/storage';
 import { SK_ENVIRONMENT } from '@var/consts';
+import { SyncerpService } from '@svc/syncerp.service';
 const { App } = Plugins;
 
 export interface Module {
@@ -42,6 +43,7 @@ export class ModulesPage implements OnInit {
     , private intServ: InterceptService
     , private js: JsonService
     , private storage: Storage
+    , private syncErp: SyncerpService
   )
   {
     let objBack = {
@@ -57,18 +59,23 @@ export class ModulesPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.authService.getUserSession()
-    .then(
-      res => {
-        this.environment = res.environment;
-        for(let i in this.environment.modules) {
-          let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
-          let obj: any = this.environment.modules[i];
-          obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
-          this.modules.push(obj);
-        }
-      }
-    );
+    let sync = await this.storage.get(SK_SYNC);
+    sync = (sync === undefined || sync === null) ? false : sync;
+    this.intServ.loadingFunc(true);
+    await this.onEnvironment();
+    this.environment = (await this.authService.getUserSession()).environment;
+    for(let i in this.environment.modules) {
+      let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
+      let obj: any = this.environment.modules[i];
+      obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
+      this.modules.push(obj);
+      if (!sync) await this.onSync(this.environment.modules[i]);
+    }
+    if (!sync) this.storage.set(SK_SYNC, true);
+    this.intServ.loadingFunc(false);
+  }
+
+  async onEnvironment() {
     let environment = await this.storage.get(SK_ENVIRONMENT);
     if (environment === 'DEV') this.envShort = environment;
     if (environment === 'TEST') this.envShort = environment;
@@ -123,6 +130,11 @@ export class ModulesPage implements OnInit {
       // await this.sqLite.setItem('GetCustomers', 'Hola');
       let test = await this.sqLite.getItem('GetCustomers');
     }
+  }
+
+  async onSync(mod) {
+    console.log(mod);
+    await this.syncErp.sycnAll(mod);
   }
 
   onStripePay() {
