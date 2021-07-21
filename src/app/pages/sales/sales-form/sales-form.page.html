@@ -148,8 +148,11 @@
                           <ion-col size="4" class="label-line">
                             Quantity: {{item.controls.quantity.value}}
                           </ion-col>
-                          <ion-col class="label-line">
+                          <ion-col class="label-line" size="5">
                             Unit price: ${{item.controls.unitPrice.value}}
+                          </ion-col>
+                          <ion-col class="label-line" size="3">
+                            Tax: {{item.controls.taxPerc.value}}%
                           </ion-col>
                         </ion-row>
                       </ion-col>

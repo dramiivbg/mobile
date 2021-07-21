@@ -30,6 +30,7 @@ export class SalesFormPage implements OnInit {
   private listPrices: any = [];
   private salesType: string;
   private extras: boolean = false;
+  private vatPostingSetup: any;
 
   new: boolean;
   edit: boolean = false;
@@ -89,6 +90,7 @@ export class SalesFormPage implements OnInit {
         this.new = this.router.getCurrentNavigation().extras.state.new;
         if (this.new) {
           this.customer = this.router.getCurrentNavigation().extras.state.customer;
+          console.log(this.customer);
           await this.initNew();
           await this.setCustomer();
         } else {
@@ -112,6 +114,7 @@ export class SalesFormPage implements OnInit {
       this.intServ.loadingFunc(true);
       await this.getCustomers();
       await this.getCategories();
+      await this.getTaxPostings();
       if (!this.new) await this.initSalesOrder();
       this.editSales();
       if (this.order !== undefined) {
@@ -448,11 +451,18 @@ export class SalesFormPage implements OnInit {
     this.subTotal = 0;
     this.discountTotal = 0;
     this.total = 0;
+    this.taxTotal = 0;
     for (let i in lines) {
-      this.subTotal = Number((Number(this.subTotal) + Number(lines[i].totalWithoutDiscount)).toFixed(2));
-      this.discountTotal = Number((Number(this.discountTotal) + Number(lines[i].lineDiscountAmount)).toFixed(2));
+      let lineDiscount = Number(lines[i].lineDiscountAmount);
+      let linePrice = Number(lines[i].totalWithoutDiscount);
+      let taxPerc = lines[i].taxPerc;
+      let priceWithDiscount = linePrice - lineDiscount;
+      let tax = priceWithDiscount * (taxPerc  / 100);
+      this.subTotal = Number((Number(this.subTotal) + linePrice).toFixed(2));
+      this.discountTotal = Number((Number(this.discountTotal) + lineDiscount).toFixed(2));
+      this.taxTotal = Number((Number(this.taxTotal) + tax).toFixed(2));
     }
-    this.total = Number((Number(this.subTotal) - Number(this.discountTotal)).toFixed(2));
+    this.total = Number(((Number(this.subTotal) - Number(this.discountTotal)) + Number(this.taxTotal)).toFixed(2));
   }
 
   /**
@@ -477,12 +487,25 @@ export class SalesFormPage implements OnInit {
    * @param item 
    */
   async addItem(item: any, newSales: boolean = true) {
+    let genBusinessPostingGroup = this.customer.genBusinessPostingGroup;
+    let genProdPostingGroup = item.genProdPostingGroup;
     var now = new Date();
     item['unitPrice'] = 0;
     item['discountPerc'] = 0;
     item['total'] = 0;
     item['measure'] = item.fields.SalesUnitofMeasure;
     item['priceListC'] = [];
+    item['taxPerc'] = 0;
+    let tax = this.vatPostingSetup.find(x => x.VATBusPostingGroup === genBusinessPostingGroup && x.VATProdPostingGroup === genProdPostingGroup);
+    if (this.vatPostingSetup.length > 0) {
+      if (tax !== undefined && tax !== null) {
+        item['taxPerc'] = tax.VATPercentage;
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'The tax posting setup does not exist.'));
+        return;
+      }
+    }
+    // if (tax !== undefined && tax !== null) item['taxPerc'] = tax.VATPercentage; else item['taxPerc'] = 0;
     item.listPrice.forEach(x => {
       let sDate = (x.fields.StartingDate !== null) ? x.fields.StartingDate.split('-') : null;
       let eDate = (x.fields.EndingDate !== null) ?x.fields.EndingDate.split('-') : null;
@@ -546,7 +569,9 @@ export class SalesFormPage implements OnInit {
       )
     }
     let discountPerc = (item.discountPerc === null) ? 0 : item.discountPerc;
+    let taxPerc = (item.taxPerc === null) ? 0 : item.taxPerc;
     let discountAmount = item.total * (discountPerc / 100);
+    let tax = (item.total - discountAmount) * ( taxPerc / 100);
     arr.push(
       this.formBuilder.group({
         title: item.value,
@@ -560,7 +585,9 @@ export class SalesFormPage implements OnInit {
         picture: `data:image/jpeg;base64,${item.fields.Picture}`,
         unitOfMeasureCode: item.measure,
         lineDiscountAmount: discountAmount,
-        lineDiscountPercentage: item.discountPerc
+        lineDiscountPercentage: item.discountPerc,
+        taxPerc: item.taxPerc,
+        tax
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -666,8 +693,6 @@ export class SalesFormPage implements OnInit {
     let process = await this.syncerp.processRequest('GetCustomers', "0", "", this.module.erpUserId);
     let customers = await this.syncerp.setRequest(process);
     this.customers = await this.general.customerList(customers.Customers);
-    // this.fields = await this.general.createFields(customers.Customers);
-    // await this.getFields();
   }
 
   // Disabled
@@ -679,7 +704,7 @@ export class SalesFormPage implements OnInit {
   }
 
   async getCategories() {
-    let process = await this.syncerp.processRequest('GetItemCategories', "0", "", "");
+    let process = await this.syncerp.processRequest('GetItemCategories', "0", "", this.module.erpUserId);
     let categories = await this.syncerp.setRequest(process);
     this.categories = await this.general.categories(categories.Categories);
     this.categories.forEach(
@@ -691,6 +716,12 @@ export class SalesFormPage implements OnInit {
         )
       }
     );
+  }
+
+  async getTaxPostings() {
+    let process = await this.syncerp.processRequestParams('GetTaxPostings', []);
+    let {VATPostingSetup} = await this.syncerp.setRequest(process);
+    this.vatPostingSetup = VATPostingSetup;
   }
 
   async setCustomer() {

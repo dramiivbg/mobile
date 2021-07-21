@@ -77,6 +77,7 @@ export class GeneralService {
         }
       });
       obj['fields'] = await this.fieldsToJson(item.fields);
+      obj['genBusinessPostingGroup'] = item.GenBusinessPostingGroup;
       obj['shipAddress'] = await this.shipAddressList(item.ShipToAddress);
       objLst.push(obj);
     });
@@ -118,6 +119,7 @@ export class GeneralService {
       obj['fields'] = await this.fieldsToJson(lists[i].fields);
       obj['listPrice'] = await this.listPrice(lists[i].ListPrices);
       obj['unitOfMeasures'] = await this.UnitOfMeasuresList(lists[i].UnitOfMeasures);
+      obj['genProdPostingGroup'] = lists[i].GenProdPostingGroup;
       objLst.push(obj);
     }
     return objLst;
