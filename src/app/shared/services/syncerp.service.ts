@@ -14,7 +14,8 @@ export class SyncerpService {
     'GetSalesOrders', 
     'GetCustomers',
     'GetItemCategories',
-    'GetSalesCount'
+    'GetSalesCount',
+    'GetTaxPostings'
   ]
 
   constructor(
@@ -24,7 +25,7 @@ export class SyncerpService {
   ) { }
 
   // Process Request structure
-  async processRequest(processMethod, pageSize, position, salesPerson) {
+  async processRequest(processMethod, pageSize, position, salesPerson): Promise<any> {
     this.session = await this.js.getSession();
     let defaultCompany = JSON.parse(await this.storage.get(SK_SELECTED_COMPANY));
     return {
@@ -47,7 +48,7 @@ export class SyncerpService {
   }
 
   // Process Request structure
-  async processRequestParams(processMethod, Parameters: any) {
+  async processRequestParams(processMethod, Parameters: any): Promise<any> {
     this.session = await this.js.getSession();
     let defaultCompany = JSON.parse(await this.storage.get(SK_SELECTED_COMPANY));
     return {
@@ -104,6 +105,7 @@ export class SyncerpService {
   }
 
   async sycnAll(module) : Promise<boolean> {
+    let process: any = {};
     try {
       this.module = module;
       for (let i in this.methods) {
@@ -111,8 +113,12 @@ export class SyncerpService {
           case 'GetSalesOrders':
             this.syncSales(this.methods[i]);
             break;
+          case 'GetTaxPostings':
+            process = await this.processRequestParams(this.methods[i], []);
+            await this.setRequest(process);
+            break;
           default:
-            let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+            process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
             await this.setRequest(process);
             break;
         }

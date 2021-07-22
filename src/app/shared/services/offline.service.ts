@@ -11,7 +11,8 @@ export class OfflineService {
     'GetSalesOrders', 
     'GetCustomers',
     'GetItemCategories',
-    'GetSalesCount'
+    'GetSalesCount',
+    'GetTaxPostings'
   ]
 
   constructor(

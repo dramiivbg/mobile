@@ -39,6 +39,7 @@ export class GeneralService {
       }
       obj['fields'] = await this.fieldsToJson(lists[i].fields);
       obj['lines'] = await this.salesOrderLinesList(lists[i].SalesLines);
+      obj['genBusinessPostingGroup'] = lists[i].GenBusinessPostingGroup;
       objLst.push(obj);
     }
     return objLst;

@@ -90,12 +90,13 @@ export class SalesFormPage implements OnInit {
         this.new = this.router.getCurrentNavigation().extras.state.new;
         if (this.new) {
           this.customer = this.router.getCurrentNavigation().extras.state.customer;
-          console.log(this.customer);
           await this.initNew();
           await this.setCustomer();
         } else {
           this.order = this.router.getCurrentNavigation().extras.state.order;
+          console.log(this.order);
           this.temp = this.router.getCurrentNavigation().extras.state.temp;
+          console.log(this.temp);
           await this.initForm();
         }
       } else {
@@ -412,12 +413,16 @@ export class SalesFormPage implements OnInit {
             if (!this.new) {
               if (this.order !== undefined && this.order !== null) {
                 json['documentNo'] = this.order.fields.No;
+                json['genBusinessPostingGroup'] = this.order.genBusinessPostingGroup;
                 process = await this.syncerp.processRequestParams('UpdateSalesOrders', [json]);
               } else {
-                process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);  
+                json['genBusinessPostingGroup'] = this.temp.parameters.genBusinessPostingGroup;
+                process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
               }
-            } else
+            } else {
+              json['genBusinessPostingGroup'] = this.customer.genBusinessPostingGroup;
               process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
+            }
             if (json.lines.length > 0) {
               let salesOrder = await this.syncerp.setRequest(process);
               this.intServ.loadingFunc(false);
@@ -473,11 +478,15 @@ export class SalesFormPage implements OnInit {
     this.items = category.items;
     let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
       await this.addItem(item);
-      this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to continue adding more items in the same category?',
-        () => {
-          this.itemsPerCategory(category);
-        }
-      ));
+      if (item.error)
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'The tax posting setup does not exist.'));
+      else {
+        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to continue adding more items in the same category?',
+          () => {
+            this.itemsPerCategory(category);
+          }
+        ));
+      }
     }, false);
     this.intServ.searchShowFunc(obj);
   }
@@ -487,7 +496,17 @@ export class SalesFormPage implements OnInit {
    * @param item 
    */
   async addItem(item: any, newSales: boolean = true) {
-    let genBusinessPostingGroup = this.customer.genBusinessPostingGroup;
+    debugger;
+    let genBusinessPostingGroup = '';
+    if (this.new) {
+      genBusinessPostingGroup = this.customer.genBusinessPostingGroup;
+    } else {
+      if (this.order !== undefined) {
+        genBusinessPostingGroup = this.order.genBusinessPostingGroup;
+      } else {
+        genBusinessPostingGroup = this.temp.parameters.genBusinessPostingGroup;
+      }
+    }
     let genProdPostingGroup = item.genProdPostingGroup;
     var now = new Date();
     item['unitPrice'] = 0;
@@ -496,12 +515,13 @@ export class SalesFormPage implements OnInit {
     item['measure'] = item.fields.SalesUnitofMeasure;
     item['priceListC'] = [];
     item['taxPerc'] = 0;
+    item['error'] = false;
     let tax = this.vatPostingSetup.find(x => x.VATBusPostingGroup === genBusinessPostingGroup && x.VATProdPostingGroup === genProdPostingGroup);
     if (this.vatPostingSetup.length > 0) {
       if (tax !== undefined && tax !== null) {
         item['taxPerc'] = tax.VATPercentage;
       } else {
-        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'The tax posting setup does not exist.'));
+        item['error'] = true;
         return;
       }
     }
@@ -624,6 +644,8 @@ export class SalesFormPage implements OnInit {
     for(let i in lines) {
       let item = await this.allItems.find(x => (x.id === lines[i].id));
       await this.addItem(item, false);
+      let taxPerc = (item.taxPerc === null) ? 0 : item.taxPerc;
+      let tax =  lines[i].fields.Amount * ( taxPerc / 100);
       arr.push(
         this.formBuilder.group({
           title: lines[i].value,
@@ -637,7 +659,9 @@ export class SalesFormPage implements OnInit {
           picture: (item !== undefined) ? `data:image/jpeg;base64,${item.fields.Picture}` : 'data:image/jpeg;base64,NOIMAGE',
           unitOfMeasureCode: lines[i].fields.UnitofMeasureCode,
           lineDiscountAmount: lines[i].fields.LineDiscountAmount,
-          lineDiscountPercentage: lines[i].fields['LineDiscount%']
+          lineDiscountPercentage: lines[i].fields['LineDiscount%'],
+          taxPerc: taxPerc,
+          tax
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -669,7 +693,9 @@ export class SalesFormPage implements OnInit {
           picture: (item !== undefined) ? `data:image/jpeg;base64,${item.fields.Picture}` : 'data:image/jpeg;base64,NOIMAGE',
           unitOfMeasureCode: lines[i].unitOfMeasureCode,
           lineDiscountAmount: lines[i].lineDiscountAmount,
-          lineDiscountPercentage: lines[i].lineDiscountPercentage
+          lineDiscountPercentage: lines[i].lineDiscountPercentage,
+          taxPerc: lines[i].taxPerc,
+          tax: lines[i].tax,
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
