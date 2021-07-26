@@ -124,6 +124,8 @@ export class SearchComponent implements OnInit {
   }
 
   getPermissions() {
+    this.new = false;
+    this.delete = false;
     let process = this.moduleService.getSelectedProcess();
     let permits: Array<E_PROCESSTYPE> = process.sysPermits;
     for (let i in permits) {

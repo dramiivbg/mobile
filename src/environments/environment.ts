@@ -10,7 +10,7 @@ export const environment = {
   apiUrl: {
     DEV: "https://pluredevapi.azurewebsites.net/api",
     TEST: "https://pluretestapi.azurewebsites.net/api",
-    LIVE: "https://plureapi.azurewebsites.net/api",
+    LIVE: "https://api.plur-e.com/api",
   },
   // apiUrl: "https://pluredevapi.azurewebsites.net/api",
   // apiUrl: "https://plureapi.azurewebsites.net/api",
