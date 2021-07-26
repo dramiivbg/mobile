@@ -129,8 +129,11 @@ export class ModulesPage implements OnInit {
     this.intServ.stripePayFunc({
       CustomerId: 'cus_JdUmBlhv2Ofiey',
       Currency: 'usd',
+      Subtotal: 5000,
+      Tax: 0,
       Amount: 5000,
-      DocumentNum: 'inv-2'
+      DocumentNum: 'inv-2',
+      Name: 'Raul Ocampo'
     });
   }
 

@@ -20,17 +20,16 @@ export class StripePayComponent implements OnInit {
   stripe = Stripe(environment.stripePublishableKey);
   card: any = {};
   showStripePay: boolean = false;
-  chargeOptions: any = {};
+  public chargeOptions: any = {};
 
   constructor(private stripeNgx: StripeNgx,
     private intServ: InterceptService,
-    private jsonServ: JsonService,
-    private formBuilder: FormBuilder,
     private apiService: ApiService) {
 
     this.intServ.alert$.subscribe(
       (req: any) => {
         this.chargeOptions = req;
+        console.log(this.chargeOptions);
         this.showStripePay = true;
       }
     )
