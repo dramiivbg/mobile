@@ -129,6 +129,7 @@ export class ModulesPage implements OnInit {
     if (store) {
       // await this.sqLite.setItem('GetCustomers', 'Hola');
       let test = await this.sqLite.getItem('GetCustomers');
+      await this.sqLite.closeStore();
     }
   }
 

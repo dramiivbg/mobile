@@ -12,7 +12,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
-import { Base64 } from '@ionic-native/base64/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Device } from '@ionic-native/device/ngx'
 import { AppVersion } from '@ionic-native/app-version/ngx';
@@ -77,7 +76,6 @@ import { StripePayComponent } from './components/stripe-pay/stripe-pay.component
     SyncerpService,
     FileChooser,
     FilePath,
-    Base64,
     ScreenOrientation, {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy

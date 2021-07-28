@@ -47,7 +47,6 @@ export class SalesMainPage implements OnInit {
   }
 
   async onSales(process: Process) {
-    console.log(process);
     this.intServ.loadingFunc(true);
     process.salesType = await this.general.typeSalesBC(process);
     process.sysPermits = await this.general.getPermissions(process.permissions);

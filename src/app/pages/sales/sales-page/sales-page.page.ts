@@ -104,19 +104,24 @@ export class SalesPagePage implements OnInit {
   /**
    * Create new sales order
    */
-   async onAddSalesOrder() {
+   async onAddSales() {
     if (this.new) {
       this.intServ.loadingFunc(true);
-      let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
-        let navigationExtras: NavigationExtras = {
-          state: {
-            customer,
-            new: true
-          }
-        };
-        this.router.navigate(['sales/sales-form'], navigationExtras);
-      });
-      this.intServ.searchShowFunc(obj);
+      let customers: any = await this.getCustomers();
+      if (customers.length > 0) {
+        let obj = this.general.structSearch(customers, 'Search customers', 'Customers', (customer) => {
+          let navigationExtras: NavigationExtras = {
+            state: {
+              customer,
+              new: true
+            }
+          };
+          this.router.navigate(['sales/sales-form'], navigationExtras);
+        });
+        this.intServ.searchShowFunc(obj);
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'No customers were found.'));
+      }
       this.intServ.loadingFunc(false);
     } else {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have permissions to add new sales'));

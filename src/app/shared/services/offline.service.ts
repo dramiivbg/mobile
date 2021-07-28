@@ -33,6 +33,7 @@ export class OfflineService {
     if (store) {
       if (this.methods.indexOf(method) !== -1) {
         await this.sqLite.setItem(method, JSON.stringify(event));
+        await this.sqLite.closeStore();
       }
     }
   }
@@ -49,6 +50,7 @@ export class OfflineService {
     let store = await this.sqLite.openStore();
     if (store) {
       await this.sqLite.setItem(method, JSON.stringify(obj));
+      await this.sqLite.closeStore();
     }
   }
 
@@ -65,7 +67,10 @@ export class OfflineService {
     if (store) {
       this.addOfflineBool(method);
       let obj: any =  await this.sqLite.getItem(method);
-      if (obj !== null) {
+      // await this.sqLite.closeStore();
+      console.log(method);
+      console.log(obj);
+      if (obj !== null && obj !== '') {
         let event: HttpEvent<any> = JSON.parse(obj);
         return event;
       }
