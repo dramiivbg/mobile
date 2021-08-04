@@ -10,9 +10,10 @@ export class OfflineService {
   private methods: Array<string> = [
     'GetSalesOrders', 
     'GetCustomers',
-    'GetItemCategories',
+    'GetItems',
     'GetSalesCount',
-    'GetTaxPostings'
+    'GetTaxPostings',
+    'GetInventorySetup'
   ]
 
   constructor(
@@ -33,7 +34,6 @@ export class OfflineService {
     if (store) {
       if (this.methods.indexOf(method) !== -1) {
         await this.sqLite.setItem(method, JSON.stringify(event));
-        await this.sqLite.closeStore();
       }
     }
   }
@@ -50,7 +50,6 @@ export class OfflineService {
     let store = await this.sqLite.openStore();
     if (store) {
       await this.sqLite.setItem(method, JSON.stringify(obj));
-      await this.sqLite.closeStore();
     }
   }
 
@@ -68,8 +67,6 @@ export class OfflineService {
       this.addOfflineBool(method);
       let obj: any =  await this.sqLite.getItem(method);
       // await this.sqLite.closeStore();
-      console.log(method);
-      console.log(obj);
       if (obj !== null && obj !== '') {
         let event: HttpEvent<any> = JSON.parse(obj);
         return event;

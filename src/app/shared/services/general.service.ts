@@ -25,7 +25,6 @@ export class GeneralService {
 
   // Create List sales ordeer
   async salesOrderList(lists: any) : Promise<any> {
-    console.log(lists);
     let objLst = [];
     for(let i in lists) {
       let obj = {};
@@ -39,7 +38,7 @@ export class GeneralService {
       }
       obj['fields'] = await this.fieldsToJson(lists[i].fields);
       obj['lines'] = await this.salesOrderLinesList(lists[i].SalesLines);
-      obj['genBusinessPostingGroup'] = lists[i].GenBusinessPostingGroup;
+      obj['genBusinessPostingGroup'] = obj['fields'].VATBusPostingGroup;
       objLst.push(obj);
     }
     return objLst;
@@ -78,7 +77,7 @@ export class GeneralService {
         }
       });
       obj['fields'] = await this.fieldsToJson(item.fields);
-      obj['genBusinessPostingGroup'] = item.GenBusinessPostingGroup;
+      obj['genBusinessPostingGroup'] = obj['fields'].VATBusPostingGroup;
       obj['shipAddress'] = await this.shipAddressList(item.ShipToAddress);
       objLst.push(obj);
     });
@@ -120,7 +119,7 @@ export class GeneralService {
       obj['fields'] = await this.fieldsToJson(lists[i].fields);
       obj['listPrice'] = await this.listPrice(lists[i].ListPrices);
       obj['unitOfMeasures'] = await this.UnitOfMeasuresList(lists[i].UnitOfMeasures);
-      obj['genProdPostingGroup'] = lists[i].GenProdPostingGroup;
+      obj['genProdPostingGroup'] = obj['fields'].VATProdPostingGroup;
       objLst.push(obj);
     }
     return objLst;
@@ -149,29 +148,29 @@ export class GeneralService {
   // Create List prices
   async listPrice(lists: any) : Promise<any> {
     let objLst = [];
-    lists.forEach(async item => {
+    for (let i in lists) {
       let obj = {};
-      item.fields.forEach(async field => {
-        obj['fields'] = await this.fieldsToJson(item.fields);
-      });
+      for (let y in lists[i].fields) {
+        obj['fields'] = await this.fieldsToJson(lists[i].fields);
+      }
       objLst.push(obj);
-    });
+    }
     return objLst;
   }
 
   // Create List prices
   async UnitOfMeasuresList(lists: any) : Promise<any> {
     let objLst = [];
-    lists.forEach(async item => {
+    for (let i in lists) {
       let obj = {};
-      item.fields.forEach(async field => {
-        if (field.name === 'Code'){
-          obj['id'] = field.value
+      for (let y in lists[i].fields) {
+        if (lists[i].fields[y].name === 'Code'){
+          obj['id'] = lists[i].fields[y].value
         }
-        obj['fields'] = await this.fieldsToJson(item.fields);
-      });
+        obj['fields'] = await this.fieldsToJson(lists[i].fields);
+      }
       objLst.push(obj);
-    });
+    }
     return objLst;
   }
 
@@ -187,9 +186,12 @@ export class GeneralService {
 
   async fieldsToJson(fields: any) : Promise<any> {
     let obj = {};
-    fields.forEach(field => {
-      obj[field.name] = field.value
-    });
+    for (let i in fields) {
+      obj[fields[i].name] = fields[i].value
+    }
+    // fields.forEach(field => {
+    //   obj[field.name] = field.value
+    // });
     return obj;
   }
 

@@ -13,9 +13,10 @@ export class SyncerpService {
   private methods: Array<string> = [
     'GetSalesOrders', 
     'GetCustomers',
-    'GetItemCategories',
+    'GetItems',
     'GetSalesCount',
-    'GetTaxPostings'
+    'GetTaxPostings',
+    'GetInventorySetup'
   ]
 
   constructor(
@@ -106,6 +107,7 @@ export class SyncerpService {
 
   async sycnAll(module) : Promise<boolean> {
     let process: any = {};
+
     try {
       this.module = module;
       for (let i in this.methods) {
@@ -114,6 +116,10 @@ export class SyncerpService {
             this.syncSales(this.methods[i]);
             break;
           case 'GetTaxPostings':
+            process = await this.processRequestParams(this.methods[i], []);
+            await this.setRequest(process);
+            break;
+          case 'GetInventorySetup':
             process = await this.processRequestParams(this.methods[i], []);
             await this.setRequest(process);
             break;
@@ -133,7 +139,7 @@ export class SyncerpService {
     let processes = this.module.processes;
     processes.forEach(async p => {
       let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
-      let sales = await this.setRequest(process);
+      await this.setRequest(process);
     });
     // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
   }

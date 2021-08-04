@@ -31,6 +31,9 @@ export class SalesFormPage implements OnInit {
   private salesType: string;
   private extras: boolean = false;
   private vatPostingSetup: any;
+  private locationSetup: any;
+  private locationMandatory: boolean;
+  private customerLocationCode: string = '';
 
   new: boolean;
   edit: boolean = false;
@@ -94,9 +97,7 @@ export class SalesFormPage implements OnInit {
           await this.setCustomer();
         } else {
           this.order = this.router.getCurrentNavigation().extras.state.order;
-          console.log(this.order);
           this.temp = this.router.getCurrentNavigation().extras.state.temp;
-          console.log(this.temp);
           await this.initForm();
         }
       } else {
@@ -113,9 +114,7 @@ export class SalesFormPage implements OnInit {
     this.onReset();
     if (this.extras) {
       this.intServ.loadingFunc(true);
-      await this.getCustomers();
-      await this.getCategories();
-      await this.getTaxPostings();
+      await this.getBC();
       if (!this.new) await this.initSalesOrder();
       this.editSales();
       if (this.order !== undefined) {
@@ -247,7 +246,7 @@ export class SalesFormPage implements OnInit {
   }
 
   // on click - search items
-  onItem() {
+  onCategoryItem() {
     if (this.hideShipTo) {
       let obj = this.general.structSearch(this.categories, 'Search category', 'Categories', async (category) => {
         await this.itemsPerCategory(category);
@@ -260,6 +259,15 @@ export class SalesFormPage implements OnInit {
         await this.itemsPerCategory(category);
       }, false);
       this.intServ.searchShowFunc(obj);
+    }
+  }
+
+  // on click - search items
+  async onItem() {
+    if (this.items !== null && this.items !== undefined && this.items.length > 0) {
+      this.getItemsList();
+    } else {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'No items found'));
     }
   }
 
@@ -386,8 +394,29 @@ export class SalesFormPage implements OnInit {
     }
   }
 
+  /**
+   * Edit Line and change value
+   * @param e @event
+   * @param i @line
+   */
+  async onChangePrice(e, i) {
+    let val = e.target.value === '' ? 0 : e.target.value;
+    let lines = this.frm.controls.lines.value;
+    lines[i].unitPrice = Number(val);
+    let subTotal = lines[i].quantity * lines[i].unitPrice;
+    let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
+    lines[i].lineDiscountAmount = discountAmount.toFixed(2);
+    lines[i].totalWithoutDiscount = subTotal.toFixed(2);
+    lines[i].total = Number(subTotal - discountAmount).toFixed(2);
+    // let tax = (lines[i].totalWithoutDiscount) * ( taxPerc / 100);
+    lines[i].edit = true;
+    this.frm.controls.lines.setValue(lines);
+    this.setTotals();
+  }
+
   // login to the application is performed.
   async onSubmit() {
+    let mandatoryBoolean: boolean;
     let process: any;
     let offline = await this.storage.get(SK_OFFLINE);
     this.intServ.loadingFunc(true);
@@ -397,7 +426,9 @@ export class SalesFormPage implements OnInit {
         this.intServ.loadingFunc(false);
         return;
       }
-      if (this.frm.valid) {
+      mandatoryBoolean = await this.validMandatory();
+      if (this.frm.valid && mandatoryBoolean) {
+      // if (this.frm.valid) {
         this.jsonServ.formToJson(this.frm, ['picture', 'categoryNo', 'title']).then(
           async json => {
             if (this.order === undefined || this.order === null) {
@@ -440,8 +471,12 @@ export class SalesFormPage implements OnInit {
             }
           }
         )
+      } else if (!mandatoryBoolean) {
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This company has the location as a mandatory field, verify the items and fill in the location code.`));
       } else {
         this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', 'Error', `Some errors have occurred when validating this data.`));
       } 
     } catch (error) {
       this.intServ.loadingFunc(false);
@@ -496,7 +531,6 @@ export class SalesFormPage implements OnInit {
    * @param item 
    */
   async addItem(item: any, newSales: boolean = true) {
-    debugger;
     let genBusinessPostingGroup = '';
     if (this.new) {
       genBusinessPostingGroup = this.customer.genBusinessPostingGroup;
@@ -556,13 +590,13 @@ export class SalesFormPage implements OnInit {
     if (item.unitPrice === 0) {
       let nullPrice = item.listPrice.find(x => x.fields.UnitofMeasureCode === null);
       if (nullPrice !== undefined) {
-        item['unitPrice'] = nullPrice.fields.UnitPrice;
+        item['unitPrice'] = nullPrice.fields.UnitPrice === null ? 0 : nullPrice.fields.UnitPrice;
         item['discountPerc'] = Number(nullPrice.fields['LineDiscount%']);
-        item['total'] = Number(nullPrice.fields.UnitPrice).toFixed(2);
+        item['total'] = Number(item['unitPrice']).toFixed(2);
       } else {
-        item['unitPrice'] = item.fields.UnitPrice;
+        item['unitPrice'] = item.fields.UnitPrice === null ? 0 : item.fields.UnitPrice;
         item['discountPerc'] = 0;
-        item['total'] = Number(item.fields.UnitPrice).toFixed(2);
+        item['total'] = Number(item['unitPrice']).toFixed(2);
       }
     }
     item['quantity'] = 1;
@@ -580,6 +614,7 @@ export class SalesFormPage implements OnInit {
    * @returns 
    */
   setLines(item) {
+    let locationCode: string = '';
     let arr = new FormArray([]);
     if (this.frm.controls.lines.value.length > 0) {
       this.frm.controls.lines.value.forEach(
@@ -587,6 +622,9 @@ export class SalesFormPage implements OnInit {
           arr.push(this.formBuilder.group(line));
         }
       )
+    }
+    if (item.fields.Type === 'Inventory') {
+      locationCode = (this.customer.fields.LocationCode === null) ? '' : this.customer.fields.LocationCode;
     }
     let discountPerc = (item.discountPerc === null) ? 0 : item.discountPerc;
     let taxPerc = (item.taxPerc === null) ? 0 : item.taxPerc;
@@ -607,7 +645,9 @@ export class SalesFormPage implements OnInit {
         lineDiscountAmount: discountAmount,
         lineDiscountPercentage: item.discountPerc,
         taxPerc: item.taxPerc,
-        tax
+        locationCode,
+        edit: false,
+        tax,
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -640,27 +680,34 @@ export class SalesFormPage implements OnInit {
    * @returns 
    */
   async setSalesOrderLines(lines) {
+    console.log(lines);
     let arr = new FormArray([]);
     for(let i in lines) {
-      let item = await this.allItems.find(x => (x.id === lines[i].id));
+      let item = await this.items.find(x => (x.id === lines[i].id));
       await this.addItem(item, false);
+      let lineDiscountPercentage = lines[i].fields['LineDiscount%'] === null ? 0 : lines[i].fields['LineDiscount%'];
       let taxPerc = (item.taxPerc === null) ? 0 : item.taxPerc;
       let tax =  lines[i].fields.Amount * ( taxPerc / 100);
+      let unitPrice = lines[i].fields.UnitPrice === null ? 0 : lines[i].fields.UnitPrice;
+      let total = lines[i].fields.Amount === null ? 0 : lines[i].fields.Amount;
+      let lineDiscountAmount = lines[i].fields.LineDiscountAmount === null ? 0 : lines[i].fields.LineDiscountAmount;
+      let totalWithoutDiscount = total + lineDiscountAmount;
       arr.push(
         this.formBuilder.group({
           title: lines[i].value,
           id: lines[i].id,
-          type: lines[i].fields.Type,
+          type: item.fields.Type,
           categoryNo: '',
           quantity: lines[i].fields.Quantity,
-          unitPrice: lines[i].fields.UnitPrice,
-          total: lines[i].fields.Amount,
-          totalWithoutDiscount: lines[i].fields.Amount + lines[i].fields.LineDiscountAmount,
+          unitPrice,
+          total,
+          totalWithoutDiscount,
           picture: (item !== undefined) ? `data:image/jpeg;base64,${item.fields.Picture}` : 'data:image/jpeg;base64,NOIMAGE',
           unitOfMeasureCode: lines[i].fields.UnitofMeasureCode,
-          lineDiscountAmount: lines[i].fields.LineDiscountAmount,
-          lineDiscountPercentage: lines[i].fields['LineDiscount%'],
+          lineDiscountAmount,
+          lineDiscountPercentage,
           taxPerc: taxPerc,
+          locationCode: lines[i].fields.LocationCode === null  ? '' : lines[i].fields.LocationCode,
           tax
         })
       );
@@ -678,7 +725,7 @@ export class SalesFormPage implements OnInit {
    async setTempSalesLines(lines) {
     let arr = new FormArray([]);
     for(let i in lines) {
-      let item = await this.allItems.find(x => (x.id === lines[i].id));
+      let item = await this.items.find(x => (x.id === lines[i].id));
       await this.addItem(item, false);
       arr.push(
         this.formBuilder.group({
@@ -695,6 +742,7 @@ export class SalesFormPage implements OnInit {
           lineDiscountAmount: lines[i].lineDiscountAmount,
           lineDiscountPercentage: lines[i].lineDiscountPercentage,
           taxPerc: lines[i].taxPerc,
+          locationCode: lines[i].locationCode,
           tax: lines[i].tax,
         })
       );
@@ -715,48 +763,13 @@ export class SalesFormPage implements OnInit {
     };      
   }
 
-  async getCustomers() {
-    let process = await this.syncerp.processRequest('GetCustomers', "0", "", this.module.erpUserId);
-    let customers = await this.syncerp.setRequest(process);
-    this.customers = await this.general.customerList(customers.Customers);
-  }
-
-  // Disabled
-  // Get items
-  async getItems() {
-    let process = await this.syncerp.processRequestParams('GetTableDataSet', [{ tableNo: 27, pageSize: '', position: '' }]);
-    let items = await this.syncerp.setRequest(process);
-    this.items = await this.general.item(items.records);
-  }
-
-  async getCategories() {
-    let process = await this.syncerp.processRequest('GetItemCategories', "0", "", this.module.erpUserId);
-    let categories = await this.syncerp.setRequest(process);
-    this.categories = await this.general.categories(categories.Categories);
-    this.categories.forEach(
-      category => {
-        category.items.forEach(
-          item => {
-            this.allItems.push(item);
-          }
-        )
-      }
-    );
-  }
-
-  async getTaxPostings() {
-    let process = await this.syncerp.processRequestParams('GetTaxPostings', []);
-    let {VATPostingSetup} = await this.syncerp.setRequest(process);
-    this.vatPostingSetup = VATPostingSetup;
-  }
-
   async setCustomer() {
     this.frm.controls['customerNo'].setValue(this.customer.id);
     this.frm.controls['customerName'].setValue(this.customer.value);
-    if (this.customer.shipAddress.length < 1) {
-      this.intServ.alertFunc(this.js.getAlert('alert', 'alert', `This customer does not have ship-to Address`));
-      this.clearShipAdress();
-    }
+    // if (this.customer.shipAddress.length < 1) {
+    //   this.intServ.alertFunc(this.js.getAlert('alert', 'alert', `This customer does not have ship-to Address`));
+    //   this.clearShipAdress();
+    // }
   }
 
   setShipAdress() {
@@ -802,4 +815,96 @@ export class SalesFormPage implements OnInit {
     // )
   }
 
+
+  private async getItemsList() {
+    let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
+      await this.addItem(item);
+      if (item.error)
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'The tax posting setup does not exist.'));
+    }, false);
+    this.intServ.searchShowFunc(obj);
+  }
+
+  async getBC() {
+    // await this.getCategories();
+    await this.getCustomers();  
+    await this.getItems();
+    await this.getTaxPostings();
+    await this.getLocations();
+    await this.getInventorySetup();
+  }
+
+  private async validMandatory():  Promise<boolean> {
+    let returnValue: boolean = true;
+    if (this.locationMandatory) {
+      let lines = this.frm.controls.lines.value;
+      for (let i in lines) {
+        if (lines[i].type === 'Inventory') {
+          if (lines[i].locationCode === '' || lines[i].locationCode === null) {
+            returnValue = false;
+          }
+        }
+      }
+    }
+    return returnValue;
+  }
+
+  private async getCustomers() {
+    let process = await this.syncerp.processRequest('GetCustomers', "0", "", this.module.erpUserId);
+    let customers = await this.syncerp.setRequest(process);
+    this.customers = await this.general.customerList(customers.Customers);
+  }
+
+  // Disabled
+  // Get items
+  private async getItems() {
+    let process = await this.syncerp.processRequestParams('GetItems', [{ pageSize: 2000 }]);
+    let items = await this.syncerp.setRequest(process);
+    this.items = await this.general.item(items.Items);
+  }
+
+  /**
+   * get items by category
+   */
+  private async getCategories() {
+    let process = await this.syncerp.processRequest('GetItemCategories', "0", "", this.module.erpUserId);
+    let categories = await this.syncerp.setRequest(process);
+    this.categories = await this.general.categories(categories.Categories);
+    this.categories.forEach(
+      category => {
+        category.items.forEach(
+          item => {
+            this.allItems.push(item);
+          }
+        )
+      }
+    );
+  }
+  
+  /**
+   * get all tax settings
+   */
+   private async getTaxPostings() {
+    let process = await this.syncerp.processRequestParams('GetTaxPostings', []);
+    let {VATPostingSetup} = await this.syncerp.setRequest(process);
+    this.vatPostingSetup = VATPostingSetup;
+  }
+
+  /**
+   * get all locations
+   */
+  private async getLocations() {
+    let process = await this.syncerp.processRequestParams('GetLocations', []);
+    let {LocationSetup} = await this.syncerp.setRequest(process);
+    this.locationSetup = LocationSetup;
+  }
+
+  /**
+   * get all locations
+   */
+   private async getInventorySetup() {
+    let process = await this.syncerp.processRequestParams('GetInventorySetup', []);
+    let {InventorySetup} = await this.syncerp.setRequest(process);
+    this.locationMandatory = InventorySetup;
+  }
 }

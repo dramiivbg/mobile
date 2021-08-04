@@ -61,6 +61,16 @@ ion-button.add-lines::part(native){
     border-radius: 10px;
 }
 
+.select-floating {
+    ion-label {
+        display: inline-block;
+        font-size: 10px;
+        left: 15px;
+        position: absolute;
+        top: 5px;
+    }
+}
+
 // design
 .designform-header {
     background: var(--ion-color-plure) !important;

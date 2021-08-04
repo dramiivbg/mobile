@@ -114,11 +114,19 @@
               
               <ion-item-sliding>
                 <ion-item-options *ngIf="new || edit" side="start">
-                  <ion-item-option color="danger" (click)="onDeleteLine(i)" style="padding: 0 50px;">Delete</ion-item-option>
+                  <ion-item-option color="danger" (click)="onDeleteLine(i)" style="padding: 0 20px;">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </ion-item-option>
+                  <ion-item-option color="plureGrey" class="select-floating" *ngIf="item.controls.type.value == 'Inventory'">
+                    <ion-label>Location code</ion-label>
+                    <ion-select style="width: 150px;" formControlName="locationCode">
+                      <ion-select-option *ngFor="let location of locationSetup">{{location.Code}}</ion-select-option>
+                    </ion-select>
+                  </ion-item-option>
                 </ion-item-options>
 
                 <ion-item>
-                  <ion-label class="label-lines">
+                  <div class="label-lines">
                     <ion-row>
                       <ion-col size="2" class="label-line-title">
                         <img *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'" src="../../../../assets/img/NOIMAGE.jpg" />
@@ -149,7 +157,13 @@
                             Quantity: {{item.controls.quantity.value}}
                           </ion-col>
                           <ion-col class="label-line" size="5">
-                            Unit price: ${{item.controls.unitPrice.value}}
+                            <ion-row>
+                              <ion-col size="5" style="padding: 0;">U.Price</ion-col>
+                              <ion-col size="7" style="padding: 0;">
+                                <ion-input style="height: 14px; border-bottom: 1px solid #000;" type="number" formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
+                              </ion-col>
+                            </ion-row>
+                            <!-- Unit price: ${{item.controls.unitPrice.value}} -->
                           </ion-col>
                           <ion-col class="label-line" size="3">
                             Tax: {{item.controls.taxPerc.value}}%
@@ -157,11 +171,12 @@
                         </ion-row>
                       </ion-col>
                     </ion-row>                    
-                  </ion-label>
+                  </div>
                 </ion-item>
 
                 <ion-item-options side="end" *ngIf="new || edit">
-                  <ion-item-option color="danger">
+                  <ion-item-option color="danger" class="select-floating">
+                    <ion-label>Unit of measure</ion-label>
                     <ion-select style="width: 150px;" (ionChange)="ionMeasure(i)" formControlName="unitOfMeasureCode">
                       <ion-select-option *ngFor="let measure of unitMeasureList[i]">{{measure.id}}</ion-select-option>
                     </ion-select>

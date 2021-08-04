@@ -49,10 +49,10 @@ export class SyncPage implements OnInit {
 
   async onSyncTables(mod) : Promise<void> {
     this.intServ.loadingFunc(true);
-    let b = await this.syncErp.sycnAll(mod);
-    if (b) {
-      this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Sales are correctly synchronized'));
-    }
+    let b = this.syncErp.sycnAll(mod);
+    // if (b) {
+    //   this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Sales are correctly synchronized'));
+    // }
     this.intServ.loadingFunc(false);
   }
 

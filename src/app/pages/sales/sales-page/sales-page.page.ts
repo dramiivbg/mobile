@@ -70,7 +70,6 @@ export class SalesPagePage implements OnInit {
     this.session = (await this.js.getSession()).login;
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
-    console.log(this.process);
     this.permissions = this.process.sysPermits;
     if (this.permissions.indexOf(E_PROCESSTYPE.New) !== -1)
       this.new = true;

@@ -128,10 +128,9 @@ export class SqlitePlureService {
    */
   async removeItem(key:string): Promise<boolean> {
     if(this.isService && key.length > 0) {
-      const {result} = await this.store.remove({ key });
-      return result;
-    } else {
-      return null;
+      await this.store.remove({ key });
+      return true;
     }
+    return false;
   }
 }
