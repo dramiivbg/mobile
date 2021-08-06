@@ -29,12 +29,16 @@ import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { GeneralService } from '@svc/general.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { OfflineService } from '@svc/offline.service';
+import { NotifyService } from '@svc/notify.service';
+import { SecondTaskService } from '@svc/secondTask.service';
 
 // import components
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { SearchComponent } from './components/search/search.component';
 import { StripePayComponent } from './components/stripe-pay/stripe-pay.component';
+import { NotifyComponent } from './components/notify/notify.component';
+
 
 @NgModule({
   declarations: [
@@ -42,7 +46,8 @@ import { StripePayComponent } from './components/stripe-pay/stripe-pay.component
     SearchComponent,
     LoadingComponent,
     AlertsComponent,
-    StripePayComponent
+    StripePayComponent,
+    NotifyComponent
   ],
   entryComponents: [],
   imports: [
@@ -76,11 +81,14 @@ import { StripePayComponent } from './components/stripe-pay/stripe-pay.component
     SyncerpService,
     FileChooser,
     FilePath,
+    SecondTaskService,
     ScreenOrientation, {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
-    Stripe
+    Stripe,
+    NotifyComponent,
+    NotifyService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

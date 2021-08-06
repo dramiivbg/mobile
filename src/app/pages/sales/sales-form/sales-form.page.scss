@@ -40,7 +40,7 @@ ion-item ion-input {
 
 .label-lines {
     ion-col {
-        padding: 2px 10px;
+        padding: 2px 10px 2px 0;
     }
     .label-line-title {
         font-size: 14px; 
@@ -48,7 +48,7 @@ ion-item ion-input {
     }
     .label-line {
         font-size: 10px; 
-        padding: 0 10px;
+        padding: 0 10px 0 0;
     }
 }
 

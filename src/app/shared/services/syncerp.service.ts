@@ -5,9 +5,12 @@ import { ApiService } from './api.service';
 import { JsonService } from './json.service';
 
 import { Storage } from '@ionic/storage';
+import { NotifyService } from './notify.service';
+import { E_NOTIFYTYPE } from '@var/enums';
 
 @Injectable()
 export class SyncerpService {
+  private countTask: number = 0;
   private session: any;
   private module: any = {};
   private methods: Array<string> = [
@@ -19,10 +22,10 @@ export class SyncerpService {
     'GetInventorySetup'
   ]
 
-  constructor(
-    private apiConnect: ApiService,
-    private js: JsonService,
-    private storage: Storage
+  constructor(private apiConnect: ApiService
+    , private js: JsonService
+    , private storage: Storage
+    , private notify: NotifyService
   ) { }
 
   // Process Request structure
@@ -106,6 +109,7 @@ export class SyncerpService {
   }
 
   async sycnAll(module) : Promise<boolean> {
+    this.countTask = 0;
     let process: any = {};
 
     try {
@@ -113,35 +117,47 @@ export class SyncerpService {
       for (let i in this.methods) {
         switch(this.methods[i]) {
           case 'GetSalesOrders':
-            this.syncSales(this.methods[i]);
+            this.syncSales(this.methods[i]).then(() => this.countTask++);
             break;
           case 'GetTaxPostings':
             process = await this.processRequestParams(this.methods[i], []);
-            await this.setRequest(process);
+            this.setRequest(process).then(() => this.countTask++);
             break;
           case 'GetInventorySetup':
             process = await this.processRequestParams(this.methods[i], []);
-            await this.setRequest(process);
+            this.setRequest(process).then(() => this.countTask++);
             break;
           default:
             process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
-            await this.setRequest(process);
+            this.setRequest(process).then(() => this.countTask++);
             break;
         }
       }
+      
+      this.CountTaskF();
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  async syncSales(method: string) {
+  async syncSales(method: string): Promise<void> {
     let processes = this.module.processes;
     processes.forEach(async p => {
       let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
-      await this.setRequest(process);
+      this.setRequest(process);
     });
     // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
+  }
+
+  private CountTaskF() {
+    setTimeout(() => {
+      if (this.countTask === (this.methods.length)) {
+        this.notify.createNotification(E_NOTIFYTYPE.Notify, 'Synchronization was successful.');
+      } else {
+        this.CountTaskF();
+      }
+    }, 1000);
   }
 
 }

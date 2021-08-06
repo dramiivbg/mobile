@@ -12,3 +12,10 @@ export enum E_PROCESSTYPE {
     Delete = 2,
     Read = 3
 }
+
+export enum E_NOTIFYTYPE {
+    Notify = 0,
+    Alert = 1,
+    Error = 2,
+    Log = 3
+}

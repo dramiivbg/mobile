@@ -1,0 +1,15 @@
+<div class="notify" *ngIf="Notify">
+  <div class="notify-arrow">
+    <ion-icon name="caret-up-outline"></ion-icon>
+  </div>
+  <div class="notify-content">
+    <div class="header"></div>
+    <div class="content">
+      <ion-row *ngFor="let notify of notifies">
+        <ion-col>
+          {{notify.message}}
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+</div>

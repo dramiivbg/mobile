@@ -1,0 +1,19 @@
+div.notify {
+    position: fixed;
+    padding: 0 10px 0px 30px;
+    width: 100%;
+    top: 37px;
+    .notify-arrow {
+        height: 19px;
+        text-align: right;
+        ion-icon {
+            font-size: 30px;
+            color: var(--ion-color-plure);
+        }
+    }
+    .notify-content {
+        background: var(--ion-color-plure);
+        min-height: 500px;
+        width: 100%;
+    }
+}

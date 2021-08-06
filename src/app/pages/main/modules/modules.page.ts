@@ -17,6 +17,7 @@ import { Plugins } from '@capacitor/core';
 import { Storage } from '@ionic/storage';
 import { SK_ENVIRONMENT } from '@var/consts';
 import { SyncerpService } from '@svc/syncerp.service';
+import { NotifyService } from '@svc/notify.service';
 const { App } = Plugins;
 
 export interface Module {
@@ -35,6 +36,7 @@ export class ModulesPage implements OnInit {
   modules: any = [];
   environment: any = {};
   envShort: string = '';
+  private showNotify: boolean = false;
 
   constructor(private router: Router
     , private sqLite: SqlitePlureService
@@ -44,6 +46,7 @@ export class ModulesPage implements OnInit {
     , private js: JsonService
     , private storage: Storage
     , private syncErp: SyncerpService
+    , private notify: NotifyService
   )
   {
     let objBack = {
@@ -133,8 +136,11 @@ export class ModulesPage implements OnInit {
   }
 
   async onSync(mod) {
-    console.log(mod);
-    await this.syncErp.sycnAll(mod);
+    this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Synchronization will be performed in the background, we will notify you in notifications when we finish this process.',
+      async () => {
+        await this.syncErp.sycnAll(mod);
+      }
+    ))
   }
 
   onStripePay() {
@@ -144,6 +150,17 @@ export class ModulesPage implements OnInit {
       Amount: 5000,
       DocumentNum: 'inv-2'
     });
+  }
+
+  /**
+   * Notifications - modal
+   */
+  onShowNotify() {
+    this.showNotify = !this.showNotify;
+    let obj = {
+      Notify: this.showNotify
+    };
+    this.intServ.notifyFunc(obj);
   }
 
 }

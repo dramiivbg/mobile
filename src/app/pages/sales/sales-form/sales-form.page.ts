@@ -414,6 +414,26 @@ export class SalesFormPage implements OnInit {
     this.setTotals();
   }
 
+  /**
+   * Edit Line and change value
+   * @param e @event
+   * @param i @line
+   */
+   async onChangeDiscount(e, i) {
+    let val = e.target.value === '' ? 0 : e.target.value;
+    let lines = this.frm.controls.lines.value;
+    lines[i].lineDiscountPercentage = Number(val);
+    let subTotal = lines[i].quantity * lines[i].unitPrice;
+    let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
+    lines[i].lineDiscountAmount = discountAmount.toFixed(2);
+    lines[i].totalWithoutDiscount = subTotal.toFixed(2);
+    lines[i].total = Number(subTotal - discountAmount).toFixed(2);
+    // let tax = (lines[i].totalWithoutDiscount) * ( taxPerc / 100);
+    lines[i].edit = true;
+    this.frm.controls.lines.setValue(lines);
+    this.setTotals();
+  }
+
   // login to the application is performed.
   async onSubmit() {
     let mandatoryBoolean: boolean;
