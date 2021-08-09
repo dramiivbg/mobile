@@ -7,6 +7,7 @@ import { JsonService } from './json.service';
 import { Storage } from '@ionic/storage';
 import { NotifyService } from './notify.service';
 import { E_NOTIFYTYPE } from '@var/enums';
+import { InterceptService } from './intercept.service';
 
 @Injectable()
 export class SyncerpService {
@@ -26,6 +27,7 @@ export class SyncerpService {
     , private js: JsonService
     , private storage: Storage
     , private notify: NotifyService
+    , private intServ: InterceptService
   ) { }
 
   // Process Request structure
@@ -111,6 +113,7 @@ export class SyncerpService {
   async sycnAll(module) : Promise<boolean> {
     this.countTask = 0;
     let process: any = {};
+    let notify = await this.notify.createNotification(E_NOTIFYTYPE.Notify, 'We are synchronizing the sales tables', true);
 
     try {
       this.module = module;
@@ -133,8 +136,9 @@ export class SyncerpService {
             break;
         }
       }
-      
-      this.CountTaskF();
+      notify.loading = false;
+      notify.message = 'The sales tables have been synchronized correctly.';
+      this.CountTaskF(notify);
       return true;
     } catch (error) {
       return false;
@@ -150,12 +154,12 @@ export class SyncerpService {
     // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
   }
 
-  private CountTaskF() {
+  private CountTaskF(notify: any) {
     setTimeout(() => {
       if (this.countTask === (this.methods.length)) {
-        this.notify.createNotification(E_NOTIFYTYPE.Notify, 'Synchronization was successful.');
+        this.notify.editNotification(notify);
       } else {
-        this.CountTaskF();
+        this.CountTaskF(notify);
       }
     }, 1000);
   }

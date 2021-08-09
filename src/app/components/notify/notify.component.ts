@@ -10,6 +10,7 @@ import { NotifyService } from '@svc/notify.service';
   styleUrls: ['./notify.component.scss'],
 })
 export class NotifyComponent implements OnInit {
+  private timeNotif = 20000;
   public notifies: any = [];
   public Notify: boolean = false;
 
@@ -20,17 +21,35 @@ export class NotifyComponent implements OnInit {
       rsl => {
         if (rsl !== undefined && rsl !== null) {
           this.Notify = rsl.Notify;
-          this.getNotifies();
         }
+        this.getNotifies();
       }
     )
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.refreshNotify();
+  }
+
+  onClose() {
+    this.Notify = false;
+  }
 
   async getNotifies() {
-    this.notifies = await this.notify.getNotifications();
-    console.log(this.notifies);
+    let notifies = []
+    let not = await this.notify.getNotifications();
+    for(let i = 0; i < 9; i++) {
+      if(not[i] === undefined) break;
+      notifies.push(not[i]);
+    } 
+    this.notifies = notifies;
+  }
+
+  refreshNotify() {
+    this.getNotifies();
+    setTimeout(() => {
+      this.refreshNotify();
+    }, this.timeNotif);
   }
 
 }

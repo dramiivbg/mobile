@@ -216,7 +216,7 @@ export class LoginPage implements OnInit {
   private async messageWelcome() {
     let notifies = await this.notify.countNotifications();
     if (notifies === 0) {
-      this.notify.createNotification(E_NOTIFYTYPE.Notify, 'Welcome to plur-e');
+      this.notify.createNotification(E_NOTIFYTYPE.Notify, 'Welcome to plur-e', false);
     }
   }
 

@@ -36,7 +36,6 @@ export class ModulesPage implements OnInit {
   modules: any = [];
   environment: any = {};
   envShort: string = '';
-  private showNotify: boolean = false;
 
   constructor(private router: Router
     , private sqLite: SqlitePlureService
@@ -156,9 +155,8 @@ export class ModulesPage implements OnInit {
    * Notifications - modal
    */
   onShowNotify() {
-    this.showNotify = !this.showNotify;
     let obj = {
-      Notify: this.showNotify
+      Notify: true
     };
     this.intServ.notifyFunc(obj);
   }

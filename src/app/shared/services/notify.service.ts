@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { SK_NOTIFY } from "@var/consts";
 import { E_NOTIFYTYPE } from "@var/enums";
+import { Guid } from 'guid-typescript';
 import * as moment from 'moment';
 
 /** Services */
@@ -23,7 +24,6 @@ export class NotifyService {
         let notify: any = null;
         if (await this.sqlConnect()) {
             let n = await this.sqLite.getItem(SK_NOTIFY);
-            console.log(n)
             if (n !== null && n !== undefined && n !== '')
                 notify = JSON.parse(n);
         }
@@ -33,10 +33,11 @@ export class NotifyService {
     /**
      * add new notifications
      * @param obj let obj = {
-     *   type: 'notify',
+     *   type: ENUM,
      *   message: 'Welcome to plur-e',
      *   datetime: '',
-     *   new: true
+     *   new: boolean,
+     *   loading: boolean
      *   }
      */
     async setNotifications(obj: any) {
@@ -45,6 +46,32 @@ export class NotifyService {
         if (notifies !== null && notifies !== undefined) {
             nots.push(obj);
             for (let i in notifies) {
+                nots.push(notifies[i]);
+            }
+        } else {
+            nots.push(obj);
+        }
+        if (await this.sqlConnect()) await this.sqLite.setItem(SK_NOTIFY, JSON.stringify(nots));
+    }
+
+    /**
+     * add new notifications
+     * @param obj let obj = {
+     *   type: ENUM,
+     *   message: 'Welcome to plur-e',
+     *   datetime: '',
+     *   new: boolean,
+     *   loading: boolean
+     *   }
+     */
+     async setNotificationsEdit(obj: any) {
+        let nots: any = [];
+        let notifies = await this.getNotifications();
+        if (notifies !== null && notifies !== undefined) {
+            for (let i in notifies) {
+                if (obj.id === notifies[i].id) {
+                    notifies[i] = obj;
+                }
                 nots.push(notifies[i]);
             }
         } else {
@@ -67,16 +94,28 @@ export class NotifyService {
      * @param type 
      * @param message 
      */
-    async createNotification(type: E_NOTIFYTYPE, message: string): Promise<void> {
+    async createNotification(type: E_NOTIFYTYPE, message: string, loading: boolean = false): Promise<any> {
+        let id: any = Guid.create()
         let notify: any = {
-            id: '',
+            id: id.value,
             type,
             message,
             datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
             new: true,
-            loading: true
+            loading
         }
         this.setNotifications(notify);
+        return notify;
+    }
+
+    /**
+     * Format for notifications
+     * @param type 
+     * @param message 
+     */
+     async editNotification(notify: any): Promise<any> {
+        await this.setNotificationsEdit(notify);
+        return notify;
     }
 
     /**

@@ -1,3 +1,4 @@
+<div class="glass" (click)="onClose()" *ngIf="Notify"></div>
 <div class="notify" *ngIf="Notify">
   <div class="notify-arrow">
     <ion-icon name="caret-up-outline"></ion-icon>
@@ -6,8 +7,17 @@
     <div class="header"></div>
     <div class="content">
       <ion-row *ngFor="let notify of notifies">
-        <ion-col>
+        <ion-col size="1">
+          <ion-icon name="notifications-circle-outline" *ngIf="notify.type == 0"></ion-icon> <!-- Notify -->
+          <ion-icon name="alert-outline" *ngIf="notify.type == 1"></ion-icon> <!-- Alert -->
+          <ion-icon name="bug-outline" *ngIf="notify.type == 2"></ion-icon> <!-- Error -->
+          <ion-icon name="notifications-circle-outline" *ngIf="notify.type == 3"></ion-icon> <!-- Log -->
+        </ion-col>
+        <ion-col size="10">
           {{notify.message}}
+        </ion-col>
+        <ion-col  size="1" *ngIf="notify.loading">
+          <img src="../../../assets/gif/loading.gif" />
         </ion-col>
       </ion-row>
     </div>
