@@ -45,6 +45,15 @@ ion-content {
     --ion-color-tint: var(--ion-color-plureGrey-tint) !important;
 }
 
+.ion-color-plureBlue {
+    --ion-color-base: var(--ion-color-plureBlue) !important;
+    --ion-color-base-rgb: var(--ion-color-plureBlue-rgb) !important;
+    --ion-color-contrast: var(--ion-color-plureBlue-contrast) !important;
+    --ion-color-contrast-rgb: var(--ion-color-plureBlue-contrast-rgb) !important;
+    --ion-color-shade: var(--ion-color-plureBlue-shade) !important;
+    --ion-color-tint: var(--ion-color-plureBlue-tint) !important;
+}
+
 /*
 rocampo
 .input-plure {    

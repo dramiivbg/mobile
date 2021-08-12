@@ -28,7 +28,7 @@ export class NotifyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refreshNotify();
+    // this.refreshNotify();
   }
 
   onClose() {
@@ -38,11 +38,13 @@ export class NotifyComponent implements OnInit {
   async getNotifies() {
     let notifies = []
     let not = await this.notify.getNotifications();
-    for(let i = 0; i < 9; i++) {
-      if(not[i] === undefined) break;
-      notifies.push(not[i]);
-    } 
-    this.notifies = notifies;
+    if (not !== null) {
+      for(let i = 0; i < 9; i++) {
+        if(not[i] === undefined) break;
+        notifies.push(not[i]);
+      } 
+      this.notifies = notifies;
+    }
   }
 
   refreshNotify() {

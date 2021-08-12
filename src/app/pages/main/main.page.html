@@ -7,9 +7,11 @@
             <img src="{{avatar}}" width="30px"/>
           </ion-avatar>
           <ion-label>
-            <h1>{{userSession.userName}}</h1>
+            <div class="menuInfo">
+              <h1>{{userSession.userName}}</h1>
+              <p>Company Name: {{selectedCompany.companyName}}</p>
+            </div>
             <p>{{userSession.email}}</p>
-            <p>{{selectedCompany.companyName}}</p>
             <p>Id: {{selectedCompany.companyId}}</p>
           </ion-label>
         </div>
@@ -36,7 +38,7 @@
     </ion-content>
     <ion-footer class="ion-no-border">
       <ion-text color="primary">
-        <p>{{version}}</p>
+        <PlureVersion showVersion="1"></PlureVersion>
       </ion-text>
     </ion-footer>
   </ion-menu>

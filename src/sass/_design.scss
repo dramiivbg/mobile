@@ -12,6 +12,10 @@ ion-header.main {
     }
 }
 
+ion-header {
+    background: var(--ion-color-plureHeader);
+}
+
 ion-content.login, ion-content.intro {
 
     div.plure-brand {
@@ -129,141 +133,16 @@ ion-content.login, ion-content.intro {
     backdrop-filter: blur(12px);    
 }
 
-// design general
-/*body {
-    color: #bbbbbb !important;
-}*/
-
-// toolbar
-/* 
-rocampo
-.ion-toolbar-backg {
-    --background: rgb(109, 167, 234);
-    .ion-toolbar-button {
-        color: #fff;
+div.logofooter2 {
+    div {
+        color: rgba(72, 74, 81, 0.3); 
+        font-size: 12px;
     }
-}*/
-// toolbar
-/*
-rocampo
-ion-content, host {
-    background: #ffffff;
-    --background: #ffffff;
-}*/
-
-/*
-rocampo
-ion-input {
-    border: none !important;
-    input {
-        border: none !important;
-    }
-}*/
-
-// form
-// rocampo  
-/*ion-input, ion-select {
-    background: $input_back !important;
-    color:$input_color !important;
-    font-size: 13px !important;
-    input {
-        font-size: 13px !important;
-    }
-}*/
-// end form
-
-/*ion-button.btn-plure {
-    border-radius: 25px;
-    background: var(--ion-color-plure);
-    padding: 10px;
-    height: 35px;
-    width: 140px !important;
-    button {
-        background: #fff;
+    hr {
+        background: rgba(72, 74, 81, 0.3); 
+        height: 3px; border-radius: 50px;
     }
 }
-ion-button.btn-plure::part(native){
-    box-shadow: none;
-}
-
-ion-button:active {
-    --background: #dedede;
-    color: #999999;
-}
-
-ion-button:focus {
-    color: #999999;
-}*/
-
-
-/*
-rocampo
-ion-label { 
-    padding-bottom: 20px;
-}*/
-
-/*
-rocampo
-.login {
-    ion-row{
-        height: 100%;
-        .login-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-form {
-            width: 100%;
-            .logo {
-                margin-bottom: 20px;
-                text-align: center;
-                img {
-                    display: inline-block;
-                }
-            }
-            ion-row {
-                margin-top: 8px;
-            }
-            ion-button {
-                width: 100%;
-            }
-        }
-    }
-    ion-row.environmentLogin {
-        padding: 0;
-        ion-col {
-            padding: 0;
-            ion-button {
-                --background: #fff;
-                --background-activated: #fff;
-                color: #999;
-                height: 20px;
-                width: 0;
-            }
-        }
-    }
-    
-}*/
-
-// search component 
-/*btn-search {
-    font-size: 12px;
-    .search-content {
-        padding: 5px;
-        .search-body {
-            margin-top: 10px;
-            color: #000;
-            ion-grid {
-                ion-row {
-                    border-bottom: $search_border_row;
-                    padding: 5px;
-                }
-            }
-        }
-    }
-}*/
-
-
 
 // loading
 loading-plure {
@@ -289,63 +168,19 @@ loading-plure {
     }   
 }
 
-alert-message {
-    .container {
-        align-items: center;        
-        display: flex;
-        justify-content: center;
-        height: 100%;
-        left: 0;
-        width: 100%;
-        position: fixed;
-        top: 0;
-        .alert-content {   
-            border: solid 1px rgb(85, 85, 105, 0.5);       
-            border-radius: 5px;        
-            background: white;    
-            margin: 10%;
-            width: 90%;
-            .alert-header {                
-                text-align: center;
-                padding: 10px;
-                h1 {
-                    font-weight: bold;
-                }
-            }
-            .alert-body {                
-                color: $alert-body-color;
-                text-align: center;
-                padding: 0 30px 30px;
-            }
-        }
-        button.btn-plure {
-            background: $alert-body-btn-back;
-            border-radius: 4px;
-            color: $alert-body-btn-color;
-            margin-top: 20px;
-            padding: 2vw 3vh;
-        }
-        button.btn-plure-cancel {
-            margin-left: 5px;
+ion-content.changePassword {
+    ion-input {
+        margin: 0;
+        .native-input {
+            --padding: 0 !important;
+            padding: 0 !important;
         }
     }
-}
-
-// sales-form
-.accorn {
-    color: #000;
-    font-size: 12px;
-    margin-top: 10px;
-    .accorn-title {
-        background: #ddd;
-        padding: 5px;
-        font-weight: bold;
+    ion-item.ion-invalid {
+        --highlight-background: none;
     }
-    .btn-accord {
-        text-align: center;
-        .accord-btn-add {
-            display: inline-block;
-        }
+    ion-item.ion-valid {
+        --highlight-background: none;
     }
 }
 
@@ -366,6 +201,16 @@ ion-content {
             ion-label {
                 color: var(--ion-color-plureMain);
                 font-weight: 600;
+            }
+        }
+    }
+}
+    
+div.logofooter2 {
+    ion-row{
+        ion-col {
+            img {
+                height: 20px;
             }
         }
     }

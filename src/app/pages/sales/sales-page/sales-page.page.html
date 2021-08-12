@@ -1,149 +1,133 @@
-<ion-header>
-  <ion-toolbar color="plureMain">
-    <ion-buttons slot="start">
-      <ion-back-button class="ion-toolbar-button" defaultHref="modules"></ion-back-button>
-    </ion-buttons>
-    <ion-title mode="ios">{{process.salesType}}</ion-title>
-  </ion-toolbar>
-</ion-header>
+<PlureHeader type="1" title="{{process.salesType}}" url="sales/sales-main" notify="1"></PlureHeader>
 
-<ion-content>
-  <ion-row class="avatar">
-    <ion-col size="3" class="avatar-img">
-      <ion-avatar>
-        <img *ngIf="session.avatar == '' || session.avatar == null" src="../../../../assets/img/img-robot.svg" />
-        <img *ngIf="session.avatar != '' && session.avatar != null" src="{{session.avatar}}" />
-      </ion-avatar>
-    </ion-col>
-    <ion-col class="avatar-txt">
-      <ion-label>{{session.userName}}</ion-label>
-    </ion-col>
-  </ion-row>
-
-  <ion-row>
-    <ion-col>
-      <div class="add">
-        <ion-input (click)="onAddSales()">
-          <div class="btnAdd">
-            <div class="txt">
-              Add new sales
+<ion-content class="content">
+  <div class="header">
+    <h1>{{process.salesType}}</h1>
+  </div>
+  <div class="content-desing">
+    <div class="content-section">
+      <ion-row class="title">
+        <ion-col size="11">New</ion-col>
+        <ion-col size="1" class="elipse">
+          <img src="../../../../assets/img/modules/elipse.svg" />
+          <img src="../../../../assets/img/modules/elipse.svg" />
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="add" (click)="onAddSales()">
+            <div class="btnAdd">
+              <ion-row>
+                <ion-col size="10">
+                  <div class="txt">
+                    Add new <span>{{process.salesType}}</span>
+                  </div>
+                </ion-col>
+                <ion-row>
+                  <div class="icon" size="2">
+                    <div class="icon2">
+                      <ion-icon name="add-outline"></ion-icon>
+                    </div>
+                  </div>
+                </ion-row>
+              </ion-row>
             </div>
-            <div class="icon">
-              <ion-icon name="add-outline"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="content-section sect2">
+      <ion-row class="title">
+        <ion-col size="11">View</ion-col>
+        <ion-col size="1" class="elipse">
+          <img src="../../../../assets/img/modules/elipse.svg" />
+          <img src="../../../../assets/img/modules/elipse.svg" />
+        </ion-col>
+      </ion-row>
+      <ion-row class="viewOrders">
+        <ion-col size="12">
+          <div class="list-orders" (click)="onSalesList()">
+            <div class="btn-list-orders">
+              <ion-row>
+                <ion-col size="4" class="icon">
+                  <img src="../../../../assets/img/modules/sales/view-sales.png" />
+                </ion-col>
+                <ion-col *ngIf="sales != undefined" size="8" class="sales">
+                  <div class="bold">
+                    Open sales <br />
+                    {{sales.value}}
+                  </div>
+                  <div class="blue">{{sales.id}}</div>
+                  <div>{{sales.fields.SelltoCustomerNo}}</div>
+                  <div>{{sales.fields.OrderDate}}</div>
+                </ion-col>
+                <ion-col *ngIf="sales == undefined" size="8" class="sales">
+                  <div  class="bold">
+                    Open sales
+                  </div>
+                  <div>&nbsp;</div>
+                  <div>&nbsp;</div>
+                  <div>&nbsp;</div>
+                  <div>&nbsp;</div>
+                </ion-col>
+              </ion-row>
             </div>
           </div>
-        </ion-input>
-      </div>
-    </ion-col>
-  </ion-row>
-  <ion-row class="title">
-    <ion-col>View</ion-col>
-  </ion-row>
-  <ion-row *ngIf="sales != undefined">
-    <ion-col>
-      <div class="list-orders">
-        <ion-input (click)="onSalesList()">
-          <div class="btn-list-orders">
-            <ion-row>
-              <ion-col size="4" class="icon">
-                <img src="../../../../assets/img/modules/sales/view-sales.png" />
-              </ion-col>
-              <ion-col size="8" class="sales">
-                <div>
-                  Open sales <br />
-                  {{sales.value}}
-                </div>
-                <div>{{sales.id}}</div>
-                <div>{{sales.fields.SelltoCustomerNo}}</div>
-                <div>{{sales.fields.OrderDate}}</div>
-              </ion-col>
-            </ion-row>
-          </div>
-        </ion-input>
-      </div>
-    </ion-col>
-  </ion-row>
-
-  <ion-row *ngIf="sales == undefined">
-    <ion-col>
-      <div class="list-orders">
-        <ion-input>
-          <div class="btn-list-orders">
-            <ion-row>
-              <ion-col size="4" class="icon">
-                <img src="../../../../assets/img/modules/sales/view-sales.png" />
-              </ion-col>
-              <ion-col size="8" class="sales">
-                <div>Open sales</div>
-                <div>&nbsp;</div>
-                <div>&nbsp;</div>
-                <div>&nbsp;</div>
-                <div>&nbsp;</div>
-              </ion-col>
-            </ion-row>
-          </div>
-        </ion-input>
-      </div>
-    </ion-col>
-  </ion-row>
-
-  <ion-row class="title">
-    <ion-col>Temporaly</ion-col>
-  </ion-row>
-  <ion-row *ngIf="temporaly != null">
-    <ion-col>
-      <div class="list-orders">
-        <ion-input (click)="onTemp()">
-          <div class="btn-list-orders">
-            <ion-row>
-              <ion-col>
-                <div class="temporaly">
-                  <div class="icon-temporaly">
-                    <img src="../../../../assets/img/modules/times.svg" />
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="content-section sect3">
+      <ion-row class="title">
+        <ion-col size="11">{{process.salesType}} Offline</ion-col>
+          <ion-col size="1" class="elipse">
+            <img src="../../../../assets/img/modules/elipse.svg" />
+            <img src="../../../../assets/img/modules/elipse.svg" />
+          </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="list-orders">
+            <div class="btn-list-orders" (click)="onTemp()">
+              <ion-row>
+                <ion-col>
+                  <div class="temporaly">
+                    <div class="icon-temporaly">
+                      <ion-row>
+                        <ion-col size="8">
+                          <img src="../../../../assets/icon/offline.svg" />
+                        </ion-col>
+                        <ion-col size="4" class="offl" *ngIf="temporaly != null">
+                          <div>{{temporaly.length}}</div>
+                        </ion-col>
+                        <ion-col size="4" class="offl" *ngIf="temporaly == null">
+                          <div>0</div>
+                        </ion-col>
+                      </ion-row>
+                    </div>
+                    <div class="progress-temporaly" *ngIf="temporaly != null">
+                      <ion-progress-bar value="{{tempPerc}}"></ion-progress-bar>
+                    </div>
+                    <div class="progress-temporaly" *ngIf="temporaly == null">
+                      <ion-progress-bar value="0"></ion-progress-bar>
+                    </div>
                   </div>
-                  <div class="txt-temporaly">Times</div>
-                  <div class="progress-temporaly">
-                    <ion-progress-bar value="{{tempPerc}}"></ion-progress-bar>
-                  </div>
-                </div>
-              </ion-col>
-            </ion-row>
+                </ion-col>
+              </ion-row>
+            </div>
           </div>
-        </ion-input>
-      </div>
-    </ion-col>
-  </ion-row>
-  <ion-row *ngIf="temporaly == null">
-    <ion-col>
-      <div class="list-orders">
-        <ion-input>
-          <div class="btn-list-orders">
-            <ion-row>
-              <ion-col>
-                <div class="temporaly">
-                  <div class="icon-temporaly">
-                    <img src="../../../../assets/img/modules/times.svg" />
-                  </div>
-                  <div class="txt-temporaly">Times</div>
-                  <div class="progress-temporaly">
-                    <ion-progress-bar value="0"></ion-progress-bar>
-                  </div>
-                </div>
-              </ion-col>
-            </ion-row>
-          </div>
-        </ion-input>
-      </div>
-    </ion-col>
-  </ion-row>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>  
 </ion-content>
 
-<ion-footer *ngIf="temporaly != null"> <!-- sales order -->
-  <ion-toolbar color="plureMain">
-    <ion-buttons slot="primary" class="ion-toolbar-button">
-      <ion-button (click)="onSyncTemp()">
-        <ion-icon slot="start" name="sync-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-footer>
+<PlureVersion showVersion="0">
+  <ion-row>
+    <ion-col size="4"></ion-col>
+    <ion-col size="4" (click)="onSyncTemp()">
+      <img src="../../../../assets/img/sync.svg" /> <br />
+      <div>Sync</div>
+      <hr />
+    </ion-col>
+  </ion-row>
+</PlureVersion>

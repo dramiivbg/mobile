@@ -19,3 +19,8 @@ export enum E_NOTIFYTYPE {
     Error = 2,
     Log = 3
 }
+
+export enum E_MENUTYPE {
+    Menu = 0,
+    Return = 1
+}

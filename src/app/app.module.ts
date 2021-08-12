@@ -38,7 +38,7 @@ import { AlertsComponent } from './components/alerts/alerts.component';
 import { SearchComponent } from './components/search/search.component';
 import { StripePayComponent } from './components/stripe-pay/stripe-pay.component';
 import { NotifyComponent } from './components/notify/notify.component';
-
+import { SharedModule } from './shared/modules/sharedModule.module';
 
 @NgModule({
   declarations: [

@@ -5,7 +5,8 @@ import { InterceptService } from '@svc/intercept.service';
 
 @Component({
   selector: 'alert-message',
-  templateUrl: './alerts.component.html'
+  templateUrl: './alerts.component.html',
+  styleUrls: ['./alerts.component.scss']
 })
 export class AlertsComponent implements OnInit {
   alertObj: any = {};

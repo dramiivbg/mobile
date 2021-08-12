@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="plureHeader">
+    <ion-buttons slot="start">
+      <ion-menu-button *ngIf="type == 0" menu="menu-content"></ion-menu-button>
+      <ion-button *ngIf="type == 1" (click)="onEvent()">
+        <img src="../../../assets/icon/arrow_back.svg" />
+      </ion-button>
+    </ion-buttons>
+    <ion-title mode="ios">{{title}}<span *ngIf="envShort != ''"> ({{envShort}})</span></ion-title>
+    <ion-buttons slot="end" *ngIf="notify == '1'">
+      <ion-button class="notify" (click)="onShowNotify()">
+        <div class="notf">
+          <div class="nf">{{notifyCount}}</div>
+        </div>
+        <img src="../../../assets/img/alertc.svg" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

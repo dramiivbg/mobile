@@ -13,8 +13,8 @@ import { E_MODULETYPE } from '@var/enums';
   styleUrls: ['./sync.page.scss'],
 })
 export class SyncPage implements OnInit {
-  modules: any = [];
-  environment: any = {};
+  public modules: any = [];
+  public environment: any = {};
 
   constructor(private syncErp: SyncerpService
     , private intServ: InterceptService
@@ -50,8 +50,19 @@ export class SyncPage implements OnInit {
   }
 
   async onSyncTables(mod) : Promise<void> {
+    let objAlert = {
+      funcError: (error) => {
+        this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
+      },
+      func: () => {
+        let obj = undefined;
+        setTimeout(() => {
+          this.intServ.notifyFunc(obj);
+        }, 500);
+      }
+    }
     this.intServ.loadingFunc(true);
-    let b = this.syncErp.sycnAll(mod);
+    let b = this.syncErp.sycnAll(mod, objAlert);
     // if (b) {
     //   this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Sales are correctly synchronized'));
     // }

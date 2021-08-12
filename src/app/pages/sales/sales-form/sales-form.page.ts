@@ -31,30 +31,30 @@ export class SalesFormPage implements OnInit {
   private salesType: string;
   private extras: boolean = false;
   private vatPostingSetup: any;
-  private locationSetup: any;
   private locationMandatory: boolean;
   private customerLocationCode: string = '';
 
-  new: boolean;
-  edit: boolean = false;
-  permissions: Array<E_PROCESSTYPE>;
-  order: any = {};
-  temp: any = {};
-  unitMeasureList: any = [];
-  process: Process;
-  idSales: string;
-  hideShipTo: boolean = false;
-  
-  frm = new FormGroup({});
-  orderDate: string = new Date().toDateString();
-  deliveryDate: string = new Date().toDateString();
-  fields: Array<any> = [];
-  linesS: Array<any> = [];
-  today: string;
-  subTotal: Number = 0;
-  taxTotal: Number = 0;
-  discountTotal: Number = 0;
-  total: Number = 0;
+  public locationSetup: any;
+  public new: boolean;
+  public edit: boolean = false;
+  public backObj: any = {};
+  public permissions: Array<E_PROCESSTYPE>;
+  public order: any = {};
+  public temp: any = {};
+  public unitMeasureList: any = [];
+  public process: Process;
+  public idSales: string;
+  public hideShipTo: boolean = false;
+  public frm = new FormGroup({});
+  public orderDate: string = new Date().toDateString();
+  public deliveryDate: string = new Date().toDateString();
+  public fields: Array<any> = [];
+  public linesS: Array<any> = [];
+  public today: string;
+  public subTotal: Number = 0;
+  public taxTotal: Number = 0;
+  public discountTotal: Number = 0;
+  public total: Number = 0;
 
   // viewChild
   @ViewChild('dateOrder') dateOrderTime;
@@ -125,6 +125,7 @@ export class SalesFormPage implements OnInit {
       }
       this.intServ.loadingFunc(false);
     }
+    this.onBackFunction();
   }
 
   // Create new sale
@@ -381,7 +382,7 @@ export class SalesFormPage implements OnInit {
   /**
    * Return to the main.
    */
-  onBack() {
+   onBack() {
     if (this.new || this.edit) {
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Are you sure you want to leave?',
         () => {
@@ -391,6 +392,26 @@ export class SalesFormPage implements OnInit {
       ));
     } else {
       this.router.navigate(['sales/sales-main'], { replaceUrl: true });
+    }
+  }
+
+  /**
+   * Return to the main.
+   */
+  onBackFunction() {
+    this.backObj = {
+      func: () => {
+        if (this.new || this.edit) {
+          this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Are you sure you want to leave?',
+            () => {
+              this.onReset();
+              this.router.navigate(['sales/sales-main'], { replaceUrl: true });
+            }
+          ));
+        } else {
+          this.router.navigate(['sales/sales-main'], { replaceUrl: true });
+        }
+      }
     }
   }
 

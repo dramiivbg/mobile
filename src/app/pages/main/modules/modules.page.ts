@@ -18,6 +18,8 @@ import { Storage } from '@ionic/storage';
 import { SK_ENVIRONMENT } from '@var/consts';
 import { SyncerpService } from '@svc/syncerp.service';
 import { NotifyService } from '@svc/notify.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+
 const { App } = Plugins;
 
 export interface Module {
@@ -29,7 +31,7 @@ export interface Module {
 @Component({
   selector: 'app-modules',
   templateUrl: './modules.page.html',
-  styleUrls: ['./modules.page.scss'],
+  styleUrls: ['./modules.page.scss']
 })
 export class ModulesPage implements OnInit {
   grid: boolean = false;
@@ -135,11 +137,22 @@ export class ModulesPage implements OnInit {
   }
 
   async onSync(mod) {
-    this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Synchronization will be performed in the background, we will notify you in notifications when we finish this process.',
+    this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Synchronization will be performed in the background',
       async () => {
-        await this.syncErp.sycnAll(mod);
+        let objAlert = {
+          funcError: (error) => {
+            this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
+          },
+          func: () => {
+            let obj = undefined;
+            setTimeout(() => {
+              this.intServ.notifyFunc(obj);
+            }, 500);
+          }
+        }
+        await this.syncErp.sycnAll(mod, objAlert);
       }
-    ))
+    ));
   }
 
   onStripePay() {
@@ -149,16 +162,6 @@ export class ModulesPage implements OnInit {
       Amount: 5000,
       DocumentNum: 'inv-2'
     });
-  }
-
-  /**
-   * Notifications - modal
-   */
-  onShowNotify() {
-    let obj = {
-      Notify: true
-    };
-    this.intServ.notifyFunc(obj);
   }
 
 }

@@ -6,8 +6,9 @@ import { JsonService } from './json.service';
 
 import { Storage } from '@ionic/storage';
 import { NotifyService } from './notify.service';
-import { E_NOTIFYTYPE } from '@var/enums';
+import { E_NOTIFYTYPE, E_PROCESSTYPE } from '@var/enums';
 import { InterceptService } from './intercept.service';
+import { copyFileSync } from 'fs';
 
 @Injectable()
 export class SyncerpService {
@@ -17,11 +18,12 @@ export class SyncerpService {
   private methods: Array<string> = [
     'GetSalesOrders', 
     'GetCustomers',
-    'GetItems',
     'GetSalesCount',
     'GetTaxPostings',
-    'GetInventorySetup'
-  ]
+    'GetInventorySetup',
+    'GetItems'
+  ];
+  private notifyObj: any = {};
 
   constructor(private apiConnect: ApiService
     , private js: JsonService
@@ -110,14 +112,17 @@ export class SyncerpService {
     return value;
   }
 
-  async sycnAll(module) : Promise<boolean> {
+  async sycnAll(module, objAlert: any) : Promise<boolean> {
     this.countTask = 0;
     let process: any = {};
-    let notify = await this.notify.createNotification(E_NOTIFYTYPE.Notify, 'We are synchronizing the sales tables', true);
+    this.notifyObj = await this.notify.createNotification(E_NOTIFYTYPE.Notify, 'We are synchronizing the sales tables', true);
+    objAlert.func();
+    this.notifyObj.message = 'The sales tables have been synchronized correctly.';
 
     try {
       this.module = module;
       for (let i in this.methods) {
+        
         switch(this.methods[i]) {
           case 'GetSalesOrders':
             this.syncSales(this.methods[i]).then(() => this.countTask++);
@@ -130,15 +135,20 @@ export class SyncerpService {
             process = await this.processRequestParams(this.methods[i], []);
             this.setRequest(process).then(() => this.countTask++);
             break;
+          case 'GetCustomers':
+            this.getCustomers(i);
+            break;
+          case 'GetItems':
+            this.getItems(i);
+            break;
           default:
             process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
             this.setRequest(process).then(() => this.countTask++);
             break;
         }
       }
-      notify.loading = false;
-      notify.message = 'The sales tables have been synchronized correctly.';
-      this.CountTaskF(notify);
+      this.notifyObj.loading = false;
+      this.CountTaskF(objAlert);
       return true;
     } catch (error) {
       return false;
@@ -154,14 +164,67 @@ export class SyncerpService {
     // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
   }
 
-  private CountTaskF(notify: any) {
+  private CountTaskF(objAlert: any) {
     setTimeout(() => {
       if (this.countTask === (this.methods.length)) {
-        this.notify.editNotification(notify);
+        if (this.notifyObj.type === E_NOTIFYTYPE.Alert) {
+          objAlert.funcError(this.notifyObj.message);
+        }
+        objAlert.func();
+        this.notify.editNotification(this.notifyObj);
       } else {
-        this.CountTaskF(notify);
+        this.CountTaskF(objAlert);
       }
     }, 1000);
+  }
+
+  /**
+   * Process Get Request customers
+   * @param i 
+   */
+  private async getCustomers(i) {
+    let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+    this.setRequest(process).then(
+      rsl => {
+        console.log(rsl);
+        if (rsl.status !== 200 && rsl.status !== undefined) {
+          this.notifyObj.message = rsl.error.message;
+          this.notifyObj.type = E_NOTIFYTYPE.Alert;
+        } else {
+          if (rsl.length < 1){
+            this.notifyObj.message = 'Customers not found';
+            this.notifyObj.type = E_NOTIFYTYPE.Alert;
+          }
+        }
+        this.countTask++;
+      }
+    ) 
+  }
+
+  /**
+   * Process Get Request customers
+   * @param i 
+   */
+   private async getItems(i) {
+    let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+    this.setRequest(process).then(
+      rsl => {
+        if (rsl.status !== 200 && rsl.status !== undefined) {
+          this.notifyObj.message = rsl.error.message;
+          this.notifyObj.type = E_NOTIFYTYPE.Alert;
+        } else {
+          if (rsl.length < 1){
+            this.notifyObj.message = 'Items not found';
+            this.notifyObj.type = E_NOTIFYTYPE.Alert;
+          }
+        }
+        this.countTask++;
+      }
+    ).catch(
+      error => {
+        console.log(error);
+      }
+    )
   }
 
 }

@@ -1,15 +1,5 @@
-<ion-header>
-  <ion-toolbar color="plureMain">
-    <ion-buttons slot="start">
-      <!-- <ion-back-button class="ion-toolbar-button" (click)="onBack()" defaultHref="undefined"></ion-back-button> -->
-      <ion-button (click)="onBack()">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title *ngIf="new">New - {{process.description}}</ion-title>
-    <ion-title *ngIf="!new">{{process.description}} - {{idSales}}</ion-title>
-  </ion-toolbar>
-</ion-header>
+<PlureHeader type="1" *ngIf="new" title="New - {{process.description}}" notify="0" url="none" [getObjFunc]="backObj"></PlureHeader>
+<PlureHeader type="1" *ngIf="!new" title="{{process.description}} - {{idSales}}" notify="0" url="none" [getObjFunc]="backObj"></PlureHeader>
 
 <ion-content>
   <form [formGroup]="frm" (ngSubmit)="onSubmit()">
@@ -29,7 +19,7 @@
           <ion-label class="smallfont">Customer No {{frm.controls.customerNo.value}}</ion-label>
         </ion-col>
       </ion-row>
-      <ion-row class="shipTop" *ngIf="!hideShipTo">
+      <ion-row class="shipTop newColor" *ngIf="!hideShipTo">
         <ion-col (click)="onShipAddress()" *ngIf="new || edit" size="11">
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/ship-to-address.svg" width="100%" />
@@ -52,8 +42,8 @@
           <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
         </ion-col>
       </ion-row>
-      <hr *ngIf="!hideShipTo" />
-      <ion-row class="orderDate" (click)="onDate(0)">
+      <!-- <hr *ngIf="!hideShipTo" /> -->
+      <ion-row class="orderDate newColor" (click)="onDate(0)">
         <ion-col size="11">
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/order-date.svg" width="100%" />
@@ -67,8 +57,8 @@
           <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
         </ion-col>
       </ion-row>
-      <hr *ngIf="!hideShipTo" />
-      <ion-row class="delivery" (click)="onDate(1)" *ngIf="!hideShipTo">
+      <!-- <hr *ngIf="!hideShipTo" /> -->
+      <ion-row class="delivery newColor" (click)="onDate(1)" *ngIf="!hideShipTo">
         <ion-col size="11" >
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/delivery-date.svg" width="100%" />
@@ -117,7 +107,7 @@
                   <ion-item-option color="danger" (click)="onDeleteLine(i)" style="padding: 0 20px;">
                     <ion-icon name="trash-outline"></ion-icon>
                   </ion-item-option>
-                  <ion-item-option color="plureGrey" class="select-floating" *ngIf="item.controls.type.value == 'Inventory'">
+                  <ion-item-option color="plureHeader" class="select-floating" *ngIf="item.controls.type.value == 'Inventory'">
                     <ion-label>Location code</ion-label>
                     <ion-select style="width: 150px;" formControlName="locationCode">
                       <ion-select-option *ngFor="let location of locationSetup">{{location.Code}}</ion-select-option>
@@ -129,12 +119,12 @@
                   <div class="label-lines">
                     <ion-row>
                       <ion-col size="2" class="label-line-title">
-                        <img *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'" src="../../../../assets/img/NOIMAGE.jpg" />
+                        <img class="noImage" *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'" src="../../../../assets/img/NOIMAGE.svg" />
                         <img *ngIf="item.controls.picture.value != 'data:image/jpeg;base64,NOIMAGE'" src="{{item.controls.picture.value}}" />
                       </ion-col>
                       <ion-col size="10">
                         <ion-row>
-                          <ion-col size="7" style="overflow: hidden;" class="label-line-title">
+                          <ion-col size="7" style="overflow: hidden;" class="label-line-title blue">
                             {{item.controls.title.value}}
                           </ion-col>
                           <ion-col size="5" class="label-line-title" style="text-align: right;">
@@ -151,7 +141,7 @@
                                 Disc %
                               </ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input style="height: 14px; border-bottom: 1px solid #000;" type="number" formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)"></ion-input>
+                                <ion-input style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number" formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)"></ion-input>
                               </ion-col>
                             </ion-row>
                             <!-- Disc %: {{item.controls.lineDiscountPercentage.value}} -->
@@ -168,7 +158,7 @@
                             <ion-row>
                               <ion-col size="5" style="padding: 0;">U.Price</ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input style="height: 14px; border-bottom: 1px solid #000;" type="number" formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
+                                <ion-input style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number" formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
                               </ion-col>
                             </ion-row>
                             <!-- Unit price: ${{item.controls.unitPrice.value}} -->
@@ -183,20 +173,20 @@
                 </ion-item>
 
                 <ion-item-options side="end" *ngIf="new || edit">
-                  <ion-item-option color="danger" class="select-floating">
+                  <ion-item-option color="plureBlue" class="select-floating">
                     <ion-label>Unit of measure</ion-label>
                     <ion-select style="width: 150px;" (ionChange)="ionMeasure(i)" formControlName="unitOfMeasureCode">
                       <ion-select-option *ngFor="let measure of unitMeasureList[i]">{{measure.id}}</ion-select-option>
                     </ion-select>
                   </ion-item-option>
-                  <ion-item-option class="item-lines" color="plureBlack">
-                    <ion-button color="plureGrey" class="btn-decrement" (click)="onIncDec(i, 0)">-</ion-button>
-                    <ion-input color="plureBlack" 
-                      style="color: #ffffff !important; width: 44px !important;" 
+                  <ion-item-option class="item-lines" color="plureHeader">
+                    <ion-button color="plureHeader" class="btn-decrement" (click)="onIncDec(i, 0)">-</ion-button>
+                    <ion-input color="plureHeader" 
+                      style="color: #000 !important; width: 44px !important;" 
                       formControlName="quantity"
                       (focusout)="onQuantity(i)"
                       type="number"></ion-input>
-                    <ion-button color="plureGrey" class="btn-increment" (click)="onIncDec(i, 1)">+</ion-button>
+                    <ion-button color="plureHeader" class="btn-increment" (click)="onIncDec(i, 1)">+</ion-button>
                   </ion-item-option>
                 </ion-item-options>
               </ion-item-sliding>
@@ -206,35 +196,33 @@
       </div>
     </div>
 
-    <div class="accorn">
-      <ion-row>
-        <ion-col size="6"></ion-col>
-        <ion-col size="2">
-          <ion-label>Subtotal</ion-label>
-        </ion-col>
-        <ion-col size="3" style="text-align: right;">${{subTotal}}</ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="6"></ion-col>
-        <ion-col size="2">
-          <ion-label>Tax</ion-label>
-        </ion-col>
-        <ion-col size="3" style="text-align: right;">${{taxTotal}}</ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="6"></ion-col>
-        <ion-col size="2">
-          <ion-label>Discount</ion-label>
-        </ion-col>
-        <ion-col size="3" style="text-align: right;">${{discountTotal}}</ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="6"></ion-col>
-        <ion-col size="2">
-          <ion-label>Total</ion-label>
-        </ion-col>
-        <ion-col size="3" style="text-align: right;">${{total}}</ion-col>
-      </ion-row>
+    <div class="accorn accornSubTotal">
+      <div class="box-sh">
+        <ion-row>
+          <ion-col size="6">
+            <ion-label>Subtotal</ion-label>
+          </ion-col>
+          <ion-col size="6" style="text-align: right;">${{subTotal}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label>Tax</ion-label>
+          </ion-col>
+          <ion-col size="6" style="text-align: right;">${{taxTotal}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label>Discount</ion-label>
+          </ion-col>
+          <ion-col size="6" style="text-align: right;">${{discountTotal}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label>Total</ion-label>
+          </ion-col>
+          <ion-col size="6" style="text-align: right;">${{total}}</ion-col>
+        </ion-row>
+      </div>
     </div>
 
     <div class="accorn accorn-fields-dynamics" style="display: none;">
@@ -268,19 +256,11 @@
       </div>
     </div>
 
-    <!-- <ion-row *ngIf="new || edit">
-      <ion-col>
-        <ion-button type="submit" color="light" class="btn-submit">
-          Submit
-        </ion-button>
-      </ion-col>
-    </ion-row> -->
-
   </form>
 
 </ion-content>
 
-<ion-toolbar color="plureMain" *ngIf="new || edit">
+<!-- <ion-toolbar color="plureMain" *ngIf="new || edit">
   <ion-buttons slot="primary">
     <ion-button (click)="onItem()" *ngIf="new || edit">
       <img src="../../../../assets/img/modules/add-lines.svg" />
@@ -292,4 +272,22 @@
       <img src="../../../../assets/img/modules/bar-code-line.svg" />
     </ion-button>
   </ion-buttons>
-</ion-toolbar>
+</ion-toolbar> -->
+
+<PlureVersion showVersion="0" *ngIf="new || edit">
+  <ion-row>
+    <ion-col size="4" (click)="onItem()">
+      <img src="../../../../assets/img/add.svg" />
+      <div>Add</div>
+    </ion-col>
+    <ion-col size="4" (click)="onBarCode()">
+      <img src="../../../../assets/img/bar-code.svg" />
+      <div>Bar code</div>
+      <hr />
+    </ion-col>
+    <ion-col size="4" (click)="onSubmit()">
+      <img src="../../../../assets/img/save.svg" />
+      <div>Save</div>
+    </ion-col>
+  </ion-row>
+</PlureVersion>

@@ -1,59 +1,49 @@
-<ion-header>
-  <ion-toolbar color="plureMain">
-    <ion-buttons slot="start">
-      <ion-menu-button menu="menu-content"></ion-menu-button>
-    </ion-buttons>
-    <ion-title mode="ios">Modules<span *ngIf="envShort != ''"> ({{envShort}})</span></ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="onShowNotify()">
-        <ion-icon name="notifications-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content class="modules">
+<PlureHeader type="0" title="Modules" notify="1"></PlureHeader>
 
+<ion-content class="modules">
   <ion-toolbar>
     <ion-buttons slot="end">
-      <ion-button (click)="onGrid(false)" *ngIf="grid">
-        <ion-icon slot="icon-only" name="list-outline" color="warning"></ion-icon>
+      <ion-button type="button" (click)="onGrid(false)" *ngIf="grid">
+        <img src="../../../../assets/icon/giroutline.svg" />
       </ion-button>
-      <ion-button (click)="onGrid(true)" *ngIf="!grid">
-        <ion-icon slot="icon-only" name="grid-outline" color="warning"></ion-icon>
+      <ion-button type="button" (click)="onGrid(true)" *ngIf="!grid">
+        <img src="../../../../assets/icon/listoutline.svg" />
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-list *ngIf="!grid">
-    <ion-item *ngFor="let mod of modules" class="ion-no-padding">
-      <div class="module-item" (click)="onClick(mod)">
-        <div class="module-item-icon">
-          <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">
-        </div>
-        <div class="module-item-title">
-          <h1>{{mod.description}}</h1>
-        </div>
-      </div>
-    </ion-item>
-  </ion-list>
-
-  <ion-grid *ngIf="grid">
-    <ion-row>
-      <ion-col *ngFor="let mod of modules" size-lg="3" size-md="4" size-sm="6" size="6">
-        <div class="module-item" (click)="onClick(mod)">
-          <div class="module-item-title">
-            <h1>{{mod.description}}</h1>
-          </div>
-          <div class="module-item-icon">
+  <div class="content-menu">
+    <ion-list *ngIf="!grid">
+      <div class="grid-content">
+        <ion-row *ngFor="let mod of modules" class="ion-no-padding" (click)="onClick(mod)">
+          <ion-col size="3">
             <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">
+          </ion-col>
+          <ion-col size="9">
+            <h1>{{mod.description}}</h1>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-list>
+  
+    <ion-grid *ngIf="grid">
+      <ion-row>
+        <ion-col *ngFor="let mod of modules" size-lg="3" size-md="4" size-sm="6" size="6">
+          <div class="module-item" (click)="onClick(mod)">
+            <div class="module-item-title">
+              <h1>{{mod.description}}</h1>
+            </div>
+            <div class="module-item-icon">
+              <img src="../../../../assets/img/modules/{{mod.icon}}2.svg" alt="">
+            </div>
+            <div class="module-elipse">
+              <img src="../../../../assets/img/modules/elipse.svg" />
+              <img src="../../../../assets/img/modules/elipse.svg" />
+            </div>
           </div>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <!-- <ion-button (click)="onStripePay()" shape="round">
-    Show Stripe
-  </ion-button> -->
-
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <PlureVersion showVersion="1"></PlureVersion>
 </ion-content>

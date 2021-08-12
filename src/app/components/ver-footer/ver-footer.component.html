@@ -1,0 +1,12 @@
+<div class="logofooter" *ngIf="showVersion == 1">
+  <img src="../../../assets/img/minilogo.svg" />
+  <div class="version">
+    {{version}}
+    <ng-content></ng-content>
+  </div>
+</div>
+
+<div class="logofooter2" *ngIf="showVersion == 0">
+  <ng-content></ng-content>
+</div>
+

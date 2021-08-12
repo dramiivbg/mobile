@@ -1,0 +1,27 @@
+.header-md::after {
+    background-image: none;
+    background-color: #eeeeee;
+    height: 2px;
+}
+
+.notify {
+    text-align: right;
+    width: 60px;
+    img {
+        display: inline-block;
+    }
+    .notf {
+        border-radius: 100%;
+        background: var(--ion-color-plureBlue);
+        height: 17px;
+        margin-left: -40px;
+        position: absolute;
+        text-align: center;
+        color: #fff;
+        width: 17px;
+        .nf {
+            padding-top: 5px;
+            font-size: 6px;
+        }
+    }
+}

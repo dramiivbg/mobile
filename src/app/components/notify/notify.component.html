@@ -8,10 +8,9 @@
     <div class="content">
       <ion-row *ngFor="let notify of notifies">
         <ion-col size="1">
-          <ion-icon name="notifications-circle-outline" *ngIf="notify.type == 0"></ion-icon> <!-- Notify -->
-          <ion-icon name="alert-outline" *ngIf="notify.type == 1"></ion-icon> <!-- Alert -->
-          <ion-icon name="bug-outline" *ngIf="notify.type == 2"></ion-icon> <!-- Error -->
-          <ion-icon name="notifications-circle-outline" *ngIf="notify.type == 3"></ion-icon> <!-- Log -->
+          <img src="../../../assets/icon/success.svg" *ngIf="notify.type == 0" />
+          <img src="../../../assets/icon/alert.svg" *ngIf="notify.type == 1" />
+          <img src="../../../assets/icon/error.svg" *ngIf="notify.type == 2" />
         </ion-col>
         <ion-col size="10">
           {{notify.message}}

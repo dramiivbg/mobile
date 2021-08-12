@@ -66,21 +66,25 @@ export class GeneralService {
   // Create List customer
   async customerList(lists: any) : Promise<any> {
     let objLst = [];
-    lists.forEach(async item => {
-      let obj = {};
-      item.fields.forEach(async field => {
-        if (field.name === 'No'){
-          obj['id'] = field.value
-        }
-        if (field.name === 'Name'){
-          obj['value'] = field.value
-        }
+    if (lists !== undefined && lists !== null) {
+      lists.forEach(async item => {
+        let obj = {};
+        item.fields.forEach(async field => {
+          if (field.name === 'No'){
+            obj['id'] = field.value
+          }
+          if (field.name === 'Name'){
+            obj['value'] = field.value
+          }
+        });
+        obj['fields'] = await this.fieldsToJson(item.fields);
+        obj['genBusinessPostingGroup'] = obj['fields'].VATBusPostingGroup;
+        obj['shipAddress'] = await this.shipAddressList(item.ShipToAddress);
+        objLst.push(obj);
       });
-      obj['fields'] = await this.fieldsToJson(item.fields);
-      obj['genBusinessPostingGroup'] = obj['fields'].VATBusPostingGroup;
-      obj['shipAddress'] = await this.shipAddressList(item.ShipToAddress);
-      objLst.push(obj);
-    });
+    } else {
+      objLst = [];
+    }
     return objLst;
   }
 
@@ -106,21 +110,25 @@ export class GeneralService {
   // Create List customer
   async item(lists: any) : Promise<any> {
     let objLst = [];
-    for(let i in lists) {
-      let obj = {};
-      for(let y in lists[i].fields) {
-        if (lists[i].fields[y].name === 'No'){
-          obj['id'] = lists[i].fields[y].value
+    if (lists !== undefined && lists !== null) {
+      for(let i in lists) {
+        let obj = {};
+        for(let y in lists[i].fields) {
+          if (lists[i].fields[y].name === 'No'){
+            obj['id'] = lists[i].fields[y].value
+          }
+          if (lists[i].fields[y].name === 'Description'){
+            obj['value'] = lists[i].fields[y].value
+          }
         }
-        if (lists[i].fields[y].name === 'Description'){
-          obj['value'] = lists[i].fields[y].value
-        }
+        obj['fields'] = await this.fieldsToJson(lists[i].fields);
+        obj['listPrice'] = await this.listPrice(lists[i].ListPrices);
+        obj['unitOfMeasures'] = await this.UnitOfMeasuresList(lists[i].UnitOfMeasures);
+        obj['genProdPostingGroup'] = obj['fields'].VATProdPostingGroup;
+        objLst.push(obj);
       }
-      obj['fields'] = await this.fieldsToJson(lists[i].fields);
-      obj['listPrice'] = await this.listPrice(lists[i].ListPrices);
-      obj['unitOfMeasures'] = await this.UnitOfMeasuresList(lists[i].UnitOfMeasures);
-      obj['genProdPostingGroup'] = obj['fields'].VATProdPostingGroup;
-      objLst.push(obj);
+    } else {
+      objLst = [];
     }
     return objLst;
   }

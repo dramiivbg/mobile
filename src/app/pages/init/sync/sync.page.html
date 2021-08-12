@@ -1,14 +1,4 @@
-<ion-header>
-  <ion-toolbar color="plureMain">
-    <ion-buttons slot="start">
-      <ion-button (click)="onBack()">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title mode="ios">Sync</ion-title>
-  </ion-toolbar>
-</ion-header>
-
+<PlureHeader type="1" title="Sync" notify="1" url="modules"></PlureHeader>
 <ion-content>
   <ion-row>
     <ion-col>
@@ -28,3 +18,4 @@
     </ion-row>
   </ion-list>
 </ion-content>
+<PlureVersion showVersion="1"></PlureVersion>

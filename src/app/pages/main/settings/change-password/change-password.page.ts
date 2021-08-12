@@ -13,6 +13,7 @@ import { JsonService } from '@svc/json.service';
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION } from '@var/consts';
 
 import { Plugins } from '@capacitor/core';
+import { AuthService } from '@svc/auth.service';
 const { App } = Plugins;
 
 @Component({
@@ -21,20 +22,21 @@ const { App } = Plugins;
   styleUrls: ['./change-password.page.scss'],
 })
 export class ChangePasswordPage implements OnInit {
-
+  public frm: FormGroup;
+  public avatar: string;
   private scid: string;
   private userSession: any = {};
-  frm: FormGroup;
 
   showPassword: Array<boolean> = [false, false, false];
   passwordToggleIcon: Array<string> = ['eye', 'eye', 'eye'];
 
-  constructor(private formBuilder: FormBuilder,
-    private intServ: InterceptService,
-    private storage: Storage,
-    private apiService: ApiService,
-    private jsonServ: JsonService,
-    private router: Router
+  constructor(private formBuilder: FormBuilder
+    , private intServ: InterceptService
+    , private storage: Storage
+    , private apiService: ApiService
+    , private jsonServ: JsonService
+    , private router: Router    
+    , private authService: AuthService
   ) 
   {
     let objFunc = {
@@ -78,6 +80,20 @@ export class ChangePasswordPage implements OnInit {
         this.userSession = JSON.parse(res);
       }
     );
+    this.getAvatar();
+  }
+
+  async getAvatar() {
+    this.intServ.loadingFunc(true);
+    await this.authService.getUserSession().then(
+      res => {
+        this.userSession = res;
+        if(this.userSession.avatar != null && this.userSession.avatar != undefined && this.userSession.avatar != '') {
+          this.avatar = this.userSession.avatar;
+        }
+        this.intServ.loadingFunc(false);
+      }
+    )
   }
 
    /**
