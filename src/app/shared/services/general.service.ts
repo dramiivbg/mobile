@@ -25,7 +25,6 @@ export class GeneralService {
 
   // Create List sales ordeer
   async salesOrderList(lists: any) : Promise<any> {
-    console.log(lists);
     let objLst = [];
     for(let i in lists) {
       let obj = {};
@@ -39,6 +38,7 @@ export class GeneralService {
       }
       obj['fields'] = await this.fieldsToJson(lists[i].fields);
       obj['lines'] = await this.salesOrderLinesList(lists[i].SalesLines);
+      obj['genBusinessPostingGroup'] = obj['fields'].VATBusPostingGroup;
       objLst.push(obj);
     }
     return objLst;
@@ -66,20 +66,25 @@ export class GeneralService {
   // Create List customer
   async customerList(lists: any) : Promise<any> {
     let objLst = [];
-    lists.forEach(async item => {
-      let obj = {};
-      item.fields.forEach(async field => {
-        if (field.name === 'No'){
-          obj['id'] = field.value
-        }
-        if (field.name === 'Name'){
-          obj['value'] = field.value
-        }
+    if (lists !== undefined && lists !== null) {
+      lists.forEach(async item => {
+        let obj = {};
+        item.fields.forEach(async field => {
+          if (field.name === 'No'){
+            obj['id'] = field.value
+          }
+          if (field.name === 'Name'){
+            obj['value'] = field.value
+          }
+        });
+        obj['fields'] = await this.fieldsToJson(item.fields);
+        obj['genBusinessPostingGroup'] = obj['fields'].VATBusPostingGroup;
+        obj['shipAddress'] = await this.shipAddressList(item.ShipToAddress);
+        objLst.push(obj);
       });
-      obj['fields'] = await this.fieldsToJson(item.fields);
-      obj['shipAddress'] = await this.shipAddressList(item.ShipToAddress);
-      objLst.push(obj);
-    });
+    } else {
+      objLst = [];
+    }
     return objLst;
   }
 
@@ -105,20 +110,25 @@ export class GeneralService {
   // Create List customer
   async item(lists: any) : Promise<any> {
     let objLst = [];
-    for(let i in lists) {
-      let obj = {};
-      for(let y in lists[i].fields) {
-        if (lists[i].fields[y].name === 'No'){
-          obj['id'] = lists[i].fields[y].value
+    if (lists !== undefined && lists !== null) {
+      for(let i in lists) {
+        let obj = {};
+        for(let y in lists[i].fields) {
+          if (lists[i].fields[y].name === 'No'){
+            obj['id'] = lists[i].fields[y].value
+          }
+          if (lists[i].fields[y].name === 'Description'){
+            obj['value'] = lists[i].fields[y].value
+          }
         }
-        if (lists[i].fields[y].name === 'Description'){
-          obj['value'] = lists[i].fields[y].value
-        }
+        obj['fields'] = await this.fieldsToJson(lists[i].fields);
+        obj['listPrice'] = await this.listPrice(lists[i].ListPrices);
+        obj['unitOfMeasures'] = await this.UnitOfMeasuresList(lists[i].UnitOfMeasures);
+        obj['genProdPostingGroup'] = obj['fields'].VATProdPostingGroup;
+        objLst.push(obj);
       }
-      obj['fields'] = await this.fieldsToJson(lists[i].fields);
-      obj['listPrice'] = await this.listPrice(lists[i].ListPrices);
-      obj['unitOfMeasures'] = await this.UnitOfMeasuresList(lists[i].UnitOfMeasures);
-      objLst.push(obj);
+    } else {
+      objLst = [];
     }
     return objLst;
   }
@@ -146,29 +156,29 @@ export class GeneralService {
   // Create List prices
   async listPrice(lists: any) : Promise<any> {
     let objLst = [];
-    lists.forEach(async item => {
+    for (let i in lists) {
       let obj = {};
-      item.fields.forEach(async field => {
-        obj['fields'] = await this.fieldsToJson(item.fields);
-      });
+      for (let y in lists[i].fields) {
+        obj['fields'] = await this.fieldsToJson(lists[i].fields);
+      }
       objLst.push(obj);
-    });
+    }
     return objLst;
   }
 
   // Create List prices
   async UnitOfMeasuresList(lists: any) : Promise<any> {
     let objLst = [];
-    lists.forEach(async item => {
+    for (let i in lists) {
       let obj = {};
-      item.fields.forEach(async field => {
-        if (field.name === 'Code'){
-          obj['id'] = field.value
+      for (let y in lists[i].fields) {
+        if (lists[i].fields[y].name === 'Code'){
+          obj['id'] = lists[i].fields[y].value
         }
-        obj['fields'] = await this.fieldsToJson(item.fields);
-      });
+        obj['fields'] = await this.fieldsToJson(lists[i].fields);
+      }
       objLst.push(obj);
-    });
+    }
     return objLst;
   }
 
@@ -184,9 +194,12 @@ export class GeneralService {
 
   async fieldsToJson(fields: any) : Promise<any> {
     let obj = {};
-    fields.forEach(field => {
-      obj[field.name] = field.value
-    });
+    for (let i in fields) {
+      obj[fields[i].name] = fields[i].value
+    }
+    // fields.forEach(field => {
+    //   obj[field.name] = field.value
+    // });
     return obj;
   }
 

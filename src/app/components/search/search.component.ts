@@ -62,7 +62,7 @@ export class SearchComponent implements OnInit {
         /** start permissions for sales */
         this.onResetPermissions();
         this.getPermissions();
-        this.onHeight();
+        // this.onHeight();
         /** end permissions for sales */
       }
     )

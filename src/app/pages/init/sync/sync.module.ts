@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { SyncPageRoutingModule } from './sync-routing.module';
 
 import { SyncPage } from './sync.page';
+import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SyncPageRoutingModule
+    SyncPageRoutingModule,
+    SharedModule
   ],
   declarations: [SyncPage]
 })

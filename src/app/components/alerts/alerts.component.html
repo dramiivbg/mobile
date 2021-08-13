@@ -1,16 +1,20 @@
 <div class="container glass-fx" [hidden]="alertObj.type == undefined">
   <div class="alert-content">
     <div class="alert-header">
-      <h1>{{alertObj.title}}</h1>
+      <img src="../../../assets/icon/success.svg" *ngIf="alertObj.type == 'success'" />
+      <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'confirm'" />
+      <img src="../../../assets/icon/error.svg" *ngIf="alertObj.type == 'error'" />
+      <img src="../../../assets/icon/alert.svg" *ngIf="alertObj.type == 'alert'" />
+      <img src="../../../assets/icon/dontaccess.svg" *ngIf="alertObj.type == 'noaccess'" />
     </div>
     <div class="alert-body">
       {{alertObj.desc}}
       <div class="alert-btn" *ngIf="alertObj.type != 'confirm'">
-        <button type="button" class="btn btn-plure" (click)="onOk()">OK</button>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">OK</ion-button>
       </div>
       <div class="alert-btn" *ngIf="alertObj.type == 'confirm'">
-        <button type="button" class="btn btn-plure" (click)="onYes()">Yes</button>
-        <button type="button" class="btn btn-plure btn-plure-cancel" (click)="onOk()">Cancel</button>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">Cancel</ion-button>
       </div>
     </div>
   </div>

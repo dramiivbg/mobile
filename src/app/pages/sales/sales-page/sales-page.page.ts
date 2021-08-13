@@ -9,6 +9,7 @@ import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_PROCESSTYPE } from '@var/enums';
+import { AlertPromise } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-sales-page',
@@ -67,10 +68,8 @@ export class SalesPagePage implements OnInit {
 
   async ionViewWillEnter() {
     this.intServ.loadingFunc(true);
-    this.session = (await this.js.getSession()).login;
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
-    console.log(this.process);
     this.permissions = this.process.sysPermits;
     if (this.permissions.indexOf(E_PROCESSTYPE.New) !== -1)
       this.new = true;
@@ -81,42 +80,52 @@ export class SalesPagePage implements OnInit {
   }
 
   async onSalesList() {
-    this.intServ.loadingFunc(true);
-    let obj = this.general.structSearch(this.salesList, `Search ${this.process.salesType}`, this.process.salesType, async (sell) => {
-      let navigationExtras: NavigationExtras = {
-        state: {
-          order: sell,
-          new: false
-        },
-        replaceUrl: true
-      };
-      this.router.navigate(['sales/sales-form'], navigationExtras);
-      setTimeout(
-        () => {
-          this.intServ.searchShowFunc({});
-        }, 1000
-      )
-    }, false, 1, this.process);
-    this.intServ.searchShowFunc(obj);
-    this.intServ.loadingFunc(false);
+    
+    if (this.salesList.length > 0) {
+      this.intServ.loadingFunc(true);
+      let obj = this.general.structSearch(this.salesList, `Search ${this.process.salesType}`, this.process.salesType, async (sell) => {
+        let navigationExtras: NavigationExtras = {
+          state: {
+            order: sell,
+            new: false
+          },
+          replaceUrl: true
+        };
+        this.router.navigate(['sales/sales-form'], navigationExtras);
+        setTimeout(
+          () => {
+            this.intServ.searchShowFunc({});
+          }, 1000
+        )
+      }, false, 1, this.process);
+      this.intServ.searchShowFunc(obj);
+      this.intServ.loadingFunc(false);
+    } else {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `There are no ${this.process.salesType.toLocaleLowerCase()} to show`))
+    }
   }
 
   /**
    * Create new sales order
    */
-   async onAddSalesOrder() {
+   async onAddSales() {
     if (this.new) {
       this.intServ.loadingFunc(true);
-      let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
-        let navigationExtras: NavigationExtras = {
-          state: {
-            customer,
-            new: true
-          }
-        };
-        this.router.navigate(['sales/sales-form'], navigationExtras);
-      });
-      this.intServ.searchShowFunc(obj);
+      let customers: any = await this.getCustomers();
+      if (customers.length > 0) {
+        let obj = this.general.structSearch(customers, 'Search customers', 'Customers', (customer) => {
+          let navigationExtras: NavigationExtras = {
+            state: {
+              customer,
+              new: true
+            }
+          };
+          this.router.navigate(['sales/sales-form'], navigationExtras);
+        });
+        this.intServ.searchShowFunc(obj);
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'No customers were found.'));
+      }
       this.intServ.loadingFunc(false);
     } else {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have permissions to add new sales'));
@@ -124,23 +133,27 @@ export class SalesPagePage implements OnInit {
   }
 
   async onTemp() {
-    this.intServ.loadingFunc(true);
-    let obj = this.general.structSearch(this.temporaly, `Search temp ${this.process.salesType}`, this.process.salesType, async (temp) => {
-      let navigationExtras: NavigationExtras = {
-        state: {
-          temp,
-          new: false
-        }
-      };
-      this.router.navigate(['sales/sales-form'], navigationExtras);
-      setTimeout(
-        () => {
-          this.intServ.searchShowFunc({});
-        }, 1000
-      )
-    }, false, 1, this.process);
-    this.intServ.searchShowFunc(obj);
-    this.intServ.loadingFunc(false);
+    if (this.temporaly != null) {
+      this.intServ.loadingFunc(true);
+      let obj = this.general.structSearch(this.temporaly, `Search temp ${this.process.salesType}`, this.process.salesType, async (temp) => {
+        let navigationExtras: NavigationExtras = {
+          state: {
+            temp,
+            new: false
+          }
+        };
+        this.router.navigate(['sales/sales-form'], navigationExtras);
+        setTimeout(
+          () => {
+            this.intServ.searchShowFunc({});
+          }, 1000
+        )
+      }, false, 1, this.process);
+      this.intServ.searchShowFunc(obj);
+      this.intServ.loadingFunc(false);
+    } else {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No temp ${this.process.salesType.toLocaleLowerCase()} to show`));
+    }
   }
 
   /**
@@ -185,20 +198,29 @@ export class SalesPagePage implements OnInit {
 
   async onSyncTemp() {
     try {
-      this.intServ.loadingFunc(true);
-      for (let i in this.temporaly) {
-        this.temporaly[i].parameters['SalesOrder'] = this.temporaly[i].id;
-        let sell = await this.syncerp.setRequest(await this.syncerp.processRequestParams('ProcessSalesOrders', [this.temporaly[i].parameters]));
-        if (sell.temp !== undefined) {
-          throw new Error("You do not have a connection available.");
+      console.log(this.temporaly);
+      if (this.temporaly != null) {
+        this.intServ.loadingFunc(true);
+        for (let i in this.temporaly) {
+          this.temporaly[i].parameters['SalesOrder'] = this.temporaly[i].id;
+          let sell = await this.syncerp.setRequest(await this.syncerp.processRequestParams('ProcessSalesOrders', [this.temporaly[i].parameters]));
+          if (sell.temp !== undefined) {
+            throw new Error("You do not have a connection available.");
+          }
         }
+        this.intServ.loadingFunc(false); 
+        this.ionViewWillEnter();
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${this.process.salesType.toLocaleLowerCase()} to synchronize`));
       }
-      this.intServ.loadingFunc(false); 
-      this.ionViewWillEnter();
     } catch (error) {
       this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
       this.intServ.loadingFunc(false); 
     }
+  }
+
+  public testFunc() {
+    console.log(1);
   }
 
 }

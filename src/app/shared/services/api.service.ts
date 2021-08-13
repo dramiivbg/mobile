@@ -83,14 +83,23 @@ export class ApiService {
                             resolve(rsl);
                         },
                         async err => {
-                            let save = await this.methods(params);
-                            if (save !== null)  resolve(save);
-                            let rsl = await this.offline.getProcess(params.processMethod);
-                            if (rsl !== null) {
-                                resolve(rsl);
-                            } else {
-                                reject(err);
-                            }
+                            // if (err.status === 400) // bad request error en el api
+                            // if (err.status === 502) // error de bc
+                            // if (err.status === 503) // no hay conexion a BC
+                            // console.log(err);
+                            // console.log(err.status);
+                            // if (err.status === 0 || err.status === 503) {
+                                let save = await this.methods(params);
+                                if (save !== null)  resolve(save);
+                                let rsl = await this.offline.getProcess(params.processMethod);
+                                if (rsl !== null) {
+                                    resolve(rsl);
+                                } else {
+                                    reject(err);
+                                }
+                            // } else {
+                            //     reject(err);
+                            // }
                         }
                     )
             } catch (err) {

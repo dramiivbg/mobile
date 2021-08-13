@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
   }
 
   initializeApp() {
-    this.onUniversalLink();
+    // this.onUniversalLink();
   }
 
   ngOnInit() {

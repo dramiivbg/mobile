@@ -10,3 +10,4 @@ export const SK_USER_LOGIN = 'USER_LOGIN';
 export const SK_OFFLINE = 'OFFLINE';
 export const SK_ENVIRONMENT = 'ENVIRONMENT';
 export const SK_SYNC = 'SESSION_SYNC';
+export const SK_NOTIFY = 'NOTIFY_SESSION';

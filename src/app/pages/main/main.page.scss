@@ -14,16 +14,29 @@ ion-content.main {
                 height: 85px !important;
                 border: 1px solid $plure-label-color;
                 img {
+                    border: 0.8px solid var(--ion-color-plureBlue);
                     width: 100% !important;
                     display: inline-block;
                 }
             }
             ion-label {
+                margin-top: 5px;
                 h1 {
-                    color: $plure-label-color;
                     font-family: SourceSansProBold;
-                    font-size: 25px;
+                    font-size: 22px;
                     text-transform: capitalize;
+                }
+                p {
+                    font-size: 12px;
+                    margin-top: -7px;
+                }
+            }
+            div.menuInfo {
+                color: var(--ion-color-plureBlue);
+                margin-top: 10px;
+                p {
+                    margin: 5px 0 10px;
+                    font-size: 16px;
                 }
             }
         }

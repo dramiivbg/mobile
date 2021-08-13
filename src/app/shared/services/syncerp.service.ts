@@ -5,26 +5,35 @@ import { ApiService } from './api.service';
 import { JsonService } from './json.service';
 
 import { Storage } from '@ionic/storage';
+import { NotifyService } from './notify.service';
+import { E_NOTIFYTYPE, E_PROCESSTYPE } from '@var/enums';
+import { InterceptService } from './intercept.service';
+import { copyFileSync } from 'fs';
 
 @Injectable()
 export class SyncerpService {
+  private countTask: number = 0;
   private session: any;
   private module: any = {};
   private methods: Array<string> = [
     'GetSalesOrders', 
     'GetCustomers',
-    'GetItemCategories',
-    'GetSalesCount'
-  ]
+    'GetSalesCount',
+    'GetTaxPostings',
+    'GetInventorySetup',
+    'GetItems'
+  ];
+  private notifyObj: any = {};
 
-  constructor(
-    private apiConnect: ApiService,
-    private js: JsonService,
-    private storage: Storage
+  constructor(private apiConnect: ApiService
+    , private js: JsonService
+    , private storage: Storage
+    , private notify: NotifyService
+    , private intServ: InterceptService
   ) { }
 
   // Process Request structure
-  async processRequest(processMethod, pageSize, position, salesPerson) {
+  async processRequest(processMethod, pageSize, position, salesPerson): Promise<any> {
     this.session = await this.js.getSession();
     let defaultCompany = JSON.parse(await this.storage.get(SK_SELECTED_COMPANY));
     return {
@@ -47,7 +56,7 @@ export class SyncerpService {
   }
 
   // Process Request structure
-  async processRequestParams(processMethod, Parameters: any) {
+  async processRequestParams(processMethod, Parameters: any): Promise<any> {
     this.session = await this.js.getSession();
     let defaultCompany = JSON.parse(await this.storage.get(SK_SELECTED_COMPANY));
     return {
@@ -103,33 +112,119 @@ export class SyncerpService {
     return value;
   }
 
-  async sycnAll(module) : Promise<boolean> {
+  async sycnAll(module, objAlert: any) : Promise<boolean> {
+    this.countTask = 0;
+    let process: any = {};
+    this.notifyObj = await this.notify.createNotification(E_NOTIFYTYPE.Notify, 'We are synchronizing the sales tables', true);
+    objAlert.func();
+    this.notifyObj.message = 'The sales tables have been synchronized correctly.';
+
     try {
       this.module = module;
       for (let i in this.methods) {
+        
         switch(this.methods[i]) {
           case 'GetSalesOrders':
-            this.syncSales(this.methods[i]);
+            this.syncSales(this.methods[i]).then(() => this.countTask++);
+            break;
+          case 'GetTaxPostings':
+            process = await this.processRequestParams(this.methods[i], []);
+            this.setRequest(process).then(() => this.countTask++);
+            break;
+          case 'GetInventorySetup':
+            process = await this.processRequestParams(this.methods[i], []);
+            this.setRequest(process).then(() => this.countTask++);
+            break;
+          case 'GetCustomers':
+            this.getCustomers(i);
+            break;
+          case 'GetItems':
+            this.getItems(i);
             break;
           default:
-            let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
-            await this.setRequest(process);
+            process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+            this.setRequest(process).then(() => this.countTask++);
             break;
         }
       }
+      this.notifyObj.loading = false;
+      this.CountTaskF(objAlert);
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  async syncSales(method: string) {
+  async syncSales(method: string): Promise<void> {
     let processes = this.module.processes;
     processes.forEach(async p => {
       let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
-      let sales = await this.setRequest(process);
+      this.setRequest(process);
     });
     // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
+  }
+
+  private CountTaskF(objAlert: any) {
+    setTimeout(() => {
+      if (this.countTask === (this.methods.length)) {
+        if (this.notifyObj.type === E_NOTIFYTYPE.Alert) {
+          objAlert.funcError(this.notifyObj.message);
+        }
+        objAlert.func();
+        this.notify.editNotification(this.notifyObj);
+      } else {
+        this.CountTaskF(objAlert);
+      }
+    }, 1000);
+  }
+
+  /**
+   * Process Get Request customers
+   * @param i 
+   */
+  private async getCustomers(i) {
+    let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+    this.setRequest(process).then(
+      rsl => {
+        console.log(rsl);
+        if (rsl.status !== 200 && rsl.status !== undefined) {
+          this.notifyObj.message = rsl.error.message;
+          this.notifyObj.type = E_NOTIFYTYPE.Alert;
+        } else {
+          if (rsl.length < 1){
+            this.notifyObj.message = 'Customers not found';
+            this.notifyObj.type = E_NOTIFYTYPE.Alert;
+          }
+        }
+        this.countTask++;
+      }
+    ) 
+  }
+
+  /**
+   * Process Get Request customers
+   * @param i 
+   */
+   private async getItems(i) {
+    let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
+    this.setRequest(process).then(
+      rsl => {
+        if (rsl.status !== 200 && rsl.status !== undefined) {
+          this.notifyObj.message = rsl.error.message;
+          this.notifyObj.type = E_NOTIFYTYPE.Alert;
+        } else {
+          if (rsl.length < 1){
+            this.notifyObj.message = 'Items not found';
+            this.notifyObj.type = E_NOTIFYTYPE.Alert;
+          }
+        }
+        this.countTask++;
+      }
+    ).catch(
+      error => {
+        console.log(error);
+      }
+    )
   }
 
 }

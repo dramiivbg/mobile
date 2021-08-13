@@ -20,6 +20,8 @@ import { AuthService } from '@svc/auth.service';
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts';
 
 import { Plugins } from '@capacitor/core';
+import { NotifyService } from '@svc/notify.service';
+import { E_NOTIFYTYPE } from '@var/enums';
 const { App } = Plugins;
 
 @Component({
@@ -46,7 +48,8 @@ export class LoginPage implements OnInit {
     , private storage: Storage
     , private device: Device
     , private authSvc: AuthService
-    , private appVersion: AppVersion  
+    , private appVersion: AppVersion
+    , private notify: NotifyService
   ) {
     let objFunc = {
       func: () => {
@@ -93,6 +96,7 @@ export class LoginPage implements OnInit {
       res => {
         if ( res.token != null ) {
           if(this.authSvc.saveUserSession(res)) {
+            this.messageWelcome();
             this.router.navigateByUrl('change-password', { replaceUrl: true });
           }
           this.intServ.loadingFunc(false);
@@ -207,6 +211,13 @@ export class LoginPage implements OnInit {
     ).catch(
       err => this.version = `v0.0`
     );
+  }
+
+  private async messageWelcome() {
+    let notifies = await this.notify.countNotifications();
+    if (notifies === 0) {
+      this.notify.createNotification(E_NOTIFYTYPE.Notify, 'Welcome to plur-e', false);
+    }
   }
 
 }

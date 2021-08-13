@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { SalesFormPageRoutingModule } from './sales-form-routing.module';
 import { SalesFormPage } from './sales-form.page';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
     IonicModule,
     SalesFormPageRoutingModule,
     ReactiveFormsModule,
+    SharedModule
   ],
   declarations: [SalesFormPage]
 })

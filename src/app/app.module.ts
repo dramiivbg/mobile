@@ -12,7 +12,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
-import { Base64 } from '@ionic-native/base64/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Device } from '@ionic-native/device/ngx'
 import { AppVersion } from '@ionic-native/app-version/ngx';
@@ -30,12 +29,16 @@ import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { GeneralService } from '@svc/general.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { OfflineService } from '@svc/offline.service';
+import { NotifyService } from '@svc/notify.service';
+import { SecondTaskService } from '@svc/secondTask.service';
 
 // import components
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { SearchComponent } from './components/search/search.component';
 import { StripePayComponent } from './components/stripe-pay/stripe-pay.component';
+import { NotifyComponent } from './components/notify/notify.component';
+import { SharedModule } from './shared/modules/sharedModule.module';
 
 @NgModule({
   declarations: [
@@ -43,7 +46,8 @@ import { StripePayComponent } from './components/stripe-pay/stripe-pay.component
     SearchComponent,
     LoadingComponent,
     AlertsComponent,
-    StripePayComponent
+    StripePayComponent,
+    NotifyComponent
   ],
   entryComponents: [],
   imports: [
@@ -77,12 +81,14 @@ import { StripePayComponent } from './components/stripe-pay/stripe-pay.component
     SyncerpService,
     FileChooser,
     FilePath,
-    Base64,
+    SecondTaskService,
     ScreenOrientation, {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
-    Stripe
+    Stripe,
+    NotifyComponent,
+    NotifyService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

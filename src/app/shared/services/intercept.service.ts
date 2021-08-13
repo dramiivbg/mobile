@@ -16,6 +16,7 @@ export class InterceptService {
   private stripePaySource = new Subject<any>();
   private appBackSource = new Subject<any>();
   private changeCompanySource = new Subject<any>();
+  private notifySource = new Subject<any>();
 
   // Observable string streams
   routeMenuAnnounced$ = this.routeMenuAnnouncedSource.asObservable();
@@ -29,6 +30,7 @@ export class InterceptService {
   stripePay$ = this.stripePaySource.asObservable();
   appBack$ = this.appBackSource.asObservable();
   changeCompany$ = this.changeCompanySource.asObservable();
+  notify$ = this.notifySource.asObservable();
 
   // Service message commands
   announceRouteMenu(data: string) {
@@ -62,16 +64,18 @@ export class InterceptService {
     this.loadingSource.next(bool);
   }
 
-  // load alerts or confirms.
-  // structure:
-  // obj: {
-  //   type: 'confirm', (confirm|alert|success|error)
-  //   func: () => {
-  //     you function to execure.
-  //   },
-  //   title: 'title of alert',
-  //   desc: 'description'
-  // }
+  /**
+   * load alerts or confirms.
+   * 
+   * @param obj obj: {
+   *  type: 'confirm', (confirm|alert|success|error)
+   *  func: () => {
+   *     you function to execure.
+   *  },
+   *  title: 'title of alert',
+   *  desc: 'description'
+   * }
+   */
   alertFunc(obj: any) {
     this.alertSource.next(obj);
   }
@@ -86,6 +90,10 @@ export class InterceptService {
 
   changeCompanyFunc(obj: any) {
     this.changeCompanySource.next(obj);
+  }
+
+  notifyFunc(obj: any) {
+    this.notifySource.next(obj);
   }
 
 }

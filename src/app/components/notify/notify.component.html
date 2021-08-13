@@ -1,0 +1,24 @@
+<div class="glass" (click)="onClose()" *ngIf="Notify"></div>
+<div class="notify" *ngIf="Notify">
+  <div class="notify-arrow">
+    <ion-icon name="caret-up-outline"></ion-icon>
+  </div>
+  <div class="notify-content">
+    <div class="header"></div>
+    <div class="content">
+      <ion-row *ngFor="let notify of notifies">
+        <ion-col size="1">
+          <img src="../../../assets/icon/success.svg" *ngIf="notify.type == 0" />
+          <img src="../../../assets/icon/alert.svg" *ngIf="notify.type == 1" />
+          <img src="../../../assets/icon/error.svg" *ngIf="notify.type == 2" />
+        </ion-col>
+        <ion-col size="10">
+          {{notify.message}}
+        </ion-col>
+        <ion-col  size="1" *ngIf="notify.loading">
+          <img src="../../../assets/gif/loading.gif" />
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+</div>

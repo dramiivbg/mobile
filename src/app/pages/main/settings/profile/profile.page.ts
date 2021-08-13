@@ -2,20 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
-import { Plugins } from '@capacitor/core';
 
 // import services
 import { AuthService } from '@svc/auth.service';
 import { Platform } from '@ionic/angular';
 import { ApiService } from '@svc/api.service';
 import { InterceptService } from '@svc/intercept.service';
-import { throwIfEmpty } from 'rxjs/operators';
 import { JsonService } from '@svc/json.service';
 import { Router } from '@angular/router';
-
-const { Filesystem } = Plugins;
-const { App } = Plugins;
-
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 @Component({
   selector: 'app-profile',
@@ -114,23 +109,23 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  onChangeAvatar() {
-    if(this.platform.is("cordova")) {
-      this.fileChooser.open({mime: "image/*"}).then(
-        fileUri => {
-          this.filePath.resolveNativePath(fileUri).then(
-            nativePath => {
-              Filesystem.readFile({
-                path: nativePath
-              }).then(base64 => {
-                let base64String = "data:image/png;base64," + base64.data;
-                this.avatar = base64String;
-              })
-            }
-          )
-        }
-      )
+  /**
+   * Change image
+   */
+  async onChangeAvatar() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.Base64,
+        width: 1000,
+        height: 1000
+      });
+      let base64String = "data:image/png;base64," + image.base64String;
+      this.avatar = base64String;
+    } catch (error) {
+      console.log(error);
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', 'An error occurred while selecting the image'));
     }
   }
-
 }

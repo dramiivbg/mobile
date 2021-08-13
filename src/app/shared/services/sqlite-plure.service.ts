@@ -1,6 +1,7 @@
-import { Injectable, OnInit } from '@angular/core';
-import { Device } from '@capacitor/core';
-import { CapacitorDataStorageSqlite, capDataStorageOptions, capDataStorageResult, capOpenStorageOptions } from 'capacitor-data-storage-sqlite';
+import { Injectable } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { CapacitorDataStorageSqlite, capOpenStorageOptions} from 'capacitor-data-storage-sqlite';
+
 
 @Injectable()
 export class SqlitePlureService {
@@ -20,8 +21,7 @@ export class SqlitePlureService {
    * Plugin Initialization
    */
   async init(): Promise<void> {
-    const info = await Device.getInfo();
-    this.platform = info.platform;
+    this.platform = Capacitor.getPlatform();
     this.store = CapacitorDataStorageSqlite;
     this.isService = true;
   }
@@ -39,7 +39,7 @@ export class SqlitePlureService {
       table: _dbTable ? _dbTable : '_plureStorage',
       encrypted: _encrypt ? _encrypt : false,
       mode: _mode ? _mode : 'no-encryption'
-    }
+    } as capOpenStorageOptions;
   }
 
   /**
@@ -48,10 +48,23 @@ export class SqlitePlureService {
    */
   async openStore() : Promise<boolean> {
     if (this.isService) {
-      const {result} = await this.store.openStore(this.storageOptions);
-      return result;
+      await this.store.openStore(this.storageOptions);
+      return Promise.resolve(true);
     } else {
       return Promise.resolve(false);
+    }
+  }
+
+  async closeStore(): Promise<void> {
+    if(this.isService && this.store != null) {
+      try {
+        await this.store.closeStore({database: this.storageOptions.database});
+        return Promise.resolve();
+      } catch (err) {
+        return Promise.reject(err);
+      }      
+    } else {
+      return Promise.reject(new Error("close: Store not opened"));
     }
   }
 
@@ -115,10 +128,9 @@ export class SqlitePlureService {
    */
   async removeItem(key:string): Promise<boolean> {
     if(this.isService && key.length > 0) {
-      const {result} = await this.store.remove({ key });
-      return result;
-    } else {
-      return null;
+      await this.store.remove({ key });
+      return true;
     }
+    return false;
   }
 }

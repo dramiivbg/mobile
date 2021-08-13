@@ -5,7 +5,7 @@ div.login {
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(100vh * 0.112);     
+    top: calc(30vh * 0.112);     
     //border: 1px solid red;
 
     div.plure-brand {
@@ -16,7 +16,7 @@ div.login {
             img {
                 margin: 0 auto;
                 //width: 46.35%;   
-                height: calc( 100vh * 0.188424);
+                // height: calc( 30vh * 0.188424);
                 //border: 1px solid blue;
               }  
         }
@@ -28,6 +28,7 @@ div.login {
                 font-weight: 700;
                 font-size: 24.5px;
                 line-height: 31px;
+                margin: 0;
             }
         }
     }    

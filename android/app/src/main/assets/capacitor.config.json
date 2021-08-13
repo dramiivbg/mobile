@@ -1,16 +1,16 @@
 {
-  "appId": "com.plure.app",
-  "appName": "plur-e mobile",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "www",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  },
-  "cordova": {},
-  "server": {
-    "cleartext": true
-  }
+	"appId": "com.plure.app",
+	"appName": "plur-e mobile",
+	"bundledWebRuntime": false,
+	"npmClient": "npm",
+	"webDir": "www",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 0
+		}
+	},
+	"cordova": {},
+	"server": {
+		"cleartext": true
+	}
 }

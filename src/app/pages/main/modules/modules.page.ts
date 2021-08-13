@@ -17,6 +17,9 @@ import { Plugins } from '@capacitor/core';
 import { Storage } from '@ionic/storage';
 import { SK_ENVIRONMENT } from '@var/consts';
 import { SyncerpService } from '@svc/syncerp.service';
+import { NotifyService } from '@svc/notify.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+
 const { App } = Plugins;
 
 export interface Module {
@@ -28,7 +31,7 @@ export interface Module {
 @Component({
   selector: 'app-modules',
   templateUrl: './modules.page.html',
-  styleUrls: ['./modules.page.scss'],
+  styleUrls: ['./modules.page.scss']
 })
 export class ModulesPage implements OnInit {
   grid: boolean = false;
@@ -44,6 +47,7 @@ export class ModulesPage implements OnInit {
     , private js: JsonService
     , private storage: Storage
     , private syncErp: SyncerpService
+    , private notify: NotifyService
   )
   {
     let objBack = {
@@ -133,8 +137,22 @@ export class ModulesPage implements OnInit {
   }
 
   async onSync(mod) {
-    console.log(mod);
-    await this.syncErp.sycnAll(mod);
+    this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Synchronization will be performed in the background',
+      async () => {
+        let objAlert = {
+          funcError: (error) => {
+            this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
+          },
+          func: () => {
+            let obj = undefined;
+            setTimeout(() => {
+              this.intServ.notifyFunc(obj);
+            }, 500);
+          }
+        }
+        await this.syncErp.sycnAll(mod, objAlert);
+      }
+    ));
   }
 
   onStripePay() {

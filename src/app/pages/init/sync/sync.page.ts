@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '@svc/auth.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+import { SecondTaskService } from '@svc/secondTask.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_MODULETYPE } from '@var/enums';
 
@@ -12,14 +13,15 @@ import { E_MODULETYPE } from '@var/enums';
   styleUrls: ['./sync.page.scss'],
 })
 export class SyncPage implements OnInit {
-  modules: any = [];
-  environment: any = {};
+  public modules: any = [];
+  public environment: any = {};
 
   constructor(private syncErp: SyncerpService
     , private intServ: InterceptService
     , private authService: AuthService
     , private router: Router
     , private js: JsonService
+    , private secondTaks: SecondTaskService
   ) {
      let objFunc = {
       func: () => {
@@ -48,11 +50,22 @@ export class SyncPage implements OnInit {
   }
 
   async onSyncTables(mod) : Promise<void> {
-    this.intServ.loadingFunc(true);
-    let b = await this.syncErp.sycnAll(mod);
-    if (b) {
-      this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Sales are correctly synchronized'));
+    let objAlert = {
+      funcError: (error) => {
+        this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
+      },
+      func: () => {
+        let obj = undefined;
+        setTimeout(() => {
+          this.intServ.notifyFunc(obj);
+        }, 500);
+      }
     }
+    this.intServ.loadingFunc(true);
+    let b = this.syncErp.sycnAll(mod, objAlert);
+    // if (b) {
+    //   this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Sales are correctly synchronized'));
+    // }
     this.intServ.loadingFunc(false);
   }
 

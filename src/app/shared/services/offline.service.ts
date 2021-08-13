@@ -10,8 +10,10 @@ export class OfflineService {
   private methods: Array<string> = [
     'GetSalesOrders', 
     'GetCustomers',
-    'GetItemCategories',
-    'GetSalesCount'
+    'GetItems',
+    'GetSalesCount',
+    'GetTaxPostings',
+    'GetInventorySetup'
   ]
 
   constructor(
@@ -64,7 +66,8 @@ export class OfflineService {
     if (store) {
       this.addOfflineBool(method);
       let obj: any =  await this.sqLite.getItem(method);
-      if (obj !== null) {
+      // await this.sqLite.closeStore();
+      if (obj !== null && obj !== '') {
         let event: HttpEvent<any> = JSON.parse(obj);
         return event;
       }
