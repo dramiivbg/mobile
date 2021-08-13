@@ -8,15 +8,13 @@
     <div class="content">
       <ion-row *ngFor="let notify of notifies">
         <ion-col size="1">
-          <img src="../../../assets/icon/success.svg" *ngIf="notify.type == 0" />
-          <img src="../../../assets/icon/alert.svg" *ngIf="notify.type == 1" />
-          <img src="../../../assets/icon/error.svg" *ngIf="notify.type == 2" />
+          <img src="../../../assets/icon/success.svg" *ngIf="notify.type == 0 && notify.loading == false" />
+          <img src="../../../assets/icon/alert.svg" *ngIf="notify.type == 1 && notify.loading == false" />
+          <img src="../../../assets/icon/error.svg" *ngIf="notify.type == 2 && notify.loading == false" />
+          <img src="../../../assets/gif/loading.gif" *ngIf="notify.loading == true" />
         </ion-col>
-        <ion-col size="10">
+        <ion-col size="11">
           {{notify.message}}
-        </ion-col>
-        <ion-col  size="1" *ngIf="notify.loading">
-          <img src="../../../assets/gif/loading.gif" />
         </ion-col>
       </ion-row>
     </div>

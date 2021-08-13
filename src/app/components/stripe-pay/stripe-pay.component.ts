@@ -109,4 +109,6 @@ export class StripePayComponent implements OnInit {
     });
   }
 
+  async onCancel() {}
+
 }

@@ -50,6 +50,8 @@ export class SyncPage implements OnInit {
   }
 
   async onSyncTables(mod) : Promise<void> {
+    mod.loading = true;
+    this.syncLoadingFalse(mod);
     let objAlert = {
       funcError: (error) => {
         this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
@@ -67,6 +69,15 @@ export class SyncPage implements OnInit {
     //   this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Sales are correctly synchronized'));
     // }
     this.intServ.loadingFunc(false);
+  }
+
+  syncLoadingFalse(mod) {
+    setTimeout(
+      () => {
+        mod.loading = undefined;
+      },
+      5000
+    )
   }
 
 }

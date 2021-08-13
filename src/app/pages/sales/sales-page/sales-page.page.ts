@@ -80,28 +80,33 @@ export class SalesPagePage implements OnInit {
   }
 
   async onSalesList() {
-    
-    if (this.salesList.length > 0) {
+    if (this.salesList.length > 0 ) {
       this.intServ.loadingFunc(true);
-      let obj = this.general.structSearch(this.salesList, `Search ${this.process.salesType}`, this.process.salesType, async (sell) => {
-        let navigationExtras: NavigationExtras = {
-          state: {
-            order: sell,
-            new: false
-          },
-          replaceUrl: true
-        };
-        this.router.navigate(['sales/sales-form'], navigationExtras);
-        setTimeout(
-          () => {
-            this.intServ.searchShowFunc({});
-          }, 1000
-        )
-      }, false, 1, this.process);
-      this.intServ.searchShowFunc(obj);
+      let customers: any = await this.getCustomers();
+      if (customers.length > 0) {
+        let obj = this.general.structSearch(this.salesList, `Search ${this.process.salesType}`, this.process.salesType, async (sell) => {
+          let navigationExtras: NavigationExtras = {
+            state: {
+              order: sell,
+              new: false
+            },
+            replaceUrl: true
+          };
+          this.router.navigate(['sales/sales-form'], navigationExtras);
+          setTimeout(
+            () => {
+              this.intServ.searchShowFunc({});
+            }, 1000
+          )
+        }, false, 1, this.process);
+        this.intServ.searchShowFunc(obj);
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'No customers were found.'));
+      }
       this.intServ.loadingFunc(false);
     } else {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `There are no ${this.process.salesType.toLocaleLowerCase()} to show`))
+      this.intServ.loadingFunc(false);
     }
   }
 

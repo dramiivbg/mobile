@@ -1,0 +1,18 @@
+ion-content {
+    ion-label {
+        h1 {
+            color: var(--ion-color-plureBlue);
+            font-family: SourceSansProBold;
+            font-size: 15px;
+            margin: 20px;
+        }
+    }
+    ion-list{
+        ion-row {
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.14);
+            border-radius: 5px;
+            margin: 0 20px;
+            padding: 10px;
+        }
+    }
+}

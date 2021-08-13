@@ -71,6 +71,7 @@ ion-row.search-salesOrder {
             }
         }
         ion-list.listOrders {
+            margin-bottom: 150px;
             ion-row {
                 ion-col {
                     padding: 2px 10px;
@@ -101,7 +102,7 @@ ion-row.search-salesOrder {
             }
             ion-row.rowFirst {
                 box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.14);
-                margin: 0 20px;
+                margin: 10px 20px;
             }
             ion-item {
                 --inner-border-width: 0;
