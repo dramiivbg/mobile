@@ -8,5 +8,8 @@ project(':capacitor-app').projectDir = new File('../node_modules/@capacitor/app/
 include ':capacitor-camera'
 project(':capacitor-camera').projectDir = new File('../node_modules/@capacitor/camera/android')
 
+include ':capacitor-network'
+project(':capacitor-network').projectDir = new File('../node_modules/@capacitor/network/android')
+
 include ':capacitor-data-storage-sqlite'
 project(':capacitor-data-storage-sqlite').projectDir = new File('../node_modules/capacitor-data-storage-sqlite/android')

@@ -16,7 +16,7 @@ export class SyncerpService {
   private session: any;
   private module: any = {};
   private methods: Array<string> = [
-    'GetSalesOrders', 
+    // 'GetSalesOrders', 
     'GetCustomers',
     'GetSalesCount',
     'GetTaxPostings',
@@ -118,15 +118,11 @@ export class SyncerpService {
     this.notifyObj = await this.notify.createNotification(E_NOTIFYTYPE.Notify, 'We are synchronizing the sales tables', true);
     objAlert.func();
     this.notifyObj.message = 'The sales tables have been synchronized correctly.';
-
     try {
       this.module = module;
       for (let i in this.methods) {
         
         switch(this.methods[i]) {
-          case 'GetSalesOrders':
-            this.syncSales(this.methods[i]).then(() => this.countTask++);
-            break;
           case 'GetTaxPostings':
             process = await this.processRequestParams(this.methods[i], []);
             this.setRequest(process).then(() => this.countTask++);
@@ -147,6 +143,7 @@ export class SyncerpService {
             break;
         }
       }
+      this.syncSales2();
       this.notifyObj.loading = false;
       this.CountTaskF(objAlert);
       return true;
@@ -158,6 +155,16 @@ export class SyncerpService {
   async syncSales(method: string): Promise<void> {
     let processes = this.module.processes;
     processes.forEach(async p => {
+      let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
+      this.setRequest(process);
+    });
+    // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
+  }
+
+  private async syncSales2(): Promise<void> {
+    let processes = this.module.processes;
+    processes.forEach(async p => {
+      const method = await this.method(p);
       let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
       this.setRequest(process);
     });
@@ -186,7 +193,6 @@ export class SyncerpService {
     let process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
     this.setRequest(process).then(
       rsl => {
-        console.log(rsl);
         if (rsl.status !== 200 && rsl.status !== undefined) {
           this.notifyObj.message = rsl.error.message;
           this.notifyObj.type = E_NOTIFYTYPE.Alert;
@@ -225,6 +231,19 @@ export class SyncerpService {
         console.log(error);
       }
     )
+  }
+
+  private async method(process: any) : Promise<string> {
+    switch(process.processId) {
+      case "P001":
+        return 'GetSalesOrders';
+      case "P002":
+        return 'GetSalesReturnOrders';
+      case "P003":
+        return 'GetSalesInvoices';
+      case "P004":
+        return 'GetSalesCreditMemo';
+    }
   }
 
 }

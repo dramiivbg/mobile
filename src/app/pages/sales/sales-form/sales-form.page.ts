@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, DebugEventListener, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
@@ -161,8 +161,10 @@ export class SalesFormPage implements OnInit {
     if (this.order !== undefined) {
       this.idSales = this.order.id;
       if (!this.hideShipTo) {
-        this.frm.controls.shippingName.setValue(this.order.fields.ShiptoName);
-        this.frm.controls.shippingNo.setValue(this.order.fields.ShiptoCode);
+        const shipToCode = this.order.fields.ShiptoCode === null ? '': this.order.fields.ShiptoCode;
+        const shipToName = this.order.fields.ShiptoCode === null ? '': this.order.fields.ShiptoName;
+        this.frm.controls.shippingName.setValue(shipToName);
+        this.frm.controls.shippingNo.setValue(shipToCode);
       }
       this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
       this.frm.controls.customerName.setValue(this.order.fields.SelltoCustomerName);
@@ -574,15 +576,19 @@ export class SalesFormPage implements OnInit {
   async addItem(item: any, newSales: boolean = true) {
     let genBusinessPostingGroup = '';
     if (this.new) {
-      genBusinessPostingGroup = this.customer.genBusinessPostingGroup;
+      genBusinessPostingGroup = this.customer.genBusinessPostingGroup === undefined || 
+                                this.customer.genBusinessPostingGroup === null ? '' : this.customer.genBusinessPostingGroup;
     } else {
       if (this.order !== undefined) {
-        genBusinessPostingGroup = this.order.genBusinessPostingGroup;
+        genBusinessPostingGroup = this.order.genBusinessPostingGroup === undefined || 
+                                  this.order.genBusinessPostingGroup === null ? '' : this.order.genBusinessPostingGroup;
       } else {
-        genBusinessPostingGroup = this.temp.parameters.genBusinessPostingGroup;
+        genBusinessPostingGroup = this.temp.parameters.genBusinessPostingGroup === undefined || 
+                                  this.temp.parameters.genBusinessPostingGroup === null ? '' : this.temp.parameters.genBusinessPostingGroup;
       }
     }
-    let genProdPostingGroup = item.genProdPostingGroup;
+    let genProdPostingGroup = item.genProdPostingGroup === undefined || 
+                              item.genProdPostingGroup === null ? '' : item.genProdPostingGroup;
     var now = new Date();
     item['unitPrice'] = 0;
     item['discountPerc'] = 0;
@@ -946,6 +952,6 @@ export class SalesFormPage implements OnInit {
    private async getInventorySetup() {
     let process = await this.syncerp.processRequestParams('GetInventorySetup', []);
     let {InventorySetup} = await this.syncerp.setRequest(process);
-    this.locationMandatory = InventorySetup;
+    this.locationMandatory = InventorySetup.LocationMandatory;
   }
 }

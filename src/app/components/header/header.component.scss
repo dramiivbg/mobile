@@ -1,7 +1,7 @@
 .header-md::after {
     background-image: none;
     background-color: #eeeeee;
-    height: 2px;
+    height: 6px;
 }
 
 .notify {
@@ -24,4 +24,8 @@
             font-size: 6px;
         }
     }
+}
+
+ion-title {
+    color: var(--ion-color-plureMain);
 }

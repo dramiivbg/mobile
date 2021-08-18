@@ -18,7 +18,6 @@ import { Storage } from '@ionic/storage';
 import { SK_ENVIRONMENT } from '@var/consts';
 import { SyncerpService } from '@svc/syncerp.service';
 import { NotifyService } from '@svc/notify.service';
-import { HeaderComponent } from 'src/app/components/header/header.component';
 
 const { App } = Plugins;
 

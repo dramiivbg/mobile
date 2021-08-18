@@ -8,12 +8,15 @@ import { SqlitePlureService } from './sqlite-plure.service';
 export class OfflineService {
   private module: any = {};
   private methods: Array<string> = [
-    'GetSalesOrders', 
     'GetCustomers',
     'GetItems',
     'GetSalesCount',
     'GetTaxPostings',
-    'GetInventorySetup'
+    'GetInventorySetup',
+    'GetSalesOrders',
+    'GetSalesInvoices',
+    'GetSalesReturnOrders',
+    'GetSalesCreditMemo'
   ]
 
   constructor(

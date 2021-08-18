@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
 
 // import services
 import { AuthService } from '@svc/auth.service';
-import { Platform } from '@ionic/angular';
 import { ApiService } from '@svc/api.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -26,9 +23,6 @@ export class ProfilePage implements OnInit {
 
   constructor(private authService: AuthService
     , private formBuilder: FormBuilder
-    , private fileChooser: FileChooser
-    , private filePath: FilePath
-    , private platform: Platform
     , private apiService: ApiService
     , private intServ: InterceptService
     , private jsonServ: JsonService

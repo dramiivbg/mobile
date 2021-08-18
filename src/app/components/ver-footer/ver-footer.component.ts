@@ -26,5 +26,4 @@ export class VerFooterComponent implements OnInit {
       err => this.version = `v0.0`
     );
   }
-
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
+import { Network } from '@capacitor/network';
 
 import { OfflineService } from './offline.service';
 import { SK_ENVIRONMENT, SK_OFFLINE, SK_USER_SESSION } from '@var/consts';
@@ -88,6 +89,8 @@ export class ApiService {
                             // if (err.status === 503) // no hay conexion a BC
                             // console.log(err);
                             // console.log(err.status);
+                            const status = await Network.getStatus();
+                            if (!status.connected) {
                             // if (err.status === 0 || err.status === 503) {
                                 let save = await this.methods(params);
                                 if (save !== null)  resolve(save);
@@ -97,9 +100,9 @@ export class ApiService {
                                 } else {
                                     reject(err);
                                 }
-                            // } else {
-                            //     reject(err);
-                            // }
+                            } else {
+                                reject(err);
+                            }
                         }
                     )
             } catch (err) {

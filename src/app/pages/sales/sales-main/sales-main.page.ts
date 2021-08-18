@@ -42,15 +42,17 @@ export class SalesMainPage implements OnInit {
   async ionViewWillEnter() {
     this.module = this.moduleService.getSelectedModule();
     this.session = (await this.js.getSession()).login;
+    console.log(this.module);
     this.getSalesCount();
   }
 
   async onSales(process: Process) {
     this.intServ.loadingFunc(true);
+    const method = await this.method(process);
     process.salesType = await this.general.typeSalesBC(process);
     process.sysPermits = await this.general.getPermissions(process.permissions);
     await this.moduleService.setSelectedProcess(process);
-    let p = await this.syncerp.processRequestParams('GetSalesOrders', [{ type: process.salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
+    let p = await this.syncerp.processRequestParams(method, [{ type: process.salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
     let sales = await this.syncerp.setRequest(p);
     let salesList = await this.general.salesOrderList(sales.SalesOrders);
     let navg: NavigationExtras = {
@@ -86,6 +88,19 @@ export class SalesMainPage implements OnInit {
     salesCount.Amount_Credit_Memo = salesCount.Amount_Credit_Memo === undefined ? 0 : salesCount.Amount_Credit_Memo;
     salesCount.Count_Credit_Memo = salesCount.Count_Credit_Memo === undefined ? 0 : salesCount.Count_Credit_Memo;
     this.salesCount = salesCount;
+  }
+
+  private async method(process: Process) : Promise<string> {
+    switch(process.processId) {
+      case "P001":
+        return 'GetSalesOrders';
+      case "P002":
+        return 'GetSalesReturnOrders';
+      case "P003":
+        return 'GetSalesInvoices';
+      case "P004":
+        return 'GetSalesCreditMemo';
+    }
   }
   
 

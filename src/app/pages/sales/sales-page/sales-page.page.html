@@ -1,5 +1,4 @@
 <PlureHeader type="1" title="{{process.salesType}}" url="sales/sales-main" notify="1"></PlureHeader>
-
 <ion-content class="content">
   <div class="header">
     <h1>{{process.salesType}}</h1>
@@ -18,18 +17,16 @@
           <div class="add" (click)="onAddSales()">
             <div class="btnAdd">
               <ion-row>
-                <ion-col size="10">
+                <ion-col size="10" class="nopadding2">
                   <div class="txt">
                     Add new <span>{{process.salesType}}</span>
                   </div>
                 </ion-col>
-                <ion-row>
-                  <div class="icon" size="2">
-                    <div class="icon2">
-                      <ion-icon name="add-outline"></ion-icon>
-                    </div>
+                <ion-col size="2" class="nopadding">
+                  <div class="icon">
+                    <img src="../../../../assets/img/modules/sales/new.svg" />
                   </div>
-                </ion-row>
+                </ion-col>
               </ion-row>
             </div>
           </div>
@@ -50,7 +47,7 @@
             <div class="btn-list-orders">
               <ion-row>
                 <ion-col size="4" class="icon">
-                  <img src="../../../../assets/img/modules/sales/view-sales.png" />
+                  <img src="../../../../assets/img/modules/sales/viewSales.svg" />
                 </ion-col>
                 <ion-col *ngIf="sales != undefined" size="8" class="sales">
                   <div class="bold">
@@ -120,7 +117,6 @@
     </div>
   </div>  
 </ion-content>
-
 <PlureVersion showVersion="0">
   <ion-row>
     <ion-col size="4"></ion-col>

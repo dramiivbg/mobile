@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { Network } from '@capacitor/network';
 import { cordovaInstance } from '@ionic-native/core';
 import { Module, Process } from '@mdl/module';
 import { GeneralService } from '@svc/general.service';
@@ -203,18 +204,24 @@ export class SalesPagePage implements OnInit {
 
   async onSyncTemp() {
     try {
-      console.log(this.temporaly);
+      const status = await Network.getStatus();
       if (this.temporaly != null) {
-        this.intServ.loadingFunc(true);
-        for (let i in this.temporaly) {
-          this.temporaly[i].parameters['SalesOrder'] = this.temporaly[i].id;
-          let sell = await this.syncerp.setRequest(await this.syncerp.processRequestParams('ProcessSalesOrders', [this.temporaly[i].parameters]));
-          if (sell.temp !== undefined) {
-            throw new Error("You do not have a connection available.");
+        if (!status.connected) {
+          throw new Error("You do not have a connection available");
+        } else {
+          this.intServ.loadingFunc(true);
+          for (let i in this.temporaly) {
+            this.temporaly[i].parameters['SalesOrder'] = this.temporaly[i].id;
+            let sell = await this.syncerp.setRequest(await this.syncerp.processRequestParams('ProcessSalesOrders', [this.temporaly[i].parameters]));
+            if (sell.temp !== undefined) {
+              throw new Error("Errors were encountered while trying to synchronize this sale");
+            } else {
+              this.intServ.alertFunc(this.js.getAlert('success', 'Success', `Synchronized correctly`));      
+            }
           }
+          this.intServ.loadingFunc(false); 
+          this.ionViewWillEnter();
         }
-        this.intServ.loadingFunc(false); 
-        this.ionViewWillEnter();
       } else {
         this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${this.process.salesType.toLocaleLowerCase()} to synchronize`));
       }

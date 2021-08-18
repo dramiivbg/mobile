@@ -24,6 +24,7 @@
     "@capacitor/app": "^1.0.2",
     "@capacitor/camera": "^1.0.3",
     "@capacitor/core": "^3.1.2",
+    "@capacitor/network": "^1.0.2",
     "@ionic-native/app-version": "^5.33.0",
     "@ionic-native/barcode-scanner": "^5.32.1",
     "@ionic-native/core": "^5.0.0",
