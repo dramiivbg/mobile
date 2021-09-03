@@ -5,7 +5,6 @@ import { InterceptService } from '@svc/intercept.service';
 import { NotifyService } from '@svc/notify.service';
 import { SK_ENVIRONMENT } from '@var/consts';
 import { E_MENUTYPE } from '@var/enums';
-import { timingSafeEqual } from 'crypto';
 
 @Component({
   selector: 'PlureHeader',
@@ -26,7 +25,6 @@ export class HeaderComponent implements OnInit {
     , private intServ: InterceptService
     , private notifyService: NotifyService
   ) { 
-
       intServ.notify$.subscribe(
         rsl => {
           this.getNotifies();
@@ -42,7 +40,14 @@ export class HeaderComponent implements OnInit {
   public async getNotifies() {
     let not = await this.notifyService.getNotifications();
     if (not !== undefined && not !== null){
-      this.notifyCount = not.length;
+      if (not.length > 0) {
+        let notNew = not.filter(x => {
+          return (x.new === true);
+        })
+        this.notifyCount = notNew.length;
+      } else {
+        this.notifyCount = 0;
+      }
     }
   }
 
@@ -63,10 +68,11 @@ export class HeaderComponent implements OnInit {
   /**
    * Notifications - modal
    */
-   onShowNotify() {
+  public async onShowNotify() {
     let obj = {
       Notify: true
     };
+    await this.notifyService.changeNotifications();
     this.intServ.notifyFunc(obj);
   }
 

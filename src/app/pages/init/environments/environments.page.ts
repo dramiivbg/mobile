@@ -113,6 +113,7 @@ export class EnvironmentsPage implements OnInit {
     }).then(
       async barCodeData => {
         if (barCodeData.text !== "") {
+          console.log(barCodeData.text);
           this.intServ.loadingFunc(true);
           let indexof = barCodeData.text.indexOf('|');
           if (indexof === -1) {

@@ -15,11 +15,10 @@ import { Camera, CameraResultType } from '@capacitor/camera';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-
-  userSession: any = {}
-  avatar: string = "../../../../../assets/img/img-robot.svg";
-
-  frm: FormGroup;
+  public userSession: any = {}
+  public avatar: string = "../../../../../assets/img/img-robot.svg";
+  public frm: FormGroup;
+  public showFooter: boolean = true;
 
   constructor(private authService: AuthService
     , private formBuilder: FormBuilder
@@ -40,7 +39,7 @@ export class ProfilePage implements OnInit {
         UserName: ['', Validators.required],
         Email: ['', Validators.required]
       }
-    )
+    );
   }
 
   ngOnInit() {

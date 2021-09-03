@@ -7,8 +7,6 @@ import { JsonService } from './json.service';
 import { Storage } from '@ionic/storage';
 import { NotifyService } from './notify.service';
 import { E_NOTIFYTYPE, E_PROCESSTYPE } from '@var/enums';
-import { InterceptService } from './intercept.service';
-import { copyFileSync } from 'fs';
 
 @Injectable()
 export class SyncerpService {
@@ -21,7 +19,8 @@ export class SyncerpService {
     'GetSalesCount',
     'GetTaxPostings',
     'GetInventorySetup',
-    'GetItems'
+    'GetItems',
+    'GetLocations'
   ];
   private notifyObj: any = {};
 
@@ -29,7 +28,6 @@ export class SyncerpService {
     , private js: JsonService
     , private storage: Storage
     , private notify: NotifyService
-    , private intServ: InterceptService
   ) { }
 
   // Process Request structure
@@ -94,6 +92,21 @@ export class SyncerpService {
       return value;
   }
 
+  public async setProcessRequest(obj: any) : Promise<any> {
+    let newObj: any = {};
+    try {
+      let rsl: any = await this.apiConnect.postData('erp', 'processrequest', obj);
+      if (rsl.temp !== undefined) {
+        newObj = rsl;
+      } else {
+        newObj = JSON.parse(rsl.value);
+      }
+    } catch (error) {
+      throw error;
+    }
+    return newObj;
+  }
+
   // Test connection to the erp
   async testConnection() : Promise<boolean> {
     var value: boolean = false;
@@ -124,6 +137,10 @@ export class SyncerpService {
         
         switch(this.methods[i]) {
           case 'GetTaxPostings':
+            process = await this.processRequestParams(this.methods[i], []);
+            this.setRequest(process).then(() => this.countTask++);
+            break;
+          case 'GetLocations':
             process = await this.processRequestParams(this.methods[i], []);
             this.setRequest(process).then(() => this.countTask++);
             break;

@@ -8,6 +8,7 @@ import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
+import { SalesService } from '@svc/Sales.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_PROCESSTYPE } from '@var/enums';
 import { AlertPromise } from 'selenium-webdriver';
@@ -18,32 +19,32 @@ import { AlertPromise } from 'selenium-webdriver';
   styleUrls: ['./sales-page.page.scss'],
 })
 export class SalesPagePage implements OnInit {
-  private salesList: Array<any> = [];
+  private salesList: any = [];
   private permissions: Array<E_PROCESSTYPE>;
   private new: boolean = false;
 
-  module: Module;
-  process: Process = {
+  public module: Module;
+  public process: Process = {
     processId: '',
     description: '',
     permissions: [],
     salesType: '',
     sysPermits: []
   };
-  sales: any = undefined;
-  temporaly: any = undefined;
-  session: any = {};
-  tempPerc: number;
+  public sales: any = undefined;
+  public temporaly: any = undefined;
+  public session: any = {};
+  public tempPerc: number;
 
-  constructor(
-    private syncerp: SyncerpService,
-    private general: GeneralService,
-    private intServ: InterceptService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private moduleService: ModuleService,
-    private js: JsonService,
-    private offline: OfflineService
+  constructor(private syncerp: SyncerpService
+    , private general: GeneralService
+    , private intServ: InterceptService
+    , private router: Router
+    , private route: ActivatedRoute
+    , private moduleService: ModuleService
+    , private js: JsonService
+    , private offline: OfflineService
+    , private salesService: SalesService
   ) {
     let objFunc = {
       func: () => {
@@ -62,6 +63,17 @@ export class SalesPagePage implements OnInit {
         this.router.navigate(['sales/sales-main'], { replaceUrl: true })
       }
     });
+    /** update sales */
+    this.intServ.updateSalesSource$.subscribe(
+      () => {
+        this.process = this.moduleService.getSelectedProcess();
+        this.salesList = this.salesService.getSales(this.process, this.module.erpUserId);
+        if (this.salesList.length > 0)
+          this.sales = this.salesList[this.salesList.length- 1];
+        else
+          this.sales = undefined;
+      }
+    )
   }
 
   ngOnInit() {

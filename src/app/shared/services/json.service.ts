@@ -16,7 +16,7 @@ export class JsonService {
   ) { }
 
   // convert form to Json object
-  formToJson = async (frm: FormGroup, exclude = []): Promise<any> => {
+  public formToJson = async (frm: FormGroup, exclude = []): Promise<any> => {
     return new Promise((resolve, reject) => {
       try {
         let obj: any = {};
@@ -24,6 +24,7 @@ export class JsonService {
         obj = JSON.parse(strObj);
         resolve(obj);
       } catch (error) {
+        console.log(error);
         reject(error);
       }
     });
@@ -105,6 +106,7 @@ export class JsonService {
     let objStr: any = {};
     let strObj: string = '';
     for (let t in frmControl.controls) {
+      console.log(frmControl.controls[t].value);
       if (frmControl.controls[t].value !== null && typeof frmControl.controls[t].value === 'object') {
         if (Array.isArray(frmControl.controls[t].value)) {
           strObj += `"${t}":[${this.returnValueArray(frmControl.controls[t].value, exclude)}],`;

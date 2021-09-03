@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { Network } from '@capacitor/network';
 import { Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Module, Process } from '@mdl/module';
+import { AuthService } from '@svc/auth.service';
 
 // import services
 import { GeneralService } from '@svc/general.service';
@@ -10,6 +12,7 @@ import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
+import { SalesService } from '@svc/Sales.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { SK_OFFLINE } from '@var/consts';
 import { E_PROCESSTYPE } from '@var/enums';
@@ -27,12 +30,13 @@ export class SearchComponent implements OnInit {
   /**
    * var publics
    */
-  searchObj: any = {};
-  listsFilter: Array<any> = [];
-  lists: Array<any> = [];
-  height: Number;
-  new: boolean = false;
-  delete: boolean = false;
+  public searchObj: any = {};
+  public listsFilter: Array<any> = [];
+  public lists: Array<any> = [];
+  public height: Number;
+  private new: boolean = false;
+  private delete: boolean = false;
+  private post: boolean = false;
 
   constructor(private platform: Platform
     , private syncerp: SyncerpService
@@ -43,6 +47,8 @@ export class SearchComponent implements OnInit {
     , private moduleService: ModuleService
     , private offline: OfflineService
     , private storage: Storage
+    , private salesService: SalesService
+    , private authService: AuthService
   ) {
     intServ.searchShow$.subscribe(
       obj => {
@@ -123,24 +129,6 @@ export class SearchComponent implements OnInit {
     this.intServ.appBackFunc(appBack);
   }
 
-  getPermissions() {
-    this.new = false;
-    this.delete = false;
-    let process = this.moduleService.getSelectedProcess();
-    let permits: Array<E_PROCESSTYPE> = process.sysPermits;
-    for (let i in permits) {
-      switch (permits[i]) {
-        case E_PROCESSTYPE.New:
-          this.new = true;
-          break;
-        
-        case E_PROCESSTYPE.Delete:
-          this.delete = true;
-          break;
-      }
-    }
-  }
-
   // Start Sales Orders
 
   /**
@@ -161,7 +149,7 @@ export class SearchComponent implements OnInit {
   /**
    * Create new sales order
    */
-  async onAddSalesOrder() {
+  public async onAddSalesOrder() {
     this.intServ.loadingFunc(true);    
     let obj = this.general.structSearch(await this.getCustomers(), 'Search customers', 'Customers', (customer) => {
       let navigationExtras: NavigationExtras = {
@@ -184,41 +172,133 @@ export class SearchComponent implements OnInit {
    * @param sell sales
    * @param i 
    */
-  async onDeleteLine(sell, i) {
+  public async onDeleteLine(sell, i) {
     let offline = await this.storage.get(SK_OFFLINE);
-    
     if (offline && sell.parameters === undefined) {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have an available connection.'));
       return;
     } 
-
     if (sell.parameters !== undefined) {
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
         async () =>{
-          this.offline.removeProcessSales('ProcessSalesOrders', this.listsFilter[i]);
-          this.listsFilter.splice(i, 1);
+          await this.deleteSalesTemp(i);
         }
       ));
       return;
     }
-
     if (sell.parameters === undefined) {
       if (!this.delete) {
         this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have permission to delete sales'));
       } else {
         this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
           async () =>{
-            this.intServ.loadingFunc(true);
-            let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
-            let dropOrder = await this.syncerp.setRequest(params);
-            this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
-              () => {
-                this.listsFilter.splice(i, 1);
-              }
-            )); 
+            await this.deleteSales(sell, i);
           }
         ));
+      }
+    }
+  }
+
+  /**
+   * post sales
+   * @param sell 
+   * @param i 
+   */
+  public async onPostLine(sell, i) {
+    const status = await Network.getStatus();
+    if (this.post) {
+      if (status.connected) {
+        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to Post item No. ${sell.id}?`, 
+          async () =>{
+            await this.postSales(sell, i);
+          }
+        ));
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have an available connection.'));
+      }
+    } else {
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `You do not have permission to post ${this.process.salesType.toLocaleLowerCase()}`));
+    }
+  }
+
+  /**
+   * Remove Sales temporaly
+   * @param index 
+   */
+  private deleteSalesTemp(index) {
+    this.offline.removeProcessSales('ProcessSalesOrders', this.listsFilter[index]);
+    this.listsFilter.splice(index, 1);
+  }
+
+  /**
+   * Remove BC Sales
+   * @param sell { obj }
+   * @param index { item line}
+   */
+  private async deleteSales(sell, index) {
+    try {
+      this.intServ.loadingFunc(true);
+      let params = await this.syncerp.processRequestParams('DeleteDocument', [{ documentType: this.process.salesType, documentNo: sell.id, salesPerson: this.module.erpUserId }]);
+      let dropOrder = await this.syncerp.setProcessRequest(params);
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('success', 'Success', dropOrder.SalesOrders,
+        () => {
+          this.listsFilter.splice(index, 1);
+          this.intServ.updateSalesFunc();
+        }
+      ));  
+    } catch ({error}) {
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message));
+    }
+  }
+  
+  /**
+   * Post Sales
+   * @param sell 
+   * @param index 
+   */
+  private async postSales(sell, index) {
+    try {
+      this.intServ.loadingFunc(true);
+      let {PostedDocNo} = await this.salesService.post(this.process.salesType, sell.id);
+      this.intServ.alertFunc(this.js.getAlert('success', 'Success', `Post was successful. Posted Document No. ${PostedDocNo}`,
+        () => {
+          this.listsFilter.splice(index, 1);
+          this.intServ.updateSalesFunc();
+        }
+      ));
+      this.intServ.loadingFunc(false);
+    } catch (error) {
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message));
+    }
+
+  }
+
+  /**
+   * Permissions for actions
+   */
+  private getPermissions() {
+    this.new = false;
+    this.delete = false;
+    this.post = false;
+    let process = this.moduleService.getSelectedProcess();
+    console.log(process);
+    let permits: Array<E_PROCESSTYPE> = process.sysPermits;
+    for (let i in permits) {
+      switch (permits[i]) {
+        case E_PROCESSTYPE.New:
+          this.new = true;
+          break;
+        
+        case E_PROCESSTYPE.Delete:
+          this.delete = true;
+          break;
+        
+        case E_PROCESSTYPE.Post:
+          this.post = true;
+          break;
       }
     }
   }

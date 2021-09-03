@@ -20,7 +20,7 @@ export class NotifyService {
      * Get all notifications in this session
      * @returns 
      */
-    async getNotifications() : Promise<any> {
+    public async getNotifications() : Promise<any> {
         let notify: any = null;
         if (await this.sqlConnect()) {
             let n = await this.sqLite.getItem(SK_NOTIFY);
@@ -40,7 +40,7 @@ export class NotifyService {
      *   loading: boolean
      *   }
      */
-    async setNotifications(obj: any) {
+    public async setNotifications(obj: any) {
         let nots: any = [];
         let notifies = await this.getNotifications();
         if (notifies !== null && notifies !== undefined) {
@@ -64,12 +64,13 @@ export class NotifyService {
      *   loading: boolean
      *   }
      */
-     async setNotificationsEdit(obj: any) {
+     public async setNotificationsEdit(obj: any) {
         let nots: any = [];
         let notifies = await this.getNotifications();
         if (notifies !== null && notifies !== undefined) {
             for (let i in notifies) {
                 if (obj.id === notifies[i].id) {
+                    notifies[i].new = true;
                     notifies[i] = obj;
                 }
                 nots.push(notifies[i]);
@@ -84,7 +85,7 @@ export class NotifyService {
      * count all notifications
      * @returns
      */
-    async countNotifications(): Promise<number> {
+    public async countNotifications(): Promise<number> {
         let notifies = await this.getNotifications();
         return (notifies !== undefined && notifies !== null) ? notifies.length : 0;
     }
@@ -94,7 +95,7 @@ export class NotifyService {
      * @param type 
      * @param message 
      */
-    async createNotification(type: E_NOTIFYTYPE, message: string, loading: boolean = false): Promise<any> {
+    public async createNotification(type: E_NOTIFYTYPE, message: string, loading: boolean = false): Promise<any> {
         let id: any = Guid.create()
         let notify: any = {
             id: id.value,
@@ -113,9 +114,24 @@ export class NotifyService {
      * @param type 
      * @param message 
      */
-     async editNotification(notify: any): Promise<any> {
+     public async editNotification(notify: any): Promise<any> {
         await this.setNotificationsEdit(notify);
         return notify;
+    }
+
+    /**
+     * see all notifications
+     */
+    public async changeNotifications() {
+        let nots: any = [];
+        let notifies = await this.getNotifications();
+        for (let i in notifies) {
+            notifies[i].new = false;
+            nots.push(notifies[i]);
+        }
+        if (nots.length > 0) {
+            if (await this.sqlConnect()) await this.sqLite.setItem(SK_NOTIFY, JSON.stringify(nots));
+        }
     }
 
     /**

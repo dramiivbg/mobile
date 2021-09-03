@@ -2,11 +2,12 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Plugins } from '@capacitor/core';
-const { App } = Plugins;
+const { App, Keyboard } = Plugins;
 
 // Services
 import { InterceptService } from '@svc/intercept.service';
 import { Platform } from '@ionic/angular';
+import { UserService } from '@svc/user.service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
     , private zone: NgZone
     , private screenOrientation: ScreenOrientation
     , private platform: Platform
+    , private userService: UserService
   ) {
     this.initializeApp();
     this.initializeSubscribe();
@@ -46,10 +48,17 @@ export class AppComponent implements OnInit {
   }
 
   initializeApp() {
+    Keyboard.addListener('keyboardDidShow', info => {
+      this.interceptService.showFooter(false);
+    });
+    Keyboard.addListener('keyboardDidHide', () => {
+      this.interceptService.showFooter(true);
+    });
     // this.onUniversalLink();
   }
 
   ngOnInit() {
+    this.initialCompareVersion();
   }
 
   onUniversalLink(): void{
@@ -91,5 +100,11 @@ export class AppComponent implements OnInit {
         }
       }
     )
+  }
+
+  private async initialCompareVersion() {
+    let obj: any = {};
+    let resp = await this.userService.compareVersion();
+    console.log(resp);
   }
 }

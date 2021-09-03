@@ -16,7 +16,8 @@ export class OfflineService {
     'GetSalesOrders',
     'GetSalesInvoices',
     'GetSalesReturnOrders',
-    'GetSalesCreditMemo'
+    'GetSalesCreditMemo',
+    'GetLocations'
   ]
 
   constructor(

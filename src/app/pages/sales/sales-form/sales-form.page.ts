@@ -464,11 +464,11 @@ export class SalesFormPage implements OnInit {
     let offline = await this.storage.get(SK_OFFLINE);
     this.intServ.loadingFunc(true);
     try {
-      if (offline && !this.new) {
-        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have a connection available for editing.'));
-        this.intServ.loadingFunc(false);
-        return;
-      }
+      // if (offline && !this.new) {
+      //   this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have a connection available for editing.'));
+      //   this.intServ.loadingFunc(false);
+      //   return;
+      // }
       mandatoryBoolean = await this.validMandatory();
       if (this.frm.valid && mandatoryBoolean) {
       // if (this.frm.valid) {
@@ -499,11 +499,12 @@ export class SalesFormPage implements OnInit {
             }
             if (json.lines.length > 0) {
               let salesOrder = await this.syncerp.setRequest(process);
+              
               this.intServ.loadingFunc(false);
               if (salesOrder.error !== undefined) {
                 this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
               } else {
-                this.frm.reset();
+                // this.frm.reset();
                 this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
                   this.router.navigate(['modules'], { replaceUrl: true });
                 }));
@@ -671,7 +672,7 @@ export class SalesFormPage implements OnInit {
       )
     }
     if (item.fields.Type === 'Inventory') {
-      locationCode = (this.customer.fields.LocationCode === null) ? '' : this.customer.fields.LocationCode;
+      locationCode = (this.customer.fields.LocationCode === null || this.customer.fields.LocationCode === undefined) ? '' : this.customer.fields.LocationCode;
     }
     let discountPerc = (item.discountPerc === null) ? 0 : item.discountPerc;
     let taxPerc = (item.taxPerc === null) ? 0 : item.taxPerc;
@@ -727,7 +728,7 @@ export class SalesFormPage implements OnInit {
    * @returns 
    */
   async setSalesOrderLines(lines) {
-    console.log(lines);
+    let edit = false;
     let arr = new FormArray([]);
     for(let i in lines) {
       let item = await this.items.find(x => (x.id === lines[i].id));
@@ -739,6 +740,10 @@ export class SalesFormPage implements OnInit {
       let total = lines[i].fields.Amount === null ? 0 : lines[i].fields.Amount;
       let lineDiscountAmount = lines[i].fields.LineDiscountAmount === null ? 0 : lines[i].fields.LineDiscountAmount;
       let totalWithoutDiscount = total + lineDiscountAmount;
+      edit = !(unitPrice === item.unitPrice);
+      if (!edit) {
+        edit = !(lineDiscountPercentage === item.discountPerc);
+      }
       arr.push(
         this.formBuilder.group({
           title: lines[i].value,
@@ -755,6 +760,7 @@ export class SalesFormPage implements OnInit {
           lineDiscountPercentage,
           taxPerc: taxPerc,
           locationCode: lines[i].fields.LocationCode === null  ? '' : lines[i].fields.LocationCode,
+          edit,
           tax
         })
       );
@@ -790,6 +796,7 @@ export class SalesFormPage implements OnInit {
           lineDiscountPercentage: lines[i].lineDiscountPercentage,
           taxPerc: lines[i].taxPerc,
           locationCode: lines[i].locationCode,
+          edit: lines[i].edit,
           tax: lines[i].tax,
         })
       );
@@ -944,6 +951,7 @@ export class SalesFormPage implements OnInit {
     let process = await this.syncerp.processRequestParams('GetLocations', []);
     let {LocationSetup} = await this.syncerp.setRequest(process);
     this.locationSetup = LocationSetup;
+    console.log(LocationSetup);
   }
 
   /**

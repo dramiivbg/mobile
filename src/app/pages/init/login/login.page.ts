@@ -22,6 +22,7 @@ import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts'
 import { Plugins } from '@capacitor/core';
 import { NotifyService } from '@svc/notify.service';
 import { E_NOTIFYTYPE } from '@var/enums';
+import { UserService } from '@svc/user.service';
 const { App } = Plugins;
 
 @Component({
@@ -50,6 +51,7 @@ export class LoginPage implements OnInit {
     , private authSvc: AuthService
     , private appVersion: AppVersion
     , private notify: NotifyService
+    , private userService: UserService
   ) {
     let objFunc = {
       func: () => {
@@ -82,43 +84,51 @@ export class LoginPage implements OnInit {
     this.passwordToggleIcon = this.showPassword ? 'eye-off' : 'eye';
   }
 
-  signIn(secretKey: string) {
+  private async signIn(secretKey: string) {
     let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
-    let data = {
-      appSource: environment.appSource,
-      secretKey: secretKey,
-      authorizationToken: authorizationToken,
-      environmentId: this.frm.value.EnviromentId,
-      uuid: this.device.uuid
-    };
-
-    this.apiConnect.postData('loginuser', 'authentication', data).then(
-      res => {
-        if ( res.token != null ) {
-          if(this.authSvc.saveUserSession(res)) {
-            this.messageWelcome();
-            this.router.navigateByUrl('change-password', { replaceUrl: true });
+    const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
+    // console.log(compareVersion);
+    compareVersion['error'] = undefined;
+    if (compareVersion.error === undefined) {
+      let data = {
+        appSource: environment.appSource,
+        secretKey: secretKey,
+        authorizationToken: authorizationToken,
+        environmentId: this.frm.value.EnviromentId,
+        uuid: this.device.uuid
+      };
+  
+      this.apiConnect.postData('loginuser', 'authentication', data).then(
+        res => {
+          if ( res.token != null ) {
+            if(this.authSvc.saveUserSession(res)) {
+              this.messageWelcome();
+              this.router.navigateByUrl('change-password', { replaceUrl: true });
+            }
+            this.intServ.loadingFunc(false);
+          } else {
+            this.intServ.alertFunc(this.jsonServ.getAlert(
+              'alert',
+              'Error',
+              `The user or password is not correct.`,
+              () => {
+                this.intServ.loadingFunc(false);
+              })
+            );
           }
+        }
+      )
+      .catch(
+        err => {
           this.intServ.loadingFunc(false);
-        } else {
-          this.intServ.alertFunc(this.jsonServ.getAlert(
-            'alert',
-            'Error',
-            `The user or password is not correct.`,
-            () => {
-              this.intServ.loadingFunc(false);
-            })
+          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
           );
         }
-      }
-    )
-    .catch(
-      err => {
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
-        );
-      }
-    );
+      );
+    } else {
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.jsonServ.getAlert('error', 'Error', compareVersion.error.message));
+    }    
   }
 
   // login to the application is performed.

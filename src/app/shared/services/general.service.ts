@@ -278,7 +278,7 @@ export class GeneralService {
       case 'Delete':
         return E_PROCESSTYPE.Delete;
       case 'Post':
-        return E_PROCESSTYPE.Read;
+        return E_PROCESSTYPE.Post;
       default:
         return null;
     }

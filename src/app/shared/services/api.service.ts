@@ -87,8 +87,6 @@ export class ApiService {
                             // if (err.status === 400) // bad request error en el api
                             // if (err.status === 502) // error de bc
                             // if (err.status === 503) // no hay conexion a BC
-                            // console.log(err);
-                            // console.log(err.status);
                             const status = await Network.getStatus();
                             if (!status.connected) {
                             // if (err.status === 0 || err.status === 503) {
@@ -100,6 +98,9 @@ export class ApiService {
                                 } else {
                                     reject(err);
                                 }
+                            } else if (params.processMethod === 'ProcessSalesOrders' ) {
+                                let save = await this.methods(params);
+                                resolve(save);
                             } else {
                                 reject(err);
                             }

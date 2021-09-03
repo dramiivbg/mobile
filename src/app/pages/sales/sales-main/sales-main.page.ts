@@ -42,7 +42,6 @@ export class SalesMainPage implements OnInit {
   async ionViewWillEnter() {
     this.module = this.moduleService.getSelectedModule();
     this.session = (await this.js.getSession()).login;
-    console.log(this.module);
     this.getSalesCount();
   }
 

@@ -10,7 +10,8 @@ export enum E_PROCESSTYPE {
     New = 0,
     Edit = 1,
     Delete = 2,
-    Read = 3
+    Read = 3,
+    Post = 4
 }
 
 export enum E_NOTIFYTYPE {

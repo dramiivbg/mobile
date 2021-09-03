@@ -81,6 +81,10 @@
                 <ion-col size="8" class="listOrder-no bold right">{{item.value}}</ion-col>
               </ion-row>
             </ion-item>
+
+            <ion-item-options side="end">
+              <ion-item-option color="plureBlue" (click)="onPostLine(item, i)" style="padding: 0 20px;">Post</ion-item-option> <!-- Delete item -->
+            </ion-item-options>
           </ion-item-sliding>
           
         </ion-row>

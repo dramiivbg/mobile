@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '@svc/auth.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
-import { SecondTaskService } from '@svc/secondTask.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_MODULETYPE } from '@var/enums';
 
@@ -21,7 +20,6 @@ export class SyncPage implements OnInit {
     , private authService: AuthService
     , private router: Router
     , private js: JsonService
-    , private secondTaks: SecondTaskService
   ) {
      let objFunc = {
       func: () => {

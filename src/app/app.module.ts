@@ -17,7 +17,6 @@ import { Device } from '@ionic-native/device/ngx'
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Stripe } from '@ionic-native/stripe/ngx';
-import { environment } from '@env/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // import services
@@ -30,7 +29,6 @@ import { GeneralService } from '@svc/general.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { OfflineService } from '@svc/offline.service';
 import { NotifyService } from '@svc/notify.service';
-import { SecondTaskService } from '@svc/secondTask.service';
 
 // import components
 import { LoadingComponent } from './components/loading/loading.component';
@@ -38,7 +36,8 @@ import { AlertsComponent } from './components/alerts/alerts.component';
 import { SearchComponent } from './components/search/search.component';
 import { StripePayComponent } from './components/stripe-pay/stripe-pay.component';
 import { NotifyComponent } from './components/notify/notify.component';
-import { SharedModule } from './shared/modules/sharedModule.module';
+import { UserService } from '@svc/user.service';
+import { SalesService } from '@svc/Sales.service';
 
 @NgModule({
   declarations: [
@@ -81,14 +80,15 @@ import { SharedModule } from './shared/modules/sharedModule.module';
     SyncerpService,
     FileChooser,
     FilePath,
-    SecondTaskService,
     ScreenOrientation, {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
     Stripe,
     NotifyComponent,
-    NotifyService
+    NotifyService,
+    UserService,
+    SalesService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

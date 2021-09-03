@@ -17,50 +17,54 @@ export class InterceptService {
   private appBackSource = new Subject<any>();
   private changeCompanySource = new Subject<any>();
   private notifySource = new Subject<any>();
+  private showFoouterSource = new Subject<boolean>();
+  private updateSalesSource = new Subject<any>();
 
   // Observable string streams
-  routeMenuAnnounced$ = this.routeMenuAnnouncedSource.asObservable();
-  routeMenuConfirmed$ = this.routeMenuConfirmedSource.asObservable();
-  showMenu$ = this.showMenuSource.asObservable();
-  newMenu$ = this.newMenuSource.asObservable();
-  searchShow$ = this.searchShowSource.asObservable();
-  loading$ = this.loadingSource.asObservable();
-  alert$ = this.alertSource.asObservable();
-  avatar$ = this.avatarSource.asObservable();
-  stripePay$ = this.stripePaySource.asObservable();
-  appBack$ = this.appBackSource.asObservable();
-  changeCompany$ = this.changeCompanySource.asObservable();
-  notify$ = this.notifySource.asObservable();
+  public routeMenuAnnounced$ = this.routeMenuAnnouncedSource.asObservable();
+  public routeMenuConfirmed$ = this.routeMenuConfirmedSource.asObservable();
+  public showMenu$ = this.showMenuSource.asObservable();
+  public newMenu$ = this.newMenuSource.asObservable();
+  public searchShow$ = this.searchShowSource.asObservable();
+  public loading$ = this.loadingSource.asObservable();
+  public alert$ = this.alertSource.asObservable();
+  public avatar$ = this.avatarSource.asObservable();
+  public stripePay$ = this.stripePaySource.asObservable();
+  public appBack$ = this.appBackSource.asObservable();
+  public changeCompany$ = this.changeCompanySource.asObservable();
+  public notify$ = this.notifySource.asObservable();
+  public showFooter$ = this.showFoouterSource.asObservable();
+  public updateSalesSource$ = this.updateSalesSource.asObservable();
 
   // Service message commands
-  announceRouteMenu(data: string) {
+  public announceRouteMenu(data: string) {
     this.routeMenuAnnouncedSource.next(data);
   }
 
-  avatarFuntion(data: any) {
+  public avatarFuntion(data: any) {
     this.avatarSource.next(data);
   }
 
-  confirmRouteMenu(data: string) {
+  public confirmRouteMenu(data: string) {
     this.routeMenuConfirmedSource.next(data);
   }
 
-  showMenuFuc(bool: boolean) {
+  public showMenuFuc(bool: boolean) {
     this.showMenuSource.next(bool);
   }
 
   // Show menu with options ({obj: menu|pages|show})
-  modifyMenu(menu: any) {
+  public modifyMenu(menu: any) {
     this.newMenuSource.next(menu);
   }
 
   // Get search function and return get search object function.
-  searchShowFunc(obj: any) {
+  public searchShowFunc(obj: any) {
     this.searchShowSource.next(obj);
   }
 
   // Loading window is added (bool: true|false)
-  loadingFunc(bool: boolean) {
+  public loadingFunc(bool: boolean) {
     this.loadingSource.next(bool);
   }
 
@@ -76,24 +80,36 @@ export class InterceptService {
    *  desc: 'description'
    * }
    */
-  alertFunc(obj: any) {
+   public alertFunc(obj: any) {
     this.alertSource.next(obj);
   }
 
-  stripePayFunc(obj: any) {
+  public stripePayFunc(obj: any) {
     this.alertSource.next(obj);
   }
 
-  appBackFunc(obj: any) {
+  public appBackFunc(obj: any) {
     this.appBackSource.next(obj);
   }
 
-  changeCompanyFunc(obj: any) {
+  public changeCompanyFunc(obj: any) {
     this.changeCompanySource.next(obj);
   }
 
-  notifyFunc(obj: any) {
+  public notifyFunc(obj: any) {
     this.notifySource.next(obj);
+  }
+
+  public showFooter(bool: boolean) {
+    this.showFoouterSource.next(bool);
+  }
+
+  /**
+   * get sales
+   * @param obj 
+   */
+  public updateSalesFunc() {
+    this.updateSalesSource.next();
   }
 
 }
