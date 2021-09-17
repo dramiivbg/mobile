@@ -1,5 +1,11 @@
 import { E_MODULETYPE, E_PROCESSTYPE } from "@var/enums";
 
+/**
+ * { processId: "P001", salesType: "Sales Order" }
+ * { processId: "P002", salesType: "Return Order" }
+ * { processId: "P003", salesType: "Sales Invoice" }
+ * { processId: "P004", salesType: "Sales Credit Memo" }
+ */
 export interface Permission {
     permissionId: string;
     description: string;

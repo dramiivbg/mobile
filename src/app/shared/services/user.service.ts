@@ -34,6 +34,7 @@ export class UserService {
                 return null;
             }
         } catch (error) {
+            console.log(error);
             return {error};
         }
     }
@@ -52,9 +53,10 @@ export class UserService {
                 versionCode,
                 environmentId
             }
-            return await this.api.postData('versionapp', 'validatemobileversion', obj);
+            let vers = await this.api.postData('versionapp', 'validatemobileversion', obj);
+            return vers;
         } catch (error) {
-            return error;
+            throw {error};
         }
     }
 

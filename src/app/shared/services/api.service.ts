@@ -59,7 +59,7 @@ export class ApiService {
      * @param params
      * @returns
      */
-    postData = async (type: string, method: string, params: any): Promise<any> => {
+    public postData = async (type: string, method: string, params: any): Promise<any> => {
         let env = await this.storage.get(SK_ENVIRONMENT);
         const url = `${environment.apiUrl[env]}/${environment.apiVersion}/${type}/${method}`;
         let headers = await this.getHeaders();
@@ -84,12 +84,14 @@ export class ApiService {
                             resolve(rsl);
                         },
                         async err => {
-                            // if (err.status === 400) // bad request error en el api
-                            // if (err.status === 502) // error de bc
-                            // if (err.status === 503) // no hay conexion a BC
+                            /**
+                             * if (err.status === 400) // bad request error en el api
+                             * if (err.status === 502) // error de bc
+                             * if (err.status === 503) // no hay conexion a BC
+                             */
+                            let bool = await this.getTempBool(params);
                             const status = await Network.getStatus();
                             if (!status.connected) {
-                            // if (err.status === 0 || err.status === 503) {
                                 let save = await this.methods(params);
                                 if (save !== null)  resolve(save);
                                 let rsl = await this.offline.getProcess(params.processMethod);
@@ -98,7 +100,7 @@ export class ApiService {
                                 } else {
                                     reject(err);
                                 }
-                            } else if (params.processMethod === 'ProcessSalesOrders' ) {
+                            } else if (params.processMethod === 'ProcessSalesOrders' && bool) {
                                 let save = await this.methods(params);
                                 resolve(save);
                             } else {
@@ -116,7 +118,7 @@ export class ApiService {
      * Header Struct
      * @returns
      */
-    async getHeaders() : Promise<any> {
+    private async getHeaders() : Promise<any> {
         let env = await this.storage.get(SK_ENVIRONMENT);
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json; charset=utf-8').set('plureApiKey', environment.apiKey[env]);
@@ -132,19 +134,18 @@ export class ApiService {
         return headers;
     }
 
-    async methods(params, typeMethod: boolean = false): Promise<any> {
+    private async methods(params, typeMethod: boolean = false): Promise<any> {
         switch(params.processMethod){
             case 'ProcessSalesOrders':
                 if (!typeMethod)
                     return await this.processSalesOrders(params);
                 else 
                     return await this.processRemoveSalesTemp(params);
-            break;
         }
         return null;
     }
 
-    async processRemoveSalesTemp(params): Promise<void> {
+    private async processRemoveSalesTemp(params): Promise<void> {
         let jsonParams = JSON.parse(params.jsonRequest);
         let parameters = jsonParams.Parameters;
         if (parameters[0].SalesOrder !== undefined) {
@@ -153,11 +154,27 @@ export class ApiService {
                 id: parameters[0].SalesOrder,
                 parameters: parameters[0],
             }
-            this.offline.removeProcessSales(params.processMethod, json);
+            await this.offline.removeProcessSales(params.processMethod, json);
         }        
     }
 
-    async processSalesOrders(params): Promise<any> {
+    /**
+     * Get Temp Boolean
+     * @param params SalesOrders
+     * @returns 
+     */
+    private async getTempBool(params: any): Promise<boolean> {
+        if (params.processMethod === 'ProcessSalesOrders') {
+            let jsonParams = JSON.parse(params.jsonRequest);
+            let parameters = jsonParams.Parameters;
+            if (parameters[0].SalesOrder !== undefined) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private async processSalesOrders(params): Promise<any> {
         let salesOrders: any = [];
         let tempId: string;
         let jsonParams = JSON.parse(params.jsonRequest);
@@ -197,7 +214,7 @@ export class ApiService {
         return json;
     }
 
-    async generateId(n: Number = 10): Promise<string> {
+    private async generateId(n: Number = 10): Promise<string> {
         let id: string = '';
         let letters = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         for (let i = 0; i < n; i++) {

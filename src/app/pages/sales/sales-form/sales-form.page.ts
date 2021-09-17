@@ -13,6 +13,7 @@ import { E_PROCESSTYPE } from '@var/enums';
 import { Module, Process } from '@mdl/module';
 import { Storage } from '@ionic/storage';
 import { SK_OFFLINE } from '@var/consts';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-sales-form',
@@ -45,6 +46,7 @@ export class SalesFormPage implements OnInit {
   public process: Process;
   public idSales: string;
   public hideShipTo: boolean = false;
+  public hideOrderDate: boolean = false;
   public frm = new FormGroup({});
   public orderDate: string = new Date().toDateString();
   public deliveryDate: string = new Date().toDateString();
@@ -81,7 +83,11 @@ export class SalesFormPage implements OnInit {
     this.intServ.appBackFunc(objFunc);
     this.module = this.moduleService.getSelectedModule();
     this.process = this.moduleService.getSelectedProcess();
-    if (this.process.processId === 'P002' || this.process.processId === 'P004') {
+    if (this.process.processId === 'P002') {
+      this.hideShipTo = true;
+    } // P003 - Dont Order Date - Dont delivery
+    if ( this.process.processId === 'P003' || this.process.processId === 'P004') {
+      this.hideOrderDate = true;
       this.hideShipTo = true;
     }
     this.salesType = this.process.salesType;
@@ -457,18 +463,15 @@ export class SalesFormPage implements OnInit {
     this.setTotals();
   }
 
-  // login to the application is performed.
-  async onSubmit() {
+  /**
+   * Send Sales
+   */
+  public async onSubmit() {
+    // let momentNow = moment().format('yyyy-MM-DD');
     let mandatoryBoolean: boolean;
     let process: any;
-    let offline = await this.storage.get(SK_OFFLINE);
     this.intServ.loadingFunc(true);
     try {
-      // if (offline && !this.new) {
-      //   this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have a connection available for editing.'));
-      //   this.intServ.loadingFunc(false);
-      //   return;
-      // }
       mandatoryBoolean = await this.validMandatory();
       if (this.frm.valid && mandatoryBoolean) {
       // if (this.frm.valid) {
@@ -481,8 +484,8 @@ export class SalesFormPage implements OnInit {
             json['paymentMethod'] = '';
             json['orderDate'] = json['orderDate'].substring(0, 10);
             json['documentType'] = this.salesType;
-            json['postingDate'] = json.orderDate;
-            json['documentDate'] = json.orderDate;
+            json['postingDate'] = json['orderDate'].substring(0, 10);
+            json['documentDate'] = json['orderDate'].substring(0, 10);
             json['requestedDeliveryDate'] = json.requestedDeliveryDate.substring(0, 10);
             if (!this.new) {
               if (this.order !== undefined && this.order !== null) {
@@ -950,8 +953,7 @@ export class SalesFormPage implements OnInit {
   private async getLocations() {
     let process = await this.syncerp.processRequestParams('GetLocations', []);
     let {LocationSetup} = await this.syncerp.setRequest(process);
-    this.locationSetup = LocationSetup;
-    console.log(LocationSetup);
+    this.locationSetup = LocationSetup === undefined ? [] : LocationSetup;
   }
 
   /**

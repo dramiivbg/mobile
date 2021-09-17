@@ -40,9 +40,15 @@ export class SalesMainPage implements OnInit {
   async ngOnInit() {}
 
   async ionViewWillEnter() {
-    this.module = this.moduleService.getSelectedModule();
-    this.session = (await this.js.getSession()).login;
-    this.getSalesCount();
+    try {
+      this.intServ.loadingFunc(true);
+      this.module = this.moduleService.getSelectedModule();
+      this.session = (await this.js.getSession()).login;
+      await this.getSalesCount(); 
+      this.intServ.loadingFunc(false);
+    } catch (error) {
+      this.intServ.loadingFunc(false);
+    }
   }
 
   async onSales(process: Process) {
@@ -72,21 +78,25 @@ export class SalesMainPage implements OnInit {
   }
 
   private async getSalesCount() {
-    let salesCountStr = await this.syncerp.processRequestParams('GetSalesCount', [{ pageSize:'', salesPerson: this.module.erpUserId }]);
-    let salesCount = (await this.syncerp.setRequest(salesCountStr)).Sales[0];
-    
-    salesCount.Amount_Order = salesCount.Amount_Order === undefined ? 0 : salesCount.Amount_Order;
-    salesCount.Count_Order = salesCount.Count_Order === undefined ? 0 : salesCount.Count_Order;
+    try {
+      let salesCountStr = await this.syncerp.processRequestParams('GetSalesCount', [{ pageSize:'', salesPerson: this.module.erpUserId }]);
+      let salesCount = (await this.syncerp.setProcessRequest(salesCountStr)).Sales[0];
+      
+      salesCount.Amount_Order = salesCount.Amount_Order === undefined ? 0 : salesCount.Amount_Order;
+      salesCount.Count_Order = salesCount.Count_Order === undefined ? 0 : salesCount.Count_Order;
 
-    salesCount.Amount_Return_Order = salesCount.Amount_Return_Order === undefined ? 0 : salesCount.Amount_Return_Order;
-    salesCount.Count_Return_Order = salesCount.Count_Return_Order === undefined ? 0 : salesCount.Count_Return_Order;
+      salesCount.Amount_Return_Order = salesCount.Amount_Return_Order === undefined ? 0 : salesCount.Amount_Return_Order;
+      salesCount.Count_Return_Order = salesCount.Count_Return_Order === undefined ? 0 : salesCount.Count_Return_Order;
 
-    salesCount.Amount_Invoice = salesCount.Amount_Invoice === undefined ? 0 : salesCount.Amount_Invoice;
-    salesCount.Count_Invoice = salesCount.Count_Invoice === undefined ? 0 : salesCount.Count_Invoice;
+      salesCount.Amount_Invoice = salesCount.Amount_Invoice === undefined ? 0 : salesCount.Amount_Invoice;
+      salesCount.Count_Invoice = salesCount.Count_Invoice === undefined ? 0 : salesCount.Count_Invoice;
 
-    salesCount.Amount_Credit_Memo = salesCount.Amount_Credit_Memo === undefined ? 0 : salesCount.Amount_Credit_Memo;
-    salesCount.Count_Credit_Memo = salesCount.Count_Credit_Memo === undefined ? 0 : salesCount.Count_Credit_Memo;
-    this.salesCount = salesCount;
+      salesCount.Amount_Credit_Memo = salesCount.Amount_Credit_Memo === undefined ? 0 : salesCount.Amount_Credit_Memo;
+      salesCount.Count_Credit_Memo = salesCount.Count_Credit_Memo === undefined ? 0 : salesCount.Count_Credit_Memo;
+      this.salesCount = salesCount; 
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async method(process: Process) : Promise<string> {

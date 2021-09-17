@@ -62,7 +62,7 @@ export class ChangePasswordPage implements OnInit {
 
       if (password.value !== confirmPassword.value) {
         return {
-          mismatchedPasswords: true
+          passwordNotMatch: true
         };
       }
     }
