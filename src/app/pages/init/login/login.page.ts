@@ -35,9 +35,7 @@ export class LoginPage implements OnInit {
   version: string = "";
   showPassword = false;
   passwordToggleIcon = 'eye';
-
-  private scid: string;
-  private userName: string;
+  
   public environments: Array<any> = [];
   frm: FormGroup;
 
@@ -72,11 +70,11 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-    this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT).then(
+    /*this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT).then(
       res => {
         this.scid = JSON.parse(res).customerId;
       }
-    );
+    );*/
   }
 
   togglePassword(): void {
@@ -86,10 +84,11 @@ export class LoginPage implements OnInit {
 
   private async signIn(secretKey: string) {
     let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
-    const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
+    console.log('authorizationToken', authorizationToken);      
+    //const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
     // console.log(compareVersion);
-    compareVersion['error'] = undefined;
-    if (compareVersion.error === undefined) {
+    //compareVersion['error'] = undefined;
+    //if (compareVersion.error === undefined) {
       let data = {
         appSource: environment.appSource,
         secretKey: secretKey,
@@ -125,17 +124,20 @@ export class LoginPage implements OnInit {
           );
         }
       );
-    } else {
+    /*} else {
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.jsonServ.getAlert('error', 'Error', compareVersion.error.message));
-    }    
+    }*/    
   }
 
   // login to the application is performed.
   onSubmit() {
     this.intServ.loadingFunc(true);
     if (this.frm.valid) {
-      let secretKey = sha512(`${this.frm.value.User}@${this.scid}:${sha512(this.frm.value.Password)}`);
+      //let secretKey = sha512(`${this.frm.value.User}@${this.scid}:${sha512(this.frm.value.Password)}`);
+      let login = this.frm.value.User.toLowerCase();
+      let secretKey = sha512(`${login}:${sha512(this.frm.value.Password)}`);
+      console.log('secretKey', secretKey);      
       this.signIn(secretKey);
     } else {
       this.intServ.alertFunc(this.jsonServ.getAlert(
@@ -165,19 +167,56 @@ export class LoginPage implements OnInit {
     this.router.navigate(['environments'], {replaceUrl: true});
   }
 
+  async authorizeAccessClient(customerId: string) {
+    let data = {
+      customerId: customerId,
+      platformCode: environment.platformCode,
+      uuid: this.device.uuid
+    }
+
+    return this.apiConnect.postData('mobile', 'authorizeAccessClient', data)
+    .then(
+      res => {        
+        this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));        
+      }
+    )
+    .catch(error => {
+      error = error.error;
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${error.message}`));      
+    });
+  }
+
   onChangeUser(event: any){
     if(this.frm.value.User != "") {
-      if(this.userName != this.frm.value.User) {
-        this.userName = this.frm.value.User;
-        if(this.frm.value.User !== "") {
-          let data = {
-            "customerId": this.scid,
-            "login": this.userName ,
-            "platformCode": environment.platformCode
-          };
-          this.onGetEnvironments(data);
-        }
-      }
+      this.intServ.loadingFunc(true);      
+      let login = this.frm.value.User.toLowerCase();
+      if(this.frm.value.User !== "") {          
+        this.apiConnect.postData('mobileUser', `checkingMobileUser`, { login }).then(
+          res => {              
+            this.authorizeAccessClient(res.customerId).finally(
+              () => {
+                var changeTemporaryPassword = res.temporaryPassword != '';
+                if(changeTemporaryPassword) {
+                  this.router.navigateByUrl('change-password', { state: {customerId: res.customerId, mobileUserId: res.id}, replaceUrl: true });
+                  this.intServ.loadingFunc(false);
+                }
+                else {
+                  let data = {
+                    "login": login ,
+                    "platformCode": environment.platformCode
+                  };
+                  this.onGetEnvironments(data);
+                }
+              }
+            );                          
+          }
+        ).catch(
+          err => {              
+            this.frm.controls['User'].setValue('');                      
+            this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
+          }
+        )          
+      }      
     }
   }
 
@@ -186,15 +225,14 @@ export class LoginPage implements OnInit {
     this.apiConnect.postData('mobile', 'getenvironments', data)
     .then(
       res => {
-        this.intServ.loadingFunc(false);
         if(res.length > 0) {
           this.environments = res;
         }
+        this.intServ.loadingFunc(false);
       }
     )
-    .catch(err => {
-      this.userName = '';
-      this.frm.controls['User'].setValue(this.userName);
+    .catch(err => {      
+      this.frm.controls['User'].setValue('');
 
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));

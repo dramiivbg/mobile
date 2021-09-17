@@ -48,12 +48,12 @@ export class AppComponent implements OnInit {
   }
 
   initializeApp() {
-    Keyboard.addListener('keyboardDidShow', info => {
+    /*Keyboard.addListener('keyboardDidShow', info => {
       this.interceptService.showFooter(false);
     });
     Keyboard.addListener('keyboardDidHide', () => {
       this.interceptService.showFooter(true);
-    });
+    });*/
     // this.onUniversalLink();
   }
 

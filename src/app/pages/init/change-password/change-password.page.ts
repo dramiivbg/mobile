@@ -12,9 +12,6 @@ import { JsonService } from '@svc/json.service';
 // import vars
 import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION } from '@var/consts';
 
-import { Plugins } from '@capacitor/core';
-const { App } = Plugins;
-
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.page.html',
@@ -22,15 +19,15 @@ const { App } = Plugins;
 })
 export class ChangePasswordPage implements OnInit {
 
-  private scid: string;
-  private userSession: any = {};
+  private customerId: string;
+  private mobileUserId: string;
 
   showPassword: Array<boolean> = [false, false, false];
   passwordToggleIcon: Array<string> = ['eye', 'eye', 'eye'];
 
-  lbLastPassword = 'Last password';
+  lbLastPassword = 'Temporary password';
 
-  frm: FormGroup;
+  frmChangePassword: FormGroup;
   constructor(private formBuilder: FormBuilder
     , private storage: Storage
     , private apiService: ApiService
@@ -44,7 +41,7 @@ export class ChangePasswordPage implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
-    this.frm = this.formBuilder.group({
+    this.frmChangePassword = this.formBuilder.group({
         LastPassword: ['', Validators.required],
         NewPassword: ['', Validators.required],
         ConfirmNewPassword: ['', Validators.required],
@@ -68,42 +65,35 @@ export class ChangePasswordPage implements OnInit {
   }
 
   ngOnInit() {
-    this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT).then(
-      res => {
-        this.scid = JSON.parse(res).customerId;
-      }
-    );
-
-    this.storage.get(SK_USER_SESSION).then(
-      res => {
-        this.userSession = JSON.parse(res);
-        if(this.userSession.temporaryPassword)
-          this.lbLastPassword = 'Temporary password';
-      }
-    );
+    console.log('change-password', this.router.getCurrentNavigation().extras.state);
+    let extras = this.router.getCurrentNavigation().extras.state;
+    this.customerId = extras.customerId;
+    this.mobileUserId = extras.mobileUserId;
   }
 
   onSubmit() {
-    if(this.userSession.temporaryPassword) {
-      this.onChangePassword();
-    }
-    else {
+    if(this.frmChangePassword.valid) {
       this.intServ.alertFunc(this.jsonServ.getAlert('confirm', 'Confirm', `Do you want to change password?`,
         () => {
           this.onChangePassword();
         })
       );
-    }
+    }    
   }
 
   onChangePassword() {
+    
     this.intServ.loadingFunc(true);
+    
     let data = {
-      customerId: this.scid,
-      mobileUserId: this.userSession.userId,
-      lastPassword: this.userSession.temporaryPassword ? this.frm.value.LastPassword : sha512(this.frm.value.LastPassword),
-      newPassword: sha512(this.frm.value.NewPassword)
+      customerId: this.customerId,
+      mobileUserId: this.mobileUserId,
+      lastPassword: this.frmChangePassword.value.LastPassword,
+      newPassword: sha512(this.frmChangePassword.value.NewPassword)
     }
+
+    console.log('onChangePassword', data);
+    
     this.apiService.postData('mobileUser', 'changepassword', data).then(
       async res => {
         if(res.isChangedPassword) {

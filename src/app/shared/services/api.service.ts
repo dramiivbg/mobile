@@ -11,6 +11,7 @@ import { SK_ENVIRONMENT, SK_OFFLINE, SK_USER_SESSION } from '@var/consts';
 export class ApiService {
     private timeOut = 60000;
     private msgTimeOut = 'The waiting time for execution has been exceeded';
+    instance: string = 'DEV';
 
     constructor(private httpClient: HttpClient,
         private offline: OfflineService,
@@ -23,8 +24,7 @@ export class ApiService {
      * @returns
      */
     getData = async (type: string, method: string): Promise<any> => {
-        let env = await this.storage.get(SK_ENVIRONMENT);
-        const url = `${environment.apiUrl[env]}/${environment.apiVersion}/${type}/${method}`;
+        const url = `${environment.apiUrl[this.instance]}/${environment.apiVersion}/${type}/${method}`;
         // const url = `${this.apiBaseUrl}/${type}/${method}`;
         let headers = await this.getHeaders();
 
@@ -59,9 +59,8 @@ export class ApiService {
      * @param params
      * @returns
      */
-    postData = async (type: string, method: string, params: any): Promise<any> => {
-        let env = await this.storage.get(SK_ENVIRONMENT);
-        const url = `${environment.apiUrl[env]}/${environment.apiVersion}/${type}/${method}`;
+    postData = async (type: string, method: string, params: any): Promise<any> => {        
+        const url = `${environment.apiUrl[this.instance]}/${environment.apiVersion}/${type}/${method}`;
         let headers = await this.getHeaders();
 
         return new Promise((resolve, reject) => {
@@ -117,9 +116,8 @@ export class ApiService {
      * @returns
      */
     async getHeaders() : Promise<any> {
-        let env = await this.storage.get(SK_ENVIRONMENT);
         let headers: HttpHeaders = new HttpHeaders();
-        headers = headers.set('Content-Type', 'application/json; charset=utf-8').set('plureApiKey', environment.apiKey[env]);
+        headers = headers.set('Content-Type', 'application/json; charset=utf-8').set('plureApiKey', environment.apiKey[this.instance]);
 
         try {
             await this.storage.get(SK_USER_SESSION)

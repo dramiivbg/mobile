@@ -45,17 +45,17 @@ export class AuthGuardService implements CanActivate {
     if (this.userSession !== undefined && this.userSession !== null){
       this.router.navigateByUrl('', { replaceUrl: true });
       return false;
-    } else {
+    } /*else {
       if (this.authorizeAccessClient === undefined || this.authorizeAccessClient === null){
         this.router.navigate(["environments"]);
         return false;
       }
-    }
+    }*/
     return true;
   }
 
   isChangePassword() : boolean {
-    if (!this.userSession.temporaryPassword){
+    if (this.userSession !== undefined && this.userSession !== null && !this.userSession.temporaryPassword){
       this.router.navigateByUrl('', { replaceUrl: true });
       return false;
     }
@@ -65,7 +65,7 @@ export class AuthGuardService implements CanActivate {
 
   isDefault() : boolean {
     if (this.userSession === undefined || this.userSession === null){
-      this.router.navigate(["environments"]);
+      this.router.navigate(["login"]);
       return false;
     }
     else {
