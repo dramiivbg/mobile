@@ -49,7 +49,8 @@
             <img src="../../../../assets/img/modules/sales/order-date.svg" width="100%" />
           </div>
           <div class="text-header lines">
-            <ion-label class="smallfont">Order date: </ion-label>
+            <ion-label class="smallfont" *ngIf="!hideOrderDate">Order date: </ion-label>
+            <ion-label class="smallfont" *ngIf="hideOrderDate">Document date: </ion-label>
             <ion-label class="smallfont">{{ frm.controls.orderDate.value | date: 'MM/dd/yyyy' }}</ion-label>
           </div>
         </ion-col>
@@ -103,14 +104,18 @@
             <div [formGroupName]="i" *ngIf="item.controls.title.value != ''">
               
               <ion-item-sliding>
-                <ion-item-options *ngIf="new || edit" side="start">
-                  <ion-item-option color="danger" (click)="onDeleteLine(i)" style="padding: 0 20px;">
+                <ion-item-options side="start">
+                  <ion-item-option *ngIf="new || edit" color="danger" (click)="onDeleteLine(i)" style="padding: 0 20px;">
                     <ion-icon name="trash-outline"></ion-icon>
                   </ion-item-option>
                   <ion-item-option color="plureHeader" class="select-floating" *ngIf="item.controls.type.value == 'Inventory'">
                     <ion-label>Location code</ion-label>
-                    <ion-select style="width: 150px;" formControlName="locationCode">
+                    <ion-select *ngIf="new || edit" style="width: 150px;" formControlName="locationCode">
                       <ion-select-option value="">Select location</ion-select-option>
+                      <ion-select-option *ngFor="let location of locationSetup" value="{{location.Code}}">{{location.Code}}</ion-select-option>
+                    </ion-select>
+                    <ion-select *ngIf="!new && !edit" style="width: 150px;" formControlName="locationCode" disabled>
+                      <ion-select-option value=""></ion-select-option>
                       <ion-select-option *ngFor="let location of locationSetup" value="{{location.Code}}">{{location.Code}}</ion-select-option>
                     </ion-select>
                   </ion-item-option>

@@ -77,18 +77,17 @@ export class LoginPage implements OnInit {
     );*/
   }
 
-  togglePassword(): void {
+  public togglePassword(): void {
     this.showPassword = !this.showPassword;
     this.passwordToggleIcon = this.showPassword ? 'eye-off' : 'eye';
   }
 
   private async signIn(secretKey: string) {
-    let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
-    console.log('authorizationToken', authorizationToken);      
-    //const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
-    // console.log(compareVersion);
-    //compareVersion['error'] = undefined;
-    //if (compareVersion.error === undefined) {
+    try {
+      let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
+      const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
+      console.log(compareVersion);
+      // if (compareVersion.error === undefined) {
       let data = {
         appSource: environment.appSource,
         secretKey: secretKey,
@@ -123,15 +122,16 @@ export class LoginPage implements OnInit {
           this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
           );
         }
-      );
-    /*} else {
+      );   
+    } catch ({error}) {
       this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.jsonServ.getAlert('error', 'Error', compareVersion.error.message));
-    }*/    
+      this.intServ.alertFunc(this.jsonServ.getAlert('error', 'Error', error.error.message));
+    }
+    
   }
 
   // login to the application is performed.
-  onSubmit() {
+  public onSubmit() {
     this.intServ.loadingFunc(true);
     if (this.frm.valid) {
       //let secretKey = sha512(`${this.frm.value.User}@${this.scid}:${sha512(this.frm.value.Password)}`);
@@ -150,7 +150,7 @@ export class LoginPage implements OnInit {
   }
 
   // remove environment with confirm
-  onRemoveEnvironment() {
+  public onRemoveEnvironment() {
     this.intServ.alertFunc(this.jsonServ.getAlert(
       'confirm',
       'Confirm',
@@ -162,7 +162,7 @@ export class LoginPage implements OnInit {
     );
   }
 
-  onBack() {
+  public onBack() {
     this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
     this.router.navigate(['environments'], {replaceUrl: true});
   }
@@ -220,7 +220,7 @@ export class LoginPage implements OnInit {
     }
   }
 
-  onGetEnvironments(data: any) {
+  public onGetEnvironments(data: any) {
     this.intServ.loadingFunc(true);
     this.apiConnect.postData('mobile', 'getenvironments', data)
     .then(
@@ -251,7 +251,7 @@ export class LoginPage implements OnInit {
     this.intServ.alertFunc(obj);
   }
 
-  getVersion(): void {
+  public getVersion(): void {
     this.appVersion.getVersionNumber().then(
       res => {
         this.version = `v${res}`;

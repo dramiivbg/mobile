@@ -12,6 +12,7 @@ import { SalesService } from '@svc/Sales.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_PROCESSTYPE } from '@var/enums';
 import { AlertPromise } from 'selenium-webdriver';
+import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'app-sales-page',
@@ -65,13 +66,9 @@ export class SalesPagePage implements OnInit {
     });
     /** update sales */
     this.intServ.updateSalesSource$.subscribe(
-      () => {
-        this.process = this.moduleService.getSelectedProcess();
-        this.salesList = this.salesService.getSales(this.process, this.module.erpUserId);
-        if (this.salesList.length > 0)
-          this.sales = this.salesList[this.salesList.length- 1];
-        else
-          this.sales = undefined;
+      async () => {
+        await this.getSales();
+        await this.getTemp();
       }
     )
   }
@@ -80,19 +77,10 @@ export class SalesPagePage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.intServ.loadingFunc(true);
-    this.module = this.moduleService.getSelectedModule();
-    this.process = this.moduleService.getSelectedProcess();
-    this.permissions = this.process.sysPermits;
-    if (this.permissions.indexOf(E_PROCESSTYPE.New) !== -1)
-      this.new = true;
-    else 
-      this.new = false;
-    await this.getTemp();
-    this.intServ.loadingFunc(false);
+    await this.get();
   }
 
-  async onSalesList() {
+  public async onSalesList() {
     if (this.salesList.length > 0 ) {
       this.intServ.loadingFunc(true);
       let customers: any = await this.getCustomers();
@@ -150,7 +138,7 @@ export class SalesPagePage implements OnInit {
     }
   }
 
-  async onTemp() {
+  public async onTemp() {
     if (this.temporaly != null) {
       this.intServ.loadingFunc(true);
       let obj = this.general.structSearch(this.temporaly, `Search temp ${this.process.salesType}`, this.process.salesType, async (temp) => {
@@ -196,7 +184,9 @@ export class SalesPagePage implements OnInit {
     )
   }
 
-  async getTemp() {
+  public async getTemp() {
+    this.temporaly = null;
+    this.tempPerc = 0;
     let temporaly = await this.offline.getProcess('ProcessSalesOrders');
     if (temporaly !== null) {
       this.temporaly = temporaly.filter(
@@ -214,7 +204,7 @@ export class SalesPagePage implements OnInit {
     }
   }
 
-  async onSyncTemp() {
+  public async onSyncTemp() {
     try {
       const status = await Network.getStatus();
       if (this.temporaly != null) {
@@ -227,12 +217,12 @@ export class SalesPagePage implements OnInit {
             let sell = await this.syncerp.setRequest(await this.syncerp.processRequestParams('ProcessSalesOrders', [this.temporaly[i].parameters]));
             if (sell.temp !== undefined) {
               throw new Error("Errors were encountered while trying to synchronize this sale");
-            } else {
-              this.intServ.alertFunc(this.js.getAlert('success', 'Success', `Synchronized correctly`));      
             }
           }
+          this.intServ.alertFunc(this.js.getAlert('success', 'Success', `Synchronized correctly`));
           this.intServ.loadingFunc(false); 
-          this.ionViewWillEnter();
+          await this.get();
+          await this.getSales();
         }
       } else {
         this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${this.process.salesType.toLocaleLowerCase()} to synchronize`));
@@ -243,8 +233,25 @@ export class SalesPagePage implements OnInit {
     }
   }
 
-  public testFunc() {
-    console.log(1);
+  private async get() {
+    this.intServ.loadingFunc(true);
+    this.module = this.moduleService.getSelectedModule();
+    this.process = this.moduleService.getSelectedProcess();
+    this.permissions = this.process.sysPermits;
+    if (this.permissions.indexOf(E_PROCESSTYPE.New) !== -1)
+      this.new = true;
+    else 
+      this.new = false;
+    await this.getTemp();
+    this.intServ.loadingFunc(false);
   }
 
+  private async getSales() {
+    this.process = await this.moduleService.getSelectedProcess();
+    this.salesList = await this.salesService.getSales(this.process, this.module.erpUserId);
+    if (this.salesList.length > 0)
+      this.sales = this.salesList[this.salesList.length- 1];
+    else
+      this.sales = undefined;
+  }
 }

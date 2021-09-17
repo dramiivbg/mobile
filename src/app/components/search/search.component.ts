@@ -34,7 +34,7 @@ export class SearchComponent implements OnInit {
   public listsFilter: Array<any> = [];
   public lists: Array<any> = [];
   public height: Number;
-  private new: boolean = false;
+  public new: boolean = false;
   private delete: boolean = false;
   private post: boolean = false;
 
@@ -48,7 +48,6 @@ export class SearchComponent implements OnInit {
     , private offline: OfflineService
     , private storage: Storage
     , private salesService: SalesService
-    , private authService: AuthService
   ) {
     intServ.searchShow$.subscribe(
       obj => {
