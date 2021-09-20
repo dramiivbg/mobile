@@ -2,7 +2,7 @@ import { getLocaleMonthNames } from '@angular/common';
 import { CommentStmt } from '@angular/compiler';
 import { CloneVisitor } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
@@ -23,6 +23,10 @@ import { Plugins } from '@capacitor/core';
 import { NotifyService } from '@svc/notify.service';
 import { E_NOTIFYTYPE } from '@var/enums';
 import { UserService } from '@svc/user.service';
+import { ModalController, Platform } from '@ionic/angular';
+import { ChangeInstanceService } from '../change-instance/change-instance.service';
+import { ChangeInstancePage } from '../change-instance/change-instance.page';
+
 const { App } = Plugins;
 
 @Component({
@@ -35,6 +39,8 @@ export class LoginPage implements OnInit {
   version: string = "";
   showPassword = false;
   passwordToggleIcon = 'eye';
+  changeInstance = 0;
+  instances = ['Development', 'Test', 'Live'] 
   
   public environments: Array<any> = [];
   frm: FormGroup;
@@ -49,7 +55,8 @@ export class LoginPage implements OnInit {
     , private authSvc: AuthService
     , private appVersion: AppVersion
     , private notify: NotifyService
-    , private userService: UserService
+    , private changeInstanceService: ChangeInstanceService
+    , private modalController: ModalController
   ) {
     let objFunc = {
       func: () => {
@@ -59,17 +66,21 @@ export class LoginPage implements OnInit {
     this.intServ.appBackFunc(objFunc);
     intServ.modifyMenu({menu: [], showMenu: false});
     this.frm = this.formBuilder.group(
-    {
-        EnviromentId: ['', Validators.required],
-        User: ['', Validators.required],
+      {
+        User: new FormControl('', [
+        Validators.required,
+        Validators.pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")
+        ]),
         Password: ['', Validators.required],
+        EnviromentId: ['', Validators.required],
       }
     )
 
     this.getVersion();
   }
 
-  ngOnInit() {
+  ngOnInit() {    
+
     /*this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT).then(
       res => {
         this.scid = JSON.parse(res).customerId;
@@ -84,9 +95,9 @@ export class LoginPage implements OnInit {
 
   private async signIn(secretKey: string) {
     try {
-      let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
-      const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
-      console.log(compareVersion);
+      let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);      
+      //const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
+      //console.log(compareVersion);
       // if (compareVersion.error === undefined) {
       let data = {
         appSource: environment.appSource,
@@ -187,9 +198,11 @@ export class LoginPage implements OnInit {
   }
 
   onChangeUser(event: any){
-    if(this.frm.value.User != "") {
-      this.intServ.loadingFunc(true);      
+
+    if(this.frm.controls['User'].valid) {      
+      this.intServ.loadingFunc(true);    
       let login = this.frm.value.User.toLowerCase();
+
       if(this.frm.value.User !== "") {          
         this.apiConnect.postData('mobileUser', `checkingMobileUser`, { login }).then(
           res => {              
@@ -197,7 +210,7 @@ export class LoginPage implements OnInit {
               () => {
                 var changeTemporaryPassword = res.temporaryPassword != '';
                 if(changeTemporaryPassword) {
-                  this.router.navigateByUrl('change-password', { state: {customerId: res.customerId, mobileUserId: res.id}, replaceUrl: true });
+                  this.router.navigateByUrl('change-password', { state: {customerId: res.customerId, mobileUserId: res.id}, replaceUrl: true });                  
                   this.intServ.loadingFunc(false);
                 }
                 else {
@@ -206,18 +219,31 @@ export class LoginPage implements OnInit {
                     "platformCode": environment.platformCode
                   };
                   this.onGetEnvironments(data);
-                }
+                }                
               }
             );                          
           }
         ).catch(
-          err => {              
+          err => {   
+            this.intServ.loadingFunc(false);      
             this.frm.controls['User'].setValue('');                      
-            this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
+
+            if(err.error != undefined) {
+              this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
+            }
+            else {
+              this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.message));
+            }
           }
         )          
-      }      
+      }            
     }
+    else {
+      if(this.frm.value.User != '') {
+        this.frm.controls['User'].setValue('');                      
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', 'Please provide a valid email address'));
+      }      
+    }    
   }
 
   public onGetEnvironments(data: any) {
@@ -268,4 +294,29 @@ export class LoginPage implements OnInit {
     }
   }
 
+  private async resetClic() {
+    this.changeInstance = await this.changeInstanceService.resetClic();    
+  }
+
+  async onChangeInstance() {
+    if(this.changeInstance == 1) {
+      this.resetClic();
+    }
+    this.changeInstance ++;      
+
+    if(this.changeInstance == 5) {
+      await this.presentChangeInstanceModal()
+    }
+  }
+
+  async presentChangeInstanceModal() {
+    const modal = await this.modalController.create({
+      component: ChangeInstancePage,
+      cssClass: 'my-custom-class',
+      swipeToClose: true,
+      presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
+    });
+    return await modal.present();
+  }
 }
+

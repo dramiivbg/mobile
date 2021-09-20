@@ -20,7 +20,7 @@ import { SK_AUTHORIZE_ACCESS_CLIENT, SK_USER_SESSION } from '@var/consts';
 export class ChangePasswordPage implements OnInit {
 
   private customerId: string;
-  private mobileUserId: string;
+  private mobileUserId: string;  
 
   showPassword: Array<boolean> = [false, false, false];
   passwordToggleIcon: Array<string> = ['eye', 'eye', 'eye'];

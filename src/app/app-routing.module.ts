@@ -46,7 +46,11 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./pages/main/main.module').then( m => m.MainPageModule),
     canActivate: [AuthGuardService]
+  },  {
+    path: 'change-instance',
+    loadChildren: () => import('./pages/init/change-instance/change-instance.module').then( m => m.ChangeInstancePageModule)
   }
+
 ];
 
 @NgModule({
