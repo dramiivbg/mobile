@@ -270,7 +270,7 @@ export class SearchComponent implements OnInit {
       this.intServ.loadingFunc(false);
     } catch (error) {
       this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message));
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.error.message));
     }
 
   }

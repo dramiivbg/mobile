@@ -199,10 +199,10 @@ export class LoginPage implements OnInit {
 
   onChangeUser(event: any){
 
-    if(this.frm.controls['User'].valid) {      
+    if(this.frm.controls['User'].valid) {
       this.intServ.loadingFunc(true);    
       let login = this.frm.value.User.toLowerCase();
-
+      console.log(1);
       if(this.frm.value.User !== "") {          
         this.apiConnect.postData('mobileUser', `checkingMobileUser`, { login }).then(
           res => {              
@@ -305,6 +305,7 @@ export class LoginPage implements OnInit {
     this.changeInstance ++;      
 
     if(this.changeInstance == 5) {
+      this.frm.reset();
       await this.presentChangeInstanceModal()
     }
   }

@@ -25,7 +25,8 @@ export class ApiService {
      * @returns
      */
     getData = async (type: string, method: string): Promise<any> => {
-        this.instance = await this.storage.get(SK_ENVIRONMENT);        
+        let instance = await this.storage.get(SK_ENVIRONMENT);
+        this.instance = instance === null ? this.instance : instance;
         const url = `${environment.apiUrl[this.instance]}/${environment.apiVersion}/${type}/${method}`;
         // const url = `${this.apiBaseUrl}/${type}/${method}`;
         let headers = await this.getHeaders();
@@ -61,10 +62,12 @@ export class ApiService {
      * @param params
      * @returns
      */
-    postData = async (type: string, method: string, params: any): Promise<any> => {     
-        this.instance = await this.storage.get(SK_ENVIRONMENT);
+    postData = async (type: string, method: string, params: any): Promise<any> => {
+        let instance = await this.storage.get(SK_ENVIRONMENT);
+        this.instance = instance === null ? this.instance : instance;
         const url = `${environment.apiUrl[this.instance]}/${environment.apiVersion}/${type}/${method}`;
         let headers = await this.getHeaders();
+        console.log(this.instance)
 
         return new Promise((resolve, reject) => {
             try {
@@ -121,7 +124,8 @@ export class ApiService {
      * @returns
      */
     async getHeaders() : Promise<any> {
-        this.instance = await this.storage.get(SK_ENVIRONMENT);
+        let instance = await this.storage.get(SK_ENVIRONMENT);
+        this.instance = instance === null ? this.instance : instance;
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json; charset=utf-8').set('plureApiKey', environment.apiKey[this.instance]);
 
