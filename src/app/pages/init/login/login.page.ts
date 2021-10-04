@@ -22,10 +22,10 @@ import { SK_AUTHORIZE_ACCESS_CLIENT, SK_SESSION_CUSTOMER_ID } from '@var/consts'
 import { Plugins } from '@capacitor/core';
 import { NotifyService } from '@svc/notify.service';
 import { E_NOTIFYTYPE } from '@var/enums';
-import { UserService } from '@svc/user.service';
 import { ModalController, Platform } from '@ionic/angular';
 import { ChangeInstanceService } from '../change-instance/change-instance.service';
 import { ChangeInstancePage } from '../change-instance/change-instance.page';
+import { UserService } from '@svc/user.service';
 
 const { App } = Plugins;
 
@@ -40,8 +40,8 @@ export class LoginPage implements OnInit {
   showPassword = false;
   passwordToggleIcon = 'eye';
   changeInstance = 0;
-  instances = ['Development', 'Test', 'Live'] 
-  
+  instances = ['Development', 'Test', 'Live']
+
   public environments: Array<any> = [];
   frm: FormGroup;
 
@@ -57,6 +57,7 @@ export class LoginPage implements OnInit {
     , private notify: NotifyService
     , private changeInstanceService: ChangeInstanceService
     , private modalController: ModalController
+    , private userService: UserService
   ) {
     let objFunc = {
       func: () => {
@@ -64,12 +65,12 @@ export class LoginPage implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
-    intServ.modifyMenu({menu: [], showMenu: false});
+    intServ.modifyMenu({ menu: [], showMenu: false });
     this.frm = this.formBuilder.group(
       {
         User: new FormControl('', [
-        Validators.required,
-        Validators.pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")
+          Validators.required,
+          Validators.pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")
         ]),
         Password: ['', Validators.required],
         EnviromentId: ['', Validators.required],
@@ -79,76 +80,22 @@ export class LoginPage implements OnInit {
     this.getVersion();
   }
 
-  ngOnInit() {    
-
-    /*this.storage.get(SK_AUTHORIZE_ACCESS_CLIENT).then(
-      res => {
-        this.scid = JSON.parse(res).customerId;
-      }
-    );*/
-  }
+  ngOnInit() {}
 
   public togglePassword(): void {
     this.showPassword = !this.showPassword;
     this.passwordToggleIcon = this.showPassword ? 'eye-off' : 'eye';
   }
 
-  private async signIn(secretKey: string) {
-    try {
-      let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);      
-      //const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
-      //console.log(compareVersion);
-      // if (compareVersion.error === undefined) {
-      let data = {
-        appSource: environment.appSource,
-        secretKey: secretKey,
-        authorizationToken: authorizationToken,
-        environmentId: this.frm.value.EnviromentId,
-        uuid: this.device.uuid
-      };
-  
-      this.apiConnect.postData('loginuser', 'authentication', data).then(
-        res => {
-          if ( res.token != null ) {
-            if(this.authSvc.saveUserSession(res)) {
-              this.messageWelcome();
-              this.router.navigateByUrl('change-password', { replaceUrl: true });
-            }
-            this.intServ.loadingFunc(false);
-          } else {
-            this.intServ.alertFunc(this.jsonServ.getAlert(
-              'alert',
-              'Error',
-              `The user or password is not correct.`,
-              () => {
-                this.intServ.loadingFunc(false);
-              })
-            );
-          }
-        }
-      )
-      .catch(
-        err => {
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
-          );
-        }
-      );   
-    } catch ({error}) {
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.jsonServ.getAlert('error', 'Error', error.error.message));
-    }
-    
-  }
-
-  // login to the application is performed.
+  /**
+   * Login to the application is performed. 
+  */ 
   public onSubmit() {
     this.intServ.loadingFunc(true);
     if (this.frm.valid) {
       //let secretKey = sha512(`${this.frm.value.User}@${this.scid}:${sha512(this.frm.value.Password)}`);
       let login = this.frm.value.User.toLowerCase();
       let secretKey = sha512(`${login}:${sha512(this.frm.value.Password)}`);
-      console.log('secretKey', secretKey);      
       this.signIn(secretKey);
     } else {
       this.intServ.alertFunc(this.jsonServ.getAlert(
@@ -160,7 +107,9 @@ export class LoginPage implements OnInit {
     }
   }
 
-  // remove environment with confirm
+  /**
+   * remove environment with confirm
+   */
   public onRemoveEnvironment() {
     this.intServ.alertFunc(this.jsonServ.getAlert(
       'confirm',
@@ -168,14 +117,14 @@ export class LoginPage implements OnInit {
       `Do you want to change company ?`,
       () => {
         this.storage.remove(SK_SESSION_CUSTOMER_ID);
-        this.router.navigate(['enviroments'], {replaceUrl: true});
+        this.router.navigate(['enviroments'], { replaceUrl: true });
       })
     );
   }
 
   public onBack() {
     this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
-    this.router.navigate(['environments'], {replaceUrl: true});
+    this.router.navigate(['environments'], { replaceUrl: true });
   }
 
   async authorizeAccessClient(customerId: string) {
@@ -186,83 +135,81 @@ export class LoginPage implements OnInit {
     }
 
     return this.apiConnect.postData('mobile', 'authorizeAccessClient', data)
-    .then(
-      res => {        
-        this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));        
-      }
-    )
-    .catch(error => {
-      error = error.error;
-      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${error.message}`));      
-    });
+      .then(
+        res => {
+          this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));
+        }
+      )
+      .catch(error => {
+        error = error.error;
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', `${error.message}`));
+      });
   }
 
-  onChangeUser(event: any){
-
-    if(this.frm.controls['User'].valid) {
-      this.intServ.loadingFunc(true);    
+  public onChangeUser(event: any) {
+    if (this.frm.controls['User'].valid) {
+      this.intServ.loadingFunc(true);
       let login = this.frm.value.User.toLowerCase();
-      console.log(1);
-      if(this.frm.value.User !== "") {          
+      if (this.frm.value.User !== "") {
         this.apiConnect.postData('mobileUser', `checkingMobileUser`, { login }).then(
-          res => {              
+          res => {
             this.authorizeAccessClient(res.customerId).finally(
               () => {
                 var changeTemporaryPassword = res.temporaryPassword != '';
-                if(changeTemporaryPassword) {
-                  this.router.navigateByUrl('change-password', { state: {customerId: res.customerId, mobileUserId: res.id}, replaceUrl: true });                  
+                if (changeTemporaryPassword) {
+                  this.router.navigateByUrl('change-password', { state: { customerId: res.customerId, mobileUserId: res.id }, replaceUrl: true });
                   this.intServ.loadingFunc(false);
                 }
                 else {
                   let data = {
-                    "login": login ,
+                    "login": login,
                     "platformCode": environment.platformCode
                   };
                   this.onGetEnvironments(data);
-                }                
+                }
               }
-            );                          
+            );
           }
         ).catch(
-          err => {   
-            this.intServ.loadingFunc(false);      
-            this.frm.controls['User'].setValue('');                      
+          err => {
+            this.intServ.loadingFunc(false);
+            this.frm.controls['User'].setValue('');
 
-            if(err.error != undefined) {
+            if (err.error != undefined) {
               this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
             }
             else {
               this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.message));
             }
           }
-        )          
-      }            
+        )
+      }
     }
     else {
-      if(this.frm.value.User != '') {
-        this.frm.controls['User'].setValue('');                      
+      if (this.frm.value.User != '') {
+        this.frm.controls['User'].setValue('');
         this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', 'Please provide a valid email address'));
-      }      
-    }    
+      }
+    }
   }
 
   public onGetEnvironments(data: any) {
     this.intServ.loadingFunc(true);
     this.apiConnect.postData('mobile', 'getenvironments', data)
-    .then(
-      res => {
-        if(res.length > 0) {
-          this.environments = res;
+      .then(
+        res => {
+          if (res.length > 0) {
+            this.environments = res;
+          }
+          this.intServ.loadingFunc(false);
         }
-        this.intServ.loadingFunc(false);
-      }
-    )
-    .catch(err => {      
-      this.frm.controls['User'].setValue('');
+      )
+      .catch(err => {
+        this.frm.controls['User'].setValue('');
 
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
-    });
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
+      });
   }
 
   onTest() {
@@ -288,23 +235,90 @@ export class LoginPage implements OnInit {
   }
 
   private async messageWelcome() {
-    let notifies = await this.notify.countNotifications();
-    if (notifies === 0) {
-      this.notify.createNotification(E_NOTIFYTYPE.Notify, 'Welcome to plur-e', false);
+    await this.notify.createNotification(E_NOTIFYTYPE.Notify, 'Welcome to plur-e', false);
+  }
+
+  private async messageUpdateVersion(version) {
+    await this.notify.createNotification(E_NOTIFYTYPE.Notify, `Mobile version '${version}' is available.`, false);
+  }
+
+  private async signIn(secretKey: string) {
+    try {
+      let authorizationToken = sha512(`${secretKey}-${environment.passphrase}`);
+      const compareVersion: any = await this.userService.compareVersionByEnvironment(this.frm.value.EnviromentId);
+      if (compareVersion.error === undefined) {
+        let data = {
+          appSource: environment.appSource,
+          secretKey: secretKey,
+          authorizationToken: authorizationToken,
+          environmentId: this.frm.value.EnviromentId,
+          uuid: this.device.uuid
+        };
+        if (compareVersion.versionAppUpgrade !== null) {
+          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', `Mobile version '${compareVersion.versionAppUpgrade.versionName}' is available.`, 
+          async () => {
+            await this.loginUserAuth(data, compareVersion);
+          }
+          ));
+        } else {
+          await this.loginUserAuth(data, compareVersion);
+        }
+      }
+    } catch ( {error} ) {
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.jsonServ.getAlert('error', 'Error', error.message));
     }
+  }
+
+  /**
+   * Login and send notify
+   * @param data {appSource, secretKey, authorizationToken, environmentId, uuid}
+   * @param compareVersion 
+   */
+  private async loginUserAuth(data: any, compareVersion: any) {
+    this.apiConnect.postData('loginuser', 'authentication', data).then(
+      async res => {
+        if (res.token != null) {
+          if (this.authSvc.saveUserSession(res)) {
+            await this.messageWelcome();
+            if (compareVersion.versionAppUpgrade !== null) {
+              await this.messageUpdateVersion(compareVersion.versionAppUpgrade.versionName);
+            }
+            this.router.navigateByUrl('change-password', { replaceUrl: true });
+          }
+          this.intServ.loadingFunc(false);
+        } else {
+          this.intServ.alertFunc(this.jsonServ.getAlert(
+            'alert',
+            'Error',
+            `The user or password is not correct.`,
+            () => {
+              this.intServ.loadingFunc(false);
+            })
+          );
+        }
+      }
+    )
+    .catch(
+      err => {
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
+        );
+      }
+    );
   }
 
   private async resetClic() {
-    this.changeInstance = await this.changeInstanceService.resetClic();    
+    this.changeInstance = await this.changeInstanceService.resetClic();
   }
 
   async onChangeInstance() {
-    if(this.changeInstance == 1) {
+    if (this.changeInstance == 1) {
       this.resetClic();
     }
-    this.changeInstance ++;      
+    this.changeInstance++;
 
-    if(this.changeInstance == 5) {
+    if (this.changeInstance == 5) {
       this.frm.reset();
       await this.presentChangeInstanceModal()
     }

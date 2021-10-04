@@ -105,7 +105,7 @@ export class NotifyService {
             new: true,
             loading
         }
-        this.setNotifications(notify);
+        await this.setNotifications(notify);
         return notify;
     }
 

@@ -8,6 +8,11 @@ const { App, Keyboard } = Plugins;
 import { InterceptService } from '@svc/intercept.service';
 import { Platform } from '@ionic/angular';
 import { UserService } from '@svc/user.service';
+import { JsonService } from '@svc/json.service';
+import { E_NOTIFYTYPE } from '@var/enums';
+import { NotifyService } from '@svc/notify.service';
+import { debug } from 'console';
+import { AuthService } from '@svc/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +31,11 @@ export class AppComponent implements OnInit {
     , private screenOrientation: ScreenOrientation
     , private platform: Platform
     , private userService: UserService
+    , private intServ: InterceptService
+    , private js: JsonService
+    , private notify: NotifyService
+    , private authService: AuthService
+    , private router: Router
   ) {
     this.initializeApp();
     this.initializeSubscribe();
@@ -103,8 +113,36 @@ export class AppComponent implements OnInit {
   }
 
   private async initialCompareVersion() {
-    let obj: any = {};
-    let resp = await this.userService.compareVersion();
-    console.log(resp);
+    try {
+      const userSession = await this.authService.getUserSession();
+      if (userSession !== null) {
+        const compareVersion: any = await this.userService.compareVersion();
+        if (compareVersion.error === undefined) {
+          if (compareVersion.versionAppUpgrade !== null) {
+            await this.messageUpdateVersion(compareVersion.versionAppUpgrade.versionName);
+            this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `Mobile version '${compareVersion.versionAppUpgrade.versionName}' is available.`));
+          }
+        } 
+      }
+    } catch ({error}) {
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message, 
+        () => {
+          setTimeout(() => {
+            this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 
+            'Because your version is not compatible with the version installed in the ERP you will be redirected to login.',
+              async () => {
+                await this.authService.signout();
+                this.router.navigate(['login'], { replaceUrl: true});
+              }
+            ));
+          }, 1000)
+        }
+      ));
+    }
+  }
+
+  private async messageUpdateVersion(version) {
+    await this.notify.createNotification(E_NOTIFYTYPE.Notify, `Mobile version '${version}' is available.`, false);
   }
 }

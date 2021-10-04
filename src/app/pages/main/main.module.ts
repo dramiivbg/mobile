@@ -8,6 +8,7 @@ import { MainPageRoutingModule } from './main-routing.module';
 
 import { MainPage } from './main.page';
 import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
     MainPageRoutingModule,
     SharedModule
   ],
-  declarations: [MainPage]
+  declarations: [MainPage],
+  providers: [EmailComposer]
 })
 export class MainPageModule {}

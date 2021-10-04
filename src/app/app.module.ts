@@ -38,6 +38,7 @@ import { StripePayComponent } from './components/stripe-pay/stripe-pay.component
 import { NotifyComponent } from './components/notify/notify.component';
 import { UserService } from '@svc/user.service';
 import { SalesService } from '@svc/Sales.service';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
 
 @NgModule({
   declarations: [

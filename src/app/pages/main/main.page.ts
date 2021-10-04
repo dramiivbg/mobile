@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterEvent } from '@angular/router';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Storage } from '@ionic/storage';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
 
 // import services
 import { AuthService } from '@svc/auth.service';
@@ -47,6 +48,12 @@ export class MainPage implements OnInit {
       action: "settings",
     },
     {
+      description: "Support",
+      iconName: "",
+      iconPath: "../../assets/icon/support.svg",
+      action: "support",
+    },
+    {
       description: "Sync",
       iconName: "sync-circle-outline",
       iconPath: "",
@@ -61,11 +68,12 @@ export class MainPage implements OnInit {
   ];
   selectedPath = '';
 
-  constructor(private intServ: InterceptService,
-            private authService: AuthService,
-            private router: Router,
-            private storage: Storage,
-            private appVersion: AppVersion) {
+  constructor(private intServ: InterceptService
+    , private authService: AuthService
+    , private router: Router
+    , private storage: Storage
+    , private appVersion: AppVersion
+    , private emailComposer: EmailComposer) {
     this.getVersion();
     this.init();
 
@@ -127,6 +135,10 @@ export class MainPage implements OnInit {
         this.router.navigate(['init/sync'], { replaceUrl: true });
         break;
 
+      case "support":
+        this.support();
+        break;
+
       case "sign_out":
         this.onSignout();
         break;
@@ -149,6 +161,18 @@ export class MainPage implements OnInit {
     ).catch(
       err => this.version = `v0.0`
     );
+  }
+
+  private async support() {
+    let email = {
+      to: 'juan.pena@mscloudexperts.com',
+      cc: '',
+      bcc: [],
+      subject: 'Plur-E Support',
+      body: '',
+      isHtml: true
+    }
+    this.emailComposer.open(email);
   }
 
 }

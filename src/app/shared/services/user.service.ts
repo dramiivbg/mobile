@@ -22,11 +22,11 @@ export class UserService {
         try {
             let customer = await this.getCustomer();
             let versionCode = await this.appVersion.getVersionCode();
-            let userSession = await this.authService.getUserSession();
-            if (customer !== null && userSession !== null) {
+            let {environment} = await this.authService.getUserSession();
+            if (customer !== null && (environment !== null && environment !== undefined)) {
                 let obj: any = {
                     customerId: customer.customerId,
-                    environmentId: userSession.environmentId,
+                    environmentId: environment.environmentId,
                     versionCode
                 }
                 return await this.api.postData('versionapp', 'validatemobileversion', obj);
@@ -34,8 +34,7 @@ export class UserService {
                 return null;
             }
         } catch (error) {
-            console.log(error);
-            return {error};
+            throw error;
         }
     }
 
@@ -56,7 +55,7 @@ export class UserService {
             let vers = await this.api.postData('versionapp', 'validatemobileversion', obj);
             return vers;
         } catch (error) {
-            throw {error};
+            throw error;
         }
     }
 
