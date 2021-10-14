@@ -108,16 +108,15 @@ export class ProfilePage implements OnInit {
   async onChangeAvatar() {
     try {
       const image = await Camera.getPhoto({
-        quality: 80,
+        quality: 75,
         allowEditing: false,
         resultType: CameraResultType.Base64,
-        width: 1000,
-        height: 1000
+        width: 500,
+        height: 500
       });
       let base64String = "data:image/png;base64," + image.base64String;
       this.avatar = base64String;
     } catch (error) {
-      console.log(error);
       this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', 'An error occurred while selecting the image'));
     }
   }

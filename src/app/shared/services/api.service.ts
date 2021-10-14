@@ -11,7 +11,7 @@ import { SK_ENVIRONMENT, SK_OFFLINE, SK_USER_SESSION } from '@var/consts';
 export class ApiService {
     private timeOut = 60000;
     private msgTimeOut = 'The waiting time for execution has been exceeded';
-    instance: string = 'DEV';
+    instance: string = 'LIVE';
 
     constructor(private httpClient: HttpClient,
         private offline: OfflineService,

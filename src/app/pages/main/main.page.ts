@@ -165,7 +165,7 @@ export class MainPage implements OnInit {
 
   private async support() {
     let email = {
-      to: 'juan.pena@mscloudexperts.com',
+      to: 'support@plur-e.com',
       cc: '',
       bcc: [],
       subject: 'Plur-E Support',
