@@ -20,7 +20,6 @@ import { Stripe } from '@ionic-native/stripe/ngx';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // import services
-import { MenuService } from './data/menu.service';
 import { InterceptService } from '@svc/intercept.service';
 import { ApiService } from '@svc/api.service';
 import { JsonService } from '@svc/json.service';
@@ -66,7 +65,6 @@ import { EmailComposer } from '@ionic-native/email-composer/ngx';
     InterceptService,
     ApiService,
     JsonService,
-    MenuService,
     SqlitePlureService,
     GeneralService,
     SearchComponent,

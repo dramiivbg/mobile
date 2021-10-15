@@ -27,7 +27,7 @@ const routes: Routes = [
       },
       {
         path: 'init/sync',
-        loadChildren: () => import('../../pages/init/sync/sync.module').then( m => m.SyncPageModule)
+        loadChildren: () => import('../../../public/pages/sync/sync.module').then( m => m.SyncPageModule)
       },
       {
         path: 'change-company',
