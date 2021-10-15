@@ -84,7 +84,7 @@ export class ChangeCompanyPage implements OnInit {
    * Return to the modules.
    */
    onBack() {
-    this.router.navigate(['modules']);
+    this.router.navigate(['page/main/modules']);
   }
 
   onChangeCompany(company: any) {

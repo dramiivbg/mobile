@@ -108,7 +108,7 @@ export class SalesFormPage implements OnInit {
         }
       } else {
         this.initNew();
-        this.router.navigate(['modules'], { replaceUrl: true });
+        this.router.navigate(['page/main/modules'], { replaceUrl: true });
       }
     });
   }
@@ -509,7 +509,7 @@ export class SalesFormPage implements OnInit {
               } else {
                 // this.frm.reset();
                 this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                  this.router.navigate(['modules'], { replaceUrl: true });
+                  this.router.navigate(['page/main/modules'], { replaceUrl: true });
                 }));
               }
             } else {

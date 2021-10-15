@@ -120,19 +120,19 @@ export class MainPage implements OnInit {
     switch(action)
     {
       case "modules":
-          this.router.navigateByUrl('', { replaceUrl: true });
+          this.router.navigate(['page/main/modules'], { replaceUrl: true });
         break;
 
       case "change_company":
-        this.router.navigateByUrl('main/change-company', { replaceUrl: true });
+        this.router.navigate(['page/main/change-company'], { replaceUrl: true });
         break;
 
       case "settings":
-        this.router.navigateByUrl('main/settings', { replaceUrl: true });
+        this.router.navigate(['page/main/settings'], { replaceUrl: true });
         break;
 
       case "sync":
-        this.router.navigate(['init/sync'], { replaceUrl: true });
+        this.router.navigate(['page/main/init/sync'], { replaceUrl: true });
         break;
 
       case "support":

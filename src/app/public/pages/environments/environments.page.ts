@@ -77,7 +77,7 @@ export class EnvironmentsPage implements OnInit {
       res => {
         this.intServ.loadingFunc(false);
         this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));
-        this.router.navigateByUrl('/login', {replaceUrl: true });
+        this.router.navigate(['login'], {replaceUrl: true });
       }
     )
     .catch(error => {

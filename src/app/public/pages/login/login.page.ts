@@ -110,17 +110,17 @@ export class LoginPage implements OnInit {
   /**
    * remove environment with confirm
    */
-  public onRemoveEnvironment() {
-    this.intServ.alertFunc(this.jsonServ.getAlert(
-      'confirm',
-      'Confirm',
-      `Do you want to change company ?`,
-      () => {
-        this.storage.remove(SK_SESSION_CUSTOMER_ID);
-        this.router.navigate(['enviroments'], { replaceUrl: true });
-      })
-    );
-  }
+  // public onRemoveEnvironment() {
+  //   this.intServ.alertFunc(this.jsonServ.getAlert(
+  //     'confirm',
+  //     'Confirm',
+  //     `Do you want to change company ?`,
+  //     () => {
+  //       this.storage.remove(SK_SESSION_CUSTOMER_ID);
+  //       this.router.navigate(['environments'], { replaceUrl: true });
+  //     })
+  //   );
+  // }
 
   public onBack() {
     this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
@@ -284,7 +284,7 @@ export class LoginPage implements OnInit {
             if (compareVersion.versionAppUpgrade !== null) {
               await this.messageUpdateVersion(compareVersion.versionAppUpgrade.versionName);
             }
-            this.router.navigateByUrl('change-password', { replaceUrl: true });
+            this.router.navigate(['page/main'], { replaceUrl: true });
           }
           this.intServ.loadingFunc(false);
         } else {

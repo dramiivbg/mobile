@@ -63,7 +63,7 @@ export class ProfilePage implements OnInit {
     * Return to the main/settings.
     */
   onBack() {
-    this.router.navigate(['main/settings'], {replaceUrl: true});
+    this.router.navigate(['page/main/settings'], {replaceUrl: true});
   }
 
   onSubmit() {
@@ -87,7 +87,7 @@ export class ProfilePage implements OnInit {
           this.authService.saveUserSession(this.userSession);
           this.intServ.avatarFuntion(this.userSession);
 
-          this.router.navigateByUrl("main/settings", { replaceUrl: true})
+          this.router.navigate(['page/main/settings'], { replaceUrl: true})
 
           this.intServ.loadingFunc(false);
         }

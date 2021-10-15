@@ -44,7 +44,7 @@ export class SyncPage implements OnInit {
     * Return to the modules.
     */
   onBack() {
-    this.router.navigate(['modules'], {replaceUrl: true});
+    this.router.navigate(['page/main/modules'], {replaceUrl: true});
   }
 
   async onSyncTables(mod) : Promise<void> {

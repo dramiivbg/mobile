@@ -100,7 +100,7 @@ export class ChangePasswordPage implements OnInit {
    * Return to the main/settings.
    */
     onBack() {
-      this.router.navigate(['main/settings'], {replaceUrl: true});
+      this.router.navigate(['page/main/settings'], {replaceUrl: true});
     }
 
   onSubmit() {
@@ -116,7 +116,7 @@ export class ChangePasswordPage implements OnInit {
         async res => {
           if(res.isChangedPassword) {
             await this.storage.remove(SK_USER_SESSION);
-            this.router.navigateByUrl('login', { replaceUrl: true });
+            this.router.navigate(['login'], { replaceUrl: true });
             this.intServ.loadingFunc(false);
             this.intServ.alertFunc(this.jsonServ.getAlert('success', 'Info', 'Your password has changed, please sign in again.'))
           }

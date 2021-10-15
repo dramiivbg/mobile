@@ -47,17 +47,17 @@ export class SettingsPage implements OnInit {
     * Return to the modules.
     */
   onBack() {
-    this.router.navigate(['modules'], {replaceUrl: true});
+    this.router.navigate(['page/main/modules'], {replaceUrl: true});
   }
 
   onClick(setting: string) {
     switch(setting) {
       case 'profile':
-        this.router.navigateByUrl('main/settings/profile', { replaceUrl: true });
+        this.router.navigate(['page/main/settings/profile'], { replaceUrl: true });
         break;
 
       case 'change-password':
-        this.router.navigateByUrl('main/settings/change-password', { replaceUrl: true });
+        this.router.navigate(['page/main/settings/change-password'], { replaceUrl: true });
         break;
 
       default:

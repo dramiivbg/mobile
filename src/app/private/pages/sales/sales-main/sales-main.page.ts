@@ -74,7 +74,7 @@ export class SalesMainPage implements OnInit {
     * Return to the modules.
     */
   onBack() {
-    this.router.navigate(['modules'], { replaceUrl: true });
+    this.router.navigate(['page/main/modules'], { replaceUrl: true });
   }
 
   private async getSalesCount() {
