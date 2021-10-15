@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SalesMainPageRoutingModule } from './sales-main-routing.module';
 
 import { SalesMainPage } from './sales-main.page';
-import { HeaderComponent } from 'src/app/components/header/header.component';
+import { HeaderComponent } from '@prv/components/header/header.component';
 import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
 
 @NgModule({

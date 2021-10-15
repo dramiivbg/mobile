@@ -395,11 +395,11 @@ export class SalesFormPage implements OnInit {
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Are you sure you want to leave?',
         () => {
           this.onReset();
-          this.router.navigate(['sales/sales-main'], { replaceUrl: true });
+          this.router.navigate(['page/sales/page'], { replaceUrl: true });
         }
       ));
     } else {
-      this.router.navigate(['sales/sales-main'], { replaceUrl: true });
+      this.router.navigate(['page/sales/page'], { replaceUrl: true });
     }
   }
 
@@ -413,11 +413,11 @@ export class SalesFormPage implements OnInit {
           this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Are you sure you want to leave?',
             () => {
               this.onReset();
-              this.router.navigate(['sales/sales-main'], { replaceUrl: true });
+              this.router.navigate(['page/sales/page'], { replaceUrl: true });
             }
           ));
         } else {
-          this.router.navigate(['sales/sales-main'], { replaceUrl: true });
+          this.router.navigate(['page/sales/page'], { replaceUrl: true });
         }
       }
     }
