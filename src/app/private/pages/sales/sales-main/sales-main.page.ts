@@ -66,7 +66,7 @@ export class SalesMainPage implements OnInit {
       },
       replaceUrl: true
     }
-    this.router.navigate(['sales/sales-page'], navg);
+    this.router.navigate(['page/sales/page'], navg);
     this.intServ.loadingFunc(false);
   }
 

@@ -122,7 +122,7 @@ export class ModulesPage implements OnInit {
       },
       replaceUrl: true
     };
-    this.router.navigate(['sales/sales-main'], navigationExtras);
+    this.router.navigate(['page/sales/main'], navigationExtras);
   }
 
   async onTestSqLite() {

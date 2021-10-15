@@ -7,6 +7,7 @@ import { SalesComponent } from './sales.component';
 import { SalesPagePage } from './sales-page/sales-page.page';
 import { SalesFormPage } from './sales-form/sales-form.page';
 import { IonicModule } from '@ionic/angular';
+import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { IonicModule } from '@ionic/angular';
   imports: [
     CommonModule,
     IonicModule,
-    SalesRoutingModule
+    SalesRoutingModule,
+    SharedModule
   ]
 })
 export class SalesModule { }

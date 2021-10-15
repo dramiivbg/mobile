@@ -61,7 +61,7 @@ export class SalesPagePage implements OnInit {
         else
           this.sales = undefined;
       } else {
-        this.router.navigate(['sales/sales-main'], { replaceUrl: true })
+        this.router.navigate(['page/sales/main'], { replaceUrl: true })
       }
     });
     /** update sales */
@@ -93,7 +93,7 @@ export class SalesPagePage implements OnInit {
             },
             replaceUrl: true
           };
-          this.router.navigate(['sales/sales-form'], navigationExtras);
+          this.router.navigate(['page/sales/form'], navigationExtras);
           setTimeout(
             () => {
               this.intServ.searchShowFunc({});
@@ -126,7 +126,7 @@ export class SalesPagePage implements OnInit {
               new: true
             }
           };
-          this.router.navigate(['sales/sales-form'], navigationExtras);
+          this.router.navigate(['page/sales/form'], navigationExtras);
         });
         this.intServ.searchShowFunc(obj);
       } else {
@@ -148,7 +148,7 @@ export class SalesPagePage implements OnInit {
             new: false
           }
         };
-        this.router.navigate(['sales/sales-form'], navigationExtras);
+        this.router.navigate(['page/sales/form'], navigationExtras);
         setTimeout(
           () => {
             this.intServ.searchShowFunc({});
@@ -166,7 +166,7 @@ export class SalesPagePage implements OnInit {
    * Return to the modules.
    */
    onBack() {
-    this.router.navigate(['sales/sales-main']);
+    this.router.navigate(['page/sales/main']);
   }
 
   /**

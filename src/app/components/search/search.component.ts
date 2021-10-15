@@ -158,7 +158,7 @@ export class SearchComponent implements OnInit {
         },
         replaceUrl: true
       };
-      this.router.navigate(['sales/sales-form'], navigationExtras);
+      this.router.navigate(['page/sales/form'], navigationExtras);
     });
     this.searchObj = obj;
     this.listsFilter = obj.data;
