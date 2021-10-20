@@ -37,6 +37,11 @@
         <ion-label *ngIf="process.processId == 'P004'">${{salesCount.Amount_Credit_Memo}}</ion-label>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col (click)="onPosted()">
+        Test
+      </ion-col>
+    </ion-row>
   </ion-list>
 </ion-content>
 <PlureVersion showVersion="1"></PlureVersion>

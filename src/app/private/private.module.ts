@@ -10,7 +10,7 @@ import { MainPageModule } from './pages/main/main.module';
 
 @NgModule({
   declarations: [
-    PrivateComponent,
+    PrivateComponent
   ],
   imports: [
     CommonModule,

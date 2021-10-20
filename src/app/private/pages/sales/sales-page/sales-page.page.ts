@@ -235,8 +235,8 @@ export class SalesPagePage implements OnInit {
 
   private async get() {
     this.intServ.loadingFunc(true);
-    this.module = this.moduleService.getSelectedModule();
-    this.process = this.moduleService.getSelectedProcess();
+    this.module = await this.moduleService.getSelectedModule();
+    this.process = await this.moduleService.getSelectedProcess();
     this.permissions = this.process.sysPermits;
     if (this.permissions.indexOf(E_PROCESSTYPE.New) !== -1)
       this.new = true;

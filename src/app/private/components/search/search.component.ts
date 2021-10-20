@@ -50,7 +50,7 @@ export class SearchComponent implements OnInit {
     , private salesService: SalesService
   ) {
     intServ.searchShow$.subscribe(
-      obj => {
+      async obj => {
         let objFunc = {
           comp: true,
           func: () => {
@@ -62,8 +62,8 @@ export class SearchComponent implements OnInit {
         this.searchObj = obj;
         this.listsFilter = obj.data;
         this.lists = obj.data;
-        this.module = this.moduleService.getSelectedModule();
-        this.process = this.moduleService.getSelectedProcess();
+        this.module = await this.moduleService.getSelectedModule();
+        this.process = await this.moduleService.getSelectedProcess();
         /** start permissions for sales */
         this.onResetPermissions();
         this.getPermissions();
@@ -278,12 +278,11 @@ export class SearchComponent implements OnInit {
   /**
    * Permissions for actions
    */
-  private getPermissions() {
+  private async getPermissions() {
     this.new = false;
     this.delete = false;
     this.post = false;
-    let process = this.moduleService.getSelectedProcess();
-    console.log(process);
+    let process = await this.moduleService.getSelectedProcess();
     let permits: Array<E_PROCESSTYPE> = process.sysPermits;
     for (let i in permits) {
       switch (permits[i]) {

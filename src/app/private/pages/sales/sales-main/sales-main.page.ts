@@ -13,7 +13,7 @@ import { Process } from '@mdl/module';
 @Component({
   selector: 'app-sales-main',
   templateUrl: './sales-main.page.html',
-  styleUrls: ['./sales-main.page.scss'],
+  styleUrls: ['./sales-main.page.scss']
 })
 export class SalesMainPage implements OnInit {
   sessionLogin: any = {};
@@ -39,10 +39,10 @@ export class SalesMainPage implements OnInit {
 
   async ngOnInit() {}
 
-  async ionViewWillEnter() {
+  public async ionViewWillEnter() {
     try {
       this.intServ.loadingFunc(true);
-      this.module = this.moduleService.getSelectedModule();
+      this.module = await this.moduleService.getSelectedModule();
       this.session = (await this.js.getSession()).login;
       await this.getSalesCount(); 
       this.intServ.loadingFunc(false);
@@ -75,6 +75,10 @@ export class SalesMainPage implements OnInit {
     */
   onBack() {
     this.router.navigate(['page/main/modules'], { replaceUrl: true });
+  }
+
+  public onPosted() {
+    this.router.navigate(['page/sales/posted'], { replaceUrl: true });
   }
 
   private async getSalesCount() {

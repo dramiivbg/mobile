@@ -14,6 +14,7 @@ import { Module, Process } from '@mdl/module';
 import { Storage } from '@ionic/storage';
 import { SK_OFFLINE } from '@var/consts';
 import * as moment from 'moment';
+import { debuglog } from 'util';
 
 @Component({
   selector: 'app-sales-form',
@@ -34,6 +35,7 @@ export class SalesFormPage implements OnInit {
   private vatPostingSetup: any;
   private locationMandatory: boolean;
   private customerLocationCode: string = '';
+  private routExtras: any;
 
   public locationSetup: any;
   public new: boolean;
@@ -43,7 +45,7 @@ export class SalesFormPage implements OnInit {
   public order: any = {};
   public temp: any = {};
   public unitMeasureList: any = [];
-  public process: Process;
+  
   public idSales: string;
   public hideShipTo: boolean = false;
   public hideOrderDate: boolean = false;
@@ -57,6 +59,15 @@ export class SalesFormPage implements OnInit {
   public taxTotal: Number = 0;
   public discountTotal: Number = 0;
   public total: Number = 0;
+  
+
+  public process: Process = {
+    processId: '',
+    description: '',
+    permissions: [],
+    salesType: '',
+    sysPermits: []
+  };
 
   // viewChild
   @ViewChild('dateOrder') dateOrderTime;
@@ -81,31 +92,10 @@ export class SalesFormPage implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
-    this.module = this.moduleService.getSelectedModule();
-    this.process = this.moduleService.getSelectedProcess();
-    if (this.process.processId === 'P002') {
-      this.hideShipTo = true;
-    } // P003 - Dont Order Date - Dont delivery
-    if ( this.process.processId === 'P003' || this.process.processId === 'P004') {
-      this.hideOrderDate = true;
-      this.hideShipTo = true;
-    }
-    this.salesType = this.process.salesType;
-    this.permissions = this.process.sysPermits;
-    if (this.permissions.indexOf(E_PROCESSTYPE.Edit) !== -1) this.edit = true;
     this.route.queryParams.subscribe(async params => {
-      if (this.router.getCurrentNavigation().extras.state){
-        this.extras = true;
-        this.new = this.router.getCurrentNavigation().extras.state.new;
-        if (this.new) {
-          this.customer = this.router.getCurrentNavigation().extras.state.customer;
-          await this.initNew();
-          await this.setCustomer();
-        } else {
-          this.order = this.router.getCurrentNavigation().extras.state.order;
-          this.temp = this.router.getCurrentNavigation().extras.state.temp;
-          await this.initForm();
-        }
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.routExtras = this.router.getCurrentNavigation().extras;
+        this.getConstructor();
       } else {
         this.initNew();
         this.router.navigate(['page/main/modules'], { replaceUrl: true });
@@ -963,5 +953,32 @@ export class SalesFormPage implements OnInit {
     let process = await this.syncerp.processRequestParams('GetInventorySetup', []);
     let {InventorySetup} = await this.syncerp.setRequest(process);
     this.locationMandatory = InventorySetup.LocationMandatory;
+  }
+
+  private async getConstructor() {
+    this.initForm();
+    this.module = await this.moduleService.getSelectedModule();
+    this.process = await this.moduleService.getSelectedProcess();
+    if (this.process.processId === 'P002') {
+      this.hideShipTo = true;
+    } // P003 - Dont Order Date - Dont delivery
+    if ( this.process.processId === 'P003' || this.process.processId === 'P004') {
+      this.hideOrderDate = true;
+      this.hideShipTo = true;
+    }
+    this.salesType = this.process.salesType;
+    this.permissions = this.process.sysPermits;
+    if (this.permissions.indexOf(E_PROCESSTYPE.Edit) !== -1) this.edit = true;
+    this.extras = true;
+    this.new = this.routExtras.state.new;
+    if (this.new) {
+      this.customer = this.routExtras.state.customer;
+      await this.initNew();
+      await this.setCustomer();
+    } else {
+      this.order = this.routExtras.state.order;
+      this.temp = this.routExtras.state.temp;
+      await this.initForm();
+    }
   }
 }

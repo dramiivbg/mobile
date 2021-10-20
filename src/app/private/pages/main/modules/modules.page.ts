@@ -46,7 +46,6 @@ export class ModulesPage implements OnInit {
     , private js: JsonService
     , private storage: Storage
     , private syncErp: SyncerpService
-    , private notify: NotifyService
   )
   {
     let objBack = {

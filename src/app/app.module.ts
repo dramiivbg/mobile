@@ -32,7 +32,6 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { NotifyComponent } from './components/notify/notify.component';
 import { UserService } from '@svc/user.service';
-import { SalesService } from '@svc/Sales.service';
 
 @NgModule({
   declarations: [
@@ -75,8 +74,7 @@ import { SalesService } from '@svc/Sales.service';
     Stripe,
     NotifyComponent,
     NotifyService,
-    UserService,
-    SalesService
+    UserService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

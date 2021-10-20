@@ -248,6 +248,23 @@ export class GeneralService {
   }
 
   /**
+   * posted list
+   * @param lists 
+   * @returns 
+   */
+  public async PostedList(lists: any) : Promise<any> {
+    let objLst = [];
+    for (let i in lists) {
+      let obj = {};
+      for (let y in lists[i].fields) {
+        obj['fields'] = await this.fieldsToJson(lists[i].fields);
+      }
+      objLst.push(obj);
+    }
+    return objLst;
+  }
+
+  /**
    * Types Business Central
    * @param process 
    * @returns 
