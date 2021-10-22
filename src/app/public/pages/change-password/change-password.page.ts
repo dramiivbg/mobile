@@ -40,7 +40,6 @@ export class ChangePasswordPage implements OnInit {
         this.onBack();
       }
     };
-    debugger;
     this.intServ.appBackFunc(objFunc);
     this.frmChangePassword = this.formBuilder.group({
         LastPassword: ['', Validators.required],

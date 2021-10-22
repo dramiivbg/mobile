@@ -1,6 +1,3 @@
-import { getLocaleMonthNames } from '@angular/common';
-import { CommentStmt } from '@angular/compiler';
-import { CloneVisitor } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -59,12 +56,16 @@ export class LoginPage implements OnInit {
     , private modalController: ModalController
     , private userService: UserService
   ) {
-    let objFunc = {
+    let objBack = {
       func: () => {
-        this.onBack();
+        this.intServ.alertFunc(this.jsonServ.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+          () => {
+            App.exitApp();
+          }
+        ));
       }
-    };
-    this.intServ.appBackFunc(objFunc);
+    }
+    this.intServ.appBackFunc(objBack);
     intServ.modifyMenu({ menu: [], showMenu: false });
     this.frm = this.formBuilder.group(
       {
@@ -123,8 +124,8 @@ export class LoginPage implements OnInit {
   // }
 
   public onBack() {
-    this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
-    this.router.navigate(['environments'], { replaceUrl: true });
+    // this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
+    // this.router.navigate(['environments'], { replaceUrl: true });
   }
 
   async authorizeAccessClient(customerId: string) {

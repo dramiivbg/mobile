@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IPosted } from '@mdl/posted';
 import { E_MODULETYPE, E_PROCESSTYPE } from '@var/enums';
 import { throwError } from 'rxjs';
 
@@ -252,13 +253,10 @@ export class GeneralService {
    * @param lists 
    * @returns 
    */
-  public async PostedList(lists: any) : Promise<any> {
-    let objLst = [];
+  public async PostedList(lists: any) : Promise<Array<IPosted>> {
+    let objLst: Array<IPosted> = [];
     for (let i in lists) {
-      let obj = {};
-      for (let y in lists[i].fields) {
-        obj['fields'] = await this.fieldsToJson(lists[i].fields);
-      }
+      let obj: IPosted = { fields: await this.fieldsToJson(lists[i].fields) };
       objLst.push(obj);
     }
     return objLst;

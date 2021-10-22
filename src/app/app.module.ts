@@ -32,6 +32,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { NotifyComponent } from './components/notify/notify.component';
 import { UserService } from '@svc/user.service';
+import { PrivateModule } from '@prv/private.module';
 
 @NgModule({
   declarations: [

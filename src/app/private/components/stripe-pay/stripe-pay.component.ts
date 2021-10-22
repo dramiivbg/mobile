@@ -9,6 +9,7 @@ import { JsonService } from '@svc/json.service';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@svc/api.service';
+import { SalesService } from '@svc/Sales.service';
 
 @Component({
   selector: 'stripe-pay',
@@ -22,11 +23,13 @@ export class StripePayComponent implements OnInit {
   showStripePay: boolean = false;
   public chargeOptions: any = {};
 
-  constructor(private stripeNgx: StripeNgx,
-    private intServ: InterceptService,
-    private apiService: ApiService) {
-
-    this.intServ.alert$.subscribe(
+  constructor(private stripeNgx: StripeNgx
+    , private intServ: InterceptService
+    , private apiService: ApiService
+    , private js: JsonService
+    , private salesService: SalesService
+  ) {
+    this.intServ.stripePay$.subscribe(
       (req: any) => {
         this.chargeOptions = req;
         console.log(this.chargeOptions);
@@ -35,15 +38,15 @@ export class StripePayComponent implements OnInit {
     )
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.setupStripe();
   }
 
-  onClose() {
+  public onClose() {
     this.showStripePay = false;
   }
 
-  setupStripe() {
+  public setupStripe() {
     let elements = this.stripe.elements();
     var style = {
       base: {
@@ -84,10 +87,11 @@ export class StripePayComponent implements OnInit {
     });
   }
 
-  makePayment(tokenId: string) {
-
-    this.intServ.loadingFunc(true);
-
+  /**
+   * submit paid
+   * @param tokenId 
+   */
+  public async makePayment(tokenId: string) {
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
       TokenId: tokenId,
@@ -95,20 +99,33 @@ export class StripePayComponent implements OnInit {
       Amount: this.chargeOptions.Amount,
       DocumentNum: this.chargeOptions.DocumentNum
     }
-
-    this.apiService.postData('mobile', 'paywithstripe', data).then(
-      res => {
-        console.log(res);
-        this.intServ.loadingFunc(false);
+    try {
+      this.intServ.loadingFunc(true);
+      let {chargeId} = await this.apiService.postData('mobile', 'paywithstripe', data);
+      
+      // Start Paid Success
+      this.chargeOptions.paidBC.transactionNo = chargeId;
+      let {Posted} = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
+      if (Posted) {
+        this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Payment was successful'));
+        this.onCancel();
       }
-    ).catch(
-      err => {
-        var errorElement = document.getElementById('card-errors');
-        errorElement.textContent = err.message;
-        this.intServ.loadingFunc(false);
-    });
+
+      // End Paid Success
+      
+      this.intServ.loadingFunc(false);
+    } catch (error) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.error.message));
+      var errorElement = document.getElementById('card-errors');
+      errorElement.textContent = error.message;
+      this.intServ.loadingFunc(false);
+    }
   }
 
-  async onCancel() {}
+  public async onCancel() {
+    this.chargeOptions = {};
+    this.setupStripe();
+    this.onClose();
+  }
 
 }

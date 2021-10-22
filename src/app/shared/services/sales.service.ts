@@ -44,6 +44,20 @@ export class SalesService {
     }
   }
 
+    /**
+   * paid posted sales invoice
+   * @param obj { customerNo: string, postedDocNo: string, amount: number, transactionNo: string }
+   * @returns 
+   */
+     public async paidPostedSalesInvoices(obj: any): Promise<any> {
+      try {
+        let params = await this.syncErp.processRequestParams('PaymentOrder', [obj]);
+        return await this.syncErp.setProcessRequest(params);
+      } catch (error) {
+        throw error;
+      }
+    }
+
   private async method(process: Process): Promise<string> {
     switch (process.processId) {
       case "P001":

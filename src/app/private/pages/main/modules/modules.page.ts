@@ -114,16 +114,6 @@ export class ModulesPage implements OnInit {
     }
   }
 
-  onSales(module: any) {
-    let navigationExtras: NavigationExtras = {
-      state: {
-        module
-      },
-      replaceUrl: true
-    };
-    this.router.navigate(['page/sales/main'], navigationExtras);
-  }
-
   async onTestSqLite() {
     await this.sqLite.init();
     await this.sqLite.openStorageOptions();
@@ -163,6 +153,20 @@ export class ModulesPage implements OnInit {
       DocumentNum: 'inv-2',
       Name: 'Raul Ocampo'
     });
+  }
+
+  private onSales(module: any) {
+    try {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          module
+        },
+        replaceUrl: true
+      };
+      this.router.navigate(['page/sales/main'], navigationExtras);
+    } catch (error) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+    }
   }
 
 }

@@ -90,21 +90,39 @@ div.login {
         height: 40px;
     }
 
-    div.plure-footer {
+    div.plure-footer {        
         color: $plure-label-color;                
-        margin: calc(100vh * 0.05) 9.25% 10px 9.25%; 
-        text-align: center;
-        //margin-top: 5%;
+        margin: calc(50vh * 0.214) 0 10px 0;
+        text-align: center;        
         font-size: 13px;
         line-height: 16.34px;
 
         div.plure-footer-hp {
             margin-top: 17px;
+            margin: 0 9.5% 0 9.5%; 
             border-top: 1px solid $plure-init-input-bg;
             a {
                 display: inline-block;
                 margin: 6px 0px 0px 0px !important;  
                 color: $plure-label-color;                               
+            }
+        }
+        div.plure-new-account {
+            ion-button {
+                margin-bottom: 31px !important;
+            }
+        }
+        div.plure-or {
+            margin: -17% 9.5% -1% 9.5%;
+            border-top: 1px solid $plure-init-input-bg;
+            text-align: center;
+            position: relative;
+            div.plure-or2 {
+                background-color: #fff;
+                margin: -10px 0 0 -15px;
+                display: inline-block;
+                position: absolute;
+                padding: 0 10px;
             }
         }
 

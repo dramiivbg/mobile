@@ -42,7 +42,7 @@ export class AuthGuardService implements CanActivate {
 
   isLogin() : boolean {
     if (this.userSession !== undefined && this.userSession !== null){
-      this.router.navigateByUrl('page', { replaceUrl: true });
+      this.router.navigate(['page'], { replaceUrl: true });
       return false;
     } /*else {
       if (this.authorizeAccessClient === undefined || this.authorizeAccessClient === null){
@@ -55,7 +55,7 @@ export class AuthGuardService implements CanActivate {
 
   isChangePassword() : boolean {
     if (this.userSession !== undefined && this.userSession !== null && !this.userSession.temporaryPassword){
-      this.router.navigateByUrl('', { replaceUrl: true });
+      this.router.navigate([''], { replaceUrl: true });
       return false;
     }
 

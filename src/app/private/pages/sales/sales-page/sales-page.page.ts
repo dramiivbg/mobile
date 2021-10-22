@@ -1,7 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { Network } from '@capacitor/network';
-import { cordovaInstance } from '@ionic-native/core';
 import { Module, Process } from '@mdl/module';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
@@ -11,8 +10,6 @@ import { OfflineService } from '@svc/offline.service';
 import { SalesService } from '@svc/Sales.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { E_PROCESSTYPE } from '@var/enums';
-import { AlertPromise } from 'selenium-webdriver';
-import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'app-sales-page',
