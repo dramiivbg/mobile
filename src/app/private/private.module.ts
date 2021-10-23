@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { PrivateComponent } from './private.component';
 import { SharedModule } from '../shared/modules/sharedModule.module';
 import { MainPageModule } from './pages/main/main.module';
+import { SalesService } from '@svc/Sales.service';
 
 
 @NgModule({
@@ -18,6 +19,9 @@ import { MainPageModule } from './pages/main/main.module';
     PrivateRoutingModule,
     SharedModule,
     MainPageModule
+  ],
+  providers: [
+    SalesService
   ]
 })
 export class PrivateModule { }

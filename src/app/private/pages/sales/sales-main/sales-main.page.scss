@@ -26,4 +26,29 @@ ion-list.list {
         top: 0;
         width: 90%;
     }
+    ion-row.before:after {
+        background: var(--ion-color-plureBlue);
+        content: "";
+        height: 0.5px;
+        margin-left: -45%;
+        margin-top: -10px;
+        left: 50%;
+        position: absolute;
+        top: 0;
+        width: 90%;
+    }
+    ion-row.posted {
+        ion-col {
+            ion-icon {
+                font-size: 20px;
+                color: var(--ion-color-plureBlue);
+                margin-left: -4px;
+            }
+            ion-label {
+                margin-top: -22px;
+                display: block;
+                margin-left: 24px;
+            }
+        }
+    }
 }

@@ -37,11 +37,14 @@
         <ion-label *ngIf="process.processId == 'P004'">${{salesCount.Amount_Credit_Memo}}</ion-label>
       </ion-col>
     </ion-row>
-    <!-- <ion-row>
+    <ion-row class="before posted">
       <ion-col (click)="onPosted()">
-        Posted Sales Invoices
+        <ion-icon name="reader-outline"></ion-icon>
+        <ion-label>
+          Payments
+        </ion-label>
       </ion-col>
-    </ion-row> -->
+    </ion-row>
   </ion-list>
 </ion-content>
 <PlureVersion showVersion="1"></PlureVersion>

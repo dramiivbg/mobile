@@ -10,6 +10,8 @@ import { JsonService } from '@svc/json.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@svc/api.service';
 import { SalesService } from '@svc/Sales.service';
+import { UserService } from '@svc/user.service';
+import { ICustomer } from '@mdl/customer';
 
 @Component({
   selector: 'stripe-pay',
@@ -18,7 +20,7 @@ import { SalesService } from '@svc/Sales.service';
 })
 export class StripePayComponent implements OnInit {
 
-  stripe = Stripe(environment.stripePublishableKey);
+  private stripe: any;
   card: any = {};
   showStripePay: boolean = false;
   public chargeOptions: any = {};
@@ -28,6 +30,7 @@ export class StripePayComponent implements OnInit {
     , private apiService: ApiService
     , private js: JsonService
     , private salesService: SalesService
+    , private userService: UserService
   ) {
     this.intServ.stripePay$.subscribe(
       (req: any) => {
@@ -38,8 +41,15 @@ export class StripePayComponent implements OnInit {
     )
   }
 
-  public ngOnInit() {
-    this.setupStripe();
+  public async ngOnInit() {
+    try {
+      let customer = await this.userService.getCustomer();
+      let c: ICustomer = await this.apiService.getData('customers', `getcustomer/${customer.customerId}`);
+      this.stripe = Stripe(c.stripeSettings.publishableKey);
+      this.setupStripe(); 
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public onClose() {
@@ -108,7 +118,7 @@ export class StripePayComponent implements OnInit {
       let {Posted} = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
       if (Posted) {
         this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Payment was successful'));
-        this.onCancel();
+        this.cancel();
       }
 
       // End Paid Success
@@ -124,6 +134,16 @@ export class StripePayComponent implements OnInit {
 
   public async onCancel() {
     this.chargeOptions = {};
+    this.intServ.stripePayFunc(this.chargeOptions);
+    this.setupStripe();
+    this.onClose();
+  }
+
+  private async cancel() {
+    this.chargeOptions = {
+      reload: true
+    };
+    this.intServ.stripePayFunc(this.chargeOptions);
     this.setupStripe();
     this.onClose();
   }

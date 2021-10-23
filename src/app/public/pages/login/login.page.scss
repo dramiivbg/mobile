@@ -92,7 +92,7 @@ div.login {
 
     div.plure-footer {        
         color: $plure-label-color;                
-        margin: calc(50vh * 0.214) 0 10px 0;
+        margin-top: 85px;
         text-align: center;        
         font-size: 13px;
         line-height: 16.34px;
@@ -113,7 +113,7 @@ div.login {
             }
         }
         div.plure-or {
-            margin: -17% 9.5% -1% 9.5%;
+            margin: -65px 9.5% 0 9.5%;
             border-top: 1px solid $plure-init-input-bg;
             text-align: center;
             position: relative;

@@ -14,5 +14,5 @@ export const environment = {
     LIVE: "pk_Ag5aD7VjwLXa52bzzr2aVZq3kagDMk4u29dt28hbJ8vVwwPApnBUxTFdzGeKZV7EffDMuLBAjENa6ahdh5e9nStUYBqmYbfrSzh5",
   },
   passphrase: 'TUJ&!FN@fn7$rq1SuPWCN3$XNFuMdS2G6GcnZV2kJA&&!9hXoR',
-  stripePublishableKey: ''
+  stripePublishableKey: 'pk_test_51HowlKFsOIPcOXB4uRdIfHkRg5DOn6YKax8R2u2TEGT5CQ4vhH8aWj4Ezztz6YBKoLeK3psZ0kHlaZG7OuyGqFHi00m1mFSacB'
 };

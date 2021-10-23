@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SalesRoutingModule } from './sales-routing.module';
@@ -15,8 +15,6 @@ import { SearchComponent } from '@prv/components/search/search.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { StripePayComponent } from '@prv/components/stripe-pay/stripe-pay.component';
-import { SalesService } from '@svc/Sales.service';
-
 
 @NgModule({
   declarations: [
@@ -38,8 +36,8 @@ import { SalesService } from '@svc/Sales.service';
   ],
   providers: [
     SplashScreen,
-    BarcodeScanner,
-    SalesService
-  ]
+    BarcodeScanner
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SalesModule { }

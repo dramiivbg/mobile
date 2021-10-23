@@ -17,6 +17,7 @@ export class PostedPage implements OnInit  {
   public module: Module;
   public customer: any;
   public posted: Array<IPosted> = [];
+  public filterPosted: Array<IPosted> = [];
 
   constructor(private salesService: SalesService
     , private intServ: InterceptService
@@ -31,11 +32,20 @@ export class PostedPage implements OnInit  {
       }
     };
     this.intServ.appBackFunc(objFunc);
+    this.intServ.stripePay$.subscribe(
+      async (req: any) => {
+        if (req.reload !== undefined) {
+          this.intServ.loadingFunc(true);
+          await this.get(); 
+          this.intServ.loadingFunc(false);
+        }
+      }
+    )
   }
 
   public async ngOnInit() {}
 
-  async ionViewWillEnter() {
+  public async ionViewWillEnter() {
     this.intServ.loadingFunc(true);
     this.customer = await this.userService.getCustomer();
     this.module = await this.moduleService.getSelectedModule();
@@ -45,6 +55,19 @@ export class PostedPage implements OnInit  {
 
   public async get() {
     await this.getPosted();
+  }
+
+  public onChange(e) {
+    let val = e.target.value;
+    if (val === '') {
+      this.filterPosted = this.posted;
+    } else {
+      this.filterPosted = this.posted.filter(
+        x => {
+          return (x.fields.No.toLowerCase().includes(val.toLowerCase()) || (x.fields.BilltoName.toLowerCase().includes(val.toLowerCase())));
+        }
+      )
+    } 
   }
 
   public async onPaid(item: IPosted) {
@@ -66,8 +89,6 @@ export class PostedPage implements OnInit  {
     }
     try {
       this.intServ.stripePayFunc(obj);
-      // let paid = await this.salesService.paidPostedSalesInvoices(obj);
-      // console.log(paid);
     } catch (error) {
       console.log(error);
     }
@@ -79,9 +100,7 @@ export class PostedPage implements OnInit  {
       salesPerson: this.module.erpUserId
     }
     let posted = await this.salesService.getPostedSalesInvoices(obj);
-    console.log(posted);
-    this.posted = await this.generalService.PostedList(posted.SalesOrders);
-    console.log(this.posted );
+    this.filterPosted = this.posted = await this.generalService.PostedList(posted.SalesOrders);
   }
 
   /**

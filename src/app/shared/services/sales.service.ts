@@ -44,19 +44,34 @@ export class SalesService {
     }
   }
 
-    /**
-   * paid posted sales invoice
-   * @param obj { customerNo: string, postedDocNo: string, amount: number, transactionNo: string }
-   * @returns 
-   */
-     public async paidPostedSalesInvoices(obj: any): Promise<any> {
-      try {
-        let params = await this.syncErp.processRequestParams('PaymentOrder', [obj]);
-        return await this.syncErp.setProcessRequest(params);
-      } catch (error) {
-        throw error;
-      }
+  /**
+ * paid posted sales invoice
+ * @param obj { customerNo: string, postedDocNo: string, amount: number, transactionNo: string }
+ * @returns 
+ */
+  public async paidPostedSalesInvoices(obj: any): Promise<any> {
+    try {
+      let params = await this.syncErp.processRequestParams('PaymentOrder', [obj]);
+      return await this.syncErp.setProcessRequest(params);
+    } catch (error) {
+      throw error;
     }
+  }
+
+  public async sendAllSalesTemp(temporaly: any): Promise<boolean> {
+    try {
+      for (let i in temporaly) {
+        temporaly[i].parameters['SalesOrder'] = temporaly[i].id;
+        let sell = await this.syncErp.setProcessRequest(await this.syncErp.processRequestParams('ProcessSalesOrders', [temporaly[i].parameters]));
+        if (sell.temp !== undefined) {
+          throw new Error("Errors were encountered while trying to synchronize this sale");
+        }
+      }
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   private async method(process: Process): Promise<string> {
     switch (process.processId) {

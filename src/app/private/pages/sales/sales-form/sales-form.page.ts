@@ -155,6 +155,7 @@ export class SalesFormPage implements OnInit {
    */
   async initSalesOrder() {
     if (this.order !== undefined) {
+      let requestDeliveryDate = this.order.fields.RequestedDeliveryDate === null ? this.order.fields.OrderDate : this.order.fields.RequestedDeliveryDate;
       this.idSales = this.order.id;
       if (!this.hideShipTo) {
         const shipToCode = this.order.fields.ShiptoCode === null ? '': this.order.fields.ShiptoCode;
@@ -165,7 +166,7 @@ export class SalesFormPage implements OnInit {
       this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
       this.frm.controls.customerName.setValue(this.order.fields.SelltoCustomerName);
       this.frm.controls.orderDate.setValue(this.order.fields.OrderDate);
-      this.frm.controls.requestedDeliveryDate.setValue(this.order.fields.RequestedDeliveryDate);
+      this.frm.controls.requestedDeliveryDate.setValue(requestDeliveryDate);
       this.frm.addControl('lines', this.formBuilder.array([]));
       this.frm.controls.lines = await this.setSalesOrderLines(this.order.lines);
       this.setTotals();
@@ -497,10 +498,15 @@ export class SalesFormPage implements OnInit {
               if (salesOrder.error !== undefined) {
                 this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
               } else {
-                // this.frm.reset();
-                this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                  this.router.navigate(['page/main/modules'], { replaceUrl: true });
-                }));
+                if (this.new) {
+                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
+                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                  }));
+                } else {
+                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been successfully updated`, () => {
+                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                  }));
+                }
               }
             } else {
               this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This order does not have lines`));
