@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Network } from '@capacitor/network';
 import { ToastController } from '@ionic/angular';
+import { InterceptService } from '@svc/intercept.service';
+import { NotifyService } from '@svc/notify.service';
 import { OfflineService } from '@svc/offline.service';
 import { SalesService } from '@svc/Sales.service';
+import { E_NOTIFYTYPE } from '@var/enums';
 
 @Component({
   selector: 'app-private',
@@ -13,6 +16,8 @@ export class PrivateComponent implements OnInit {
   constructor(public toastController: ToastController
     , private offline: OfflineService
     , private salesService: SalesService
+    , private intServ: InterceptService
+    , private notifyService: NotifyService
   ) { 
     this.asyncNetwork();
   }
@@ -44,6 +49,8 @@ export class PrivateComponent implements OnInit {
       if (temporaly != null) {
         let bool = await this.salesService.sendAllSalesTemp(temporaly);
         if (bool) {
+          this.intServ.updateSalesFunc();
+          this.notifyService.createNotification(E_NOTIFYTYPE.Notify, 'All temporary ones have been synchronized correctly');
           this.messageToast('All temporary ones have been synchronized correctly');
         }
       }

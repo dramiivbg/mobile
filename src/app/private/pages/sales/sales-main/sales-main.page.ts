@@ -21,13 +21,12 @@ export class SalesMainPage implements OnInit {
   module: any = {};
   salesCount: any = {};
 
-  constructor(
-    private syncerp: SyncerpService,
-    private general: GeneralService,
-    private intServ: InterceptService,
-    private js: JsonService,
-    private router: Router,
-    private moduleService: ModuleService
+  constructor(private syncerp: SyncerpService
+    , private general: GeneralService
+    , private intServ: InterceptService
+    , private js: JsonService
+    , private router: Router
+    , private moduleService: ModuleService
   ) { 
     let objFunc = {
       func: () => {
@@ -35,6 +34,12 @@ export class SalesMainPage implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
+    /** update sales */
+    this.intServ.updateSalesSource$.subscribe(
+      async () => {
+        await this.getSalesCount();
+      }
+    )
   }
 
   async ngOnInit() {}

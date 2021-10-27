@@ -5,8 +5,10 @@ import { IPosted } from '@mdl/posted';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
 import { SalesService } from '@svc/Sales.service';
 import { UserService } from '@svc/user.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-posted',
@@ -25,6 +27,7 @@ export class PostedPage implements OnInit  {
     , private moduleService: ModuleService
     , private generalService: GeneralService
     , private userService: UserService
+    , private js: JsonService
   ) { 
     let objFunc = {
       func: () => {
@@ -32,6 +35,7 @@ export class PostedPage implements OnInit  {
       }
     };
     this.intServ.appBackFunc(objFunc);
+    /** get all */
     this.intServ.stripePay$.subscribe(
       async (req: any) => {
         if (req.reload !== undefined) {
@@ -53,10 +57,17 @@ export class PostedPage implements OnInit  {
     this.intServ.loadingFunc(false);
   }
 
+  /**
+   * get methods
+   */
   public async get() {
     await this.getPosted();
   }
 
+  /**
+   * Search with BilltoName or No
+   * @param e 
+   */
   public onChange(e) {
     let val = e.target.value;
     if (val === '') {
@@ -69,13 +80,21 @@ export class PostedPage implements OnInit  {
       )
     } 
   }
-
+  
+  /**
+   * Paid with stripe
+   * @param item 
+   */
   public async onPaid(item: IPosted) {
     let paidBC: any = {
       customerNo: item.fields.BilltoCustomerNo,
       postedDocNo: item.fields.No,
-      amount: item.fields.Amount,
+      amount: item.fields.AmountIncludingVAT,
+      // amount: 1858.12,
       transactionNo: '',
+      postingDate: item.fields.PostingDate,
+      // documentDate: item.fields.PostingDate
+      documentDate: moment().format('yyyy-MM-DD')
     }
     let obj: any = {
       Name: item.fields.BilltoName,
@@ -83,17 +102,21 @@ export class PostedPage implements OnInit  {
       DocumentNum: item.fields.No,
       Currency: 'usd',
       Subtotal: item.fields.Amount,
-      Tax: 0,
-      Amount: item.fields.Amount,
+      Tax: Number(item.fields.AmountIncludingVAT - item.fields.Amount).toFixed(2),
+      Amount: item.fields.AmountIncludingVAT,
+      // Amount: 1858.12,
       paidBC
     }
     try {
       this.intServ.stripePayFunc(obj);
-    } catch (error) {
-      console.log(error);
+    } catch ({error}) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message));
     }
   }
 
+  /**
+   * get posted sales invoices
+   */
   private async getPosted() {
     let obj: any = {
       paid: true,
