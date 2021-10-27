@@ -102,6 +102,7 @@ export class StripePayComponent implements OnInit {
    * @param tokenId 
    */
   public async makePayment(tokenId: string) {
+    this.intServ.loadingFunc(true);
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
       TokenId: tokenId,
@@ -110,7 +111,6 @@ export class StripePayComponent implements OnInit {
       DocumentNum: this.chargeOptions.DocumentNum
     }
     try {
-      this.intServ.loadingFunc(true);
       let {chargeId} = await this.apiService.postData('mobile', 'paywithstripe', data);
       
       // Start Paid Success

@@ -89,11 +89,9 @@ export class PostedPage implements OnInit  {
     let paidBC: any = {
       customerNo: item.fields.BilltoCustomerNo,
       postedDocNo: item.fields.No,
-      amount: item.fields.AmountIncludingVAT,
-      // amount: 1858.12,
+      amount: item.fields.AmountIncludingVAT - item.OriginalPmtDiscPossible,
       transactionNo: '',
       postingDate: item.fields.PostingDate,
-      // documentDate: item.fields.PostingDate
       documentDate: moment().format('yyyy-MM-DD')
     }
     let obj: any = {
@@ -103,8 +101,8 @@ export class PostedPage implements OnInit  {
       Currency: 'usd',
       Subtotal: item.fields.Amount,
       Tax: Number(item.fields.AmountIncludingVAT - item.fields.Amount).toFixed(2),
-      Amount: item.fields.AmountIncludingVAT,
-      // Amount: 1858.12,
+      Amount: item.fields.AmountIncludingVAT - item.OriginalPmtDiscPossible,
+      Discount: item.OriginalPmtDiscPossible,
       paidBC
     }
     try {

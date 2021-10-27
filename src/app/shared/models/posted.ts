@@ -1,5 +1,6 @@
 export interface IPosted {
     fields: IPostedFields;
+    OriginalPmtDiscPossible: number
 }
 
 export interface IPostedFields {

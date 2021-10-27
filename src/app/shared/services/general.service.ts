@@ -256,7 +256,10 @@ export class GeneralService {
   public async PostedList(lists: any) : Promise<Array<IPosted>> {
     let objLst: Array<IPosted> = [];
     for (let i in lists) {
-      let obj: IPosted = { fields: await this.fieldsToJson(lists[i].fields) };
+      let obj: IPosted = { 
+        fields: await this.fieldsToJson(lists[i].fields),
+        OriginalPmtDiscPossible: lists[i].OriginalPmtDiscPossible
+      };
       objLst.push(obj);
     }
     return objLst;
