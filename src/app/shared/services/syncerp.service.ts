@@ -154,6 +154,8 @@ export class SyncerpService {
           case 'GetItems':
             this.getItems(i);
             break;
+          case 'Payments':
+            break;
           default:
             process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
             this.setRequest(process).then(() => this.countTask++);

@@ -14,8 +14,8 @@
 
   <div class="content-menu">
     <ion-list *ngIf="!grid">
-      <div class="grid-content">
-        <ion-row *ngFor="let mod of modules" class="ion-no-padding" (click)="onClick(mod)">
+      <div class="grid-content" *ngFor="let mod of modules">
+        <ion-row  class="ion-no-padding" (click)="onClick(mod)">
           <ion-col size="3">
             <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">
           </ion-col>

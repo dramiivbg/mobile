@@ -109,6 +109,10 @@ export class ModulesPage implements OnInit {
       case E_MODULETYPE.Manufacturing:
         break;
 
+      case E_MODULETYPE.Payments:
+          this.onPayments(mod);
+          break;
+
       default:
         break;
     }
@@ -164,6 +168,20 @@ export class ModulesPage implements OnInit {
         replaceUrl: true
       };
       this.router.navigate(['page/sales/main'], navigationExtras);
+    } catch (error) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+    }
+  }
+
+  private onPayments(module: any) {
+    try {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          module
+        },
+        replaceUrl: true
+      };
+      this.router.navigate(['page/payments/paymentMain'], navigationExtras);
     } catch (error) {
       this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
     }

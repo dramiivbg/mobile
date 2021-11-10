@@ -7,7 +7,8 @@ const routes: Routes = [
   { path: '', component: PrivateComponent, children: [
     { path: '', redirectTo: 'main', pathMatch: 'full' },
     { path: 'main', loadChildren: () => import('./pages/main/main.module').then(m => m.MainPageModule) },
-    { path: 'sales', loadChildren: () => import('./pages/sales/sales.module').then(m => m.SalesModule) }
+    { path: 'sales', loadChildren: () => import('./pages/sales/sales.module').then(m => m.SalesModule) },
+    { path: 'payments', loadChildren: () => import('./pages/payments/payments.module').then( m => m.PaymentsModule ) }
   ]}
 ];
 
