@@ -16,5 +16,6 @@ export interface IPostedFields {
     PostingDate: string,
     PreAssignedNo: string,
     SelltoAddress: string,
-    SelltoCity: string
+    SelltoCity: string,
+    Total: number
 }

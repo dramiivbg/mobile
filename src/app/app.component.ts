@@ -126,19 +126,19 @@ export class AppComponent implements OnInit {
       }
     } catch ({error}) {
       this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message, 
-        () => {
-          setTimeout(() => {
-            this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 
-            'Because your version is not compatible with the version installed in the ERP you will be redirected to login.',
-              async () => {
-                await this.authService.signout();
-                this.router.navigate(['login'], { replaceUrl: true});
-              }
-            ));
-          }, 1000)
-        }
-      ));
+      // this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message, 
+      //   () => {
+      //     setTimeout(() => {
+      //       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 
+      //       'Because your version is not compatible with the version installed in the ERP you will be redirected to login.',
+      //         async () => {
+      //           await this.authService.signout();
+      //           this.router.navigate(['login'], { replaceUrl: true});
+      //         }
+      //       ));
+      //     }, 1000)
+      //   }
+      // ));
     }
   }
 

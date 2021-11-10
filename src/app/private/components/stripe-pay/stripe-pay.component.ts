@@ -1,13 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { environment } from '@env/environment';
-import { Stripe as StripeNgx, StripeCardTokenRes } from '@ionic-native/stripe/ngx';
+import { Component, OnInit } from '@angular/core';
+import { Stripe as StripeNgx } from '@ionic-native/stripe/ngx';
 declare var Stripe;
 
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 
-
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@svc/api.service';
 import { SalesService } from '@svc/Sales.service';
 import { UserService } from '@svc/user.service';
@@ -19,14 +16,13 @@ import { ICustomer } from '@mdl/customer';
   styleUrls: ['./stripe-pay.component.scss'],
 })
 export class StripePayComponent implements OnInit {
-
+  private isEnabled: boolean = true;
   private stripe: any;
-  card: any = {};
-  showStripePay: boolean = false;
+  public card: any = {};
+  public showStripePay: boolean = false;
   public chargeOptions: any = {};
 
-  constructor(private stripeNgx: StripeNgx
-    , private intServ: InterceptService
+  constructor(private intServ: InterceptService
     , private apiService: ApiService
     , private js: JsonService
     , private salesService: SalesService
@@ -34,9 +30,12 @@ export class StripePayComponent implements OnInit {
   ) {
     this.intServ.stripePay$.subscribe(
       (req: any) => {
-        this.chargeOptions = req;
-        console.log(this.chargeOptions);
-        this.showStripePay = true;
+        if (!this.isEnabled) {
+          this.intServ.alertFunc(this.js.getAlert('error', 'Error', 'You have an error in the stripe configuration, you can see the posted invoices but you will not be able to pay them.'));
+        } else {
+          this.chargeOptions = req;
+          this.showStripePay = true;
+        }
       }
     )
   }
@@ -48,7 +47,8 @@ export class StripePayComponent implements OnInit {
       this.stripe = Stripe(c.stripeSettings.publishableKey);
       this.setupStripe(); 
     } catch (error) {
-      console.log(error);
+      this.isEnabled = false;
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', 'You have an error in the stripe configuration, you can see the posted invoices but you will not be able to pay them.'));
     }
   }
 

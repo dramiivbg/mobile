@@ -1,4 +1,4 @@
-<PlureHeader type="1" title="Sales main" url="page/main/modules" notify="1"></PlureHeader>
+<PlureHeader type="1" title="Payments" url="page/main/modules" notify="1"></PlureHeader>
 
 <ion-content>
   <ion-row class="avatar">
@@ -14,7 +14,7 @@
   </ion-row>
 
   <ion-list class="list">
-    <ion-row *ngFor="let process of module.processes; let i = index" (click)="onSales(process)" [ngClass]="{'after': i != module.processes.length - 1}">
+    <ion-row *ngFor="let process of module.processes; let i = index" (click)="onPosted(process)" [ngClass]="{'after': i != module.processes.length - 1}">
       <ion-col size="1">
         <img src="../../../../assets/img/modules/posted.svg" *ngIf="process.processId == 'P005'" />
         <img src="../../../../assets/img/modules/payments.svg" *ngIf="process.processId == 'P006'" />

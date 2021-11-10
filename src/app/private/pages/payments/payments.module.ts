@@ -6,12 +6,16 @@ import { PaymentsComponent } from './payments.component';
 import { PaymentMainPage } from './payment-main/payment-main.page';
 import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
 import { IonicModule } from '@ionic/angular';
+import { PostedPage } from './posted/posted.page';
+import { StripePayComponent } from '@prv/components/stripe-pay/stripe-pay.component';
 
 
 @NgModule({
   declarations: [
     PaymentsComponent,
-    PaymentMainPage
+    PaymentMainPage,
+    PostedPage,
+    StripePayComponent
   ],
   imports: [
     CommonModule,

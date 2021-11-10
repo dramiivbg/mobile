@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Process } from '@mdl/module';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
@@ -23,7 +24,14 @@ export class PaymentMainPage implements OnInit {
     , private js: JsonService
     , private router: Router
     , private moduleService: ModuleService
-  ) { }
+  ) { 
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
+  }
 
   ngOnInit() {
   }
@@ -39,4 +47,17 @@ export class PaymentMainPage implements OnInit {
     }
   }
 
+  public onPosted(process) {
+    if (process.processId === 'P005')
+      this.router.navigate(['page/payments/posted'], { replaceUrl: true });
+    else if (process.processId === 'P006')
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This option is not yet available'));
+  }
+
+  /**
+  * Return to the modules.
+  */
+  public onBack() {
+    this.router.navigate(['page/main/modules'], { replaceUrl: true });
+  }
 }

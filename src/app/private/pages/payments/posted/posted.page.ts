@@ -89,7 +89,7 @@ export class PostedPage implements OnInit  {
     let paidBC: any = {
       customerNo: item.fields.BilltoCustomerNo,
       postedDocNo: item.fields.No,
-      amount: item.fields.AmountIncludingVAT - item.OriginalPmtDiscPossible,
+      amount: Number((item.fields.AmountIncludingVAT - item.OriginalPmtDiscPossible).toFixed(2)),
       transactionNo: '',
       postingDate: item.fields.PostingDate,
       documentDate: moment().format('yyyy-MM-DD')
@@ -101,7 +101,7 @@ export class PostedPage implements OnInit  {
       Currency: 'usd',
       Subtotal: item.fields.Amount,
       Tax: Number(item.fields.AmountIncludingVAT - item.fields.Amount).toFixed(2),
-      Amount: item.fields.AmountIncludingVAT - item.OriginalPmtDiscPossible,
+      Amount: Number((item.fields.AmountIncludingVAT - item.OriginalPmtDiscPossible).toFixed(2)),
       Discount: item.OriginalPmtDiscPossible,
       paidBC
     }
@@ -121,14 +121,20 @@ export class PostedPage implements OnInit  {
       salesPerson: this.module.erpUserId
     }
     let posted = await this.salesService.getPostedSalesInvoices(obj);
-    this.filterPosted = this.posted = await this.generalService.PostedList(posted.SalesOrders);
+    this.posted = await this.generalService.PostedList(posted.SalesOrders);
+    if (this.posted.length > 0) {
+      for (let i in this.posted) {
+        this.posted[i].fields.Total = Number((this.posted[i].fields.AmountIncludingVAT - this.posted[i].OriginalPmtDiscPossible).toFixed(2));
+      }
+    }
+    this.filterPosted = this.posted;
   }
 
   /**
   * Return to the modules.
   */
   private onBack() {
-    this.router.navigate(['page/main/modules'], { replaceUrl: true });
+    this.router.navigate(['page/payments/paymentMain'], { replaceUrl: true });
   }
 
 }
