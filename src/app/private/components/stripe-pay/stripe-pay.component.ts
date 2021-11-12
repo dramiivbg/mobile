@@ -9,6 +9,8 @@ import { ApiService } from '@svc/api.service';
 import { SalesService } from '@svc/Sales.service';
 import { UserService } from '@svc/user.service';
 import { ICustomer } from '@mdl/customer';
+import { copyFileSync } from 'fs';
+import { debug } from 'console';
 
 @Component({
   selector: 'stripe-pay',
@@ -29,34 +31,26 @@ export class StripePayComponent implements OnInit {
     , private userService: UserService
   ) {
     this.intServ.stripePay$.subscribe(
-      (req: any) => {
-        if (!this.isEnabled) {
-          this.intServ.alertFunc(this.js.getAlert('error', 'Error', 'You have an error in the stripe configuration, you can see the posted invoices but you will not be able to pay them.'));
-        } else {
-          this.chargeOptions = req;
-          this.showStripePay = true;
+      async (req: any) => {
+        if (req.CustomerId !== undefined) {
+          if (await this.setupMakeStripe()) {
+            this.chargeOptions = req;
+            this.showStripePay = true;
+          }
         }
       }
     )
   }
 
   public async ngOnInit() {
-    try {
-      let customer = await this.userService.getCustomer();
-      let c: ICustomer = await this.apiService.getData('customers', `getcustomer/${customer.customerId}`);
-      this.stripe = Stripe(c.stripeSettings.publishableKey);
-      this.setupStripe(); 
-    } catch (error) {
-      this.isEnabled = false;
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', 'You have an error in the stripe configuration, you can see the posted invoices but you will not be able to pay them.'));
-    }
+    await this.setupMakeStripe();
   }
 
   public onClose() {
     this.showStripePay = false;
   }
 
-  public setupStripe() {
+  public async setupStripe() {
     let elements = this.stripe.elements();
     var style = {
       base: {
@@ -92,7 +86,11 @@ export class StripePayComponent implements OnInit {
       event.preventDefault();
 
       this.stripe.createToken(this.card).then((result: any) => {
-        this.makePayment(result.token.id);
+        if (result.error === undefined) {
+          this.makePayment(result.token.id);
+        } else {
+          this.intServ.alertFunc(this.js.getAlert('error', 'Error', result.error.message));
+        }
       });
     });
   }
@@ -102,23 +100,38 @@ export class StripePayComponent implements OnInit {
    * @param tokenId 
    */
   public async makePayment(tokenId: string) {
+    console.log(tokenId)
+    let chargeId: string;
+    let paymentIntentId: string;
     this.intServ.loadingFunc(true);
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
       TokenId: tokenId,
       Currency: this.chargeOptions.Currency,
-      Amount: this.chargeOptions.Amount,
+      Amount: this.chargeOptions.Amount * 100,
       DocumentNum: this.chargeOptions.DocumentNum
     }
     try {
-      let {chargeId} = await this.apiService.postData('mobile', 'paywithstripe', data);
+      let rsl = await this.apiService.postData('mobile', 'authorizePayment', data);
+      chargeId = rsl.chargeId;
+      paymentIntentId = chargeId;
       
       // Start Paid Success
       this.chargeOptions.paidBC.transactionNo = chargeId;
-      let {Posted} = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
-      if (Posted) {
-        this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Payment was successful'));
-        this.cancel();
+      try {
+        let {Posted} = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
+        if (Posted) {
+          if (this.forceAuthorization(paymentIntentId)) {
+            this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Payment was successful'));
+            this.cancel();
+          }
+        } else {
+          let error = {error: { message: 'An error occurred in Business central when performing the payment journal.' } }
+          throw error;
+        }
+      } catch (error) {
+        this.cancelAuthorization(paymentIntentId);
+        throw error;
       }
 
       // End Paid Success
@@ -133,7 +146,9 @@ export class StripePayComponent implements OnInit {
   }
 
   public async onCancel() {
-    this.chargeOptions = {};
+    this.chargeOptions = {
+      close: true
+    };
     this.intServ.stripePayFunc(this.chargeOptions);
     this.setupStripe();
     this.onClose();
@@ -146,6 +161,44 @@ export class StripePayComponent implements OnInit {
     this.intServ.stripePayFunc(this.chargeOptions);
     this.setupStripe();
     this.onClose();
+  }
+
+  private async forceAuthorization(PaymentIntentId): Promise<boolean> {
+    let data = {
+      CustomerId: this.chargeOptions.CustomerId,
+      PaymentIntentId
+    };
+    let rsl = await this.apiService.postData('mobile', 'forceAuthorization', data);
+    if (rsl.status === 'succeeded') {
+      return true;
+    }
+    return false;
+  }
+
+  private async cancelAuthorization(PaymentIntentId): Promise<boolean> {
+    let data = {
+      CustomerId: this.chargeOptions.CustomerId,
+      PaymentIntentId
+    };
+    let rsl = await this.apiService.postData('mobile', 'cancelAuthorization', data);
+    if (rsl.status === 'succeeded') {
+      return true;
+    }
+    return false;
+  }
+
+  private async setupMakeStripe() {
+    try {
+      let customer = await this.userService.getCustomer();
+      let c: ICustomer = await this.apiService.getData('customers', `getcustomer/${customer.customerId}`);
+      this.stripe = Stripe(c.stripeSettings.publishableKey);
+      this.setupStripe(); 
+    } catch (error) {
+      this.isEnabled = false;
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', 'You have an error in the stripe configuration, you can see the posted invoices but you will not be able to pay them.'));
+      return false;
+    }
+    return true;
   }
 
 }
