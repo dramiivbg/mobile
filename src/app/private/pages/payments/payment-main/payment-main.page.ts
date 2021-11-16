@@ -51,7 +51,8 @@ export class PaymentMainPage implements OnInit {
     if (process.processId === 'P005')
       this.router.navigate(['page/payments/posted'], { replaceUrl: true });
     else if (process.processId === 'P006')
-      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This option is not yet available'));
+      this.router.navigate(['page/payments/paymentMade'], { replaceUrl: true });
+    // this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This option is not yet available'));
   }
 
   /**

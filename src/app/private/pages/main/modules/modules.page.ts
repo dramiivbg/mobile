@@ -66,6 +66,7 @@ export class ModulesPage implements OnInit {
     this.intServ.loadingFunc(true);
     await this.onEnvironment();
     this.environment = (await this.authService.getUserSession()).environment;
+    console.log(this.environment);
     for(let i in this.environment.modules) {
       let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
       let obj: any = this.environment.modules[i];

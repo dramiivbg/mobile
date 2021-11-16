@@ -8,6 +8,7 @@ import { SharedModule } from 'src/app/shared/modules/sharedModule.module';
 import { IonicModule } from '@ionic/angular';
 import { PostedPage } from './posted/posted.page';
 import { StripePayComponent } from '@prv/components/stripe-pay/stripe-pay.component';
+import { PaymentsMadePage } from './payments-made/payments-made.page';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { StripePayComponent } from '@prv/components/stripe-pay/stripe-pay.compon
     PaymentsComponent,
     PaymentMainPage,
     PostedPage,
+    PaymentsMadePage,
     StripePayComponent
   ],
   imports: [

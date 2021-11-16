@@ -11,11 +11,11 @@ import { UserService } from '@svc/user.service';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-posted',
-  templateUrl: './posted.page.html',
-  styleUrls: ['./posted.page.scss'],
+  selector: 'app-payments-made',
+  templateUrl: './payments-made.page.html',
+  styleUrls: ['./payments-made.page.scss'],
 })
-export class PostedPage implements OnInit  {
+export class PaymentsMadePage implements OnInit  {
   public module: Module;
   public customer: any;
   public posted: Array<IPosted> = [];
@@ -54,7 +54,7 @@ export class PostedPage implements OnInit  {
     this.intServ.loadingFunc(true);
     this.customer = await this.userService.getCustomer();
     this.module = await this.moduleService.getSelectedModule();
-    this.processes = this.module.processes.find(x => { return x.processId === 'P005' });
+    this.processes = this.module.processes.find(x => { x.processId === 'P005' });
     await this.get(); 
     this.intServ.loadingFunc(false);
   }
@@ -88,7 +88,6 @@ export class PostedPage implements OnInit  {
    * @param item 
    */
   public async onPaid(item: IPosted) {
-    debugger;
     let createView = this.processes.permissions.filter(x => x.permissionId === 'CreatePayment');
     if (createView.length === 0) {
       let error = {
@@ -127,7 +126,7 @@ export class PostedPage implements OnInit  {
    */
   private async getPosted() {
     let obj: any = {
-      paid: true,
+      paid: false,
       salesPerson: this.module.erpUserId
     }
     let posted = await this.salesService.getPostedSalesInvoices(obj);
