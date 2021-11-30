@@ -136,7 +136,7 @@ export class StripePayComponent implements OnInit {
       CompanyId: this.chargeOptions.CompanyId,
       UserName: this.chargeOptions.UserName,
       DeviceId: this.chargeOptions.DeviceId,
-      CustomerNo: this.chargeOptions.CustomerNo,
+      CustomerNum: this.chargeOptions.CustomerNo,
       CustomerName: this.chargeOptions.CustomerName,
     }
     try {
