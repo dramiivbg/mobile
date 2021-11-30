@@ -12,7 +12,9 @@ export enum E_PROCESSTYPE {
     Edit = 1,
     Delete = 2,
     Read = 3,
-    Post = 4
+    Post = 4,
+    CreatePayments = 5,
+    ViewPayments = 6
 }
 
 export enum E_NOTIFYTYPE {

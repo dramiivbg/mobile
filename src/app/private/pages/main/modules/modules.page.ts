@@ -17,7 +17,7 @@ import { Plugins } from '@capacitor/core';
 import { Storage } from '@ionic/storage';
 import { SK_ENVIRONMENT } from '@var/consts';
 import { SyncerpService } from '@svc/syncerp.service';
-import { NotifyService } from '@svc/notify.service';
+import { Network } from '@capacitor/network';
 
 const { App } = Plugins;
 
@@ -66,7 +66,6 @@ export class ModulesPage implements OnInit {
     this.intServ.loadingFunc(true);
     await this.onEnvironment();
     this.environment = (await this.authService.getUserSession()).environment;
-    console.log(this.environment);
     for(let i in this.environment.modules) {
       let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
       let obj: any = this.environment.modules[i];
@@ -92,7 +91,7 @@ export class ModulesPage implements OnInit {
     this.grid = b;
   }
 
-  async onClick(mod: any) {
+  public async onClick(mod: any) {
     await this.moduleService.setSelectedModule(mod);
 
     switch(mod.moduleType)
@@ -111,7 +110,7 @@ export class ModulesPage implements OnInit {
         break;
 
       case E_MODULETYPE.Payments:
-          this.onPayments(mod);
+          await this.onPayments(mod);
           break;
 
       default:
@@ -174,15 +173,19 @@ export class ModulesPage implements OnInit {
     }
   }
 
-  private onPayments(module: any) {
+  private async onPayments(module: any) {
     try {
-      let navigationExtras: NavigationExtras = {
-        state: {
-          module
-        },
-        replaceUrl: true
-      };
-      this.router.navigate(['page/payments/paymentMain'], navigationExtras);
+      if ((await Network.getStatus()).connected) {
+        let navigationExtras: NavigationExtras = {
+          state: {
+            module
+          },
+          replaceUrl: true
+        };
+        this.router.navigate(['page/payments/paymentMain'], navigationExtras);
+      } else {
+        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This module is not available for the offline version.'));
+      }
     } catch (error) {
       this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
     }

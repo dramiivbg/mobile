@@ -6,6 +6,7 @@ import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
+import { E_PROCESSTYPE } from '@var/enums';
 
 @Component({
   selector: 'app-payment-main',
@@ -40,6 +41,7 @@ export class PaymentMainPage implements OnInit {
     try {
       this.intServ.loadingFunc(true);
       this.module = await this.moduleService.getSelectedModule();
+      console.log(this.module);
       this.session = (await this.js.getSession()).login;
       this.intServ.loadingFunc(false);
     } catch (error) {
@@ -47,12 +49,21 @@ export class PaymentMainPage implements OnInit {
     }
   }
 
-  public onPosted(process) {
-    if (process.processId === 'P005')
-      this.router.navigate(['page/payments/posted'], { replaceUrl: true });
-    else if (process.processId === 'P006')
-      this.router.navigate(['page/payments/paymentMade'], { replaceUrl: true });
-    // this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This option is not yet available'));
+  public async  onPosted(process) {
+    try {
+      if (process.processId === 'P005')
+        this.router.navigate(['page/payments/posted'], { replaceUrl: true });
+      else if (process.processId === 'P006') {
+        process.sysPermits = await this.general.getPermissions(process.permissions);
+        if (process.sysPermits.indexOf(E_PROCESSTYPE.ViewPayments) === -1) {
+          let error = { message: 'You do not have permission to view payments' }
+          throw error;
+        }
+        this.router.navigate(['page/payments/paymentMade'], { replaceUrl: true });
+      }
+    } catch (error) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message));
+    }      
   }
 
   /**

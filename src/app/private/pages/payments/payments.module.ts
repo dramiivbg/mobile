@@ -23,7 +23,8 @@ import { PaymentsMadePage } from './payments-made/payments-made.page';
     CommonModule,
     IonicModule,
     PaymentsRoutingModule,
-    SharedModule
-  ]
+    SharedModule,
+  ],
+  providers: []
 })
 export class PaymentsModule { }

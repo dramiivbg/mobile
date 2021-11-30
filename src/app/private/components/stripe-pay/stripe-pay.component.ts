@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DebugEventListener, OnInit } from '@angular/core';
 import { Stripe as StripeNgx } from '@ionic-native/stripe/ngx';
 declare var Stripe;
 
@@ -9,8 +9,8 @@ import { ApiService } from '@svc/api.service';
 import { SalesService } from '@svc/Sales.service';
 import { UserService } from '@svc/user.service';
 import { ICustomer } from '@mdl/customer';
-import { copyFileSync } from 'fs';
-import { debug } from 'console';
+import { constants } from 'buffer';
+import { Network } from '@capacitor/network';
 
 @Component({
   selector: 'stripe-pay',
@@ -21,8 +21,10 @@ export class StripePayComponent implements OnInit {
   private isEnabled: boolean = true;
   private stripe: any;
   public card: any = {};
+  public form: any = {};
   public showStripePay: boolean = false;
   public chargeOptions: any = {};
+  public rListener: boolean = false;
 
   constructor(private intServ: InterceptService
     , private apiService: ApiService
@@ -37,6 +39,9 @@ export class StripePayComponent implements OnInit {
             this.chargeOptions = req;
             this.showStripePay = true;
           }
+        }
+        if (req.Close !== undefined) {
+          this.showStripePay = false;
         }
       }
     )
@@ -69,6 +74,8 @@ export class StripePayComponent implements OnInit {
       }
     };
 
+    this.removeListener();
+
     this.card = elements.create('card', { style: style });
     this.card.mount('#card-element');
 
@@ -81,18 +88,32 @@ export class StripePayComponent implements OnInit {
       }
     });
 
-    var form = document.getElementById('payment-form');
-    form.addEventListener('submit', event => {
+    this.form = document.getElementById('payment-form');
+    this.form.addEventListener('submit', event => {
       event.preventDefault();
-
-      this.stripe.createToken(this.card).then((result: any) => {
-        if (result.error === undefined) {
-          this.makePayment(result.token.id);
-        } else {
-          this.intServ.alertFunc(this.js.getAlert('error', 'Error', result.error.message));
-        }
-      });
+      this.intServ.loadingFunc(true);
+      try {
+        this.stripe.createToken(this.card).then((result: any) => {
+          if (result.error === undefined) {
+            this.intServ.loadingFunc(false);
+            this.makePayment(result.token.id);
+          } else {
+            this.intServ.alertFunc(this.js.getAlert('error', 'Error', result.error.message));
+            throw 'error';
+          }
+        })
+      } catch (error) {
+        this.intServ.loadingFunc(false);
+      }
     });
+
+    // this.card = elements.create('card', { style: style });
+    // this.form = document.getElementById('payment-form');
+    // this.card.mount('#card-element');
+
+    // this.card.addEventListener('change', this.cardErrors, true);
+    // this.form.addEventListener('submit', this.submitPay,  true);
+    this.rListener = true;
   }
 
   /**
@@ -100,28 +121,35 @@ export class StripePayComponent implements OnInit {
    * @param tokenId 
    */
   public async makePayment(tokenId: string) {
-    console.log(tokenId)
-    let chargeId: string;
-    let paymentIntentId: string;
+    let transactionId: string;
     this.intServ.loadingFunc(true);
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
       TokenId: tokenId,
       Currency: this.chargeOptions.Currency,
       Amount: this.chargeOptions.Amount * 100,
-      DocumentNum: this.chargeOptions.DocumentNum
+      DocumentNum: this.chargeOptions.DocumentNum,
+      Description: this.chargeOptions.DocumentNum + ' - ' + this.chargeOptions.CustomerName,
+      UserId: this.chargeOptions.UserId,
+      ERPUserId: this.chargeOptions.ErpUserId,
+      EnvironmentId: this.chargeOptions.EnvironmentId,
+      CompanyId: this.chargeOptions.CompanyId,
+      UserName: this.chargeOptions.UserName,
+      DeviceId: this.chargeOptions.DeviceId,
+      CustomerNo: this.chargeOptions.CustomerNo,
+      CustomerName: this.chargeOptions.CustomerName,
     }
     try {
-      let rsl = await this.apiService.postData('mobile', 'authorizePayment', data);
-      chargeId = rsl.chargeId;
-      paymentIntentId = chargeId;
+      let rsl = await this.apiService.postData('payments', 'authorizePayment', data);
+      transactionId = rsl.transactionId;
       
       // Start Paid Success
-      this.chargeOptions.paidBC.transactionNo = chargeId;
+      this.chargeOptions.paidBC.transactionNo = transactionId;
+      
       try {
         let {Posted} = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
         if (Posted) {
-          if (this.forceAuthorization(paymentIntentId)) {
+          if (this.forceAuthorization(transactionId)) {
             this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Payment was successful'));
             this.cancel();
           }
@@ -130,7 +158,7 @@ export class StripePayComponent implements OnInit {
           throw error;
         }
       } catch (error) {
-        this.cancelAuthorization(paymentIntentId);
+        this.cancelAuthorization(transactionId, error.error.message);
         throw error;
       }
 
@@ -138,6 +166,10 @@ export class StripePayComponent implements OnInit {
       
       this.intServ.loadingFunc(false);
     } catch (error) {
+      if (!(await Network.getStatus()).connected) {
+        this.intServ.alertFunc(this.js.getAlert('error', 'Error', 'You cannot make this transaction because you do not have internet access.'));
+        return false;
+      }
       this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.error.message));
       var errorElement = document.getElementById('card-errors');
       errorElement.textContent = error.message;
@@ -163,34 +195,38 @@ export class StripePayComponent implements OnInit {
     this.onClose();
   }
 
-  private async forceAuthorization(PaymentIntentId): Promise<boolean> {
+  private async forceAuthorization(TransactionId): Promise<boolean> {
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
-      PaymentIntentId
+      TransactionId
     };
-    let rsl = await this.apiService.postData('mobile', 'forceAuthorization', data);
-    if (rsl.status === 'succeeded') {
-      return true;
-    }
+    try {
+      let rsl = await this.apiService.postData('payments', 'forceAuthorization', data);
+      if (rsl.status === 'succeeded') {
+        return true;
+      }
+    } catch (error) { }
     return false;
   }
 
-  private async cancelAuthorization(PaymentIntentId): Promise<boolean> {
+  private async cancelAuthorization(TransactionId, Reason): Promise<boolean> {
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
-      PaymentIntentId
+      Reason,
+      TransactionId
     };
-    let rsl = await this.apiService.postData('mobile', 'cancelAuthorization', data);
-    if (rsl.status === 'succeeded') {
-      return true;
-    }
+    try {
+      let rsl = await this.apiService.postData('payments', 'cancelAuthorization', data);
+      if (rsl.status === 'succeeded') {
+        return true;
+      } 
+    } catch (error) { }
     return false;
   }
 
   private async setupMakeStripe() {
     try {
-      let customer = await this.userService.getCustomer();
-      let c: ICustomer = await this.apiService.getData('customers', `getcustomer/${customer.customerId}`);
+      let c = await this.getCustomer();
       this.stripe = Stripe(c.stripeSettings.publishableKey);
       this.setupStripe(); 
     } catch (error) {
@@ -199,6 +235,24 @@ export class StripePayComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  private async getCustomer(): Promise<ICustomer> {
+    try {
+      let customer = await this.userService.getCustomer();
+      let c: ICustomer = await this.apiService.getData('customers', `getcustomer/${customer.customerId}`);
+      return c; 
+    } catch (error) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+    }
+  }
+
+  private removeListener() {
+    if (this.rListener) {
+      this.card.removeAllListeners();
+      this.form.removeAllListeners();
+      this.rListener = false;
+    }
   }
 
 }

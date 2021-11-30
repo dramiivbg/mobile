@@ -297,6 +297,10 @@ export class GeneralService {
         return E_PROCESSTYPE.Delete;
       case 'Post':
         return E_PROCESSTYPE.Post;
+      case 'CreatePayment':
+        return E_PROCESSTYPE.CreatePayments;
+      case 'ViewPayments':
+        return E_PROCESSTYPE.ViewPayments;
       default:
         return null;
     }

@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { Device } from '@ionic-native/device/ngx'
 import { sha512 } from 'js-sha512'
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { Network } from '@capacitor/network';
 
 // import services
 import { ApiService } from '@svc/api.service';
@@ -91,7 +92,11 @@ export class LoginPage implements OnInit {
   /**
    * Login to the application is performed. 
   */ 
-  public onSubmit() {
+  public async onSubmit() {
+    if (!(await Network.getStatus()).connected) {
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', "You can't login to Plur-e, because you don't have Internet Access. Please check and try again."));
+      return false;
+    }
     this.intServ.loadingFunc(true);
     if (this.frm.valid) {
       //let secretKey = sha512(`${this.frm.value.User}@${this.scid}:${sha512(this.frm.value.Password)}`);
@@ -107,21 +112,6 @@ export class LoginPage implements OnInit {
       this.intServ.loadingFunc(false);
     }
   }
-
-  /**
-   * remove environment with confirm
-   */
-  // public onRemoveEnvironment() {
-  //   this.intServ.alertFunc(this.jsonServ.getAlert(
-  //     'confirm',
-  //     'Confirm',
-  //     `Do you want to change company ?`,
-  //     () => {
-  //       this.storage.remove(SK_SESSION_CUSTOMER_ID);
-  //       this.router.navigate(['environments'], { replaceUrl: true });
-  //     })
-  //   );
-  // }
 
   public onBack() {
     // this.storage.remove(SK_AUTHORIZE_ACCESS_CLIENT);
@@ -147,7 +137,11 @@ export class LoginPage implements OnInit {
       });
   }
 
-  public onChangeUser(event: any) {
+  public async onChangeUser(event: any) {
+    if (!(await Network.getStatus()).connected) {
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', "You can't login to Plur-e, because you don't have Internet Access. Please check and try again."));
+      return false;
+    }
     if (this.frm.controls['User'].valid) {
       this.intServ.loadingFunc(true);
       let login = this.frm.value.User.toLowerCase();
