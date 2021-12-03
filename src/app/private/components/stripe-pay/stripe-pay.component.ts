@@ -122,6 +122,8 @@ export class StripePayComponent implements OnInit {
    */
   public async makePayment(tokenId: string) {
     let transactionId: string;
+    debugger;
+    console.log(this.chargeOptions);
     this.intServ.loadingFunc(true);
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
@@ -136,7 +138,7 @@ export class StripePayComponent implements OnInit {
       CompanyId: this.chargeOptions.CompanyId,
       UserName: this.chargeOptions.UserName,
       DeviceId: this.chargeOptions.DeviceId,
-      CustomerNum: this.chargeOptions.CustomerNo,
+      CustomerNumber: this.chargeOptions.CustomerNo,
       CustomerName: this.chargeOptions.CustomerName,
     }
     try {
@@ -147,9 +149,9 @@ export class StripePayComponent implements OnInit {
       this.chargeOptions.paidBC.transactionNo = transactionId;
       
       try {
-        let {Posted} = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
-        if (Posted) {
-          if (this.forceAuthorization(transactionId)) {
+        let paymentPosted = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
+        if (paymentPosted != null && paymentPosted.Posted) {
+          if (this.forceAuthorization(transactionId, paymentPosted.DocumentNo)) {
             this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Payment was successful'));
             this.cancel();
           }
@@ -195,10 +197,11 @@ export class StripePayComponent implements OnInit {
     this.onClose();
   }
 
-  private async forceAuthorization(TransactionId): Promise<boolean> {
+  private async forceAuthorization(transactionId: string, paymentDocumentNum: string): Promise<boolean> {
     let data = {
       CustomerId: this.chargeOptions.CustomerId,
-      TransactionId
+      TransactionId: transactionId, 
+      paymentDocumentNum: paymentDocumentNum
     };
     try {
       let rsl = await this.apiService.postData('payments', 'forceAuthorization', data);
