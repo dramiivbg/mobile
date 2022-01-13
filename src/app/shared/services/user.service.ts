@@ -74,4 +74,14 @@ export class UserService {
         }
         return null;
     }
+
+    public async isModifiedMobileUser(): Promise<any> {
+        try {
+            let auth = await this.authService.getUserSession();
+            return await this.api.postData('mobileuser', 'ismodifiedmobileuser', { customerId: auth.customerId, mobileUserId: auth.userId });
+        } catch (error) {
+            throw error;
+        }
+        
+    }
 }

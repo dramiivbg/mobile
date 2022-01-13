@@ -11,3 +11,4 @@ export const SK_OFFLINE = 'OFFLINE';
 export const SK_ENVIRONMENT = 'ENVIRONMENT';
 export const SK_SYNC = 'SESSION_SYNC';
 export const SK_NOTIFY = 'NOTIFY_SESSION';
+export const SK_USER_ID_OLD = 'USERID_OLD';

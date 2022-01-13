@@ -8,12 +8,18 @@ import { OfflineService } from '@svc/offline.service';
 import { SalesService } from '@svc/Sales.service';
 import { JsonService } from '@svc/json.service';
 import { E_NOTIFYTYPE } from '@var/enums';
+import { UserService } from '@svc/user.service';
+import { AuthService } from '@svc/auth.service';
 
 @Component({
   selector: 'app-private',
   templateUrl: './private.component.html'
 })
 export class PrivateComponent implements OnInit {
+  private setTimeNetwork: any;
+  private setTimePayments: any;
+  private setTimePaymentsAgain: any;
+  private setTimeModifyUser: any;
 
   constructor(public toastController: ToastController
     , private offline: OfflineService
@@ -22,8 +28,11 @@ export class PrivateComponent implements OnInit {
     , private notifyService: NotifyService
     , private js: JsonService
     , private router: Router
+    , private userService: UserService
+    , private authService: AuthService
   ) { 
     this.asyncNetwork();
+    this.isModifiedMobileUser();
   }
 
   public async ngOnInit() {}
@@ -32,15 +41,14 @@ export class PrivateComponent implements OnInit {
    * Message with the device have connection to internet or don't.
    */
   private asyncNetwork(): void {
-    let setTime: any;
     Network.addListener('networkStatusChange', async status => {
       let msg: string = status.connected ? 'You have access to the Internet' : 'You do not have internet access';
       await this.messageToast(msg);
       if (!status.connected) {
         this.getOutPayments();
       } else {
-        clearTimeout(setTime);
-        setTime = setTimeout(() => {
+        clearTimeout(this.setTimeNetwork);
+        this.setTimeNetwork = setTimeout(() => {
           this.sendAllTemps();
         }, 5000);
       }
@@ -65,20 +73,20 @@ export class PrivateComponent implements OnInit {
    * get out of payments
    */
   private async getOutPayments() {
-    let setTime: any;
     if (this.router.url.indexOf('payment') !== -1) {
       this.intServ.loadingFunc(true);
       this.router.navigate(['page/main/modules'], { replaceUrl: true });
       this.intServ.stripePayFunc({ Close: true });
-      clearTimeout(setTime);
-      setTime = setTimeout(() => {
+      clearTimeout(this.setTimePayments);
+      this.setTimePayments = setTimeout(() => {
         this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This module is not available for the offline version.', 
           () => {
             this.intServ.loadingFunc(false);
           })
         );
       }, 1500);
-      setTime = setTimeout(() => {
+      clearTimeout(this.setTimePaymentsAgain);
+      this.setTimePaymentsAgain = setTimeout(() => {
         this.getOutPayments();
       }, 6000);
     }
@@ -90,6 +98,24 @@ export class PrivateComponent implements OnInit {
       duration
     });
     toast.present();
+  }
+
+  private async isModifiedMobileUser() {
+    console.log(1);
+    try {
+      let rsl = await this.userService.isModifiedMobileUser();
+      if (rsl.isModifiedUser) {
+        await this.authService.signOutUserModify();
+        this.router.navigate(['login'], { replaceUrl: true});
+      } else {
+        clearTimeout(this.setTimeModifyUser);
+        this.setTimeModifyUser = setTimeout(() => {
+          this.isModifiedMobileUser();
+        }, 30000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 }
