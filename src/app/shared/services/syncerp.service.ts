@@ -154,13 +154,20 @@ export class SyncerpService {
           case 'GetItems':
             this.getItems(i);
             break;
+          case 'Payments':
+            break;
           default:
+            console.log(this.methods[i]);
             process = await this.processRequest(this.methods[i], "0", "", this.module.erpUserId);
             this.setRequest(process).then(() => this.countTask++);
             break;
         }
       }
-      this.syncSales2();
+      if (this.module.lookupMethod !== 'GetWarehouseEmployee') {
+        this.syncSales2();
+      } else {
+        this.getWareHouse();
+      }
       this.notifyObj.loading = false;
       this.CountTaskF(objAlert);
       return true;
@@ -182,10 +189,23 @@ export class SyncerpService {
     let processes = this.module.processes;
     processes.forEach(async p => {
       const method = await this.method(p);
-      let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
-      this.setRequest(process);
+      if (method != '') {
+        let process = await this.processRequestParams(method, [{ type: p.description, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
+        this.setRequest(process);
+      }
     });
     // let process = await this.syncerp.processRequestParams(method, [{ type: type, pageSize:'', position:'', salesPerson: 'CA' }]);
+  }
+
+  private async getWareHouse() {
+    let processes = this.module.processes;
+    processes.forEach(async p => {
+      const method = await this.method(p);
+      if (method != '') {
+        let process = await this.processRequestParams(method, [{ assigned_user_id: this.module.erpUserId }]);
+        this.setRequest(process);
+      }
+    });
   }
 
   private CountTaskF(objAlert: any) {
@@ -260,6 +280,16 @@ export class SyncerpService {
         return 'GetSalesInvoices';
       case "P004":
         return 'GetSalesCreditMemo';
+      case "P007":
+        return 'GetWarehouseReceipts';
+      case "P008":
+        return 'GetWarehousePutAways';
+      case "P009":
+        return ''; // Shipment
+      case "P010":
+        return ''; // Movement
+      case "P011":
+        return ''; // Physical Inventory
     }
   }
 

@@ -1,0 +1,22 @@
+<PlureHeader type="1" title="Sync" notify="1" url="page/main/modules"></PlureHeader>
+<ion-content>
+  <ion-row>
+    <ion-col>
+      <ion-label>
+        <h1>Synchronization of tables</h1>
+      </ion-label>
+    </ion-col>
+  </ion-row>
+  <ion-list>
+    <ion-row *ngFor="let mod of modules" (click)="onSyncTables(mod)">
+      <ion-col size="10">
+        {{mod.description}}
+      </ion-col>
+      <ion-col size="2">
+        <ion-icon name="refresh-circle-outline" *ngIf="mod.loading == undefined"></ion-icon>
+        <img src="../../../assets/gif/loading.gif" *ngIf="mod.loading != undefined"  width="17" />
+      </ion-col>
+    </ion-row>
+  </ion-list>
+</ion-content>
+<PlureVersion showVersion="1"></PlureVersion>

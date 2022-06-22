@@ -3,7 +3,8 @@ export enum E_MODULETYPE {
     Sales = 1,
     Purchases = 2,
     WMS = 3,
-    Manufacturing = 4
+    Manufacturing = 4,
+    Payments = 5
 };
 
 export enum E_PROCESSTYPE {
@@ -11,7 +12,9 @@ export enum E_PROCESSTYPE {
     Edit = 1,
     Delete = 2,
     Read = 3,
-    Post = 4
+    Post = 4,
+    CreatePayments = 5,
+    ViewPayments = 6
 }
 
 export enum E_NOTIFYTYPE {

@@ -41,9 +41,6 @@
             ],
             "styles": [
               {
-                "input": "src/theme/variables.scss"
-              },
-              {
                 "input": "src/sass/style.scss"
               }
             ],

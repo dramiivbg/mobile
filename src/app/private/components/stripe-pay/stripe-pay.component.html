@@ -1,0 +1,57 @@
+<ion-content [fullscreen]="true" [hidden]="showStripePay == false">
+  <form action="/" method="post" id="payment-form">
+  <div class="container">
+    <div class="top">
+      <div class="logo">
+        <img src="../../../assets/img/stripe-pay.svg" alt="">
+      </div>
+    </div>
+    <div class="botton"></div>
+
+    <div class="contenido">
+      <div>
+        <ion-card>
+          <ion-card-content>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label><h1>Customer name</h1></ion-label>
+              <ion-text><p>{{chargeOptions.Name}}</p></ion-text>
+            </ion-item>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label><h1>Document</h1></ion-label>
+              <ion-text><p>{{chargeOptions.DocumentNum}}</p></ion-text>
+            </ion-item>
+            <div class="separator">
+            </div>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label><h1>Subtotal</h1></ion-label>
+              <ion-text><p>${{chargeOptions.Subtotal}}</p></ion-text>
+            </ion-item>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label><h1>Tax</h1></ion-label>
+              <ion-text><p>${{chargeOptions.Tax}}</p></ion-text>
+            </ion-item>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label><h1>Discount</h1></ion-label>
+              <ion-text><p>${{chargeOptions.Discount}}</p></ion-text>
+            </ion-item>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label><h1>Total</h1></ion-label>
+              <ion-text><p>${{chargeOptions.Amount}}</p></ion-text>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-content>
+            <div class="form-row">
+              <div id="card-element"> <!-- a Stripe Element will be inserted here. --> </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <ion-button type="submit" color="success" shape="round">Make Payment</ion-button>
+        <ion-button color="danger" shape="round" (click)="onCancel()">Cancel</ion-button>
+      </div>
+    </div>
+ </div>
+ <div id="card-errors" role="alert"></div>
+</form>
+</ion-content>

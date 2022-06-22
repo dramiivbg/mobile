@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IPosted } from '@mdl/posted';
 import { E_MODULETYPE, E_PROCESSTYPE } from '@var/enums';
 import { throwError } from 'rxjs';
 
@@ -248,6 +249,61 @@ export class GeneralService {
   }
 
   /**
+   * posted list
+   * @param lists 
+   * @returns 
+   */
+  public async PostedList(lists: any) : Promise<Array<IPosted>> {
+    let objLst: Array<IPosted> = [];
+    for (let i in lists) {
+      let obj: IPosted = { 
+        fields: await this.fieldsToJson(lists[i].fields),
+        OriginalPmtDiscPossible: lists[i].OriginalPmtDiscPossible
+      };
+      objLst.push(obj);
+    }
+    return objLst;
+  }
+
+  /**
+   * Receipts
+   * @param lists 
+   * @returns 
+   */
+  public async ReceiptsList(lists: any) : Promise<any> {
+    let objLst = [];
+    lists.forEach(item => {
+      let obj = {};
+      item.fields.forEach(async field => {
+        if (field.name === 'No'){
+          obj['id'] = field.value
+        }
+        if (field.name === 'LocationCode'){
+          obj['value'] = field.value
+        }
+        obj['fields'] = await this.fieldsToJson(item.fields);
+      });
+      objLst.push(obj);
+    });
+    return objLst;
+  }
+
+  /**
+   * Mapping Receipts
+   * @param receipt { WarehouseReceipt: {WarehouseReceiptHeader, WarehouseReceiptLines} }
+  */
+  public async ReceiptHeaderAndLines(item: any) : Promise<any> {
+    let lines = [];
+    let obj = {};
+    obj = await this.fieldsToJson(item.WarehouseReceiptHeader.fields);
+    item.WarehouseReceiptLines.forEach(async line => {
+      lines.push(await this.fieldsToJson(line.fields));
+    });
+    obj['lines'] = lines;
+    return obj;
+  }
+
+  /**
    * Types Business Central
    * @param process 
    * @returns 
@@ -279,6 +335,10 @@ export class GeneralService {
         return E_PROCESSTYPE.Delete;
       case 'Post':
         return E_PROCESSTYPE.Post;
+      case 'CreatePayment':
+        return E_PROCESSTYPE.CreatePayments;
+      case 'ViewPayments':
+        return E_PROCESSTYPE.ViewPayments;
       default:
         return null;
     }

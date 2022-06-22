@@ -3,8 +3,8 @@ import { Storage } from '@ionic/storage';
 
 // import vars
 import { SK_SELECTED_MODULE, SK_SELECTED_PROCESS } from '@var/consts';
-import { E_MODULETYPE } from '@var/enums';
 import { Module, Process } from '@mdl/module';
+import { timingSafeEqual } from 'crypto';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +18,12 @@ export class ModuleService {
     this.initSelectedProcess();
   }
 
-  async initSelectedModule() {
-    await this.storage.get(SK_SELECTED_MODULE).then(
-     res => {
-        this.selectedModule = JSON.parse(res);
-      }
-    )
+  public async initSelectedModule() {
+    let res = await this.storage.get(SK_SELECTED_MODULE);
+    this.selectedModule = JSON.parse(res);
   }
 
-  async initSelectedProcess() {
+  public async initSelectedProcess() {
     this.selectedProcess = JSON.parse(await this.storage.get(SK_SELECTED_PROCESS));
   }
 
@@ -34,7 +31,7 @@ export class ModuleService {
    * set module
    * @param module 
    */
-  async setSelectedModule(module: Module) : Promise<void> {
+   public async setSelectedModule(module: Module) : Promise<void> {
     await this.storage.set(SK_SELECTED_MODULE, JSON.stringify(module));
     await this.initSelectedModule();
   }
@@ -42,16 +39,22 @@ export class ModuleService {
   /**
    * get module
    */
-  getSelectedModule(): Module {
+  public async getSelectedModule(): Promise<Module> {
+    if (this.selectedModule === undefined) {
+      await this.initSelectedModule();
+    }
     return this.selectedModule;
   }
 
-  async setSelectedProcess(process: any): Promise<void> {
+  public async setSelectedProcess(process: any): Promise<void> {
     await this.storage.set(SK_SELECTED_PROCESS, JSON.stringify(process));
     await this.initSelectedProcess();
   }
 
-  getSelectedProcess(): Process {
+  public async getSelectedProcess(): Promise<Process> {
+    if (this.selectedProcess === undefined) {
+      await this.initSelectedProcess();
+    }
     return this.selectedProcess;
   }
 

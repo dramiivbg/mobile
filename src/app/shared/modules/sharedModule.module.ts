@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { HeaderComponent } from 'src/app/components/header/header.component';
+import { HeaderComponent } from '@prv/components/header/header.component';
 import { VerFooterComponent } from 'src/app/components/ver-footer/ver-footer.component';
 
 @NgModule({

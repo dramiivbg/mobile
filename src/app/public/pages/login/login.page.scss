@@ -1,0 +1,133 @@
+@import '../../../../sass/var';
+
+div.login {
+    font-family: SourceSansProRegular !important;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(30vh * 0.112);     
+    //border: 1px solid red;
+
+    div.plure-brand {
+        text-align: center;
+        //border: 1px solid black;
+
+        div.plure-brand-logo {            
+            img {
+                margin: 0 auto;
+                //width: 46.35%;   
+                // height: calc( 30vh * 0.188424);
+                //border: 1px solid blue;
+              }  
+        }
+
+        div.plure-brand-tittle {
+            h1 {
+                color: $plure-label-color;             
+                font-style: normal;
+                font-weight: 700;
+                font-size: 24.5px;
+                line-height: 31px;
+                margin: 0;
+            }
+        }
+    }    
+
+    ion-label.plure-label { 
+
+        p {            
+            font-family: SourceSansProRegular !important;
+            margin: 0px 9.25% 0 9.25%;
+            color: $plure-label-color;             
+            font-style: normal;
+            font-weight: normal;
+            font-size: 16px;
+            line-height: 20px;            
+
+            margin-bottom: 5px !important;
+        }                
+    }
+
+    ion-item.plure-input {
+        
+        margin: 0px 9.25% calc(100vh * 0.01) 9.25%;        
+        --background: none;
+        background: $plure-init-input-bg;
+        border-radius: 50px; 
+        height: 40px;
+        
+        ion-input, ion-select {   
+            //--margin-top: 0px !important;         
+            --padding-top: 4px !important;
+            font-family: SourceSansProRegular !important;                        
+            color: $plure-init-input-color;
+            width: 100%;            
+            font-size: 16px;
+            line-height: 20px; 
+        }
+
+        ion-icon {
+            margin-top: 4px !important;
+            padding: 0 !important;
+            display: block;            
+            width: 20px;
+        }
+    }
+
+    div.space-blank {
+        height: calc( 100vh * 0.04);
+    }
+
+    ion-button.plure-button {
+        margin: calc(100vh * 0.03) 0 0 0 !important;
+        font-family: SourceSansProRegular !important;                        
+        font-style: normal;
+        font-weight: bold;
+        color: $plure-init-input-color;     
+        font-size: 18px;
+        line-height: 23px;
+        width: 57.25% !important;
+        height: 40px;
+    }
+
+    div.plure-footer {        
+        color: $plure-label-color;                
+        margin-top: 85px;
+        text-align: center;        
+        font-size: 13px;
+        line-height: 16.34px;
+
+        div.plure-footer-hp {
+            margin-top: 17px;
+            margin: 0 9.5% 0 9.5%; 
+            border-top: 1px solid $plure-init-input-bg;
+            a {
+                display: inline-block;
+                margin: 6px 0px 0px 0px !important;  
+                color: $plure-label-color;                               
+            }
+        }
+        div.plure-new-account {
+            ion-button {
+                margin-bottom: 31px !important;
+            }
+        }
+        div.plure-or {
+            margin: -65px 9.5% 0 9.5%;
+            border-top: 1px solid $plure-init-input-bg;
+            text-align: center;
+            position: relative;
+            div.plure-or2 {
+                background-color: #fff;
+                margin: -10px 0 0 -15px;
+                display: inline-block;
+                position: absolute;
+                padding: 0 10px;
+            }
+        }
+
+        a {
+            text-decoration: none;
+        }
+    }
+}

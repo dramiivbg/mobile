@@ -85,7 +85,7 @@ export class InterceptService {
   }
 
   public stripePayFunc(obj: any) {
-    this.alertSource.next(obj);
+    this.stripePaySource.next(obj);
   }
 
   public appBackFunc(obj: any) {
