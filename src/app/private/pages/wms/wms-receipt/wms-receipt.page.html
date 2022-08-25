@@ -1,0 +1,101 @@
+<PlureHeader type="1" title="Receipts" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
+<ion-content>
+    <form>
+        <div class="designform-header">
+            <ion-row>
+                <ion-col>
+                    <ion-label>No. {{wareReceipts.No}}</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Loc. {{wareReceipts.LocationCode}}</ion-label>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label>Zone. {{wareReceipts.ZoneCode}}</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Bin. {{wareReceipts.BinCode}}</ion-label>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label>Posting Date. {{wareReceipts.PostingDate}}</ion-label>
+                </ion-col>
+            </ion-row>
+        </div>
+        <div class="accorn">
+            <div class="order-details">
+                <ion-row>
+                    <ion-col size="3" class="txt">
+                        <ion-label>Lines</ion-label>
+                    </ion-col>
+                    <!-- <ion-col *ngIf="new || edit">
+                  <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
+                </ion-col> -->
+                </ion-row>
+            </div>
+            <div class="accorn-body">
+                <div class="lines">
+                    <ion-list *ngFor="let item of wareReceipts.lines; let i=index">
+                        <div>
+
+                            <ion-item-sliding>
+                                <ion-item (click)="onPopoverMenu(event, item)">
+                                    <div class="label-lines" part="item-width">
+                                        <ion-row>
+                                            <ion-col size="10">
+                                                <ion-row>
+                                                    <ion-col size="7" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.Description}}
+                                                    </ion-col>
+                                                    <ion-col size="5" class="label-line-title"
+                                                        style="text-align: right;">
+                                                        Qty. {{item.Quantity}}
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row>
+                                                    <ion-col size="4" class="label-line">
+                                                        Item No: {{item.ItemNo}}
+                                                    </ion-col>
+                                                    <ion-col size="4" class="label-line">
+                                                        Measure: {{item.UnitofMeasureCode}}
+                                                    </ion-col>
+                                                    <ion-col size="4" class="label-line">
+                                                        PO: {{item.SourceNo}}
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row>
+                                                    <ion-col class="label-line" size="3">
+                                                        Line: {{item.LineNo}}
+                                                    </ion-col>
+                                                </ion-row>
+                                            </ion-col>
+                                        </ion-row>
+                                    </div>
+                                </ion-item>                               
+                            </ion-item-sliding>
+                        </div>
+                    </ion-list>
+                </div>
+            </div>
+        </div>
+    </form>
+</ion-content>
+
+<PlureVersion showVersion="0">
+    <ion-row>
+        <ion-col size="4">
+        </ion-col>
+        <ion-col size="4" (click)="onBarCode()">
+            <img src="../../../../assets/img/bar-code.svg" />
+            <div>Bar code</div>
+        </ion-col>
+        <ion-col size="4" (click)="onSubmit()">
+            <img src="../../../../assets/img/save.svg" />
+            <div>Save</div>
+        </ion-col>
+    </ion-row>
+</PlureVersion>

@@ -8,7 +8,8 @@ const routes: Routes = [
     { path: '', redirectTo: 'main', pathMatch: 'full' },
     { path: 'main', loadChildren: () => import('./pages/main/main.module').then(m => m.MainPageModule) },
     { path: 'sales', loadChildren: () => import('./pages/sales/sales.module').then(m => m.SalesModule) },
-    { path: 'payments', loadChildren: () => import('./pages/payments/payments.module').then( m => m.PaymentsModule ) }
+    { path: 'payments', loadChildren: () => import('./pages/payments/payments.module').then( m => m.PaymentsModule ) },
+    { path: 'wms', loadChildren: () => import('./pages/wms/wms.module').then(m => m.WmsModule) },
   ]}
 ];
 

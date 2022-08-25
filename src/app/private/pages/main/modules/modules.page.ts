@@ -93,7 +93,7 @@ export class ModulesPage implements OnInit {
 
   public async onClick(mod: any) {
     await this.moduleService.setSelectedModule(mod);
-
+    console.log(mod);
     switch(mod.moduleType)
     {
       case E_MODULETYPE.Sales:
@@ -104,6 +104,7 @@ export class ModulesPage implements OnInit {
         break;
 
       case E_MODULETYPE.WMS:
+        this.onWareHouse(mod);
         break;
 
       case E_MODULETYPE.Manufacturing:
@@ -168,6 +169,20 @@ export class ModulesPage implements OnInit {
         replaceUrl: true
       };
       this.router.navigate(['page/sales/main'], navigationExtras);
+    } catch (error) {
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+    }
+  }
+
+  private onWareHouse(module: any) {
+    try {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          module
+        },
+        replaceUrl: true
+      };
+      this.router.navigate(['page/wms/wmsMain'], navigationExtras);
     } catch (error) {
       this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
     }
