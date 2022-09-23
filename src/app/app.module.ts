@@ -15,7 +15,7 @@ import { Device } from '@ionic-native/device/ngx'
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Stripe } from '@ionic-native/stripe/ngx';
-//import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // import services
 import { InterceptService } from '@svc/intercept.service';
@@ -34,13 +34,15 @@ import { NotifyComponent } from './components/notify/notify.component';
 import { UserService } from '@svc/user.service';
 import { PrivateModule } from '@prv/private.module';
 import { WmsService } from '@svc/wms.service';
+import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoadingComponent,
     AlertsComponent,
-    NotifyComponent
+    NotifyComponent,
+    PopoverOpionsLpComponent
   ],
   entryComponents: [],
   imports: [

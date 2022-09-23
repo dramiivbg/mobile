@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { IPosted } from '@mdl/posted';
 import { E_MODULETYPE, E_PROCESSTYPE } from '@var/enums';
 import { throwError } from 'rxjs';
-
+import {JsonService} from '../services/json.service';
+import { InterceptService } from './intercept.service';
 @Injectable({
   providedIn: 'root'
 })
 export class GeneralService {
 
-  constructor() { }
+  constructor(private alerta: JsonService,private router: Router, private interceptService: InterceptService) { }
 
   // Structure for search component
   structSearch(array: any, title: string, name: string, func: any = null, clear: boolean =  true, type: Number = 0, process: any = {}) {
@@ -204,6 +206,7 @@ export class GeneralService {
     return obj;
   }
 
+
   async createFields(lists: any) : Promise<any> {
     let objLst = [];
     lists[0].fields.forEach(async field => {
@@ -235,7 +238,10 @@ export class GeneralService {
     let types: Array<E_PROCESSTYPE> = [];
     try {
       for (let i in p) {
+
+       // console.log('permisos =>',i);
         let id: string = p[i].permissionId;
+        //console.log('permisosid =>',p[i].permissionId);
         let allow: boolean = p[i].allow;
         if (allow) {
           let permissionEnum: E_PROCESSTYPE = await this.obtainPermissions(id);
@@ -272,6 +278,10 @@ export class GeneralService {
    */
   public async ReceiptsList(lists: any) : Promise<any> {
     let objLst = [];
+
+    
+
+    if(lists > 0 || lists !== undefined){
     lists.forEach(item => {
       let obj = {};
       item.fields.forEach(async field => {
@@ -286,7 +296,13 @@ export class GeneralService {
       objLst.push(obj);
     });
     return objLst;
+  }else{
+
+    return lists;
+   
   }
+
+}
 
   /**
    * Mapping Receipts

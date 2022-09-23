@@ -148,6 +148,16 @@ export class MainPage implements OnInit {
     }
   }
 
+
+  employee(event){
+
+    console.log('evento',event);
+
+    this.router.navigate(['page/main/employee']);
+
+    
+  }
+
   async onSignout() {
     await this.authService.signout();
     this.router.navigate(['login'], { replaceUrl: true});

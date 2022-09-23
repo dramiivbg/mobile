@@ -69,6 +69,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.initialCompareVersion();
+
+    document.body.setAttribute('color-theme', 'light');
   }
 
   onUniversalLink(): void{

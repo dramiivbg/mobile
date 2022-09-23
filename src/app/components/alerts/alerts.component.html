@@ -3,19 +3,38 @@
     <div class="alert-header">
       <img src="../../../assets/icon/success.svg" *ngIf="alertObj.type == 'success'" />
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'confirm'" />
+      <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'continue'" />
+      <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'edit'" />
       <img src="../../../assets/icon/error.svg" *ngIf="alertObj.type == 'error'" />
       <img src="../../../assets/icon/alert.svg" *ngIf="alertObj.type == 'alert'" />
       <img src="../../../assets/icon/dontaccess.svg" *ngIf="alertObj.type == 'noaccess'" />
+      <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'select'" />
     </div>
     <div class="alert-body">
       {{alertObj.desc}}
-      <div class="alert-btn" *ngIf="alertObj.type != 'confirm'">
+      <div class="alert-btn" *ngIf="alertObj.type != 'confirm' && alertObj.type != 'continue' && alertObj.type != 'edit' && alertObj.type !== 'select' ">
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">OK</ion-button>
       </div>
       <div class="alert-btn" *ngIf="alertObj.type == 'confirm'">
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">Cancel</ion-button>
       </div>
+
+      <div class="alert-btn" *ngIf="alertObj.type == 'continue'">
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">No</ion-button>
+      </div>
+      <div class="alert-btn" *ngIf="alertObj.type == 'edit'">
+        <p style="font-family: 'Times New Roman', Times, serif;">{{alertObj.title}}</p>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onSi()">Yes</ion-button>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onNo()">No</ion-button>
+      </div>
+
+      <div class="alert-btn" *ngIf="alertObj.type == 'select'">
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onLp(true)">LP</ion-button>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onItem(false)">Item</ion-button>
+      </div>
+
     </div>
   </div>
 </div>

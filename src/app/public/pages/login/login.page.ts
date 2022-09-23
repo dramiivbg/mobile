@@ -129,6 +129,8 @@ export class LoginPage implements OnInit {
       .then(
         res => {
           this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));
+
+         // console.log('auth =>', res)
         }
       )
       .catch(error => {
@@ -148,6 +150,8 @@ export class LoginPage implements OnInit {
       if (this.frm.value.User !== "") {
         this.apiConnect.postData('mobileUser', `checkingMobileUser`, { login }).then(
           res => {
+
+           // console.log('usuario =>', res)
             this.authorizeAccessClient(res.customerId).finally(
               () => {
                 var changeTemporaryPassword = res.temporaryPassword != '';
@@ -293,14 +297,14 @@ export class LoginPage implements OnInit {
           );
         }
       }
-    )
-    .catch(
+    ) .catch(
       err => {
         this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
         );
       }
     );
+   
   }
 
   private async resetClic() {

@@ -12,6 +12,10 @@ import { SearchComponent } from '@prv/components/search/search.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { LicensePlatesComponent } from './license-plates/license-plates.component';
+import { PopoverLpsComponent} from '../../components/popover-lps/popover-lps.component';
+import {AlertController} from '@ionic/angular';
+import { WmsReceiptEditPage } from './wms-receipt-edit/wms-receipt-edit.page';
+import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
 
 
 @NgModule({
@@ -21,7 +25,13 @@ import { LicensePlatesComponent } from './license-plates/license-plates.componen
     WmsReceiptPage,
     SearchComponent,
     PopoverOptionsComponent,
-    LicensePlatesComponent
+    LicensePlatesComponent,
+    PopoverLpsComponent,
+    WmsReceiptEditPage,
+    PopoverNewPalletComponent,
+   
+    
+  
   ],
   imports: [
     CommonModule,
@@ -33,11 +43,13 @@ import { LicensePlatesComponent } from './license-plates/license-plates.componen
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    BarcodeScanner
+    BarcodeScanner,
+    AlertController
   ],
   entryComponents: [
     PopoverOptionsComponent,
-    LicensePlatesComponent
+    LicensePlatesComponent,
+    PopoverLpsComponent
   ]
 })
 export class WmsModule { }

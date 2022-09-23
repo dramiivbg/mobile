@@ -147,10 +147,17 @@ export class PostedPage implements OnInit  {
       salesPerson: this.module.erpUserId
     }
     let posted = await this.salesService.getPostedSalesInvoices(obj);
+
+   // console.log('posted =>', posted);
     this.posted = await this.generalService.PostedList(posted.SalesOrders);
+    console.log('posted =>', this.posted);
     if (this.posted.length > 0) {
       for (let i in this.posted) {
-        this.posted[i].fields.Total = Number((this.posted[i].fields.AmountIncludingVAT - this.posted[i].OriginalPmtDiscPossible).toFixed(2));
+       // console.log('Amount =>', (this.posted[i].OriginalPmtDiscPossible).toFixed(2))
+       
+       this.posted[i].fields.Total = Number((this.posted[i].fields.AmountIncludingVAT - this.posted[i].OriginalPmtDiscPossible).toFixed(2));
+
+      // console.log('total =>',this.posted[i].fields.Total)
       }
     }
     this.filterPosted = this.posted;

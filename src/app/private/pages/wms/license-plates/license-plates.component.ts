@@ -3,7 +3,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
+import {GeneralService} from '@svc/general.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-license-plates',
@@ -22,7 +25,20 @@ export class LicensePlatesComponent implements OnInit {
     , private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController
+    , private interceptService: InterceptService,
+    private router: Router
+    
   ) { 
+
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+
+    };
+
+    this.intServ.appBackFunc(objFunc);
+
     this.frm = this.formBuilder.group(
       {
         TotalToReceive: ['0', Validators.required],
@@ -41,15 +57,81 @@ export class LicensePlatesComponent implements OnInit {
     console.log(this.lstUoM);
   }
 
+  onBack() {
+    this.router.navigate(['page/wms/wmsMain']);
+  }
+
   public async onSubmit() {
+
+  
     if (this.frm.valid) {
-      let obj = await this.jsonService.formToJson(this.frm);
-      obj['No'] = this.item.No;
-      obj['ItemNo'] = this.item.ItemNo;
-      obj['BinCode'] = this.item.BinCode;
-      obj['UnitofMeasureCode'] = this.item.UnitofMeasureCode;
-      let rsl = this.wmsService.CreateLPFromWarehouseReceiptLine([obj]);
+
+    
+        this.interceptService.loadingFunc(true);
+
+        let obj = await this.jsonService.formToJson(this.frm);
+
+        
+        
+        obj['No'] = this.item.No;
+        obj['ItemNo'] = this.item.ItemNo;
+        obj['BinCode'] = this.item.BinCode;
+        obj['UnitofMeasureCode'] = this.item.UnitofMeasureCode;
+        obj['TotalToReceive'] = obj.TotalToReceive;
+        obj['NoofPackLP'] = obj.NoofPackLP;
+        obj['PackUnitUoM'] = obj.PackUnitUoM;
+        obj['LineNo']  = this.item.LineNo;
+
+
+if(obj.TotalToReceive == 0){
+  this.interceptService.loadingFunc(false);
+  this.interceptService.alertFunc(this.jsonService.getAlert('alert','alert','please put how many license plate you want'));
+ 
+}else
+
+   if(obj.NoofPackLP == 0){
+    this.interceptService.loadingFunc(false);
+    this.interceptService.alertFunc(this.jsonService.getAlert('alert','alert',' please put how many packs each license plate will have'));
+    
+   }else{
+
+
+      obj['TotalToReceive'] = obj.TotalToReceive * obj.NoofPackLP;
+
+      let rsl = await this.wmsService.CreateLPFromWarehouseReceiptLine([obj]);
+
+      console.log(rsl);
+
+      console.log(rsl);
+
+      if(rsl.Created){
+
+        
+      this.interceptService.loadingFunc(false);
+
+      this.interceptService.alertFunc(this.jsonService.getAlert('sucess','sucess','license plates have been created successfully'));
+
+      this.router.navigate(['/page/wms/wmsMain']);
+       
       this.popoverController.dismiss({});
+
+      }else{
+
+        this.interceptService.loadingFunc(false);
+        this.interceptService.alertFunc(this.jsonService.getAlert('alert','alert','you can not send more than you expect to receive'));
+      }
+
+    
+     }
+       
+  
+        
+
+      
+
+    
+
+   
     }
   }
 

@@ -1,0 +1,346 @@
+
+<PlureHeader type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
+<ion-content>
+    <form *ngIf="scanLP">
+        <div class="designform-header">
+            <ion-row>
+                <ion-col>
+                    <ion-label>No. {{wareReceipts.No}}</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Loc. {{wareReceipts.LocationCode}}</ion-label>
+                </ion-col>
+            </ion-row>
+
+            <ion-row class="delivery newColor"  >
+      
+                
+               
+       
+                    <ion-icon name="newspaper-outline" style="font-size: 30px;"></ion-icon>
+                     
+                        <ion-input (ionBlur)="onAdd($event)" autocorrect="on" autofocus="on" style="text-align: right; width: 100%;" clearInput="true" clearOnEdit="true" color="primary" inputmode="text" placeholder="Select LP/Pallet:" required="true"></ion-input>
+                        <img src="../../../../assets/img/modules/sales/edit.svg"  style="text-align: right; font-size: 30px;"  />
+
+                    
+                
+                   
+                 
+
+                  
+                
+
+
+
+
+              
+
+                
+              </ion-row>
+
+
+        
+        </div>
+        <div class="accorn">
+            <div class="order-details">
+                <ion-row>
+                    <ion-col size="3" class="txt">
+                        <ion-label>Lines</ion-label>
+                    </ion-col>
+                    <!-- <ion-col *ngIf="new || edit">
+                  <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
+                </ion-col> -->
+                </ion-row>
+            </div>
+            <div class="accorn-body">
+                <div class="lines">
+                    <ion-list >
+                        <ion-list >
+                        <div>
+
+                            <ion-item-sliding>
+
+                               
+                        
+                                <ion-item>
+                                    <div class="label-lines" part="item-width" >
+                                        <ion-row  *ngFor="let item of listsFilter">
+                                            <ion-col size="15" class="item">
+
+                                                <ion-row >
+                                                    <ion-col size="6" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.fields.PLULPDocumentNo}}
+                                                    </ion-col>
+                                                   
+
+                                                </ion-row>
+
+                                                <ion-row>
+                                                    <ion-col size="3" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.company}}
+                                                    </ion-col>
+                                                    <ion-col size="3" class="label-line-title"
+                                                        >
+                                                         Qty. {{item.fields.PLULPTotalQuantities}}
+
+                                                        
+                                                  
+                                                    </ion-col>
+                                                    <ion-col size="5" class="label-line-title"
+                                                    style="text-align: right;" >
+                                                     BinCode. {{item.fields.PLUBinCode}}
+
+                                                    
+                                              
+                                                </ion-col>
+
+                                                </ion-row>
+
+                                             
+                                                <ion-row>
+                                                    <ion-col size="4" class="label-line">
+                                                      Item No: {{item.fields.PLUItemNo}}
+                                                    </ion-col>
+                                                    <ion-col size="4" class="label-line">
+                                                      Measure: {{item.fields.PLUUnitofMeasure}}
+                                                    </ion-col>
+                                                    <ion-col size="4" class="label-line">
+                                                    LocationCode: {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row>
+                                                    <ion-col class="label-line" size="3">
+                                                    <!--     Line: {{item.LineNo}}-->
+                                                    </ion-col>
+                                                </ion-row>
+                                            </ion-col>
+                                        </ion-row>
+                                    </div>
+                           
+                        
+
+                                
+
+                                 
+                                </ion-item>    
+                                
+
+                               <ion-item-options>
+
+                                <ion-icon name="trash-outline"></ion-icon>
+                               </ion-item-options>
+                          
+                            </ion-item-sliding>
+                        </div>
+                        </ion-list>
+                    </ion-list>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+
+
+    <form *ngIf="scanBin">
+        <div class="designform-header">
+            <ion-row>
+                <ion-col>
+                    <ion-label>No. {{wareReceipts.No}}</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Loc. {{wareReceipts.LocationCode}}</ion-label>
+                </ion-col>
+            </ion-row>
+
+            
+
+
+              
+            <ion-row class="delivery newColor" >
+      
+               
+               
+                <ion-icon name="qr-code-outline" style="font-size: 30px;"></ion-icon>
+                 
+               
+                    <ion-select  interface="popover"  #bin  (ionChange)="onChangeBin(bin.value)" placeholder="Edit Bincode" style="width: 85%; text-align: right;">
+                      <ion-select-option  *ngFor="let item of listBin[0].Bins" [value]="item.BinCode">{{item.BinCode}}</ion-select-option>
+                   
+                    </ion-select>
+               
+
+                  
+                    <img src="../../../../assets/img/modules/sales/edit.svg"  style="text-align: right; font-size: 30px;"  />
+
+                
+            
+               
+             
+
+              
+            
+
+
+
+
+          
+
+            
+          </ion-row>
+        
+        </div>
+        <div class="accorn">
+            <div class="order-details">
+                <ion-row>
+                    <ion-col size="3" class="txt">
+                        <ion-label>Lines</ion-label>
+                    </ion-col>
+                    <!-- <ion-col *ngIf="new || edit">
+                  <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
+                </ion-col> -->
+                </ion-row>
+            </div>
+            <div class="accorn-body">
+                <div class="lines">
+                    <ion-list >
+                        <ion-list >
+                        <div>
+
+                            <ion-item-sliding>
+
+                               
+                        
+                                <ion-item>
+                                    <div class="label-lines" part="item-width" >
+                                        <ion-row  *ngFor="let item of listsFilter">
+                                            <ion-col size="15" class="item">
+
+                                                <ion-row >
+                                                    <ion-col size="5" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.fields.PLULPDocumentNo}}
+                                                    </ion-col>
+
+                                                    
+
+                                                    <ion-col size="7"  >       
+                                                    
+                                                        <ion-select  interface="popover"  #bin  (ionChange)="onChangeBinOne(item,bin.value)" placeholder="Edit Bincode" style="position:absolute;right: 7%;width: 100%;" class="label-line-title" >
+                                                        <ion-select-option  *ngFor="let item of listBin[0].Bins" [value]="item.BinCode">{{item.BinCode}}</ion-select-option>
+                                                            
+                                                     
+
+                
+                                                    </ion-select>
+
+                                                 </ion-col>
+                 
+
+                                                 <ion-col size="5" >
+
+
+                                                 </ion-col>
+                                                   
+
+                                                </ion-row>
+
+                                                <ion-row>
+                                                    <ion-col size="3" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.company}}
+                                                    </ion-col>
+                                                    <ion-col size="3" class="label-line-title"
+                                                        >
+                                                         Qty. {{item.fields.PLULPTotalQuantities}}
+
+                                                        
+                                                  
+                                                    </ion-col>
+                                                    <ion-col size="5" class="label-line-title"
+                                                    style="text-align: right;" >
+                                                     BinCode. {{item.fields.PLUBinCode}}
+
+                                                    
+                                              
+                                                </ion-col>
+
+                                                </ion-row>
+
+                                             
+                                                <ion-row>
+                                                    <ion-col size="4" class="label-line">
+                                                      Item No: {{item.fields.PLUItemNo}}
+                                                    </ion-col>
+                                                    <ion-col size="4" class="label-line">
+                                                      Measure: {{item.fields.PLUUnitofMeasure}}
+                                                    </ion-col>
+                                                    <ion-col size="4" class="label-line">
+                                                    LocationCode: {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row>
+                                                    <ion-col class="label-line" size="3">
+                                                    <!--     Line: {{item.LineNo}}-->
+                                                    </ion-col>
+                                                </ion-row>
+                                            </ion-col>
+                                        </ion-row>  
+                                    </div>
+                           
+                        
+
+                                
+
+                                 
+                                </ion-item>    
+                                
+
+                              <ion-item-options>
+
+                                <ion-row>
+                                    <ion-col class="label-line" size="4">
+                                        <ion-icon style="font-size: 40px;" name="trash-outline"></ion-icon>
+                                    </ion-col>
+                                </ion-row>
+
+                              </ion-item-options>
+                          
+                            </ion-item-sliding>
+                        </div>
+                        </ion-list>
+                    </ion-list>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+
+
+
+
+
+
+
+</ion-content>
+
+<PlureVersion showVersion="0">
+    <ion-row>
+        <ion-col size="4">
+        </ion-col>
+        <ion-col size="4" (click)="onBarCode()" >
+            <img src="../../../../assets/img/bar-code.svg" />
+            <div>Bar code</div>
+        </ion-col>
+        <ion-col size="4" (click)="onSubmit()">
+            <img src="../../../../assets/img/save.svg" />
+            <div>Save</div>
+        </ion-col>
+    </ion-row>
+</PlureVersion>
+
+

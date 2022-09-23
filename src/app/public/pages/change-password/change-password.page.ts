@@ -91,7 +91,7 @@ export class ChangePasswordPage implements OnInit {
       newPassword: sha512(this.frmChangePassword.value.NewPassword)
     }
 
-    console.log('onChangePassword', data);
+   // console.log('onChangePassword', data);
     
     this.apiService.postData('mobileUser', 'changepassword', data).then(
       async res => {
@@ -120,9 +120,15 @@ export class ChangePasswordPage implements OnInit {
     this.router.navigate(['login'], {replaceUrl: true});
   }
 
+
+
   togglePassword(idx: number): void {
     this.showPassword[idx] = !this.showPassword[idx];
     this.passwordToggleIcon[idx] = this.showPassword[idx] ? 'eye-off' : 'eye';
   }
 
+
+
 }
+
+

@@ -1,12 +1,12 @@
 <ion-content>
   <ion-row class="header">
-    <ion-col>
+    <ion-col size="9">
       <ion-label>{{options.name}}</ion-label>
     </ion-col>
   </ion-row>
   <ion-list *ngFor="let item of options.menu">
     <ion-row (click)="closeModal(item)">
-      <ion-col>
+      <ion-col size="9">
         <ion-icon [name]="item.icon"></ion-icon>
         <ion-label>{{item.name}}</ion-label>
       </ion-col>

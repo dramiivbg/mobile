@@ -13,7 +13,8 @@ import { AuthService } from '@svc/auth.service';
 
 @Component({
   selector: 'app-private',
-  templateUrl: './private.component.html'
+  templateUrl: './private.component.html',
+
 })
 export class PrivateComponent implements OnInit {
   private setTimeNetwork: any;

@@ -14,6 +14,7 @@ import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
 import { SalesService } from '@svc/Sales.service';
 import { SyncerpService } from '@svc/syncerp.service';
+import { WmsService } from '@svc/wms.service';
 import { SK_OFFLINE } from '@var/consts';
 import { E_PROCESSTYPE } from '@var/enums';
 import { constants } from 'buffer';
@@ -47,7 +48,8 @@ export class SearchComponent implements OnInit {
     , private moduleService: ModuleService
     , private offline: OfflineService
     , private storage: Storage
-    , private salesService: SalesService
+    , private salesService: SalesService,
+    private wmsService: WmsService
   ) {
     intServ.searchShow$.subscribe(
       async obj => {
@@ -60,7 +62,11 @@ export class SearchComponent implements OnInit {
         this.intServ.appBackFunc(objFunc);
 
         this.searchObj = obj;
+        console.log('searchObj =>',this.searchObj.type);
+      //  console.log('obj =>',obj);
         this.listsFilter = obj.data;
+
+     //   console.log('listFilter =>',this.listsFilter);
         this.lists = obj.data;
         this.module = await this.moduleService.getSelectedModule();
         this.process = await this.moduleService.getSelectedProcess();
@@ -77,12 +83,32 @@ export class SearchComponent implements OnInit {
 
   onChange(e) {
     let val = e.target.value;
+
+  //  console.log('change =>',val);
+    
     if (val === '') {
       this.listsFilter = this.lists;
     } else {
       this.listsFilter = this.lists.filter(
         x => {
           return (x.value.toLowerCase().includes(val.toLowerCase()) || (x.id.toLowerCase().includes(val.toLowerCase())));
+        }
+      )
+    } 
+  }
+
+
+  onChangeLP(e) {
+    let val = e.target.value;
+
+  //  console.log('change =>',val);
+    
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || (String(x.id).toLowerCase().includes(val.toLowerCase())));
         }
       )
     } 
@@ -120,13 +146,33 @@ export class SearchComponent implements OnInit {
   }
 
   onClick(item) {
-    this.searchObj.func(item);
-    if (this.searchObj.clear) this.onBack();
-    let appBack = {
-      old: true
+
+    let data = this.wmsService.getPallet();
+
+    if(data === undefined){
+
+
+
+      this.searchObj.func(item);
+      if (this.searchObj.clear) this.onBack();
+      let appBack = {
+        old: true
+      }
+      this.intServ.appBackFunc(appBack);
+    }else{
+
+    
+
+      this.searchObj.func(item,data);
+      if (this.searchObj.clear) this.onBack();
+      let appBack = {
+        old: true
+      }
+      this.intServ.appBackFunc(appBack);
     }
-    this.intServ.appBackFunc(appBack);
-  }
+
+    }
+  
 
   // Start Sales Orders
 
@@ -178,6 +224,8 @@ export class SearchComponent implements OnInit {
       return;
     } 
     if (sell.parameters !== undefined) {
+
+     
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
         async () =>{
           await this.deleteSalesTemp(i);
@@ -189,7 +237,10 @@ export class SearchComponent implements OnInit {
       if (!this.delete) {
         this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have permission to delete sales'));
       } else {
+       // console.log('parametros =>',sell);
         this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
+
+        
           async () =>{
             await this.deleteSales(sell, i);
           }

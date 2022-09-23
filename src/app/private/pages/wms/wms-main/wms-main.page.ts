@@ -40,7 +40,9 @@ export class WmsMainPage implements OnInit {
     try {
       this.intServ.loadingFunc(true);
       this.module = await this.moduleService.getSelectedModule();
+     // console.log('modules =>',this.module);
       this.session = (await this.js.getSession()).login;
+    //  console.log('session =>',this.session)
       this.intServ.loadingFunc(false);
     } catch (error) {
       this.intServ.loadingFunc(false);
@@ -55,15 +57,25 @@ export class WmsMainPage implements OnInit {
   }
 
   public async onWMS(process: Process) {
+
+  //  console.log('procesos =>',process)
     this.intServ.loadingFunc(true);
     const method = await this.method(process);
+   console.log('procesos =>', method);
     process.salesType = await this.general.typeSalesBC(process);
+   // console.log('tipos de ventas =>',process.salesType);
     process.sysPermits = await this.general.getPermissions(process.permissions);
+    // console.log('tipos de permisos =>',process.sysPermits);
     await this.moduleService.setSelectedProcess(process);
+
+   // console.log('erpUserId =>', this.module.erpUserId);
+
     if (process.processId === 'P007') {
-      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: this.module.erpUserId }]);
+      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
       let rsl = await this.syncerp.setRequest(p);
       let wareReceipts = rsl.WarehouseReceipts;
+
+      
       await this.mappingWareReceipts(wareReceipts, process);
     }
     this.intServ.loadingFunc(false);
@@ -71,9 +83,11 @@ export class WmsMainPage implements OnInit {
 
   private async mappingWareReceipts(wareReceipts: any, process: Process) {
     let receipts = await this.general.ReceiptsList(wareReceipts);
-    if (receipts.length > 0) {
+    if (receipts > 0 || receipts != undefined) {
       console.log(process);
       let obj = this.general.structSearch(receipts, `Search ${process.description}`, 'Receipts', async (wms) => {
+
+        console.log('data =>',wms);
         let navigationExtras: NavigationExtras = {
           state: {
             wms: wms,

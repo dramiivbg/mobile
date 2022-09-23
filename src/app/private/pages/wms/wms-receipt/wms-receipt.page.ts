@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { ModalController, PopoverController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
 import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { GeneralService } from '@svc/general.service';
@@ -10,7 +10,16 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
+import { length } from 'localforage';
 import { LicensePlatesComponent } from '../license-plates/license-plates.component';
+
+import {PopoverLpsComponent} from '../../../components/popover-lps/popover-lps.component';
+import { ELOOP } from 'constants';
+import { Key } from 'protractor';
+import { SqlitePlureService } from '@svc/sqlite-plure.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
+import { typeWithParameters } from '@angular/compiler/src/render3/util';
 
 @Component({
   selector: 'app-wms-receipt',
@@ -27,6 +36,15 @@ export class WmsReceiptPage implements OnInit {
   private process: Process;
   private routExtras: any;
 
+  private lp :any;
+
+  private list: any = [];
+
+  private  LpL: any = [];
+
+
+private cantidades: number[] = [];
+
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
     , private js: JsonService
@@ -36,6 +54,10 @@ export class WmsReceiptPage implements OnInit {
     , private general: GeneralService
     , private barcodeScanner: BarcodeScanner
     , public popoverController: PopoverController
+    ,private interceptService: InterceptService
+    ,private jsonService: JsonService
+    , private sqlitePlureService: SqlitePlureService
+    , private alertController: AlertController
   ) { 
     let objFunc = {
       func: () => {
@@ -46,6 +68,8 @@ export class WmsReceiptPage implements OnInit {
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.routExtras = this.router.getCurrentNavigation().extras;
+
+      
         this.getReceipt();
       } else {
         this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
@@ -109,28 +133,54 @@ export class WmsReceiptPage implements OnInit {
     }
   }
 
-  public async onPopLicensePlates(ev: any, item: any) {
-    this.intServ.loadingFunc(true);
-    let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
-    let lstUoM = await this.wmsService.getUnitOfMeasure();
+
+  public async onPopoverPl(ev: any, items: any) {
     const popover = await this.popoverController.create({
-      component: LicensePlatesComponent,
-      cssClass: 'popLicensePlate',
+      component: PopoverLpsComponent,
+      cssClass: 'popoverPls',
       event: ev,
       translucent: true,
-      componentProps: { options: { item, lp, lstUoM } },
-      backdropDismiss: false
+      componentProps: {lps:items}
     });
-    this.intServ.loadingFunc(false);
-    await popover.present();  
-    const { data } = await popover.onDidDismiss();
-    console.log(data);
+    await popover.present();
+  
+   
+  }
+  public async onPopLicensePlates(ev: any, item: any) {
+    this.intServ.loadingFunc(true);
+
+   // console.log(item);
+    let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
+    console.log('Bincode =>', item.BinCode);
+    let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
+
+    if(lp.LP_Pending_To_Receive > 0){
+      const popover = await this.popoverController.create({
+        component: LicensePlatesComponent,
+        cssClass: 'popLicensePlate',
+        event: ev,
+        translucent: true,
+        componentProps: { options: { item, lp, lstUoM } },
+        backdropDismiss: false
+      });
+      this.intServ.loadingFunc(false);
+      await popover.present();  
+      const { data } = await popover.onDidDismiss();
+      console.log(data);
+ }else{
+
+       this.interceptService.loadingFunc(false);
+    this.interceptService.alertFunc(this.jsonService.getAlert('alert', 'alert','you have created all the LP Pending To Receive'))
+    }
+ 
   }
 
   private async getReceipt() {
     this.intServ.loadingFunc(true);
     let wms = this.routExtras.state.wms;
+   // console.log('data =>', wms);
     let receipt = await this.wmsService.getReceiptByNo(wms.id);
+ 
     if (receipt.Error !== undefined) {
       this.intServ.alertFunc(this.js.getAlert('error', 'Error', receipt.Error.Message));
     } else {
@@ -145,7 +195,10 @@ export class WmsReceiptPage implements OnInit {
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
-    console.log(this.wareReceipts);
+
+   this.GetLicencesPlateInWR(this.wareReceipts);
+
+
 
   }
 
@@ -156,7 +209,7 @@ export class WmsReceiptPage implements OnInit {
         menu: [
           { 
             id: 1, 
-            name: 'Add/Edit', 
+            name: 'Add', 
             icon: 'newspaper-outline',
             obj: item
           },
@@ -169,5 +222,281 @@ export class WmsReceiptPage implements OnInit {
         ]
       }
     };
+
   }
+
+
+
+
+ async GetLicencesPlateInWR(wareReceipts: any){
+
+
+  
+  
+  const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No);
+
+ console.log('licence plate =>', lps);
+
+
+
+this.list = await this.wmsService.createListLP(lps);
+
+let contador = 0;
+
+
+
+
+
+
+this.cantidades = [];
+
+
+let LpS = [];
+let LpI = [];
+
+this.LpL = [];
+
+
+
+
+
+ for (const i in this.list) {
+
+      for (const y in this.list[i].fields) {
+
+      
+
+    if(this.list[i].fields[y].name === "PLULPDocumentType" && this.list[i].fields[y].value === "Single"){
+
+      LpS.push(this.list[i]);
+
+      console.log(LpS);
+
+      }
+
+    
+
+    }
+
+ }
+
+
+
+
+ LpS.filter(lp => {
+
+  for (const key in lp.fields) {
+
+      if(lp.fields[key].value === "Item" && lp.fields[key].name === "PLUType"){
+
+       LpI.push(lp);
+      
+       }
+
+
+ 
+  }
+ });
+
+wareReceipts.lines.forEach( async (el, index) => {
+ 
+  LpI.filter(lp => {
+
+  for (const key in lp.fields) {
+
+    if(lp.fields[key].value === el.LineNo && lp.fields[key].name === "PLULineNo"){
+
+
+      contador++;
+
+      this.LpL.push(lp);
+
+
+ 
+
+}
+
+
+ 
+  }
+  
+
+ });
+
+ this.cantidades[index] = contador;
+
+ contador = 0;
+
+});
+
+//console.log('LP line =>',this.LpL);
+
+//console.log('cantidades =>', this.cantidades);
+
+ 
+ }
+
+
+
+  showLPs(item: any){
+
+
+    this.sqlitePlureService.setItem('line', item);
+
+   let list = [];
+
+   
+
+   this.LpL.filter(lp =>{
+
+      for (const key in lp.fields) {
+    
+
+        if(lp.fields[key].name === "PLULineNo" && item.LineNo === lp.fields[key].value){
+
+          list.push(lp);
+
+        }else{
+
+          console.log("nooo");
+        }
+      }
+
+   
+
+    });
+
+
+    
+
+  
+
+
+  this.onPopoverPl('event', list );
+    
+
+  }
+
+
+  public async  newPallet(){
+
+    this.intServ.loadingFunc(true);
+
+    let wareReceipts = this.wareReceipts;
+
+  let pallet = await   this.wmsService.CreateLPPallet_FromWarehouseReceiptLine(this.wareReceipts);
+
+  let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
+
+
+  let palletN = await this.wmsService.ListLpH(palletL);
+
+
+
+
+
+
+
+
+   if(pallet.Created){
+
+
+
+    let navigationExtras: NavigationExtras = {
+      state: {
+        pallet: palletN,
+        new: false
+      },
+      replaceUrl: true
+    };
+    this.router.navigate(['page/wms/newPallet'], navigationExtras);
+
+    
+
+
+   }else{
+
+    this.intServ.loadingFunc(false);
+
+    this.intServ.alertFunc(this.js.getAlert('error', 'error', pallet.Error.Message));
+
+   
+  
+
+
+   }
+
+  
+
+    
+  }
+
+
+  
+  
+ async onSubmit(){
+
+
+  this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm', 'Confirm WH Receipt?',() =>{
+
+
+    this.wmsService.set(this.wareReceipts);
+
+    var alert = setTimeout(() => {
+      this.intServ.alertFunc(this.js.getAlert('continue', 'continue', 'Continue Process Put-Away?', () =>{
+
+
+         
+          
+    var alert = setTimeout(() => {
+              this.intServ.alertFunc(this.js.getAlert('edit', 'By Default Put Away processed to the floor!', 'Edit Default Put-Away?', async() =>{
+
+                this.intServ.loadingFunc(true);
+
+                let res = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
+
+                console.log('error =>',res);
+        
+                if(!res.Error){
+        
+                 this.intServ.loadingFunc(false);
+        
+                 this.intServ.alertFunc(this.js.getAlert('sucess', 'sucess', ' warehouse Receipts successfully registered', () => this.router.navigate(['/page/wms/wmsMain'])))
+        
+        
+                }else{
+        
+                 this.intServ.loadingFunc(false);
+                  this.intServ.alertFunc(this.js.getAlert('error','error','There is nothing to publish, please create license plate'));
+        
+                }
+
+              }));
+
+              clearTimeout(alert);
+            }, 100)
+              
+         
+
+           
+    
+
+      }));
+      clearTimeout(alert);
+    }, 100)
+    
+
+  }))
+
+
+
+
+
+
+
+  }
+
+
+
+
 }

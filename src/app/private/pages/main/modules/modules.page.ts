@@ -62,14 +62,25 @@ export class ModulesPage implements OnInit {
 
   async ngOnInit() {
     let sync = await this.storage.get(SK_SYNC);
+
+   // console.log('sync =>',sync);
     sync = (sync === undefined || sync === null) ? false : sync;
     this.intServ.loadingFunc(true);
     await this.onEnvironment();
     this.environment = (await this.authService.getUserSession()).environment;
+   // console.log('enviroment =>',this.environment);
     for(let i in this.environment.modules) {
+     // console.log('module =>', i);
       let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
+
+     // console.log('moduleType =>', this.environment.modules[i]);
+     // console.log('moduleType =>', moduleType);
       let obj: any = this.environment.modules[i];
+
+     // console.log('moduleType =>',obj);
       obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
+
+    
       this.modules.push(obj);
       if (!sync) await this.onSync(this.environment.modules[i]);
     }

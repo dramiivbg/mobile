@@ -95,6 +95,7 @@ export class SalesFormPage implements OnInit {
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.routExtras = this.router.getCurrentNavigation().extras;
+       
         this.getConstructor();
       } else {
         this.initNew();
@@ -222,9 +223,13 @@ export class SalesFormPage implements OnInit {
   onCustomer() {
     if (this.frm.controls.lines.value.length < 1) {
       let obj = this.general.structSearch(this.customers, 'Search customers', 'Customers', (item) => {
+
+      
         this.customer = item;
         this.setCustomer();
       });
+
+      console.log('item =>', obj);
       this.intServ.searchShowFunc(obj);
     } else {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Customer cannot be changed because has items on order'));
@@ -280,6 +285,7 @@ export class SalesFormPage implements OnInit {
 
   onIncDec(i, dec) {
     let lines = this.frm.controls.lines.value;
+    console.log('lines =>', lines[i].quantity);
     if (dec === 0 && lines[i].quantity !== 1) {
       lines[i].quantity -= 1;
     } else if (dec === 1) {
@@ -306,6 +312,8 @@ export class SalesFormPage implements OnInit {
   }
 
   ionMeasure(i) {
+
+    console.log('i =>', i)
     let lineDiscount: Number = 0;
     let val: any = event.target;
     let lines = this.frm.controls.lines.value;
@@ -440,6 +448,9 @@ export class SalesFormPage implements OnInit {
    * @param i @line
    */
    async onChangeDiscount(e, i) {
+
+    console.log('i =>',i);
+    console.log('e =>',e);
     let val = e.target.value === '' ? 0 : e.target.value;
     let lines = this.frm.controls.lines.value;
     lines[i].lineDiscountPercentage = Number(val);

@@ -53,8 +53,11 @@ export class SalesPagePage implements OnInit {
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
         this.salesList = this.router.getCurrentNavigation().extras.state.salesList;
+     //   console.log('lista de ventas =>',this.salesList);
         if (this.salesList.length > 0)
-          this.sales = this.salesList[this.salesList.length- 1];
+          this.sales = this.salesList[this.salesList.length- 1]; 
+          
+
         else
           this.sales = undefined;
       } else {
@@ -245,6 +248,8 @@ export class SalesPagePage implements OnInit {
 
   private async getSales() {
     this.process = await this.moduleService.getSelectedProcess();
+
+    console.log('process =>', this.process);
     this.salesList = await this.salesService.getSales(this.process, this.module.erpUserId);
     if (this.salesList.length > 0)
       this.sales = this.salesList[this.salesList.length- 1];
