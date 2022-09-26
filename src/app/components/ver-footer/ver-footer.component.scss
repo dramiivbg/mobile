@@ -1,14 +1,17 @@
 div.logofooter {
     bottom: 0;
-    background: #fff;
+    background: transparent linear-gradient(180deg, #D8D8D800 0%, #6C6C6C4F 100%) 0% 0% no-repeat padding-box;
+    opacity: 1;
     padding: 10px;
     position: fixed;
     text-align: center;
     width: 100%;
+
     img {
         display: inline-block;
         margin-top: -28px;
     }
+
     div.version {
         color: var(--ion-color-plureBlue);
         margin-top: -20px;
@@ -23,14 +26,17 @@ div.logofooter2 {
     position: fixed;
     text-align: center;
     width: 100%;
+
     img {
         display: inline-block;
     }
+
     div.version {
         color: var(--ion-color-plureBlue);
         margin-top: -20px;
         font-size: 12px;
     }
+
     ion-label {
         font-size: 12px;
     }
