@@ -1,5 +1,6 @@
 import { identifierModuleUrl } from "@angular/compiler";
 import { Injectable } from "@angular/core";
+import { parseJSON } from "jquery";
 import { Observable, Subject } from "rxjs";
 import { InterceptService } from "./intercept.service";
 import { SyncerpService } from "./syncerp.service";
@@ -39,15 +40,18 @@ export class WmsService {
 
     }
 
-    public async GetLicencesPlateInWR(No: string){
+    public async GetLicencesPlateInWR(No: string, boolean: boolean){
 
 
         try {
             let obj: any = [{
-                No
+                No,
+                IsPallet: boolean,
+                LicensePlateStatus:1,
+              
             }]; 
             
-            let p = await this.syncErp.processRequestParams('GetLicencesPlateInWR', obj);
+            let p = await this.syncErp.processRequestParams('GetLicencesPlateByStatus', obj);
             let rsl = await this.syncErp.setRequest(p);
             return rsl;
         } catch (error) {
@@ -217,14 +221,16 @@ export class WmsService {
     }
 
 
-    public async getLpNo(No){
+    public async getLpNo(No:any){
 
 
         try {
 
             let obj: any = [{
 
-                No
+                No,
+
+         
             }];
 
             let p = await this.syncErp.processRequestParams('GetLicencesPlate', obj);
@@ -276,10 +282,43 @@ export class WmsService {
             LPChild: listLP
         }];
 
-        console.log(obj);
+        console.log( JSON.stringify(obj));
 
         
         let p = await this.syncErp.processRequestParams('Assign_LPChild_to_LP_Pallet_From_WR', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+   }
+
+
+   public async Assign_ItemChild_to_LP_Pallet_From_WR( LP_Pallet_No:any, WarehouseReceipt_No:any,  Item_Child_No:any, Qty:any,  WarehouseReceipt_LineNo:any){
+
+    
+
+        
+    try {
+
+        let obj: any = [{
+
+            LP_Pallet_No,
+            WarehouseReceipt_No,
+            Item_Child_No,
+            Qty,
+            WarehouseReceipt_LineNo
+        }];
+
+        console.log( JSON.stringify(obj));
+
+      
+
+        
+        let p = await this.syncErp.processRequestParams('Assign_ItemChild_to_LP_Pallet_From_WR', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -304,7 +343,7 @@ export class WmsService {
         console.log(obj);
 
         
-        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromWR', obj);
+        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAway', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -358,6 +397,8 @@ export class WmsService {
             
         }];
 
+
+        
 
 
         
@@ -559,6 +600,147 @@ export class WmsService {
  
  
      }
+
+
+     
+     public async ListPallet(listLp: any){
+
+        // console.log(listLp);
+ 
+        let list: any[] = [];
+
+
+
+        let product = {  
+       PLULPDocumentNo: "",
+        PLULineNo: 0,
+        PLULPDocumentType: "",
+        PLUType: "",
+        PLUNo: "",
+        PLUVariantCode: null,
+        PLUQuantity: 0,
+        PLUQtyperUnitofMeasure: 0,
+        PLUQuantityBase: 0 ,
+        PLUUnitofMeasureCode : "",
+        PLUExpirationDate: null,
+        PLUParentLPNo: null,
+        PLUParentLPLineNo: null,
+        PLUStatus: null,
+        PLUSerialNo: null,
+        PLULotNo: null,
+        PLUDescription: "",
+        PLUEntryQuantity: null,
+        PLUSourceDocument: "",
+        PLUSourceDocumentNo: "",
+        PLUDocument: "",
+        PLUDocumentNo: "",
+        PLULicensePlateStatus: "",
+        PLUShipmentSrcDocument: "",
+        PLUShipmentSrcDocumentNo: null,
+        PLUSourceLineNo: 0,
+        PLUWhseLineNo: 0
+}
+
+         let obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields: [],
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+ 
+      for(let i in   listLp.LicensePlates.LPLines){
+ 
+        obj.company = listLp.LicensePlates.LPLines[i].company;
+        obj.fieldCount = listLp.LicensePlates.LPLines[i].fieldCount;
+        obj.id = listLp.LicensePlates.LPLines[i].id;
+        obj.name = listLp.LicensePlates.LPLines[i].name;
+        obj.position = listLp.LicensePlates.LPLines[i].position;
+        obj.recordId = listLp.LicensePlates.LPLines[i].recordId;
+ 
+        
+     for (const y in listLp.LicensePlates.LPLines[i].fields) {
+ 
+
+
+         product[listLp.LicensePlates.LPLines[i].fields[y].name] =  listLp.LicensePlates.LPLines[i].fields[y].value;
+
+       
+
+        
+
+
+      }
+
+      obj.fields.push(product);
+
+      list.push(obj);
+
+     
+
+
+      product = {  
+        PLULPDocumentNo: "",
+         PLULineNo: 0,
+         PLULPDocumentType: "",
+         PLUType: "",
+         PLUNo: "",
+         PLUVariantCode: null,
+         PLUQuantity: 0,
+         PLUQtyperUnitofMeasure: 0,
+         PLUQuantityBase: 0 ,
+         PLUUnitofMeasureCode : "",
+         PLUExpirationDate: null,
+         PLUParentLPNo: null,
+         PLUParentLPLineNo: null,
+         PLUStatus: null,
+         PLUSerialNo: null,
+         PLULotNo: null,
+         PLUDescription: "",
+         PLUEntryQuantity: null,
+         PLUSourceDocument: "",
+         PLUSourceDocumentNo: "",
+         PLUDocument: "",
+         PLUDocumentNo: "",
+         PLULicensePlateStatus: "",
+         PLUShipmentSrcDocument: "",
+         PLUShipmentSrcDocumentNo: null,
+         PLUSourceLineNo: 0,
+         PLUWhseLineNo: 0
+ }
+ 
+          obj= {
+ 
+             company: "",
+             fieldCount: 0,
+             fields: [],
+             id: 0,
+             name: "",
+             position: "",
+             recordId: ""
+ 
+ 
+          }
+ 
+     }
+
+     return list;
+
+  
+ 
+ 
+ 
+
+    
+ 
+ 
+     }
+
 
 
      

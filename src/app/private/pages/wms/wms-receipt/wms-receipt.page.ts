@@ -20,6 +20,7 @@ import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
+import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 
 @Component({
   selector: 'app-wms-receipt',
@@ -233,9 +234,13 @@ private cantidades: number[] = [];
 
   
   
-  const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No);
+  const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, false);
 
- console.log('licence plate =>', lps);
+  const lpsP = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, true);
+
+  console.log(lpsP);
+
+// console.log('licence plate =>', lps);
 
 
 
@@ -384,15 +389,17 @@ wareReceipts.lines.forEach( async (el, index) => {
 
     let wareReceipts = this.wareReceipts;
 
+    this.wmsService.set(this.wareReceipts);
+
   let pallet = await   this.wmsService.CreateLPPallet_FromWarehouseReceiptLine(this.wareReceipts);
 
   let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
 
-
+    console.log(palletL);
   let palletN = await this.wmsService.ListLpH(palletL);
 
 
-
+   
 
 
 
@@ -426,9 +433,68 @@ wareReceipts.lines.forEach( async (el, index) => {
 
    }
 
+
+   
+
   
 
     
+  }
+
+
+
+  async listPallet(){
+
+
+
+    this.intServ.loadingFunc(true);
+    
+    const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
+
+
+    let pallet = await this.wmsService.ListPallet(lpsP);
+
+    let pallet2 = pallet;
+
+    pallet.filter(lp =>{
+
+
+      pallet2.filter((lp2,index) => {
+
+        if(lp.fields[0].PLULPDocumentNo == lp2.fields[0].PLULPDocumentNo){
+
+
+          lp.fields.push(lp2.fields[0]);
+
+          pallet.splice(index,1);
+
+
+
+
+
+
+        }
+      })
+    })
+
+
+   
+
+    let wareReceipts = this.wareReceipts;
+
+
+
+
+    let navigationExtras: NavigationExtras = {
+      state: {
+        pallet, 
+        wareReceipts,
+        new: false
+      },
+      replaceUrl: true
+    };
+    this.router.navigate(['page/wms/listPallet'], navigationExtras);
+
   }
 
 
