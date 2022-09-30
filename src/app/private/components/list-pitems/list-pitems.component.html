@@ -2,13 +2,15 @@
 
 <PlureHeader type="1" title="License Plate - Pallet "  url="page/wms/wmsMain" notify="0"></PlureHeader>
 
-   <p style="text-align: center;"> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
+    <div class="docnumber">
+     <p> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
+    </div>
 
 <ion-content >
 
   <ion-row class="header" style="text-align: center;">
-    <ion-col size="9">
-      <ion-label style="font-family: Arial, Helvetica, sans-serif;"> License Plates - Single </ion-label>
+    <ion-col class="TitleHeader">
+      <ion-label> License Plates - Single </ion-label>
     </ion-col>
   </ion-row><br>
 
@@ -44,8 +46,8 @@
 
 
 <ion-row class="header" style="text-align: center;">
-  <ion-col size="9">
-    <ion-label style="font-family: Arial, Helvetica, sans-serif;">Items</ion-label>
+  <ion-col class="TitleHeader">
+    <ion-label>Items</ion-label>
   </ion-col>
 </ion-row><br>
 
