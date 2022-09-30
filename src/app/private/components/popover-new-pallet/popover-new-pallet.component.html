@@ -1,19 +1,25 @@
 
 
-<PlureHeader type="1" title="new Pallet" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader  type="1" title="new Pallet" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
 
 <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="boolean">
-  <ion-fab-button color="secondary" (click)="listLpOrItem(pallet)">
-    <ion-icon name="add"></ion-icon>
+  <ion-fab-button color="secondary"  > 
+    <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
   </ion-fab-button>
+  <ion-fab-list side="top">
+    <ion-fab-button color="secondary" (click)="listLpOrItem(pallet)">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-button color="danger"  (click)="delete()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-fab-button>
+
+  </ion-fab-list>
 </ion-fab>
 
-<ion-fab horizontal="start" vertical="bottom" slot="fixed"  *ngIf="boolean">
-  <ion-fab-button color="danger"  (click)="delete()">
-    <ion-icon name="close-outline"></ion-icon>
-  </ion-fab-button>
 
-</ion-fab>
 
 <ion-content *ngIf="boolean">
     <form>
@@ -42,32 +48,7 @@
             </ion-row>
 
 
-            
-            <ion-row class="delivery newColor"  >
-      
-                
-               
-       
-              <ion-icon name="newspaper-outline" style="font-size: 30px;"></ion-icon>
-               
-                  <ion-input (ionInput)="filter($event)" autocorrect="on" autofocus="on" style="text-align: right; width: 100%;" clearInput="true" clearOnEdit="true" color="primary" inputmode="text" placeholder="Select LP/Pallet:" required="true"></ion-input>
-                  <img src="../../../../assets/img/modules/sales/edit.svg"  style="text-align: right; font-size: 30px;"  />
-
-              
           
-             
-           
-
-            
-          
-
-
-
-
-        
-
-          
-        </ion-row>
         
           
         </div>
@@ -87,12 +68,16 @@
                     <ion-list >
                         <div>
 
-                            <ion-item-sliding>
+                      
 
                         
-                                <ion-item *ngIf="itemsLT !== undefined">
+                            
                                     <div class="label-lines" part="item-width"  >
                                         <ion-row *ngFor="let item of itemsL; let i=index">
+
+                                          <ion-item-sliding>
+
+                                            <ion-item *ngIf="itemsLT !== undefined"  style="width: 100%;">
                                             <ion-col size="15" class="border">
                                                 <ion-row>
                                                     <ion-col size="3" style="overflow: hidden;"
@@ -108,7 +93,7 @@
                                                      
                                                     </ion-col>
 
-                                                    <ion-col size="5" class="label-line-title"
+                                                    <ion-col size="3" class="label-line-title"
                                                     style="text-align: right;">
                                                
                                                 LineNo. {{item.LineNo
@@ -116,10 +101,22 @@
                                                     
                                                  
                                                 </ion-col>
+
+                                              
                                                 </ion-row>
                                                 
                                               
                                             </ion-col>
+
+                                          </ion-item> 
+
+                                        <ion-item-options>
+                                        <ion-item-option color="danger" (click)="deleteI(item)">
+                                          <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                        </ion-item-option>
+                                      </ion-item-options>
+
+                                              </ion-item-sliding>
                                         </ion-row>
                                     </div>
                    
@@ -127,14 +124,16 @@
                                 
 
                                  
-                                </ion-item>    
+                               
 
 
 
                                 
-                                <ion-item *ngIf=" lpsLT !== undefined">
+                               
                                   <div class="label-lines" part="item-width" >
                                       <ion-row  *ngFor="let item of lpsL; let i= index ">
+                                        <ion-item-sliding>
+                                        <ion-item *ngIf=" lpsLT !== undefined" style="width: 100%;">
                                         <ion-col size="15" class="item border" >
 
                                           <ion-row >
@@ -160,7 +159,7 @@
                                                   
                                             
                                               </ion-col>
-                                              <ion-col size="5" class="label-line-title"
+                                              <ion-col size="3" class="label-line-title"
                                               style="text-align: right;" >
                                                {{item.fields.PLUDescription
                                                }}
@@ -191,8 +190,14 @@
                                               </ion-col>
                                           </ion-row>
                                       </ion-col><br>
+                                    </ion-item>   
 
-
+                                     <ion-item-options>
+                                        <ion-item-option color="danger"  (click)="deleteL(item)">
+                                          <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                        </ion-item-option>
+                                      </ion-item-options>
+                                  </ion-item-sliding>
                                       </ion-row>
                                   </div>
                  
@@ -200,12 +205,11 @@
                               
 
                                
-                              </ion-item>   
+                            
                                 
                                  
 
-                          
-                            </ion-item-sliding>
+                         
                         </div>
                     </ion-list>
                 </div>
@@ -221,20 +225,20 @@
 
   <ion-row class="header" style="text-align: center;">
     <ion-col size="9">
-      <ion-label>License plate</ion-label>
+      <ion-label style="font-family: Arial, Helvetica, sans-serif;">License plate</ion-label>
     </ion-col>
   </ion-row><br>
 
 <ion-grid>
   <ion-row class=" newColor" >
     <ion-col size="3">
-      <div>LP No</div>
+      <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
     </ion-col>
     <ion-col size="4">
-      <div>Qty</div>
+      <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
     </ion-col>
     <ion-col size="4">
-      <div>UoM</div>
+      <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
     </ion-col>
   </ion-row>
 
@@ -256,7 +260,7 @@
 
 <ion-row class="header" style="text-align: center;">
   <ion-col size="9">
-    <ion-label>Items</ion-label>
+    <ion-label style="font-family: Arial, Helvetica, sans-serif;">Items</ion-label>
   </ion-col>
 </ion-row><br>
 
@@ -264,13 +268,13 @@
 <ion-grid>
   <ion-row class=" newColor" >
     <ion-col size="3">
-      <div>ItemNo</div>
+      <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
     </ion-col>
     <ion-col size="4">
-      <div>Qty</div>
+      <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
     </ion-col>
     <ion-col size="4">
-      <div>LineNo</div>
+      <div style="font-family: Arial, Helvetica, sans-serif;">LineNo</div>
     </ion-col>
   </ion-row>
 

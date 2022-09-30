@@ -10,7 +10,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
-import { length } from 'localforage';
+
 import { LicensePlatesComponent } from '../license-plates/license-plates.component';
 
 import {PopoverLpsComponent} from '../../../components/popover-lps/popover-lps.component';
@@ -197,6 +197,8 @@ private cantidades: number[] = [];
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
 
+
+    console.log(this.wareReceipts);
    this.GetLicencesPlateInWR(this.wareReceipts);
 
 
@@ -236,11 +238,8 @@ private cantidades: number[] = [];
   
   const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, false);
 
-  const lpsP = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, true);
 
-  console.log(lpsP);
-
-// console.log('licence plate =>', lps);
+//console.log('licence plate =>', lps);
 
 
 
@@ -446,36 +445,101 @@ wareReceipts.lines.forEach( async (el, index) => {
   async listPallet(){
 
 
+    
 
     this.intServ.loadingFunc(true);
     
     const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
 
 
-    let pallet = await this.wmsService.ListPallet(lpsP);
 
-    let pallet2 = pallet;
-
-    pallet.filter(lp =>{
+  
+    console.log(lpsP.length);
 
 
-      pallet2.filter((lp2,index) => {
-
-        if(lp.fields[0].PLULPDocumentNo == lp2.fields[0].PLULPDocumentNo){
-
-
-          lp.fields.push(lp2.fields[0]);
-
-          pallet.splice(index,1);
-
+ 
+      console.log('license plate pallet =>',lpsP);
+   
+      let pallet = await this.wmsService.ListPallet(lpsP);
+  
+  
+      let pallet2 = await  this.wmsService.ListPallet(lpsP);
+  
+     
 
 
 
 
+      if(pallet.length > 0 || pallet != undefined){
+          
+    for (const i in pallet) {
+   
+      for (const j in pallet2) {
 
+    
+       if(pallet[i] != undefined){
+
+        if(pallet[i].fields[0].PLUQuantity != null){
+
+        if (pallet[i].fields[0].PLULPDocumentNo === pallet2[j].fields[0].PLULPDocumentNo ) {
+          
+          if(j != i){
+
+          
+
+          let con =  pallet.splice(Number(j),1);
+           console.log(i,j);
+         // console.log(con)
+
+          }
+       
+          
         }
-      })
-    })
+      }else{
+
+        pallet.splice(Number(i),1);
+
+      }
+      }
+    }
+    }
+
+
+
+    console.log(pallet);
+  
+   
+  
+
+    
+
+    for (const i in pallet) {
+    
+      for (const j in pallet2) {
+        if (pallet[i].fields[0].PLULPDocumentNo === pallet2[j].fields[0].PLULPDocumentNo) {
+          
+          
+       
+
+
+          let line = pallet[i].fields.find(lp => lp.PLUNo === pallet2[j].fields[0].PLUNo);
+
+          if(line === null || line === undefined){
+
+            pallet[i].fields.push( pallet2[j].fields[0]);
+
+          
+         
+         }
+         
+        }
+      }
+    }
+
+
+    
+
+    
 
 
    
@@ -495,6 +559,19 @@ wareReceipts.lines.forEach( async (el, index) => {
     };
     this.router.navigate(['page/wms/listPallet'], navigationExtras);
 
+  
+
+
+  
+
+  }
+  else{
+
+    this.intServ.loadingFunc(false);
+
+
+    this.intServ.loadingFunc(this.js.getAlert('alert', '', 'You do not have license plate created'))
+  }
   }
 
 
@@ -503,11 +580,22 @@ wareReceipts.lines.forEach( async (el, index) => {
  async onSubmit(){
 
 
-  this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm', 'Confirm WH Receipt?',() =>{
+  this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm', 'Confirm WH Receipt?',async() =>{
 
 
-    this.wmsService.set(this.wareReceipts);
 
+
+
+  let postWR =  await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
+
+  this.wmsService.setPutAway(postWR);
+
+  console.log('postWR',postWR)
+
+
+  if(!postWR.Error){
+
+    
     var alert = setTimeout(() => {
       this.intServ.alertFunc(this.js.getAlert('continue', 'continue', 'Continue Process Put-Away?', () =>{
 
@@ -519,23 +607,34 @@ wareReceipts.lines.forEach( async (el, index) => {
 
                 this.intServ.loadingFunc(true);
 
-                let res = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
 
-                console.log('error =>',res);
-        
-                if(!res.Error){
-        
-                 this.intServ.loadingFunc(false);
-        
-                 this.intServ.alertFunc(this.js.getAlert('sucess', 'sucess', ' warehouse Receipts successfully registered', () => this.router.navigate(['/page/wms/wmsMain'])))
-        
-        
+                let dataPw = this.wmsService.getPutAway();
+
+
+                let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
+
+
+                console.log('postWP', data);
+
+                if(!data.Error){
+
+
+                  this.intServ.loadingFunc(false);
+                  this.intServ.alertFunc(this.js.getAlert('success', '', 'The put-away was done successfully'))
+
+                  
                 }else{
-        
-                 this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('error','error','There is nothing to publish, please create license plate'));
-        
+
+                 
+                  this.intServ.loadingFunc(false);
+                  this.intServ.alertFunc(this.js.getAlert('error', '', data.Error.Message))
+
+
                 }
+
+            
+        
+             
 
               }));
 
@@ -550,6 +649,18 @@ wareReceipts.lines.forEach( async (el, index) => {
       }));
       clearTimeout(alert);
     }, 100)
+  }else{
+
+
+
+    let message = postWR.Error.Message.split('/')
+
+    this.intServ.alertFunc(this.js.getAlert('error', '',message ))
+
+
+
+  }
+
     
 
   }))

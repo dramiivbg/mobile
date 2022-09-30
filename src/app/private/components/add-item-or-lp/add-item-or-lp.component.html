@@ -1,14 +1,15 @@
 
 
-<PlureHeader type="1" title="License Plate - Pallet "  url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader type="1" title="Add LP or Item" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
-   <p style="text-align: center;"> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
 
-<ion-content >
+
+
+<ion-content *ngIf="!boolean">
 
   <ion-row class="header" style="text-align: center;">
     <ion-col size="9">
-      <ion-label style="font-family: Arial, Helvetica, sans-serif;"> License Plates - Single </ion-label>
+      <ion-label style="font-family: Arial, Helvetica, sans-serif;">License plate</ion-label>
     </ion-col>
   </ion-row><br>
 
@@ -25,17 +26,15 @@
     </ion-col>
   </ion-row>
 
-  <ion-row class=" delivery newColor" *ngFor="let item of listLp ; let i= index" (click)="opcionL(item, $event)">
+  <ion-row class=" delivery newColor" *ngFor="let item of listLp; let i= index" (click)="addLP(item)">
     <ion-col size="3">
-      <div>{{item.PLUNo
-      }}</div>
+      <div>{{item.fields.PLULPDocumentNo}}</div>
     </ion-col>
     <ion-col size="4">
-      <div>{{item.PLUQuantity}}</div>
+      <div>{{item.fields.PLUQuantity}}</div>
     </ion-col>
     <ion-col size="4">
-      <div>{{item.PLUUnitofMeasureCode
-      }}</div>
+      <div>{{item.fields.PLUUnitofMeasureCode}}</div>
     </ion-col>
   </ion-row>
 
@@ -64,21 +63,19 @@
   </ion-row>
 
 
-  <ion-row class=" delivery newColor" *ngFor="let item of listItem ; let i= index" (click)="opcionI(item, $event)">
+  <ion-row class=" delivery newColor" *ngFor="let item of items.Possible_ItemsChilds; let i=index" (click)="addItem(item)">
 
    
 
   
-    <ion-col size="3">
-      <div>{{item.PLUNo}}</div>
+    <ion-col size="3" *ngIf="item.Qty > 0">
+      <div>{{item.ItemNo}}</div>
     </ion-col>
-    <ion-col size="4" >
-      <div>{{item.PLUQuantity
-      }}</div>
+    <ion-col size="4" *ngIf="item.Qty > 0">
+      <div>{{item.Qty}}</div>
     </ion-col>
-    <ion-col size="4" >
-      <div>{{item.PLUWhseLineNo
-      }}</div>
+    <ion-col size="4" *ngIf="item.Qty > 0">
+      <div>{{item.LineNo}}</div>
     </ion-col>
  
   </ion-row>
@@ -87,6 +84,3 @@
 </ion-grid>
 
 </ion-content>
-
-
-

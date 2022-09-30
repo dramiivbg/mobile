@@ -29,7 +29,7 @@ export class WmsReceiptEditPage implements OnInit {
 
   public listsFilter: any[];
   public lists: any = [];
-  public wareReceipts: any = {};
+  public warePW: any = {};
 
   constructor(private router: Router
     , private route: ActivatedRoute,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, private general: GeneralService) { 
@@ -46,7 +46,7 @@ export class WmsReceiptEditPage implements OnInit {
     this.intServ.appBackFunc(objFunc);
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state){
-        this.wareReceipts = this.router.getCurrentNavigation().extras.state.wareReceipts;
+        this.warePW = this.router.getCurrentNavigation().extras.state.listWP;
      //
       } else {
         this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true })
@@ -369,12 +369,12 @@ break;
 
 
 
-  let listLp = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No);
+ // let listLp = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, false);
   
 
-  this.list = await this.wmsService.list(listLp);
+//  this.list = await this.wmsService.list(listLp);
 
-  console.log(this.list);
+  console.log(this.warePW);
 
    
   

@@ -20,6 +20,7 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
 
 import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.component';
 
+import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-lp.component';
 
 
 
@@ -36,7 +37,8 @@ import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.com
     WmsReceiptEditPage,
     PopoverNewPalletComponent,
     ListPalletComponent,
-    ListPItemsComponent
+    ListPItemsComponent,
+    AddItemOrLpComponent
    
     
   

@@ -29,7 +29,7 @@
             <div class="order-details">
                 <ion-row>
                     <ion-col size="3" class="txt">
-                        <ion-label>Lines</ion-label>
+                       
                     </ion-col>
                     <!-- <ion-col *ngIf="new || edit">
                   <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
@@ -41,14 +41,16 @@
                     <ion-list *ngFor="let item of listPallet; let i=index">
                         <div>
 
-                            <ion-item-sliding>
+                         
+                                    <div class="label-lines" part="item-width" >
+                                        <ion-row >
+
+                                            <ion-item-sliding>
 
                         
-                                <ion-item>
-                                    <div class="label-lines" part="item-width" >
-                                        <ion-row (click)="listLpOrItems(item)">
-                                          <ion-col size="15" class="item">
-
+                                                <ion-item>
+                                          <ion-col size="15" class="item" (click)="listLpOrItems(item)">
+                     
                                             <ion-row >
                                                 <ion-col size="6" style="overflow: hidden;"
                                                     class="label-line-title blue">
@@ -76,12 +78,12 @@
 
                                          
                                             <ion-row>
-                                                <ion-col size="4" class="label-line">
+                                                <ion-col size="3" class="label-line">
                                                   Measure: {{item.fields[0].PLUUnitofMeasureCode
                                                   }}
                                                 </ion-col>
-                                                <ion-col size="4" class="label-line">
-                                                  itemNo: {{item.fields[0].PLUNo
+                                                <ion-col size="3" class="label-line">
+                                                  fechaC: {{item.fields[0].SystemCreatedAt
                                                   }}
                                                 </ion-col>
                                                 <ion-col size="4" class="label-line">
@@ -95,6 +97,20 @@
                                             </ion-row>
                                         </ion-col>
 
+                                    </ion-item>    
+                                
+                                    <ion-item-options side="end">
+                                        <ion-item-option color="danger" (click)="delete(item)">
+                                          <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                        </ion-item-option>
+
+                                        <ion-item-option  (click)="add(item,$event)" style="width: 60px;">
+                                            <ion-icon  name="add-circle" style="font-size: 30px;"></ion-icon>
+                                          </ion-item-option>
+                                      </ion-item-options>
+                          
+                                </ion-item-sliding>
+
                                         </ion-row>
                                     </div>
              
@@ -102,10 +118,7 @@
                                 
 
                                  
-                                </ion-item>    
-                                
-                          
-                            </ion-item-sliding>
+                              
                         </div>
                     </ion-list>
                 </div>

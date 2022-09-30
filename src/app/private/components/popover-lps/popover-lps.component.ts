@@ -132,11 +132,11 @@ export class PopoverLpsComponent implements OnInit {
   let lp = await this.wmsService.GetLicencesPlate(lpNo);
 
 
-  let listLp = await this.wmsService.ListLP(lp);
+  let listLp = await this.wmsService.ListLp(lp);
 
- //console.log(listLp);
+ console.log(listLp);
 
-  this.popoverController.dismiss();
+  
    const popover = await this.popoverController.create({
     component: PopoverOpionsLpComponent,
     cssClass: 'popoverOptions',
@@ -147,6 +147,10 @@ export class PopoverLpsComponent implements OnInit {
   await popover.present();
 
   const { data } = await popover.onDidDismiss();
+
+  
+
+  
   if (data.name == 'Edit') {
    this.onPopLicensePlate(ev, listLp);
 
@@ -163,6 +167,8 @@ export class PopoverLpsComponent implements OnInit {
 
       }
 
+      
+
   }
 
 
@@ -173,7 +179,7 @@ export class PopoverLpsComponent implements OnInit {
 
 
     
-   let lstUoM = await this.wmsService.getUnitOfMeasure(lp.fields[0].PLUDescription);
+   let lstUoM = await this.wmsService.getUnitOfMeasure(lp.fields.PLUDescription);
 
 
 
@@ -199,7 +205,7 @@ export class PopoverLpsComponent implements OnInit {
   private listMenu(lp: any): any {
     return {
       options: {
-        name: `LP No. ${lp.fields[0].PLULPDocumentNo}`,
+        name: `LP No. ${lp.fields.PLULPDocumentNo}`,
         menu: [
           { 
             id: 1, 

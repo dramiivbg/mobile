@@ -114,6 +114,22 @@ export class SearchComponent implements OnInit {
     } 
   }
 
+  onChangeP(e) {
+    let val = e.target.value;
+
+  //  console.log('change =>',val);
+    
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.fields[0].PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || (String(x.id).toLowerCase().includes(val.toLowerCase())));
+        }
+      )
+    } 
+  }
+
   onHeight() {
     this.platform.ready().then(
       () => {

@@ -9,6 +9,7 @@ import { WmsReceiptEditPage } from './wms-receipt-edit/wms-receipt-edit.page';
 import { WmsReceiptPage } from './wms-receipt/wms-receipt.page';
 import { WmsComponent } from './wms.component';
 import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.component';
+import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-lp.component';
 
 
 
@@ -23,6 +24,7 @@ const routes: Routes = [
     {path: 'newPallet', component: PopoverNewPalletComponent},
     {path: 'listPallet', component: ListPalletComponent},
     {path: 'lists', component: ListPItemsComponent},
+    {path: 'AddLists', component:  AddItemOrLpComponent}
    
   ]},
 
