@@ -13,27 +13,33 @@ ion-content.main {
                 width: 85px !important;
                 height: 85px !important;
                 border: 1px solid $plure-label-color;
+
                 img {
                     border: 0.8px solid var(--ion-color-plureBlue);
                     width: 100% !important;
                     display: inline-block;
                 }
             }
+
             ion-label {
                 margin-top: 5px;
+
                 h1 {
                     font-family: SourceSansProBold;
                     font-size: 22px;
                     text-transform: capitalize;
                 }
+
                 p {
                     font-size: 12px;
                     margin-top: -7px;
                 }
             }
+
             div.menuInfo {
                 color: var(--ion-color-plureBlue);
                 margin-top: 10px;
+
                 p {
                     margin: 5px 0 10px;
                     font-size: 16px;
@@ -99,9 +105,17 @@ ion-content.main {
 ion-footer {
     ion-text {
         text-align: right;
+
         p {
             color: $plure-label-color;
             margin-right: 10px;
         }
     }
+}
+
+.idmail {
+    padding-top: 8rem;
+    font-size: 10px;
+    letter-spacing: 0px;
+    color: #184984;
 }

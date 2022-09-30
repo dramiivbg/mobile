@@ -16,7 +16,7 @@ ion-list.list {
         }
     }
     ion-row.after:after {
-        background: var(--ion-color-plureBlue);
+        background: var(--ion-color-plureHeader);
         content: "";
         height: 0.5px;
         margin-left: -45%;
@@ -27,7 +27,7 @@ ion-list.list {
         width: 90%;
     }
     ion-row.before:after {
-        background: var(--ion-color-plureBlue);
+        background: var(--ion-color-plureHeader);
         content: "";
         height: 0.5px;
         margin-left: -45%;

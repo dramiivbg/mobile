@@ -1,15 +1,21 @@
 .header-md::after {
-    background-image: none;
-    background-color: #eeeeee;
+    background: transparent linear-gradient(0deg, #FFFFFF00 0%, #8080804F 100%) 0% 0% no-repeat padding-box !important;
+    opacity: 1;
     height: 6px;
 }
+
+ion-icon {
+    color: #1A518F;
+  }
 
 .notify {
     text-align: right;
     width: 60px;
+
     img {
         display: inline-block;
     }
+
     .notf {
         border-radius: 100%;
         background: var(--ion-color-plureBlue);
@@ -19,6 +25,7 @@
         text-align: center;
         color: #fff;
         width: 17px;
+
         .nf {
             padding-top: 5px;
             font-size: 6px;

@@ -11,8 +11,6 @@
               <h1>{{userSession.userName}}</h1>
               <p>Company Name: {{selectedCompany.companyName}}</p>
             </div>
-            <p>{{userSession.email}}</p>
-            <p>Id: {{selectedCompany.companyId}}</p>
           </ion-label>
         </div>
         <div class="main-menu-content">
@@ -37,7 +35,9 @@
             </ion-menu-toggle>
           </ion-list>
 
-        
+          <p class="idmail">{{userSession.email}}<br>
+          Id: {{selectedCompany.companyId}}</p>
+
         </div>
       </div>
     </ion-content>

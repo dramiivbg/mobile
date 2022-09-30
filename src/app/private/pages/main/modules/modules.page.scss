@@ -2,10 +2,9 @@
 
 ion-content.modules {    
     div.content-menu {
-        box-shadow: 0px -3px 8px rgba(0, 0, 0, 0.07);
         border-radius: 5px;
         margin-top: 5px;
-        padding-top: 40px;
+        padding-top: 5px;
 
         div.grid-content {
             margin: 20px;
@@ -19,6 +18,10 @@ ion-content.modules {
             }   
         }
     }
+
+    ion-icon {
+        color: #1A518F;
+      }
 
     ion-grid {
         ion-row {
