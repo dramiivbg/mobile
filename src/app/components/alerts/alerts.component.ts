@@ -70,15 +70,23 @@ onItem(opcion:Boolean){
 
    
 
-  onSi(){
+  async onSi(){
 
 
        this.intServ.loadingFunc(true);
 
+
+       let dataPw = this.wmsService.getPutAway();
+
+       let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
+
+
+       console.log('listPW', listWP);
+
         let wareReceipts = this.wmsService.get();
         let navg: NavigationExtras = {
           state: {
-            wareReceipts
+            listWP
           },
           replaceUrl: true
         }

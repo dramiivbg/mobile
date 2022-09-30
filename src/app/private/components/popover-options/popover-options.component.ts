@@ -17,7 +17,7 @@ export class PopoverOptionsComponent implements OnInit {
 
   public closeModal(item: any) {
     console.log(item)
-    this.popoverController.dismiss({data: item.obj});
+    this.popoverController.dismiss({data: item.obj, action: item.name});
   }
 
 }

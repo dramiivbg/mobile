@@ -1,0 +1,92 @@
+
+
+<PlureHeader type="1" title="License Plate - Pallet "  url="page/wms/wmsMain" notify="0"></PlureHeader>
+
+   <p style="text-align: center;"> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
+
+<ion-content >
+
+  <ion-row class="header" style="text-align: center;">
+    <ion-col size="9">
+      <ion-label style="font-family: Arial, Helvetica, sans-serif;"> License Plates - Single </ion-label>
+    </ion-col>
+  </ion-row><br>
+
+<ion-grid>
+  <ion-row class=" newColor" >
+    <ion-col size="3">
+      <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
+    </ion-col>
+    <ion-col size="4">
+      <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
+    </ion-col>
+    <ion-col size="4">
+      <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class=" delivery newColor" *ngFor="let item of listLp ; let i= index" (click)="opcionL(item, $event)">
+    <ion-col size="3">
+      <div>{{item.PLUNo
+      }}</div>
+    </ion-col>
+    <ion-col size="4">
+      <div>{{item.PLUQuantity}}</div>
+    </ion-col>
+    <ion-col size="4">
+      <div>{{item.PLUUnitofMeasureCode
+      }}</div>
+    </ion-col>
+  </ion-row>
+
+
+</ion-grid><br><br>
+
+
+<ion-row class="header" style="text-align: center;">
+  <ion-col size="9">
+    <ion-label style="font-family: Arial, Helvetica, sans-serif;">Items</ion-label>
+  </ion-col>
+</ion-row><br>
+
+
+<ion-grid>
+  <ion-row class=" newColor" >
+    <ion-col size="3">
+      <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
+    </ion-col>
+    <ion-col size="4">
+      <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
+    </ion-col>
+    <ion-col size="4">
+      <div style="font-family: Arial, Helvetica, sans-serif;">LineNo</div>
+    </ion-col>
+  </ion-row>
+
+
+  <ion-row class=" delivery newColor" *ngFor="let item of listItem ; let i= index" (click)="opcionI(item, $event)">
+
+   
+
+  
+    <ion-col size="3">
+      <div>{{item.PLUNo}}</div>
+    </ion-col>
+    <ion-col size="4" >
+      <div>{{item.PLUQuantity
+      }}</div>
+    </ion-col>
+    <ion-col size="4" >
+      <div>{{item.PLUWhseLineNo
+      }}</div>
+    </ion-col>
+ 
+  </ion-row>
+
+
+</ion-grid>
+
+</ion-content>
+
+
+

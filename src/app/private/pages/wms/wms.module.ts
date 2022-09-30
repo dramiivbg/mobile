@@ -16,6 +16,13 @@ import { PopoverLpsComponent} from '../../components/popover-lps/popover-lps.com
 import {AlertController} from '@ionic/angular';
 import { WmsReceiptEditPage } from './wms-receipt-edit/wms-receipt-edit.page';
 import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
+import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
+
+import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.component';
+
+import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-lp.component';
+
+
 
 
 @NgModule({
@@ -29,6 +36,9 @@ import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/po
     PopoverLpsComponent,
     WmsReceiptEditPage,
     PopoverNewPalletComponent,
+    ListPalletComponent,
+    ListPItemsComponent,
+    AddItemOrLpComponent
    
     
   
