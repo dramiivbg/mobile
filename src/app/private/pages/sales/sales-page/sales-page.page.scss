@@ -1,7 +1,7 @@
 ion-content {
     .header {
         background: #154983;
-        margin: 6px 0 0;
+        margin: 0px 0 0;
         padding: 15px 20px;
         h1 {
             color: #ffffff;
@@ -10,13 +10,12 @@ ion-content {
     }
     .content-desing {
         background: #1A518E;
-        border-radius: 0 0 15px 15px;
-        height: 460px;
+        height: 100%;
         margin-top: -1px;
         padding: 20px;
         .content-section {
-            background: #154983;
-            border-radius: 10px;
+            background: #15498399;
+            border-radius: 23px;
             padding: 10px;
         }
         .content-section.sect2 {
@@ -24,8 +23,7 @@ ion-content {
         }
         .content-section.sect3 {
             margin-top: 20px;
-            height: 105px;
-            border-radius: 0;
+            border-radius: 23px;
             .list-orders {
                 box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
             }
@@ -125,3 +123,8 @@ ion-content {
         }
     }
 }
+
+// .footersales{
+//     background: transparent linear-gradient(180deg, #11355E00 0%, #11355E 100%) 0% 0% no-repeat padding-box;
+//     opacity: 1;
+// }
