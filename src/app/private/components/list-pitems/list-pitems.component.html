@@ -17,13 +17,13 @@
 
 
 
+    <ion-item  *ngIf="boolean">
+
+      <ion-input (ionInput)="onChangeLp($event)" ></ion-input>
+    </ion-item>
+  
 
 <ion-content *ngIf="boolean">
-
-  <ion-item>
-
-    <ion-input (ionInput)="onChangeLp($event)" ></ion-input>
-  </ion-item>
 
 <ion-grid >
   <ion-radio-group value="listLp">
@@ -70,6 +70,11 @@
 
 
   
+
+<ion-item  *ngIf="!boolean">
+
+  <ion-input (ionInput)="onChangeI($event)" ></ion-input>
+</ion-item>
 
 
 <ion-content  *ngIf="!boolean">
