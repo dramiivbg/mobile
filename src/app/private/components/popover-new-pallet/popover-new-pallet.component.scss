@@ -94,7 +94,7 @@ ion-button.add-lines::part(native){
     background: var(--ion-color-plureBlue) !important;
     margin-top: 5px;
     padding-top: 5px;
-    padding-bottom: 2.5em;
+    padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
     ion-col.customer-margin {
@@ -201,6 +201,7 @@ div.accornSubTotal {
     padding: 0 0.2em 0;
     ion-col.txt {
         padding-top: 14px;
+        font-weight: bold;
         ion-label {
             font-size: 20px;
         }
@@ -216,10 +217,15 @@ ion-content{
 
 
     ion-row.header{
-        background: var(--ion-color-plureBlue);
-        color: #ffffff;
         font-size: 20px;
-        padding: 10px 0;
+    }
+
+    ion-col.TitleHeader{
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        font-weight: bold;
+        color: var(--ion-color-plureBlue);
+        padding-top: 1rem;
     }
 
   
@@ -242,7 +248,7 @@ ion-content{
 
     
 
-    background: var(--ion-color-plureBlue);
+    background: var(--ion-color-plure-contrast);
 
     color: #ffffff;
 
@@ -256,10 +262,22 @@ ion-content{
     ion-row.newColor {
       background: rgba(21, 73, 131, 1);
       margin: 5px 0 0;
+      font-weight: bold;
   }
+
+  ion-row.ContentTable{
+    background: rgb(163, 193, 232);
+    margin: 5px 0 0;
+}
 
   }
 
+}
+
+ion-radio-group{
+    ion-radio{
+        margin: auto;
+}
 }
 
 
@@ -359,7 +377,7 @@ ion-button.add-lines::part(native){
     background: var(--ion-color-plureBlue) !important;
     margin-top: 5px;
     padding-top: 5px;
-    padding-bottom: 2.5em;
+    padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
     ion-col.customer-margin {

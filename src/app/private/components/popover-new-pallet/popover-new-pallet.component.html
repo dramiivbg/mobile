@@ -1,6 +1,6 @@
 
 
-<PlureHeader  type="1" title="new Pallet" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader  type="1" title="New Pallet" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 
 <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="boolean">
@@ -23,7 +23,7 @@
 
 <ion-content *ngIf="boolean">
     <form>
-        <div class="designform-header" style="text-align: center;">
+        <div class="designform-header">
         
             <ion-row>
                 <ion-col>
@@ -223,14 +223,18 @@
 
 <ion-content *ngIf="!boolean">
 
+  <ion-searchbar animated="true" placeholder="Search Pallet"></ion-searchbar>
+
   <ion-row class="header" style="text-align: center;">
-    <ion-col size="9">
-      <ion-label style="font-family: Arial, Helvetica, sans-serif;">License plate</ion-label>
+    <ion-col class="TitleHeader">
+      <ion-label>License plate</ion-label>
     </ion-col>
-  </ion-row><br>
+  </ion-row>
 
 <ion-grid>
+  <ion-radio-group>
   <ion-row class=" newColor" >
+    <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
       <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
     </ion-col>
@@ -242,7 +246,8 @@
     </ion-col>
   </ion-row>
 
-  <ion-row class=" delivery newColor" *ngFor="let item of lps; let i= index" (click)="applyLP(item)">
+  <ion-row class=" delivery ContentTable" *ngFor="let item of lps; let i= index" (click)="applyLP(item)">
+    <ion-radio value="IPSingle"></ion-radio>
     <ion-col size="3">
       <div>{{item.fields.PLULPDocumentNo}}</div>
     </ion-col>
@@ -254,19 +259,22 @@
     </ion-col>
   </ion-row>
 
+</ion-radio-group>
 
-</ion-grid><br><br>
+</ion-grid><br>
 
 
 <ion-row class="header" style="text-align: center;">
-  <ion-col size="9">
-    <ion-label style="font-family: Arial, Helvetica, sans-serif;">Items</ion-label>
+  <ion-col class="TitleHeader">
+    <ion-label>Items</ion-label>
   </ion-col>
-</ion-row><br>
+</ion-row>
 
 
 <ion-grid>
+  <ion-radio-group>
   <ion-row class=" newColor" >
+    <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
       <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
     </ion-col>
@@ -279,9 +287,10 @@
   </ion-row>
 
 
-  <ion-row class=" delivery newColor" *ngFor="let item of items.Possible_ItemsChilds; let i=index" (click)="applyItem(item,pallet)">
+  <ion-row class=" delivery ContentTable" *ngFor="let item of items.Possible_ItemsChilds; let i=index" (click)="applyItem(item,pallet)">
 
    
+    <ion-radio value="ITSingle"></ion-radio>
 
   
     <ion-col size="3" *ngIf="item.Qty > 0">
@@ -296,6 +305,7 @@
  
   </ion-row>
 
+</ion-radio-group>
 
 </ion-grid>
 
@@ -314,12 +324,12 @@
     </ion-col>
       
         <ion-col size="4" (click)="onBarCode()">
-            <img src="../../../../assets/img/bar-code.svg" />
-            <div>Bar code</div>
+          <ion-icon size="large" name="barcode-outline"></ion-icon>
+          <div>Bar code</div>
         </ion-col>
         <ion-col size="4" (click)="onSubmit(pallet)">
-            <img src="../../../../assets/img/save.svg" />
-            <div>Save</div>
+          <ion-icon size="large" name="save-outline"></ion-icon>
+          <div>Save</div>
         </ion-col>
     </ion-row>
 

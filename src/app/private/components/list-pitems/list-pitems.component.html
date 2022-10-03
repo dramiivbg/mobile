@@ -15,19 +15,18 @@
 
     
 
-    <ion-item>
 
-      <ion-input (ionInput)="onChangeLp($event)"   *ngIf="boolean"></ion-input>
-    </ion-item>
 
 
 <ion-content *ngIf="boolean">
 
- 
+  <ion-item>
 
+    <ion-input (ionInput)="onChangeLp($event)" ></ion-input>
+  </ion-item>
 
 <ion-grid >
-  <ion-radio-group >
+  <ion-radio-group value="listLp">
   <ion-row class=" newColor" >
     <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
@@ -72,15 +71,9 @@
 
   
 
-<ion-item *ngIf="!boolean">
-
-  <ion-input (ionInput)="onChangeI($event)" ></ion-input>
-</ion-item>
-
 
 <ion-content  *ngIf="!boolean">
 
-    
 
 
 <ion-grid >
