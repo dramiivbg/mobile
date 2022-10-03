@@ -1,23 +1,33 @@
+<ion-header>
+  <ion-toolbar color="plureHeader">
+    <ion-buttons slot="start">
+      <ion-button (click)="onBack()">
+        <img src="../../../assets/icon/arrow_back.svg" />
+      </ion-button>
+    </ion-buttons>
+    <ion-title mode="ios">License plate Pallet</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-
-<PlureHeader type="1" title="License Plate - Pallet "  url="page/wms/wmsMain" notify="0"></PlureHeader>
-
-    <div class="docnumber">
+    <div class="docnumber" >
      <p> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
     </div>
 
-<ion-content >
+    
 
-  <ion-row class="header" style="text-align: center;">
-    <ion-col class="TitleHeader">
-      <ion-label> License Plates - Single </ion-label>
-    </ion-col>
-  </ion-row><br>
+    <ion-item>
 
-  <ion-searchbar animated="true" placeholder="Animated"></ion-searchbar>
+      <ion-input (ionInput)="onChangeLp($event)"   *ngIf="boolean"></ion-input>
+    </ion-item>
 
-<ion-grid>
-  <ion-radio-group>
+
+<ion-content *ngIf="boolean">
+
+ 
+
+
+<ion-grid >
+  <ion-radio-group >
   <ion-row class=" newColor" >
     <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
@@ -32,7 +42,7 @@
   </ion-row>
 
 
-  <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index" (click)="opcionL(item, $event)">
+  <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index" >
     <ion-radio value="IPSingle"></ion-radio>
     <ion-col size="3">
       <div>{{item.PLUNo
@@ -51,14 +61,29 @@
 </ion-grid><br><br>
 
 
-<ion-row class="header" style="text-align: center;">
-  <ion-col class="TitleHeader">
-    <ion-label>Items</ion-label>
-  </ion-col>
-</ion-row><br>
+</ion-content>
 
 
-<ion-grid>
+
+
+
+
+
+
+  
+
+<ion-item *ngIf="!boolean">
+
+  <ion-input (ionInput)="onChangeI($event)" ></ion-input>
+</ion-item>
+
+
+<ion-content  *ngIf="!boolean">
+
+    
+
+
+<ion-grid >
   <ion-radio-group>
   <ion-row class=" newColor" >
     <ion-radio value="selectall"></ion-radio>
@@ -74,7 +99,7 @@
   </ion-row>
 
 
-  <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index" (click)="opcionI(item, $event)">
+  <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index" >
 
    
 
@@ -97,6 +122,37 @@
 </ion-grid>
 
 </ion-content>
+
+
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button (click)="enableLP()">
+      <ion-icon name="newspaper-outline"></ion-icon>
+      <ion-label>LPS</ion-label>
+      <ion-badge>6</ion-badge>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="enableItem()">
+      <ion-icon name="cube-outline"></ion-icon>
+      <ion-label>Items</ion-label>
+      <ion-badge>6</ion-badge>
+    </ion-tab-button>
+
+    <ion-tab-button >
+      <ion-icon name="scan-circle"></ion-icon>
+      <ion-label>Move Scan</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button >
+      <ion-icon name="trash"></ion-icon>
+      <ion-label>Delete</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
+
+
+
 
 
 

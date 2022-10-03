@@ -16,10 +16,10 @@ import { PopoverOptionsComponent } from '../popover-options/popover-options.comp
 export class ListPItemsComponent implements OnInit {
 
   private routExtras: any;
-
-  
+  private listsI: any[] = [];
+  private boolean: Boolean = true;
   private listItem: any[] = []
-
+ private lists:any[] = [];
   private listLp: any[] = [];
   private  wareReceipts:any;
   private pallet:any;
@@ -69,7 +69,10 @@ export class ListPItemsComponent implements OnInit {
 
    
     this.pallets  = this.routExtras.pallets;
+
+    this.lists  =  this.routExtras.listLp;
  
+    this.listsI = this.routExtras.listItem;
 
     //console.log(listL);
 
@@ -81,24 +84,12 @@ export class ListPItemsComponent implements OnInit {
 
 
   public onBack() {
-    this.router.navigate(['page/main/listPallet'], { replaceUrl: true });
+    this.router.navigate(['page/wms/listPallet'], { replaceUrl: true });
   }
 
 
   async opcionL(item:any,ev){
 
-
-      const popover = await this.popoverController.create({
-        component: PopoverOptionsComponent,
-        cssClass: 'popoverOptions',
-        event: ev,
-        translucent: true,
-        componentProps: this.listMenuL(item)
-      });
-      await popover.present();
-    
-      const { data } = await popover.onDidDismiss();
-      if (data.action === 'Delete' ) {
 
 
       this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure to remove the license plate '${item.PLUNo}' ?`, async() =>{
@@ -146,7 +137,7 @@ export class ListPItemsComponent implements OnInit {
       }))
 
       
-      }else{
+    
 
         this.intServ.loadingFunc(true);
     
@@ -222,38 +213,9 @@ export class ListPItemsComponent implements OnInit {
         this.intServ.alertFunc(this.js.getAlert('success', '', `  The license place '${ item.PLUNo}' has been assigned correctly `));
       
           
-   let listItem =    this.listItem;
+   
 
-
-
-   let  listLp =   this.listLp; 
- 
- 
-  let pallet =    this.pallet;  
- 
-   let wareReceipts =  this.wareReceipts;  
- 
-    
-   let pallets =   this.pallets;
-
-  let listP =  this.listP;
   
-
-     let navigationExtras: NavigationExtras = {
-       state: {
-         listItem, 
-         listLp,
-         listP,
-         pallet,
-         wareReceipts,
-         pallets,
-         new: false
-       },
-       replaceUrl: true
-     };
-     this.router.navigate(['page/wms/lists'], navigationExtras);
- 
- 
 
        }else{
 
@@ -289,7 +251,7 @@ export class ListPItemsComponent implements OnInit {
 
 
 
-      }
+      
     
 
 
@@ -298,81 +260,6 @@ export class ListPItemsComponent implements OnInit {
   
  async  opcionI(item:any,ev){
 
-
-    
-    const popover = await this.popoverController.create({
-      component: PopoverOptionsComponent,
-      cssClass: 'popoverOptions',
-      event: ev,
-      translucent: true,
-      componentProps: this.listMenuI(item)
-    });
-    await popover.present();
-  
-    const { data } = await popover.onDidDismiss();
-    if (data.action === 'Delete' ) {
-
-
-    
-      this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure to remove the Item '${item.PLUNo}' ?`, async() =>{
-
-
-
-
-    try {
-
-      
-    this.intServ.loadingFunc(true);
-
-      let Delete = await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
-
-
-      console.log(Delete);
-
-      if(Delete.Error) throw Error(`The Item ${item.PLUNo} was not removed correctly`)
-          
-      this.listItem.filter((Item,index) => {
-
-
-        if(Item.item.PLUNo === item.PLUNo){
-
-
-
-          this.listItem.splice(index,1);
-
-
-        }
-      })
-
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('success', '', `The Item ${item.PLUNo} has been removed`));
-
-      
-
-   
-
-    }
-
-  
-          
-         catch (Error) {
-
-
-          this.intServ.loadingFunc(false);
-
-          this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
-
-          //console.log(error);
-          
-        }
-
-
-
-      }))
-
-
-    
-    }else{
 
    
       this.intServ.loadingFunc(true);
@@ -476,6 +363,8 @@ export class ListPItemsComponent implements OnInit {
     let pallets =   this.pallets;
 
    let listP =  this.listP;
+
+
    
 
       let navigationExtras: NavigationExtras = {
@@ -528,72 +417,74 @@ export class ListPItemsComponent implements OnInit {
      
 
 
+    
 
-
-    }
+    
   
 
   }
 
 
-  private listMenuL(item: any): any {
-    return {
-      options: {
-        name: `LP No. ${item.PLUNo}`,
-        menu: [
-          { 
-            id: 1, 
-            name: 'Delete', 
-            icon: 'trash-outline',
-            obj: item
-          },
-          { 
-            id: 2, 
-            name: 'Move', 
-            icon: 'arrow-redo-outline',
-            obj: item
-          },
-          { 
-            id: 3, 
-            name: 'Close', 
-            icon: 'close-circle-outline' ,
-            obj: {}
-          }
-        ]
-      }
-    };
+ 
+
+
+
+
+  enableLP(){
+
+    this.boolean = true;
+
+
+  }
+
+  enableItem(){
+
+    this.boolean = false;
+
 
   }
 
 
-  private listMenuI(item: any): any {
-    return {
-      options: {
-        name: `Item No. ${item.PLUNo}`,
-        menu: [
-          { 
-            id: 1, 
-            name: 'Delete', 
-            icon: 'trash-outline',
-            obj: item
-          },
-          { 
-            id: 2, 
-            name: 'Move', 
-            icon: 'arrow-redo-outline',
-            obj: item
-          },
-          
-          { 
-            id: 3, 
-            name: 'Close', 
-            icon: 'close-circle-outline' ,
-            obj: {}
-          }
-        ]
-      }
-    };
+  onChangeI(e){
+
+  
+    let val = e.target.value;
+
+    if (val === '') {
+      this.listItem = this.listsI;
+    } else {
+      this.listItem = this.listsI.filter(
+        x => {
+          return (x.PLUNo.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+
+
 
   }
+
+
+  onChangeLp(e){
+
+
+    let val = e.target.value;
+
+    if (val === '') {
+     this.listLp = this.lists;
+    } else {
+      this.listLp = this.lists.filter(
+        x => {
+          return (x.PLUNo.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+
+
+  }
+
+
 
 }
