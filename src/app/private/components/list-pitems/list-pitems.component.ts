@@ -486,5 +486,10 @@ export class ListPItemsComponent implements OnInit {
   }
 
 
+  select(item:any){
+
+    console.log(item);
+  }
+
 
 }

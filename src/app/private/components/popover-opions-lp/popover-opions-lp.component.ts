@@ -24,4 +24,6 @@ export class PopoverOpionsLpComponent implements OnInit {
     this.popoverController.dismiss({data: item.obj, name: item.name});
   }
 
+
+
 }

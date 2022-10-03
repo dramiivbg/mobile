@@ -98,7 +98,7 @@ export class ListPalletComponent implements OnInit {
 
 
   public onBack() {
-    this.router.navigate(['page/main/modules'], { replaceUrl: true });
+    this.router.navigate(['page/wms/wmsReceipt'], { replaceUrl: true });
   }
 
 

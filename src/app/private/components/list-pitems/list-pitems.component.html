@@ -1,13 +1,5 @@
-<ion-header>
-  <ion-toolbar color="plureHeader">
-    <ion-buttons slot="start">
-      <ion-button (click)="onBack()">
-        <img src="../../../assets/icon/arrow_back.svg" />
-      </ion-button>
-    </ion-buttons>
-    <ion-title mode="ios">License plate Pallet</ion-title>
-  </ion-toolbar>
-</ion-header>
+<PlureHeader type="1" title="Receipts" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
 
     <div class="docnumber" >
      <p> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
@@ -17,16 +9,23 @@
 
 
 
-    <ion-item  *ngIf="boolean">
 
-      <ion-input (ionInput)="onChangeLp($event)" ></ion-input>
-    </ion-item>
   
 
 <ion-content *ngIf="boolean">
 
+ 
+  <ion-searchbar (ionInput)="onChangeLp($event)" animated="true" placeholder="Search Pallet"></ion-searchbar>
+
+  <ion-row class="header" style="text-align: center;">
+    <ion-col class="TitleHeader">
+      <ion-label>License plate</ion-label>
+    </ion-col>
+  </ion-row>
+
+
 <ion-grid >
-  <ion-radio-group value="listLp">
+  <ion-radio-group  (ionFocus)="select(listLp)" >
   <ion-row class=" newColor" >
     <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
@@ -40,8 +39,9 @@
     </ion-col>
   </ion-row>
 
+  <ion-radio-group (ionFocus)="select(item)"  *ngFor="let item of listLp ; let i= index" >
 
-  <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index" >
+  <ion-row class=" delivery ContentTable" >
     <ion-radio value="IPSingle"></ion-radio>
     <ion-col size="3">
       <div>{{item.PLUNo
@@ -55,6 +55,8 @@
       }}</div>
     </ion-col>
   </ion-row>
+
+</ion-radio-group>
 
 </ion-radio-group>
 </ion-grid><br><br>
@@ -71,18 +73,22 @@
 
   
 
-<ion-item  *ngIf="!boolean">
-
-  <ion-input (ionInput)="onChangeI($event)" ></ion-input>
-</ion-item>
 
 
 <ion-content  *ngIf="!boolean">
 
 
+  <ion-searchbar (ionInput)="onChangeI($event)" animated="true" placeholder="Search Pallet"></ion-searchbar>
+
+  <ion-row class="header" style="text-align: center;">
+    <ion-col class="TitleHeader">
+      <ion-label>Items</ion-label>
+    </ion-col>
+  </ion-row>
+
 
 <ion-grid >
-  <ion-radio-group>
+  <ion-radio-group (ionFocus)="select(listItem)">
   <ion-row class=" newColor" >
     <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
@@ -96,7 +102,7 @@
     </ion-col>
   </ion-row>
 
-
+  <ion-radio-group  (ionFocus)="select(item)" >
   <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index" >
 
    
@@ -116,6 +122,8 @@
     </ion-col>
  
   </ion-row>
+
+</ion-radio-group>
 </ion-radio-group>
 </ion-grid>
 
@@ -123,31 +131,23 @@
 
 
 
-<ion-tabs>
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button (click)="enableLP()">
-      <ion-icon name="newspaper-outline"></ion-icon>
-      <ion-label>LPS</ion-label>
-      <ion-badge>6</ion-badge>
-    </ion-tab-button>
 
-    <ion-tab-button (click)="enableItem()">
-      <ion-icon name="cube-outline"></ion-icon>
-      <ion-label>Items</ion-label>
-      <ion-badge>6</ion-badge>
-    </ion-tab-button>
+<ion-tab-bar slot="bottom">
+  <ion-tab-button tab="music" (click)="enableLP()">
+    <ion-label>LPS</ion-label>
+    <ion-icon name="newspaper-outline"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button tab="movies" (click)=" enableItem()">
+    <ion-label>Items</ion-label>
+    <ion-icon name="cube-outline"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button tab="games">
+    <ion-label>Delete</ion-label>
+    <ion-icon name="trash-outline"></ion-icon>
+  </ion-tab-button>
+</ion-tab-bar>
 
-    <ion-tab-button >
-      <ion-icon name="scan-circle"></ion-icon>
-      <ion-label>Move Scan</ion-label>
-    </ion-tab-button>
 
-    <ion-tab-button >
-      <ion-icon name="trash"></ion-icon>
-      <ion-label>Delete</ion-label>
-    </ion-tab-button>
-  </ion-tab-bar>
-</ion-tabs>
 
 
 

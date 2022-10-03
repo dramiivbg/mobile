@@ -20,7 +20,10 @@ export class PopoverNewPalletComponent implements OnInit {
 
   public boolean: Boolean = true;
  
+
+  public booleanL: Boolean = true;
   
+
   
   public items:any[] = [];
 
@@ -678,6 +681,21 @@ let line:any = undefined;
     })
 
   }))
+
+  }
+
+
+  enableLP(){
+
+    this.booleanL = true;
+
+
+  }
+
+  enableItem(){
+
+    this.booleanL = false;
+
 
   }
 
