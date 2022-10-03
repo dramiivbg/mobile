@@ -14,8 +14,12 @@
     </ion-col>
   </ion-row><br>
 
+  <ion-searchbar animated="true" placeholder="Animated"></ion-searchbar>
+
 <ion-grid>
+  <ion-radio-group>
   <ion-row class=" newColor" >
+    <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
       <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
     </ion-col>
@@ -27,7 +31,9 @@
     </ion-col>
   </ion-row>
 
-  <ion-row class=" delivery newColor" *ngFor="let item of listLp ; let i= index" (click)="opcionL(item, $event)">
+
+  <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index" (click)="opcionL(item, $event)">
+    <ion-radio value="IPSingle"></ion-radio>
     <ion-col size="3">
       <div>{{item.PLUNo
       }}</div>
@@ -41,7 +47,7 @@
     </ion-col>
   </ion-row>
 
-
+</ion-radio-group>
 </ion-grid><br><br>
 
 
@@ -53,7 +59,9 @@
 
 
 <ion-grid>
+  <ion-radio-group>
   <ion-row class=" newColor" >
+    <ion-radio value="selectall"></ion-radio>
     <ion-col size="3">
       <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
     </ion-col>
@@ -66,11 +74,11 @@
   </ion-row>
 
 
-  <ion-row class=" delivery newColor" *ngFor="let item of listItem ; let i= index" (click)="opcionI(item, $event)">
+  <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index" (click)="opcionI(item, $event)">
 
    
 
-  
+    <ion-radio value="ITSingle"></ion-radio>
     <ion-col size="3">
       <div>{{item.PLUNo}}</div>
     </ion-col>
@@ -84,8 +92,7 @@
     </ion-col>
  
   </ion-row>
-
-
+</ion-radio-group>
 </ion-grid>
 
 </ion-content>

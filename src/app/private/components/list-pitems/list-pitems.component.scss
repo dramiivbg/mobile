@@ -138,6 +138,12 @@ ion-button.add-lines::part(native){
         background: rgba(21, 73, 131, 1);
         margin: 5px 0 0;
     }
+
+    ion-row.ContentTable{
+        background: rgb(163, 193, 232);
+        margin: 5px 0 0;
+    }
+
     ion-datetime {
         border-bottom: 1px solid #fff;
         padding: 3px 0 0 !important;
@@ -246,7 +252,6 @@ ion-content{
     
 
     background: var(--ion-color-plure-contrast);
-    border: 1px solid var(--ion-color-plureMain);
 
     color: #ffffff;
 
@@ -262,8 +267,19 @@ ion-content{
       margin: 5px 0 0;
   }
 
+  ion-row.ContentTable{
+    background: rgb(163, 193, 232);
+    margin: 5px 0 0;
+}
+
   }
 
+}
+
+ion-radio-group{
+    ion-radio{
+        margin: auto;
+}
 }
 
 
@@ -408,6 +424,12 @@ ion-button.add-lines::part(native){
         margin: 5px 0 0;
         font-weight: bold;
     }
+
+    ion-row.ContentTable{
+        background: rgb(163, 193, 232);
+        margin: 5px 0 0;
+    }
+
     ion-datetime {
         border-bottom: 1px solid #fff;
         padding: 3px 0 0 !important;
@@ -476,13 +498,6 @@ div.accornSubTotal {
         }
     }
 }
-
-
-.border{
-
-    border-bottom: 1px solid gray;
-}
-
 
 ion-row.newColor {
     background: rgba(21, 73, 131, 1);
