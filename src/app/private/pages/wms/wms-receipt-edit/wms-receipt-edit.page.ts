@@ -18,6 +18,7 @@ export class WmsReceiptEditPage implements OnInit {
   public list: any[] = [] 
   public listT: any[] = [] 
 
+  public listPwL: any[] = [];
   public contador:number = 0;
    public lpsP: any = {}
   public scanLP: boolean = true;
@@ -30,6 +31,8 @@ export class WmsReceiptEditPage implements OnInit {
   public listsFilter: any[];
   public lists: any = [];
   public warePW: any = {};
+
+  public whsePutAway: any;
 
   constructor(private router: Router
     , private route: ActivatedRoute,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, private general: GeneralService) { 
@@ -374,7 +377,19 @@ break;
 
 //  this.list = await this.wmsService.list(listLp);
 
-  console.log(this.warePW);
+
+this.whsePutAway = await this.wmsService.ListPutAwayH(this.warePW);
+
+this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
+  console.log(this.whsePutAway, this.listPwL);
+
+
+  this.intServ.loadingFunc(false);
+  
+
+
+
+  
 
    
   

@@ -69,14 +69,14 @@
    
 
   
-    <ion-col size="3">
+    <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
       <div>{{item.PLUNo}}</div>
     </ion-col>
-    <ion-col size="4" >
+    <ion-col size="4"  *ngIf="item.PLUQuantity > 0 ">
       <div>{{item.PLUQuantity
       }}</div>
     </ion-col>
-    <ion-col size="4" >
+    <ion-col size="4" *ngIf="item.PLUQuantity > 0 " >
       <div>{{item.PLUWhseLineNo
       }}</div>
     </ion-col>

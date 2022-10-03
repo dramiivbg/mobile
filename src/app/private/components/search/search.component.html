@@ -156,7 +156,8 @@
         <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
           
             <ion-col >
-              <ion-label class="text-id">{{item.id}}-</ion-label>
+              <ion-label class="text-id">{{item.fields[0].PLUWhseDocumentNo
+              }}-</ion-label>
               <ion-label class="text-value">{{item.fields[0].PLULPDocumentNo}}</ion-label>
             </ion-col>
         
@@ -165,6 +166,9 @@
     </ion-col> 
   </ion-row>
 
+
+
+  
 
 
 

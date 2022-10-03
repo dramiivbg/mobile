@@ -361,7 +361,7 @@ export class WmsService {
    }
 
 
-   public async Assign_ItemChild_to_LP_Pallet_From_WR( LP_Pallet_No:any, WarehouseReceipt_No:any,  Item_Child_No:any, Qty:any,  WarehouseReceipt_LineNo:any){
+   public async Assign_ItemChild_to_LP_Pallet_From_WR( LP_Pallet_No:any, WarehouseReceipt_No:any, listItem:any){
 
     
 
@@ -370,11 +370,10 @@ export class WmsService {
 
         let obj: any = [{
 
-            LP_Pallet_No,
-            WarehouseReceipt_No,
-            Item_Child_No,
-            Qty,
-            WarehouseReceipt_LineNo
+     WarehouseReceipt_No: WarehouseReceipt_No ,
+      LP_Pallet_No,
+      ItemChild: listItem
+
         }];
 
         console.log( JSON.stringify(obj));
@@ -515,6 +514,8 @@ export class WmsService {
         LP_Pallet_Child_No
         
     }];
+
+    console.log(JSON.stringify(obj));
 
 
     
@@ -922,7 +923,7 @@ public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
  
              company: "",
              fieldCount: 0,
-             fields: [] = [],
+             fields: [],
              id: 0,
              name: "",
              position: "",
@@ -1072,6 +1073,347 @@ public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
  
  
      }
+
+
+
+     public async ListPutAwayH(listPw: any){
+
+        // console.log(listLp);
+ 
+      
+
+         let obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields: { 
+                Type: "",
+                No: "",
+                LocationCode: "",
+                AssignedUserID: null,
+                AssignmentDate: null,
+                AssignmentTime: null,
+                SortingMethod: "",
+                NoSeries: "",
+                Comment: false ,
+                NoPrinted : null,
+                NoofLines: 0,
+                PostingDate: null,
+                RegisteringNo: null,
+                LastRegisteringNo: null,
+                RegisteringNoSeries: "",
+                DateofLastPrinting: null,
+                TimeofLastPrinting: null,
+                BreakbulkFilter: false,
+                SourceNo: null,
+                SourceDocument: "",
+                SourceType: null,
+                SourceSubtype: '',
+                DestinationType: '',
+                DestinationNo: null,
+                ExternalDocumentNo: null,
+                ExpectedReceiptDate: null,
+                ShipmentDate: null,
+                ExternalDocumentNo2: null,
+                SystemCreatedAt: "",
+                $systemId: "",
+                SystemCreatedBy: "",
+                SystemModifiedAt: "",
+                SystemModifiedBy: "",
+               },
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+ 
+    
+        obj.company = listPw.WarehousePutAways.WarehousePutAwayHeader.company;
+        obj.fieldCount = listPw.WarehousePutAways.WarehousePutAwayHeader.fieldCount;
+        obj.id = listPw.WarehousePutAways.WarehousePutAwayHeader.id;
+        obj.name = listPw.WarehousePutAways.WarehousePutAwayHeader.name;
+        obj.position = listPw.WarehousePutAways.WarehousePutAwayHeader.position;
+        obj.recordId = listPw.WarehousePutAways.WarehousePutAwayHeader.recordId;
+ 
+        
+     for (const y in listPw.WarehousePutAways.WarehousePutAwayHeader.fields) {
+ 
+
+
+         obj.fields[listPw.WarehousePutAways.WarehousePutAwayHeader.fields[y].name] =  listPw.WarehousePutAways.WarehousePutAwayHeader.fields[y].value;
+
+
+
+      }
+
+      return obj;
+
+
+      obj= {
+
+        company: "",
+        fieldCount: 0,
+        fields: { 
+            Type: "",
+            No: "",
+            LocationCode: "",
+            AssignedUserID: null,
+            AssignmentDate: null,
+            AssignmentTime: null,
+            SortingMethod: "",
+            NoSeries: "",
+            Comment: false ,
+            NoPrinted : null,
+            NoofLines: 0,
+            PostingDate: null,
+            RegisteringNo: null,
+            LastRegisteringNo: null,
+            RegisteringNoSeries: "",
+            DateofLastPrinting: null,
+            TimeofLastPrinting: null,
+            BreakbulkFilter: false,
+            SourceNo: null,
+            SourceDocument: "",
+            SourceType: null,
+            SourceSubtype: '',
+            DestinationType: '',
+            DestinationNo: null,
+            ExternalDocumentNo: null,
+            ExpectedReceiptDate: null,
+            ShipmentDate: null,
+            ExternalDocumentNo2: null,
+            SystemCreatedAt: "",
+            $systemId: "",
+            SystemCreatedBy: "",
+            SystemModifiedAt: "",
+            SystemModifiedBy: "",
+           },
+        id: 0,
+        name: "",
+        position: "",
+        recordId: ""
+
+
+     }
+  
+ 
+ 
+ 
+
+    
+ 
+ 
+     }
+
+
+
+     
+     public async ListPutAwayL(listPw: any){
+
+        // console.log(listLp);
+ 
+
+        let list:any[] = [];
+      
+
+         let obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields: { 
+                ActivityType: "",
+                No: "",
+                LineNo: 0,
+                SourceType: 0 ,
+                SourceSubtype: '',
+                SourceNo: '',
+                SourceLineNo: 0,
+                SourceSublineNo: null,
+                SourceDocument: '' ,
+                LocationCode: '',
+                ShelfNo: null,
+                SortingSequenceNo: null,
+                ItemNo: '',
+                VariantCode: null,
+                UnitofMeasureCode: "",
+                QtyperUnitofMeasure: 0,
+                Description: '',
+                Description2: null,
+                Quantity: 0,
+                QtyOutstanding:0,
+                QtytoHandle: 0,
+                QtyHandled: null,
+                ShippingAdvice: '',
+                DueDate: null,
+                DestinationType: '',
+                DestinationNo: null,
+                ShippingAgentCode: null,
+                ShippingAgentServiceCode: null,
+                ShipmentMethodCode:null,
+                StartingDate: '',
+                QtyRoundingPrecision:null,
+                AssembletoOrder:false,
+                ATOComponent:false,
+                SerialNo:null,
+                LotNo:null,
+                WarrantyDate:null,
+                ExpirationDate:null,
+                SerialNoBlocked:false,
+                LotNoBlocked:false,
+                PackageNo:null,
+                BinCode: '',
+                ZoneCode: '',
+                ActionType: '',
+                WhseDocumentType: '',
+                WhseDocumentNo: '',
+                WhseDocumentLineNo: 0,
+                BinRanking: null,
+                Cubage: null,
+                Weight:null,
+                SpecialEquipmentCode: null,
+                BinTypeCode: '',
+                BreakbulkNo: null,
+                OriginalBreakbulk: false,
+                Breakbulk: false,
+                CrossDockInformation: '',
+                Dedicated:false,
+                PLUNoLPCreated: null,
+                PLULPSingles: null,
+                PLULPPalletChildsasLP: null,
+                PLULPPalletChildasItem: null,
+                SystemCreatedAt: "",
+                $systemId: "",
+                SystemCreatedBy: "",
+                SystemModifiedAt: "",
+                SystemModifiedBy: "",
+               },
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+ 
+for (const i in listPw.WarehousePutAways.WarehousePutAwayLines) {
+
+
+    
+    obj.company = listPw.WarehousePutAways.WarehousePutAwayLines[i].company;
+    obj.fieldCount = listPw.WarehousePutAways.WarehousePutAwayLines[i].fieldCount;
+    obj.id = listPw.WarehousePutAways.WarehousePutAwayLines[i].id;
+    obj.name = listPw.WarehousePutAways.WarehousePutAwayLines[i].name;
+    obj.position = listPw.WarehousePutAways.WarehousePutAwayLines[i].position;
+    obj.recordId = listPw.WarehousePutAways.WarehousePutAwayLines[i].recordId;
+
+    
+ for (const y in listPw.WarehousePutAways.WarehousePutAwayLines[i].fields) {
+
+
+
+     obj.fields[listPw.WarehousePutAways.WarehousePutAwayLines[i].fields[y].name] =  listPw.WarehousePutAways.WarehousePutAwayLines[i].fields[y].value;
+
+
+
+  }
+
+  list.push(obj);
+
+  obj= {
+
+    company: "",
+    fieldCount: 0,
+    fields: { 
+        ActivityType: "",
+        No: "",
+        LineNo: 0,
+        SourceType: 0 ,
+        SourceSubtype: '',
+        SourceNo: '',
+        SourceLineNo: 0,
+        SourceSublineNo: null,
+        SourceDocument: '' ,
+        LocationCode: '',
+        ShelfNo: null,
+        SortingSequenceNo: null,
+        ItemNo: '',
+        VariantCode: null,
+        UnitofMeasureCode: "",
+        QtyperUnitofMeasure: 0,
+        Description: '',
+        Description2: null,
+        Quantity: 0,
+        QtyOutstanding:0,
+        QtytoHandle: 0,
+        QtyHandled: null,
+        ShippingAdvice: '',
+        DueDate: null,
+        DestinationType: '',
+        DestinationNo: null,
+        ShippingAgentCode: null,
+        ShippingAgentServiceCode: null,
+        ShipmentMethodCode:null,
+        StartingDate: '',
+        QtyRoundingPrecision:null,
+        AssembletoOrder:false,
+        ATOComponent:false,
+        SerialNo:null,
+        LotNo:null,
+        WarrantyDate:null,
+        ExpirationDate:null,
+        SerialNoBlocked:false,
+        LotNoBlocked:false,
+        PackageNo:null,
+        BinCode: '',
+        ZoneCode: '',
+        ActionType: '',
+        WhseDocumentType: '',
+        WhseDocumentNo: '',
+        WhseDocumentLineNo: 0,
+        BinRanking: null,
+        Cubage: null,
+        Weight:null,
+        SpecialEquipmentCode: null,
+        BinTypeCode: '',
+        BreakbulkNo: null,
+        OriginalBreakbulk: false,
+        Breakbulk: false,
+        CrossDockInformation: '',
+        Dedicated:false,
+        PLUNoLPCreated: null,
+        PLULPSingles: null,
+        PLULPPalletChildsasLP: null,
+        PLULPPalletChildasItem: null,
+        SystemCreatedAt: "",
+        $systemId: "",
+        SystemCreatedBy: "",
+        SystemModifiedAt: "",
+        SystemModifiedBy: "",
+       },
+    id: 0,
+    name: "",
+    position: "",
+    recordId: ""
+
+
+ }
+  
+}
+
+
+return list;
+    
+ 
+
+    
+ 
+ 
+     }
+
+
+
 
 
      
