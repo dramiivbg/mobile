@@ -468,9 +468,11 @@ wareReceipts.lines.forEach( async (el, index) => {
      
 
 
+      console.log('antes =>',pallet);
+      console.log('antes =>',pallet2);
 
 
-      if(pallet.length > 0 || pallet != undefined){
+ if(pallet.length > 0 || pallet != undefined){
           
     for (const i in pallet) {
    
@@ -489,7 +491,7 @@ wareReceipts.lines.forEach( async (el, index) => {
 
           let con =  pallet.splice(Number(j),1);
            console.log(i,j);
-         // console.log(con)
+          console.log(con)
 
           }
        
@@ -506,7 +508,8 @@ wareReceipts.lines.forEach( async (el, index) => {
 
 
 
-    console.log(pallet);
+    console.log('despues =>',pallet);
+    console.log('despues =>',pallet2);
   
    
   
@@ -535,6 +538,9 @@ wareReceipts.lines.forEach( async (el, index) => {
         }
       }
     }
+
+
+    console.log('final =>',pallet);
 
 
     
@@ -583,83 +589,122 @@ wareReceipts.lines.forEach( async (el, index) => {
   this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm', 'Confirm WH Receipt?',async() =>{
 
 
+    this.intServ.loadingFunc(true);
 
+  var alert = setTimeout( async() => {
 
+    try {
 
-  let postWR =  await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
+      let postWR =  await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
 
-  this.wmsService.setPutAway(postWR);
-
-  console.log('postWR',postWR)
-
-
-  if(!postWR.Error){
-
+  
     
-    var alert = setTimeout(() => {
-      this.intServ.alertFunc(this.js.getAlert('continue', 'continue', 'Continue Process Put-Away?', () =>{
+      if(postWR.Error) throw Error(postWR.Error.Message);
 
 
-         
-          
-    var alert = setTimeout(() => {
-              this.intServ.alertFunc(this.js.getAlert('edit', 'By Default Put Away processed to the floor!', 'Edit Default Put-Away?', async() =>{
+          this.wmsService.setPutAway(postWR);
+    
+      console.log('postWR',postWR);
 
-                this.intServ.loadingFunc(true);
-
-
-                let dataPw = this.wmsService.getPutAway();
-
-
-                let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
+      this.intServ.loadingFunc(false);
+      
+  
+    this.intServ.alertFunc(this.js.getAlert('continue', 'continue', 'Continue Process Put-Away?', () =>{
 
 
-                console.log('postWP', data);
 
-                if(!data.Error){
+      this.intServ.loadingFunc(true);
+  
+           
+            
+      var alert = setTimeout(() => {
+
+        this.intServ.loadingFunc(false);
+
+                this.intServ.alertFunc(this.js.getAlert('edit', 'By Default Put Away processed to the floor!', 'Edit Default Put-Away?', async() =>{
+  
+                  this.intServ.loadingFunc(true);
+  
+  
+                
+                  try {
+
+                    let dataPw = this.wmsService.getPutAway();
+  
+  
+                    let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
+    
+    
+                    console.log('postWP', data);
+  
+
+                    if(data.Error) throw Error(data.Error.Message);
+  
+  
+                    
+                    
+                    
+                    this.intServ.loadingFunc(false);
+                    this.intServ.alertFunc(this.js.getAlert('success', '', 'The put-away was done successfully', () => {
 
 
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('success', '', 'The put-away was done successfully'))
+                      this.router.navigate(['/page/wms/wmsReceipt']);
+                    }))
 
                   
-                }else{
+  
+                    
+                  } catch (error) {
+                    
 
                  
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('error', '', data.Error.Message))
 
-
-                }
-
-            
-        
+                   
+                     
+                    this.intServ.loadingFunc(false);
+                    this.intServ.alertFunc(this.js.getAlert('error', '', error.message))
+  
+  
+                    
+                  }
+  
              
-
-              }));
-
-              clearTimeout(alert);
-            }, 100)
+  
               
-         
-
+          
+               
+  
+                }));
+  
+                clearTimeout(alert);
+              }, 100)
+                
            
+  
+             
+ 
+  
+        }));
+
+             
+  } catch (error) {
+
+    this.intServ.loadingFunc(false);
+
+    
+    let e =  error.message.split('/')
+
+    
+      this.intServ.alertFunc(this.js.getAlert('error', '', e[0]));
+    }
+
+        clearTimeout(alert);
+      }, 100)
+
+      
     
 
-      }));
-      clearTimeout(alert);
-    }, 100)
-  }else{
 
-
-
-    let message = postWR.Error.Message.split('/')
-
-    this.intServ.alertFunc(this.js.getAlert('error', '',message ))
-
-
-
-  }
 
     
 

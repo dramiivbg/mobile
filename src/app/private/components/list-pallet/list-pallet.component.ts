@@ -256,7 +256,8 @@ export class ListPalletComponent implements OnInit {
       lps = this.lps;
 
 
- 
+     let wareReceipts = this.wareReceipts;
+
       console.log('items =>', items);
 
 
@@ -266,6 +267,7 @@ export class ListPalletComponent implements OnInit {
           lps, 
           items,
           pallet:item,
+          wareReceipts,
           
           new: false
         },
@@ -277,7 +279,7 @@ export class ListPalletComponent implements OnInit {
     
     }else{
 
-    }
+    
 
 
      
@@ -395,9 +397,21 @@ export class ListPalletComponent implements OnInit {
       else{
 
 
+        let listsI:any[] = [];
+        let listItem =   {
+          Item_Child_No: "",
+          Qty: "",
+          WarehouseReceipt_LineNo: ""
+        }
+
+        listItem.Item_Child_No = line.ItemNo;
+        listItem.Qty = line.Qty;
+        listItem.WarehouseReceipt_LineNo = line.LineNo;
+
+        listsI.push(listItem);
 
        
-       let items = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(item.fields[0].PLULPDocumentNo,line.No,line.ItemNo,line.Qty,line.LineNo);
+       let items = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(item.fields[0].PLULPDocumentNo,line.No,listsI);
 
        if(items.IsProcessed){
 
@@ -417,6 +431,7 @@ export class ListPalletComponent implements OnInit {
     }
   )
 
+    }
 
   }
 

@@ -90,7 +90,7 @@ onItem(opcion:Boolean){
           },
           replaceUrl: true
         }
-        this.intServ.loadingFunc(false);
+     
 
         this.router.navigate(['/page/wms/wmsReceiptEdit'], navg);
 

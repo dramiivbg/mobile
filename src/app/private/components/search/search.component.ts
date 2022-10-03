@@ -155,6 +155,7 @@ export class SearchComponent implements OnInit {
    */
   onBack() {
     this.searchObj = {};
+    this.listsFilter = [];
     let appBack = {
       old: true
     }

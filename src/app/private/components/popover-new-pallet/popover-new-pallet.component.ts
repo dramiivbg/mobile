@@ -334,6 +334,17 @@ async onBarCode(){
  async  onSubmit(pallet:any){
 
 
+
+
+
+
+ // console.log(this.itemsL);
+
+
+ if(this.itemsLT != undefined || this.lpsL != undefined){
+
+  let listsI:any[] = [];
+
   let resI:any;
 
   this.intServ.loadingFunc(true);
@@ -358,84 +369,77 @@ async onBarCode(){
   });
 
 
-
-
-
-
-  let resL = await this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,listLP);
-
-
- // console.log(this.itemsL);
-
+  
+  let listItems =   {
+    Item_Child_No: "",
+    Qty: "",
+    WarehouseReceipt_LineNo: ""
+  }
+  
+    this.itemsL.filter(async(item) =>{
   
 
-  this.itemsL.filter(async(item) =>{
-
-
-
-  console.log(item);
-
-   //resI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(pallet.fields.PLULPDocumentNo,item.No,item.ItemNo,item.Qty,item.LineNo);
-
-  });
-
-
- // console.log(resL);
-  console.log(resI);
-
-
-
-    if(resL.IsProcessed == true && !resL.Error){
-
-
-      this.intServ.loadingFunc(false);
   
-      this.intServ.alertFunc(this.js.getAlert('success', 'success', `the license plate were successfully assigned with the No  '${resL.Remnant_LPChilds}' `, () =>{this.router.navigate(['/page/wms/wmsReceipt'])}));
+    listItems.Item_Child_No = item.ItemNo;
+    listItems.Qty = item.Qty;
+    listItems.WarehouseReceipt_LineNo = item.LineNo;
   
   
-    }else{
-   
+    listsI.push(listItems);
+
   
-      this.intServ.loadingFunc(false);
-  
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', resL.Error.Message));
-  
-  
+    listItems =   {
+      Item_Child_No: "",
+      Qty: "",
+      WarehouseReceipt_LineNo: ""
     }
+  
+  
+    });
+
+
+
+  try {
+
+
+
+         resI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(pallet.fields.PLULPDocumentNo,this.wareReceipts.No,listsI);
     
+         
+         let resL = await this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,listLP);
+
+
+         if(resI.Error) throw Error(resI.Error.Message);
+
+
+
+         if(resL.Error) throw Error(resL.Error.Message);
+     
+
+
+         this.intServ.loadingFunc(false);
   
-/*  
-if(resI.IsProcessed == true && !resI.Error ){
-
-
-  
-
-
-
-    this.intServ.loadingFunc(false);
-
-    this.intServ.alertFunc(this.js.getAlert('success', 'success', `the Item were successfully assigned `, () =>{this.router.navigate(['/page/wms/wmsReceipt'])}));
-
-
-
-  }else{
-
-    this.intServ.loadingFunc(false);
-
-    this.intServ.alertFunc(this.js.getAlert('error', 'Error', resI.Error.Message));
-
-
+         this.intServ.alertFunc(this.js.getAlert('success', 'success', ` `, () =>{this.router.navigate(['/page/wms/wmsReceipt'])}));
+     
+     
 
   
+  } catch (Error) {
+   
+
+    
+    this.intServ.alertFunc(this.js.getAlert('error', '', Error.message,));
+     
+  }
+ }
+  
+
+        
 
 
   
 
-}
 
-*/
-
-  
   
 }
 

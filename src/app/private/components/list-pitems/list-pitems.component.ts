@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
@@ -113,7 +113,7 @@ export class ListPItemsComponent implements OnInit {
   
           console.log(Delete);
   
-      if(Delete.Error) throw Error(`The License plate ${item.PLUNo} was not removed correctly`)
+      if(Delete.Error) throw Error(Delete.Error.Message)
   
       this.listLp.filter((lp,index) => {
 
@@ -139,7 +139,7 @@ export class ListPItemsComponent implements OnInit {
           
           this.intServ.loadingFunc(false);
   
-          this.intServ.alertFunc(this.js.getAlert('error', '', Error.Message));
+          this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
         }
       
 
@@ -185,7 +185,7 @@ export class ListPItemsComponent implements OnInit {
     
             console.log(Delete);
     
-        if(Delete.Error) throw Error(`The License plate ${item.PLUNo} was not removed correctly`)
+        if(Delete.Error) throw Error(Delete.Error.Message)
     
         this.listLp.filter((lp,index) => {
   
@@ -209,7 +209,7 @@ export class ListPItemsComponent implements OnInit {
         }
 
      
-        objL.LP_Pallet_Child_No =    item.PLUNo;
+        objL.LP_Pallet_Child_No =   item.PLUNo;
         
         listl.push(objL);
              
@@ -220,6 +220,46 @@ export class ListPItemsComponent implements OnInit {
 
         this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('success', '', `  The license place '${ item.PLUNo}' has been assigned correctly `));
+      
+          
+   let listItem =    this.listItem;
+
+
+
+   let  listLp =   this.listLp; 
+ 
+ 
+  let pallet =    this.pallet;  
+ 
+   let wareReceipts =  this.wareReceipts;  
+ 
+    
+   let pallets =   this.pallets;
+
+  let listP =  this.listP;
+  
+
+     let navigationExtras: NavigationExtras = {
+       state: {
+         listItem, 
+         listLp,
+         listP,
+         pallet,
+         wareReceipts,
+         pallets,
+         new: false
+       },
+       replaceUrl: true
+     };
+     this.router.navigate(['page/wms/lists'], navigationExtras);
+ 
+ 
+
+       }else{
+
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('success', '', `  The license place '${ item.PLUNo}' has been not assigned correctly `));
+      
        }
           
     
@@ -230,7 +270,7 @@ export class ListPItemsComponent implements OnInit {
             
             this.intServ.loadingFunc(false);
     
-            this.intServ.alertFunc(this.js.getAlert('error', '', Error.Message));
+            this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
           }
     
 
@@ -307,6 +347,8 @@ export class ListPItemsComponent implements OnInit {
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.js.getAlert('success', '', `The Item ${item.PLUNo} has been removed`));
 
+      
+
    
 
     }
@@ -332,7 +374,161 @@ export class ListPItemsComponent implements OnInit {
     
     }else{
 
-      console.log(data.action);
+   
+      this.intServ.loadingFunc(true);
+    
+      const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
+  
+
+
+      
+
+      console.log('lines =>',this.pallets);
+      let palletH = await this.wmsService.ListLpPalletH(lpsP);
+
+
+     // console.log('lines =>',this.pallets);
+
+     // console.log('Header =>',palletH);
+
+      palletH.filter(lpH => {
+
+
+        this.pallets.push(lpH);
+      });
+
+      this.intServ.loadingFunc(false);
+
+      let obj = this.general.structSearch(this.pallets, `Search Pallet `, 'Pallets', async (pallet) => {
+
+        console.log('data =>', pallet);
+
+
+        try {
+
+          this.intServ.loadingFunc(true);
+
+          let Delete = await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
+
+          console.log(Delete);
+  
+      if(Delete.Error) throw Error(Delete.Error.Message)
+  
+      this.listItem.filter((Item,index) => {
+
+
+        if(Item.PLUNo === item.PLUNo){
+
+
+
+          this.listLp.splice(index,1);
+
+
+        }
+      })
+       
+
+
+      let listsI:any[] = []
+        
+  let listItems =   {
+    Item_Child_No: "",
+    Qty: "",
+    WarehouseReceipt_LineNo: ""
+  }
+
+
+
+  listItems.Item_Child_No = item.PLUNo;
+
+  listItems.Qty = item.PLUQuantity;
+
+  listItems.WarehouseReceipt_LineNo = item.PLUWhseLineNo;
+
+
+  listsI.push(listItems)
+  
+
+      let addI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(this.pallet.fields[0].PLULPDocumentNo,item.PLUWhseDocumentNo,listsI);
+
+
+    try {
+
+
+      if(addI.Error) throw Error(addI.Error.Message);
+
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('success', '', `  The Item '${ item.PLUNo}' has been assigned correctly `));
+
+   
+   let listItem =    this.listItem;
+
+
+
+    let  listLp =   this.listLp; 
+  
+  
+   let pallet =    this.pallet;  
+  
+    let wareReceipts =  this.wareReceipts;  
+  
+     
+    let pallets =   this.pallets;
+
+   let listP =  this.listP;
+   
+
+      let navigationExtras: NavigationExtras = {
+        state: {
+          listItem, 
+          listLp,
+          listP,
+          pallet,
+          wareReceipts,
+          pallets,
+          new: false
+        },
+        replaceUrl: true
+      };
+      this.router.navigate(['page/wms/lists'], navigationExtras);
+  
+     
+        
+  
+      
+    } catch (Error) {
+
+      this.intServ.loadingFunc(false);
+  
+      this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
+      
+    }
+   
+     
+  
+          
+        } catch (Error) {
+          
+          this.intServ.loadingFunc(false);
+  
+          this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
+        }
+  
+
+ 
+
+
+
+      }, false, 3,);
+      this.intServ.searchShowFunc(obj);
+
+      console.log(this.pallets);
+
+
+     
+
+
+
 
     }
   
@@ -387,6 +583,7 @@ export class ListPItemsComponent implements OnInit {
             icon: 'arrow-redo-outline',
             obj: item
           },
+          
           { 
             id: 3, 
             name: 'Close', 
