@@ -149,10 +149,21 @@ export class ListPItemsComponent implements OnInit {
 
   select(item:any){
 
-   // this.list.push(item);
 
-   // console.log(this.list);
-    //console.log(item);
+    if(this.boolean){
+
+      this.listL = item;
+
+      console.log(this.listL);
+
+    }else{
+
+
+      this.listI = item;
+      console.log(this.listI);
+
+    }
+  
   }
 
 
@@ -190,22 +201,20 @@ export class ListPItemsComponent implements OnInit {
 
     try {
 
-      this.intServ.loadingFunc(true);
 
 
-      this.listL.filter(async(item) => {
-        Delete = await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
+      this.listL.forEach(async(item) => {
+        this.intServ.loadingFunc(true);
+
+         await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
 
       });
 
    
-      console.log(Delete);
+  
+  this.listL.forEach(async(item) =>{
 
-  if(Delete.Error) throw Error(Delete.Error.Message);
-
-  this.listL.filter(async(item) =>{
-
-    this.listLp.filter((lp,index) => {
+    this.listLp.forEach((lp,index) => {
 
 
       if(lp.PLUNo === item.PLUNo){
@@ -297,4 +306,59 @@ export class ListPItemsComponent implements OnInit {
   }
 
 
+  removel(item:any, i:any){
+
+
+    if(this.boolean){
+
+
+    
+        this.listL.splice(i,1);
+        console.log(this.listL);
+
+    
+
+    }else{
+
+
+        this.listI.splice(i,1);
+        console.log(this.listI);
+
+      
+
+
+    }
+
+
+
+
+  }
+
+
+  event(e){
+
+
+    console.log('event =>', e);
+
+
+  }
+
+
+  remove(){
+
+    if(this.boolean){
+
+      this.listL = [];
+
+      console.log(this.listL);
+
+    }else{
+
+
+      this.listI = [];
+
+      console.log(this.listI);
+
+    }
+  }
 }
