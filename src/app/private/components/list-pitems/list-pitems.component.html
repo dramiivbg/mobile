@@ -14,8 +14,15 @@
 
 <ion-content *ngIf="boolean">
 
- 
+  <ion-row class="searchreceipts">
+  <ion-col size="9">
   <ion-searchbar (ionInput)="onChangeLp($event)" animated="true" placeholder="Search Pallet"></ion-searchbar>
+  </ion-col>  
+  <ion-col class="actionbtns" size="3">
+    <ion-icon class="actionbtns" name="trash-bin-outline"></ion-icon>
+    <ion-icon class="actionbtns" name="scan-circle-outline"></ion-icon>
+  </ion-col>
+  </ion-row>
 
   <ion-row class="header" style="text-align: center;">
     <ion-col class="TitleHeader">
@@ -59,7 +66,7 @@
 </ion-radio-group>
 
 </ion-radio-group>
-</ion-grid><br><br>
+</ion-grid>
 
 
 </ion-content>
@@ -77,8 +84,15 @@
 
 <ion-content  *ngIf="!boolean">
 
-
+  <ion-row class="searchreceipts">
+    <ion-col size="9">
   <ion-searchbar (ionInput)="onChangeI($event)" animated="true" placeholder="Search Pallet"></ion-searchbar>
+</ion-col>  
+<ion-col class="actionbtns" size="3">
+  <ion-icon class="actionbtns" name="trash-bin-outline"></ion-icon>
+  <ion-icon class="actionbtns" name="scan-circle-outline"></ion-icon>
+</ion-col>
+</ion-row>
 
   <ion-row class="header" style="text-align: center;">
     <ion-col class="TitleHeader">
@@ -135,15 +149,15 @@
 <ion-tab-bar slot="bottom">
   <ion-tab-button tab="music" (click)="enableLP()">
     <ion-label>LPS</ion-label>
-    <ion-icon name="newspaper-outline"></ion-icon>
+    <ion-icon size="large" name="newspaper-outline"></ion-icon>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)=" enableItem()">
     <ion-label>Items</ion-label>
-    <ion-icon name="cube-outline"></ion-icon>
+    <ion-icon size="large" name="cube-outline"></ion-icon>
   </ion-tab-button>
   <ion-tab-button tab="games">
     <ion-label>Delete</ion-label>
-    <ion-icon name="trash-outline"></ion-icon>
+    <ion-icon size="large" name="trash-outline"></ion-icon>
   </ion-tab-button>
 </ion-tab-bar>
 
