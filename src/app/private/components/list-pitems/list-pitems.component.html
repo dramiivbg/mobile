@@ -6,10 +6,6 @@
     </div>
 
     
-
-
-
-
   
 
 <ion-content *ngIf="boolean">
@@ -32,55 +28,70 @@
   </ion-row>
 
 
-<ion-grid >
-  <ion-radio-group  (ionFocus)="select(listLp)" >
-  <ion-row class=" newColor" >
-    <ion-radio value="selectall"></ion-radio>
-    <ion-col size="3">
-      <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
-    </ion-col>
-    <ion-col size="4">
-      <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
-    </ion-col>
-    <ion-col size="4">
-      <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
-    </ion-col>
-  </ion-row>
+  <ion-list>
+   
+      <ion-grid >
 
-  <ion-radio-group (ionFocus)="selectl(item)"  *ngFor="let item of listLp ; let i= index" >
+ 
+        <ion-row class=" newColor" >
+          <ion-col>
+            <ion-radio-group allow-empty-selection="true">
+              <ion-radio value="selectall" (ionChange)="event($event)"  (ionFocus)="select(listLp)" checked ></ion-radio>
+            </ion-radio-group>
+          </ion-col>
+        
+          <ion-col size="3">
+            <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
+          </ion-col>
+          <ion-col size="4">
+            <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
+          </ion-col>
+          <ion-col size="4">
+            <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
+          </ion-col>
+        </ion-row>
+      
+      
+      
+      
+        <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index">
+          
+         
+         
+          <ion-col >
+          <ion-radio-group allow-empty-selection="true"   >
+      
+          <ion-radio value="IPSingle"  (ionFocus)="selectl(item)" (ionChange)="event($event)" ></ion-radio>
+          </ion-radio-group>
+        </ion-col>
+   
 
-  <ion-row class=" delivery ContentTable" >
-    <ion-radio value="IPSingle"></ion-radio>
-    <ion-col size="3">
-      <div>{{item.PLUNo
-      }}</div>
-    </ion-col>
-    <ion-col size="4">
-      <div>{{item.PLUQuantity}}</div>
-    </ion-col>
-    <ion-col size="4">
-      <div>{{item.PLUUnitofMeasureCode
-      }}</div>
-    </ion-col>
-  </ion-row>
 
-</ion-radio-group>
+       
+          <ion-col size="3">
+            <div>{{item.PLUNo
+            }}</div>
+          </ion-col>
+          <ion-col size="4">
+            <div>{{item.PLUQuantity}}</div>
+          </ion-col>
+          <ion-col size="4">
+            <div>{{item.PLUUnitofMeasureCode
+            }}</div>
+          </ion-col>
+        </ion-row>
+      
+      
+      
+      </ion-grid>
+      
+      
+  
 
-</ion-radio-group>
-</ion-grid>
+  </ion-list>
 
 
 </ion-content>
-
-
-
-
-
-
-
-
-  
-
 
 
 <ion-content  *ngIf="!boolean">
@@ -101,10 +112,20 @@
   </ion-row>
 
 
+
+  <ion-list>
+  
+    
 <ion-grid >
-  <ion-radio-group (ionFocus)="select(listItem)">
+
+
   <ion-row class=" newColor" >
-    <ion-radio value="selectall"></ion-radio>
+    <ion-col>
+      <ion-radio-group allow-empty-selection="true">
+        <ion-radio value="selectall" (ionBlur)="remove()" (ionChange)="event($event)" checked></ion-radio>
+        </ion-radio-group>
+    </ion-col>
+ 
     <ion-col size="3">
       <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
     </ion-col>
@@ -116,12 +137,22 @@
     </ion-col>
   </ion-row>
 
-  <ion-radio-group  (ionFocus)="selectl(item)" >
-  <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index" >
 
-   
 
-    <ion-radio value="ITSingle"></ion-radio>
+
+
+  <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index">
+
+    
+
+    <ion-col>
+    <ion-radio-group allow-empty-selection="true">
+
+  <ion-radio value="ITSingle"    (ionSelect)="event($event)" (ionChange)="event($event)" ></ion-radio>
+    
+    </ion-radio-group>
+
+  </ion-col>
   
     <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
       <div>{{item.PLUNo}}</div>
@@ -134,12 +165,24 @@
       <div>{{item.PLUWhseLineNo
       }}</div>
     </ion-col>
- 
+
   </ion-row>
 
-</ion-radio-group>
-</ion-radio-group>
+
+
+
 </ion-grid>
+      
+      
+ 
+
+  </ion-list>
+
+
+
+
+
+
 
 </ion-content>
 
