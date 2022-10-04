@@ -229,12 +229,6 @@
     <ion-col class="TitleHeader">
       <ion-label>License plate</ion-label> 
     </ion-col>
-
-    <ion-col size="3" (click)="LP()">
-      <ion-icon size="large" name="save-outline"></ion-icon>
-      <div>Save</div>
-    </ion-col>
-
   </ion-row>
 
 <ion-grid *ngIf="booleanL">
@@ -275,11 +269,6 @@
 <ion-row class="header" style="text-align: center;" *ngIf="!booleanL">
   <ion-col class="TitleHeader">
     <ion-label>Items</ion-label> 
-  </ion-col>
-
-  <ion-col size="3" (click)="Item()">
-    <ion-icon size="large" name="save-outline"></ion-icon>
-    <div>Save</div>
   </ion-col>
 </ion-row>
 
@@ -334,6 +323,10 @@
   <ion-tab-button tab="movies" (click)=" enableItem()">
     <ion-label>Items</ion-label>
     <ion-icon size="large" name="cube-outline"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button tab="movies" (click)="Item()">
+  <ion-label>Save</ion-label>
+  <ion-icon size="large" name="save-outline"></ion-icon>
   </ion-tab-button>
  
 </ion-tab-bar>
