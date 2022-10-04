@@ -14,15 +14,9 @@
 
 <ion-content *ngIf="boolean">
 
-  <ion-row class="searchreceipts">
-  <ion-col size="9">
+
   <ion-searchbar (ionInput)="onChangeLp($event)" animated="true" placeholder="Search Pallet"></ion-searchbar>
-  </ion-col>  
-  <ion-col class="actionbtns" size="3">
-    <ion-icon class="actionbtns" name="trash-bin-outline"></ion-icon>
-    <ion-icon class="actionbtns" name="scan-circle-outline"></ion-icon>
-  </ion-col>
-  </ion-row>
+
 
   <ion-row class="header" style="text-align: center;">
     <ion-col class="TitleHeader">
@@ -84,15 +78,7 @@
 
 <ion-content  *ngIf="!boolean">
 
-  <ion-row class="searchreceipts">
-    <ion-col size="9">
   <ion-searchbar (ionInput)="onChangeI($event)" animated="true" placeholder="Search Pallet"></ion-searchbar>
-</ion-col>  
-<ion-col class="actionbtns" size="3">
-  <ion-icon class="actionbtns" name="trash-bin-outline"></ion-icon>
-  <ion-icon class="actionbtns" name="scan-circle-outline"></ion-icon>
-</ion-col>
-</ion-row>
 
   <ion-row class="header" style="text-align: center;">
     <ion-col class="TitleHeader">
@@ -155,6 +141,10 @@
     <ion-label>Items</ion-label>
     <ion-icon size="large" name="cube-outline"></ion-icon>
   </ion-tab-button>
+  <ion-tab-button tab="games">
+    <ion-label>Move Scan</ion-label>
+  <ion-icon size="large" name="scan-circle-outline"></ion-icon>
+</ion-tab-button>
   <ion-tab-button tab="games" (click)="delect()">
     <ion-label>Delete</ion-label>
     <ion-icon size="large" name="trash-outline"></ion-icon>
