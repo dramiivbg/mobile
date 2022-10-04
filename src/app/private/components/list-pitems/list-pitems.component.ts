@@ -14,7 +14,8 @@ import { PopoverOptionsComponent } from '../popover-options/popover-options.comp
   styleUrls: ['./list-pitems.component.scss'],
 })
 export class ListPItemsComponent implements OnInit {
-
+  private listL:any[] = [];
+  private listI:any[] = [];
   private routExtras: any;
   private listsI: any[] = [];
   private boolean: Boolean = true;
@@ -88,346 +89,6 @@ export class ListPItemsComponent implements OnInit {
   }
 
 
-  async opcionL(item:any,ev){
-
-
-
-      this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure to remove the license plate '${item.PLUNo}' ?`, async() =>{
-
-        console.log(item);
-
-        try {
-
-          this.intServ.loadingFunc(true);
-
-          let Delete = await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
-  
-          console.log(Delete);
-  
-      if(Delete.Error) throw Error(Delete.Error.Message)
-  
-      this.listLp.filter((lp,index) => {
-
-
-        if(lp.PLUNo === item.PLUNo){
-
-
-
-          this.listLp.splice(index,1);
-
-
-        }
-      })
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The licence plate ${item.PLUNo} has been removed`));
-  
-        
-  
-     
-  
-          
-        } catch (Error) {
-          
-          this.intServ.loadingFunc(false);
-  
-          this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
-        }
-      
-
-      }))
-
-      
-    
-
-        this.intServ.loadingFunc(true);
-    
-        const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
-    
-
-
-        
-
-        console.log('lines =>',this.pallets);
-        let palletH = await this.wmsService.ListLpPalletH(lpsP);
-
-
-       // console.log('lines =>',this.pallets);
-
-       // console.log('Header =>',palletH);
-
-        palletH.filter(lpH => {
-
-
-          this.pallets.push(lpH);
-        });
-
-        this.intServ.loadingFunc(false);
-
-        let obj = this.general.structSearch(this.pallets, `Search Pallet `, 'Pallets', async (pallet) => {
-
-          console.log('data =>', pallet);
-
-
-          try {
-
-            this.intServ.loadingFunc(true);
-  
-            let Delete = await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
-    
-            console.log(Delete);
-    
-        if(Delete.Error) throw Error(Delete.Error.Message)
-    
-        this.listLp.filter((lp,index) => {
-  
-  
-          if(lp.PLUNo === item.PLUNo){
-  
-  
-  
-            this.listLp.splice(index,1);
-  
-  
-          }
-        })
-         
-
-      let listl:any[] = [];
-        
-        let objL = {
-
-          LP_Pallet_Child_No: ""
-        }
-
-     
-        objL.LP_Pallet_Child_No =   item.PLUNo;
-        
-        listl.push(objL);
-             
-      let lp = await  this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR( this.wareReceipts.No,pallet.fields[0].PLULPDocumentNo,listl );
-    
-
-      if(lp.IsProcessed){
-
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('success', '', `  The license place '${ item.PLUNo}' has been assigned correctly `));
-      
-          
-   
-
-  
-
-       }else{
-
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('success', '', `  The license place '${ item.PLUNo}' has been not assigned correctly `));
-      
-       }
-          
-    
-       
-    
-            
-          } catch (Error) {
-            
-            this.intServ.loadingFunc(false);
-    
-            this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
-          }
-    
-
-   
-
-
-
-        }, false, 3,);
-        this.intServ.searchShowFunc(obj);
-
-        console.log(this.pallets);
-
-  
-       
-
-
-
-
-      
-    
-
-
-  }
-
-  
- async  opcionI(item:any,ev){
-
-
-   
-      this.intServ.loadingFunc(true);
-    
-      const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
-  
-
-
-      
-
-      console.log('lines =>',this.pallets);
-      let palletH = await this.wmsService.ListLpPalletH(lpsP);
-
-
-     // console.log('lines =>',this.pallets);
-
-     // console.log('Header =>',palletH);
-
-      palletH.filter(lpH => {
-
-
-        this.pallets.push(lpH);
-      });
-
-      this.intServ.loadingFunc(false);
-
-      let obj = this.general.structSearch(this.pallets, `Search Pallet `, 'Pallets', async (pallet) => {
-
-        console.log('data =>', pallet);
-
-
-        try {
-
-          this.intServ.loadingFunc(true);
-
-          let Delete = await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
-
-          console.log(Delete);
-  
-      if(Delete.Error) throw Error(Delete.Error.Message)
-  
-      this.listItem.filter((Item,index) => {
-
-
-        if(Item.PLUNo === item.PLUNo){
-
-
-
-          this.listLp.splice(index,1);
-
-
-        }
-      })
-       
-
-
-      let listsI:any[] = []
-        
-  let listItems =   {
-    Item_Child_No: "",
-    Qty: "",
-    WarehouseReceipt_LineNo: ""
-  }
-
-
-
-  listItems.Item_Child_No = item.PLUNo;
-
-  listItems.Qty = item.PLUQuantity;
-
-  listItems.WarehouseReceipt_LineNo = item.PLUWhseLineNo;
-
-
-  listsI.push(listItems)
-  
-
-      let addI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(this.pallet.fields[0].PLULPDocumentNo,item.PLUWhseDocumentNo,listsI);
-
-
-    try {
-
-
-      if(addI.Error) throw Error(addI.Error.Message);
-
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('success', '', `  The Item '${ item.PLUNo}' has been assigned correctly `));
-
-   
-   let listItem =    this.listItem;
-
-
-
-    let  listLp =   this.listLp; 
-  
-  
-   let pallet =    this.pallet;  
-  
-    let wareReceipts =  this.wareReceipts;  
-  
-     
-    let pallets =   this.pallets;
-
-   let listP =  this.listP;
-
-
-   
-
-      let navigationExtras: NavigationExtras = {
-        state: {
-          listItem, 
-          listLp,
-          listP,
-          pallet,
-          wareReceipts,
-          pallets,
-          new: false
-        },
-        replaceUrl: true
-      };
-      this.router.navigate(['page/wms/lists'], navigationExtras);
-  
-     
-        
-  
-      
-    } catch (Error) {
-
-      this.intServ.loadingFunc(false);
-  
-      this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
-      
-    }
-   
-     
-  
-          
-        } catch (Error) {
-          
-          this.intServ.loadingFunc(false);
-  
-          this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
-        }
-  
-
- 
-
-
-
-      }, false, 3,);
-      this.intServ.searchShowFunc(obj);
-
-      console.log(this.pallets);
-
-
-     
-
-
-    
-
-    
-  
-
-  }
-
-
- 
-
-
 
 
   enableLP(){
@@ -488,7 +149,151 @@ export class ListPItemsComponent implements OnInit {
 
   select(item:any){
 
-    console.log(item);
+   // this.list.push(item);
+
+   // console.log(this.list);
+    //console.log(item);
+  }
+
+
+  selectl(item:any){
+
+
+    if(this.boolean){
+
+
+      this.listL.push(item);
+
+      console.log(this.listL);
+    }else{
+
+      this.listI.push(item);
+      
+      console.log(this.listI);
+    }
+
+    //console.log(item);
+  }
+
+
+  delect(){
+
+
+    
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure to remove?`, async() =>{
+
+
+  if(this.boolean){
+
+    let Delete:any;
+
+
+    try {
+
+      this.intServ.loadingFunc(true);
+
+
+      this.listL.filter(async(item) => {
+        Delete = await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
+
+      });
+
+   
+      console.log(Delete);
+
+  if(Delete.Error) throw Error(Delete.Error.Message)
+
+  this.listL.filter(async(item) =>{
+
+    this.listLp.filter((lp,index) => {
+
+
+      if(lp.PLUNo === item.PLUNo){
+
+
+
+        this.listLp.splice(index,1);
+
+
+      }
+    })
+    
+
+  })
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('success', '', `The licence plate has been removed`));
+
+    
+
+ 
+
+      
+    } catch (Error) {
+      
+      this.intServ.loadingFunc(false);
+
+      this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
+    }
+  
+
+    
+  }else{
+
+    let Delete:any;
+
+
+    try {
+
+      this.intServ.loadingFunc(true);
+
+
+      this.listI.filter(async(item) => {
+        let Delete = await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
+
+      });
+
+   
+      console.log(Delete);
+
+  if(Delete.Error) throw Error(Delete.Error.Message)
+
+  this.listI.filter(async(item) =>{
+
+    this.listLp.filter((lp,index) => {
+
+
+      if(lp.PLUNo === item.PLUNo){
+
+
+
+        this.listLp.splice(index,1);
+
+
+      }
+    })
+    
+
+  })
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('success', '', `The licence plate has been removed`));
+
+    
+
+ 
+
+      
+    } catch (Error) {
+      
+      this.intServ.loadingFunc(false);
+
+      this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
+    }
+  
+
+  }
+    
+    }))
+
   }
 
 

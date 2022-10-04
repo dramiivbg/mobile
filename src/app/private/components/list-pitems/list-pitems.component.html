@@ -39,7 +39,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-radio-group (ionFocus)="select(item)"  *ngFor="let item of listLp ; let i= index" >
+  <ion-radio-group (ionFocus)="selectl(item)"  *ngFor="let item of listLp ; let i= index" >
 
   <ion-row class=" delivery ContentTable" >
     <ion-radio value="IPSingle"></ion-radio>
@@ -102,7 +102,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-radio-group  (ionFocus)="select(item)" >
+  <ion-radio-group  (ionFocus)="selectl(item)" >
   <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index" >
 
    
@@ -141,7 +141,7 @@
     <ion-label>Items</ion-label>
     <ion-icon name="cube-outline"></ion-icon>
   </ion-tab-button>
-  <ion-tab-button tab="games">
+  <ion-tab-button tab="games" (click)="delect()">
     <ion-label>Delete</ion-label>
     <ion-icon name="trash-outline"></ion-icon>
   </ion-tab-button>

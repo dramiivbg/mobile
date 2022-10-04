@@ -498,7 +498,17 @@ this.intServ.loadingFunc(true);
 
 }
 
+LP(){
 
+ this.boolean = true;
+
+}
+
+Item(){
+
+  this.boolean = true;
+
+}
 
 
 applyLP(lp:any){
@@ -507,7 +517,7 @@ this.items = [];
 this.lps = [];
 let line:any = undefined;
   this.lpsLT = [];    
-  this.boolean = true;
+ 
  
 
   if(this.lpsLT != undefined){
@@ -698,5 +708,8 @@ let line:any = undefined;
 
 
   }
+
+
+  
 
 }
