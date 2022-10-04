@@ -201,7 +201,7 @@ export class ListPItemsComponent implements OnInit {
    
       console.log(Delete);
 
-  if(Delete.Error) throw Error(Delete.Error.Message)
+  if(Delete.Error) throw Error(Delete.Error.Message);
 
   this.listL.filter(async(item) =>{
 
