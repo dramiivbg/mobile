@@ -92,7 +92,7 @@ onItem(opcion:Boolean){
         }
      
 
-        this.router.navigate(['/page/wms/wmsReceiptEdit'], navg);
+        this.router.navigate(['page/wms/wmsReceiptEdit'], navg);
 
         this.alertObj = {};
  

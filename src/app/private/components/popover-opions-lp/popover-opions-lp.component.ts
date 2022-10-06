@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { InterceptService } from '@svc/intercept.service';
 
 @Component({
   selector: 'app-popover-opions-lp',
@@ -9,12 +10,14 @@ import { PopoverController } from '@ionic/angular';
 export class PopoverOpionsLpComponent implements OnInit {
 
   @Input() options: any = {};
-  constructor(private popoverController: PopoverController) {
+  constructor(private popoverController: PopoverController, private intServ: InterceptService) {
 
    }
 
   ngOnInit() {
 
+
+    this.intServ.loadingFunc(false);
 
     
   }
