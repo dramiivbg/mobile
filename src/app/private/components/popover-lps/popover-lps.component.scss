@@ -45,9 +45,9 @@
 .row{
 
   
-    background: var(--ion-color-plureBlue);
+    background: var(--ion-color-plureheader);
     font-weight: bold;
-    color: #ffffff;
+    color: var(--ion-color-plureBlue);
 
     ion-col {
       border: 1px solid black;
