@@ -20,16 +20,23 @@ export class PopoverNewPalletComponent implements OnInit {
 
   public boolean: Boolean = true;
  
-
+ 
+  private lpNo: any = '';
+  private itemNo:any = '';
+  private visilityL:Boolean = true;
+  private visilityI:Boolean = true;
   public booleanL: Boolean = true;
   
 
   
-  public items:any[] = [];
+  public items:any [] = [];
 
   public itemsL:any[] = [];
   public itemsLT:any[];
 
+  private lpsT: any[] = [];
+
+  private itemsT:any[] =[];
   public val: string;
 
   public listItemsL:any[] = [];
@@ -142,7 +149,74 @@ public onBack() {
   }
 
 
+  onChangeI(e, itemNo:any = ''){
+
+
+    if(itemNo === ''){
+    let val = e.target.value;
+
+    if (val === '') {
+      this.items = this.itemsT;
+    } else {
+      this.items = this.itemsT.filter(
+
+     
+        x => {
+
+        
+          return (x.ItemNo.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+  }else{
+
+
+    this.items = this.itemsT.filter(
+      x => {
+        return (x.ItemNo.toLowerCase().includes(itemNo.toLowerCase()));
+      }
+    )
+  }
+
+
+
+
+  }
   
+  
+  onChangeLp(e, lpNo:any = ''){
+
+    if(lpNo === ''){
+
+
+      let val = e.target.value;
+
+      if (val === '') {
+       this.lps = this.lpsT;
+      } else {
+        this.lps = this.lpsT.filter(
+          x => {
+            return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+          }
+        )
+      }
+
+    }else{
+
+
+        this.lps = this.lpsT.filter(
+          x => {
+            return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
+          }
+        )
+      
+    }
+
+
+ 
+   
+  }
 
 
 
@@ -358,18 +432,23 @@ async onBarCode(){
     LP_Pallet_Child_No: ""
   }
 
-  this.lpsL.filter(lp =>{
+  if(this.lpsL.length > 0){
 
 
-    objL.LP_Pallet_Child_No = lp.fields.PLULPDocumentNo;
+    this.lpsL.filter(lp =>{
 
-    listLP.push(objL);
 
-    objL = {
+      objL.LP_Pallet_Child_No = lp.fields.PLULPDocumentNo;
+  
+      listLP.push(objL);
+  
+      objL = {
+  
+        LP_Pallet_Child_No: ""
+      }
+    });
+  }
 
-      LP_Pallet_Child_No: ""
-    }
-  });
 
 
   
@@ -379,44 +458,58 @@ async onBarCode(){
     WarehouseReceipt_LineNo: ""
   }
   
+  if(this.itemsL.length > 0){
+
+
     this.itemsL.filter(async(item) =>{
   
 
   
-    listItems.Item_Child_No = item.ItemNo;
-    listItems.Qty = item.Qty;
-    listItems.WarehouseReceipt_LineNo = item.LineNo;
+      listItems.Item_Child_No = item.ItemNo;
+      listItems.Qty = item.Qty;
+      listItems.WarehouseReceipt_LineNo = item.LineNo;
+    
+    
+      listsI.push(listItems);
   
-  
-    listsI.push(listItems);
-
-  
-    listItems =   {
-      Item_Child_No: "",
-      Qty: "",
-      WarehouseReceipt_LineNo: ""
-    }
-  
-  
-    });
+    
+      listItems =   {
+        Item_Child_No: "",
+        Qty: "",
+        WarehouseReceipt_LineNo: ""
+      }
+    
+    
+      });
+  }
 
 
 
   try {
 
 
+        if(this.itemsL.length > 0){
 
+          
          resI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(pallet.fields.PLULPDocumentNo,this.wareReceipts.No,listsI);
     
-         
-         let resL = await this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,listLP);
+
+        }
+
+         if(this.lpsL.length > 0){
 
 
-         if(resI.Error) throw Error(resI.Error.Message);
+          let resL = await this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,listLP);
+
+
+         }
+      
+
+       
 
 
 
-         if(resL.Error) throw Error(resL.Error.Message);
+    
      
 
 
@@ -430,7 +523,7 @@ async onBarCode(){
   } catch (Error) {
    
 
-    
+    this.intServ.loadingFunc(false);
     this.intServ.alertFunc(this.js.getAlert('error', '', Error.message,));
      
   }
@@ -446,6 +539,13 @@ async onBarCode(){
   
 }
 
+
+
+exit(){
+
+
+  this.boolean = true;
+}
 
 async listLpOrItem(pallet:any){
 
@@ -466,7 +566,7 @@ this.intServ.loadingFunc(true);
 
    // console.log( JSON.stringify(items));
 
-    this.items = items;
+    this.items = items.Possible_ItemsChilds;
 
     console.log('item =>',this.items);
 
@@ -486,6 +586,21 @@ this.intServ.loadingFunc(true);
       
     });
 
+    this.items.filter((item, index) =>{
+
+      if(item.Qty === 0){
+  
+  
+        this.items.splice(index,1);
+      }
+    })
+
+    this.lpsT = this.lps;
+
+    this.itemsT = this.items;
+
+    console.log(this.itemsT);
+
     this.intServ.loadingFunc(false);
 
 
@@ -498,23 +613,130 @@ this.intServ.loadingFunc(true);
 
 }
 
-LP(){
 
- this.boolean = true;
-
-}
-
-Item(){
-
-  this.boolean = true;
-
-}
-
-
-applyLP(lp:any){
+disable(){
 
 this.items = [];
 this.lps = [];
+
+  this.boolean = true;
+
+ 
+
+}
+
+
+select(item:any,ev){
+
+
+  if(ev.detail.value != undefined){
+
+
+   
+
+    switch(this.booleanL){
+
+
+      case true:    this.lpsL = item;
+                    this.listLpsL = item;
+                     this.lpsLT = item;
+                     console.log(this.lpsL);
+                    
+                     
+                     this.visilityL = false;
+
+                     
+
+                    // radioL.style.visibility = 'hidden';
+
+    
+
+
+
+      break;         
+
+
+      case false:    this.itemsL = item;
+
+                     this.itemsLT = item;
+
+
+                    this.listItemsL = item;
+                    console.log(this.itemsL);
+                   
+                    this.visilityI = false;
+
+        
+
+
+      break;
+
+    }
+
+
+
+  }else{
+
+
+    this.remove();
+
+    
+
+
+  }
+
+
+
+}
+
+
+remove(){
+
+  switch(this.booleanL){
+
+
+    case true:    this.lpsL = [];
+                  this.listLpsL = [];
+                   this.lpsLT = [];
+                   console.log(this.lpsL);
+
+                   this.visilityL = true;
+  
+
+
+
+    break;         
+
+
+    case false:    this.itemsL = [];
+
+                   this.itemsLT = [];
+
+
+                  this.listItemsL = [];
+                  console.log(this.itemsL);
+                  this.visilityI = true;
+
+    break;
+
+  }
+
+
+
+
+
+}
+
+
+applyLP(lp:any,ev,i:any){
+
+  
+
+if(ev.detail.value != undefined){
+
+
+    
+
 let line:any = undefined;
   this.lpsLT = [];    
  
@@ -523,7 +745,7 @@ let line:any = undefined;
   if(this.lpsLT != undefined){
 
 
-  line =  this.listLpsL.find(lp1 => lp1.fields.PLULPDocumentNo == lp1.fields.PLULPDocumentNo )
+  line =  this.listLpsL.find(lp1 => lp1.fields.PLULPDocumentNo == lp.fields.PLULPDocumentNo )
   }
 
 
@@ -543,6 +765,32 @@ let line:any = undefined;
         
   }
 
+
+
+
+  }else{
+
+
+    this.lpsL.filter( (Lp, index) => {
+
+      if(Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
+
+
+        this.lpsL.splice(index,1)
+
+        this.listLpsL.splice(index,1)
+        this.lpsLT.splice(index,1)
+      }
+    })
+
+
+ 
+  
+
+    console.log('Delete =>',this.listLpsL,this.lpsL, this.lpsLT);
+  }
+
+  
       
     
     
@@ -552,43 +800,74 @@ let line:any = undefined;
     
   
   
-    applyItem(item:any){
+    applyItem(item:any,ev,i:any){
   
-      let line:any = undefined;
-      this.items = [];
-      this.lps = [];
-      this.itemsLT = [];
-      this.boolean = true;
+
+
+console.log(ev.detail);
+
+if(ev.detail.value != undefined){
+
+
+  
+  let line:any = undefined;
+
+ 
+  this.itemsLT = [];
+  this.boolean = true;
 
 
 
+  
+if(this.itemsLT != undefined){
+
+
+line =  this.listItemsL.find(item1 => item1.ItemNo == item.ItemNo)
+}
+
+
+if(line != null || line != undefined){
+
+  this.intServ.alertFunc(this.js.getAlert('alert', '', 'This Item has already been assigned'));
+
+  
+}else{
+
+
+  this.itemsL.push(item);
+
+  this.itemsLT.push(item);
+
+
+  this.listItemsL.push(item);
       
-  if(this.itemsLT != undefined){
+}
 
 
-    line =  this.listItemsL.find(item1 => item1.ItemNo == item.ItemNo)
+  console.log(this.itemsL);
+
+
+}else{
+
+
+  this.itemsL.filter( Item => {
+
+    if(Item.ItemNo === item.ItemNo){
+
+      this.itemsL.splice(Number(i),1);
+
+      this.itemsLT.push(Number(i),1);
+    
+    
+      this.listItemsL.push(Number(i),1);
+
     }
-  
-  
-    if(line != null || line != undefined){
-  
-      this.intServ.alertFunc(this.js.getAlert('alert', '', 'This Item has already been assigned'));
-  
-      
-    }else{
-  
-  
-      this.itemsL.push(item);
+  })
+ 
 
-      this.itemsLT.push(item);
+  console.log('Delete =>', this.listItemsL, this.itemsLT, this.listItemsL);
+}
 
-
-      this.listItemsL.push(item);
-          
-    }
-  
-
-      console.log(this.itemsL);
       
       
     }
@@ -625,29 +904,6 @@ let line:any = undefined;
 
     
  
-
-  filter(e) {
-    let val = e.target.value;
-    this.val = val;
-  //  console.log('change =>',val);
-    
-    if (val === '') {
-      this.lpsL = this.listLpsL;
-      this.itemsL = this.listItemsL;
-    } else {
-      this.lpsL = this.listLpsL.filter(
-        x => {
-          return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) );
-        }
-      )
-
-      this.itemsL = this.listItemsL.filter(
-        x => {
-          return (x.ItemNo.toLowerCase().includes(val.toLowerCase()));
-        }
-      )
-    } 
-  }
 
 
   deleteI(item:any){
@@ -711,5 +967,64 @@ let line:any = undefined;
 
 
   
+
+  autoComplet(){
+
+
+
+  if(this.booleanL){
+
+    
+    this.barcodeScanner.scan().then(
+      async  (barCodeData) => {
+          let code = barCodeData.text;
+    
+    
+  
+          this.lpNo = code;
+
+
+          this.onChangeLp('', this.lpNo);
+          
+    
+      
+        }
+      ).catch(
+        err => {
+          console.log(err);
+        }
+      )
+
+
+
+    
+  }else{
+
+    
+    this.barcodeScanner.scan().then(
+      async  (barCodeData) => {
+          let code = barCodeData.text;
+    
+    
+  
+          this.itemNo = code;
+
+
+          this.onChangeI('', this.itemNo);
+          
+    
+      
+        }
+      ).catch(
+        err => {
+          console.log(err);
+        }
+      )
+
+
+
+  }
+   
+  }
 
 }

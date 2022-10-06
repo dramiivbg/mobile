@@ -1,7 +1,7 @@
-<PlureHeader type="1" title="Receipts" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader type="1" title="LP Details " url="page/wms/listPallet" notify="0" *ngIf="boolean"></PlureHeader>
 
 
-    <div class="docnumber" >
+    <div class="docnumber" *ngIf="boolean">
      <p> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
     </div>
 
@@ -13,10 +13,10 @@
 
   <ion-row>
     <ion-col size="10">
-      <ion-searchbar (ionInput)="onChangeLp($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="lpNo" (ionInput)="onChangeLp($event, lpNo)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
-      <ion-icon size="large" name="barcode-outline"></ion-icon>
+      <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
     </ion-col>
   </ion-row>
 
@@ -35,8 +35,8 @@
  
         <ion-row class=" newColor" >
           <ion-col>
-            <ion-radio-group allow-empty-selection="true">
-              <ion-radio value="selectall" (ionChange)="event($event)"  (ionFocus)="select(listLp)" checked ></ion-radio>
+            <ion-radio-group allow-empty-selection="true"  (ionChange)="select(listLp, $event)" >
+              <ion-radio value="selectall"    ></ion-radio>
             </ion-radio-group>
           </ion-col>
         
@@ -58,10 +58,10 @@
           
          
          
-          <ion-col >
-          <ion-radio-group allow-empty-selection="true"   >
+          <ion-col  *ngIf="visibilityL">
+          <ion-radio-group allow-empty-selection="true"   (ionChange)="selectl(item, $event)" >
       
-          <ion-radio value="IPSingle"  (ionFocus)="selectl(item)" (ionChange)="event($event)" ></ion-radio>
+          <ion-radio value="IPSingle"   ></ion-radio>
           </ion-radio-group>
         </ion-col>
    
@@ -94,14 +94,24 @@
 </ion-content>
 
 
+
+<PlureHeader type="1" title="Items Details " url="page/wms/lists" notify="0" *ngIf="!boolean" (click)="exit()"></PlureHeader>
+
+
+    <div class="docnumber" *ngIf="!boolean">
+     <p> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
+    </div>
+
+
+
 <ion-content  *ngIf="!boolean">
 
   <ion-row *ngIf="!boolean">
     <ion-col size="10">
-      <ion-searchbar (ionInput)="onChangeLp($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="itemNo" (ionInput)="onChangeI($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
-      <ion-icon size="large" name="barcode-outline" *ngIf="!boolean"></ion-icon>
+      <ion-icon size="large" name="barcode-outline" *ngIf="!boolean" (click)="autoComplet()"></ion-icon>
     </ion-col>
   </ion-row>
 
@@ -121,8 +131,8 @@
 
   <ion-row class=" newColor" >
     <ion-col>
-      <ion-radio-group allow-empty-selection="true">
-        <ion-radio value="selectall" (ionBlur)="remove()" (ionChange)="event($event)" checked></ion-radio>
+      <ion-radio-group allow-empty-selection="true"  (ionChange)="select(listItem , $event)">
+        <ion-radio value="selectall"  ></ion-radio>
         </ion-radio-group>
     </ion-col>
  
@@ -145,10 +155,10 @@
 
     
 
-    <ion-col>
-    <ion-radio-group allow-empty-selection="true">
+    <ion-col  *ngIf="item.PLUQuantity > 0  &&  visibilityI">
+    <ion-radio-group allow-empty-selection="true" (ionChange)="selectl(item,$event)">
 
-  <ion-radio value="ITSingle"    (ionSelect)="event($event)" (ionChange)="event($event)" ></ion-radio>
+  <ion-radio value="ITSingle"  ></ion-radio>
     
     </ion-radio-group>
 
@@ -198,7 +208,7 @@
     <ion-label>Items</ion-label>
     <ion-icon size="large" name="cube-outline"></ion-icon>
   </ion-tab-button>
-  <ion-tab-button tab="games">
+  <ion-tab-button tab="games" (click)="moveScan()">
     <ion-label>Move Scan</ion-label>
   <ion-icon size="large" name="scan-circle-outline"></ion-icon>
 </ion-tab-button>

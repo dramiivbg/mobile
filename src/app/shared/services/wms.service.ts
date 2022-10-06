@@ -535,6 +535,35 @@ export class WmsService {
    }
 
 
+   public async DeleteLPSingle_FromWarehouseReceiptLine(No:any){
+    try {
+
+    
+        let obj: any = [{
+    
+           No
+            
+        }];
+    
+        console.log(JSON.stringify(obj));
+    
+    
+        
+    
+    
+        
+        let p = await this.syncErp.processRequestParams(' DeleteLPSingle_FromWarehouseReceiptLine', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+   }
+
+
    public async Delete_ItemChild_to_LP_Pallet_From_WR(LP_Pallet_No:any,  WarehouseReceipt_No:any,  WarehouseReceipt_LineNo:any, Qty:any,Item_Child_No:any ){
 
 

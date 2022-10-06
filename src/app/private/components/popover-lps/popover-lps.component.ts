@@ -129,6 +129,9 @@ export class PopoverLpsComponent implements OnInit {
 
  async option(lpNo:any,qty:any,ev:any){
 
+
+  this.intServ.loadingFunc(true);
+
   let lp = await this.wmsService.GetLicencesPlate(lpNo);
 
 
@@ -160,9 +163,27 @@ export class PopoverLpsComponent implements OnInit {
   }else
       if(data.name == 'Delete'){
 
-        let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm','confirm','Surely you want to eliminate it?', () => {
+        let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm','confirm','Surely you want to eliminate it?', async() => {
 
-          console.log(data);
+
+          this.intServ.loadingFunc(true);
+
+          try {
+
+
+             let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(lpNo);
+
+             if(lpD.Error) throw Error(lpD.Error.Message);
+
+             this.popoverController.dismiss({});
+             this.intServ.loadingFunc(false);
+             this.intServ.alertFunc(this.jsonService.getAlert('success', '', `The license plate ${lpD.LPPallet_DocumentNo} has been successfully deleted`));
+          
+          } catch (error) {
+            
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.jsonService.getAlert('error', '', error.message))
+          }
         }))
 
       }

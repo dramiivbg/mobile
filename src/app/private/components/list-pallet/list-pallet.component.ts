@@ -50,11 +50,24 @@ export class ListPalletComponent implements OnInit {
   async ngOnInit() {
 
 
+    if(this.routExtras != undefined){
 
-    this.wareReceipts = this.routExtras.wareReceipts; 
+      let wareReceipts = this.routExtras.wareReceipts;
+      let pallet = this.routExtras.pallet;
+      localStorage.setItem('wareReceipts', JSON.stringify(wareReceipts));
+      localStorage.setItem('pallet', JSON.stringify(pallet));
 
-    this.listPallet = this.routExtras.pallet;
+      
+    }
 
+    console.log(localStorage.getItem('wareReceipts'));
+     // console.log(localStorage.getItem('pallet'));
+
+
+
+    this.wareReceipts = (this.routExtras != undefined) ? this.routExtras.wareReceipts : localStorage.getItem('wareReceipts'); 
+
+    this.listPallet = (this.routExtras  != undefined) ? this.routExtras.pallet :  localStorage.getItem('pallet');
 
     console.log('pallet =>',this.listPallet);
 
