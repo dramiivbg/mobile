@@ -97,6 +97,7 @@ ion-button.add-lines::part(native){
     padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
+    border-radius: 0 0 70% 10%;
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
@@ -208,4 +209,7 @@ div.accornSubTotal {
     }
 }
 
-
+.PL{
+    font-size: 20px;
+    font-weight: bold;
+}

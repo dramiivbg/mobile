@@ -4,7 +4,11 @@ import { AuthGuardService } from '@guard/auth-guard.service';
 
 const routes: Routes = [
   { path: '', loadChildren: () => import('./public/public.module').then( m => m.PublicModule), canActivate: [AuthGuardService] },
-  { path: 'page', loadChildren: () => import('./private/private.module').then( m => m.PrivateModule), canActivate: [AuthGuardService] }
+  { path: 'page', loadChildren: () => import('./private/private.module').then( m => m.PrivateModule), canActivate: [AuthGuardService] },  {
+    path: 'physical-inventory',
+    loadChildren: () => import('./wms/physical-inventory/physical-inventory.module').then( m => m.PhysicalInventoryPageModule)
+  }
+
 ];
 
 @NgModule({
