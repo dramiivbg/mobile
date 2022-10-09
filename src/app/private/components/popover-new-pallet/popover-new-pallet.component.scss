@@ -266,8 +266,9 @@ ion-content{
   }
 
   ion-row.ContentTable{
-    background: rgb(163, 193, 232);
+    background: var(--ion-color-plureMain);
     margin: 5px 0 0;
+
 }
 
   }
