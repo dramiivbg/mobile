@@ -5,7 +5,7 @@
 }
 
 ion-icon {
-    color: #1A518F;
+    color: var(--ion-color-plureBlue);
   }
 
 .notify {
@@ -20,7 +20,8 @@ ion-icon {
         border-radius: 100%;
         background: var(--ion-color-plureBlue);
         height: 17px;
-        margin-left: -40px;
+        margin-left: 38px;
+        top: 0px;
         position: absolute;
         text-align: center;
         color: #fff;

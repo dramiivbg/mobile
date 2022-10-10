@@ -97,6 +97,8 @@ ion-button.add-lines::part(native){
     padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
+    border-radius: 0 0 70% 10%;
+
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
@@ -266,8 +268,9 @@ ion-content{
   }
 
   ion-row.ContentTable{
-    background: var(--ion-color-plureMain);
-    margin: 5px 0 0;
+    background: rgba(21, 73, 131, 0.1);
+    margin: 1px 0 0;
+    color: var(--ion-color-plureMain);
 
 }
 

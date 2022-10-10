@@ -91,13 +91,14 @@ ion-button.add-lines::part(native){
 
 // design
 .designform-header {
-    background: var(--ion-color-plureBlue) !important;
-    margin-top: 5px;
+    background: linear-gradient(to top, #9cecfb, #65c7f7, #0052d4) !important;
+    // margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
     border-radius: 0 0 70% 10%;
+    font-weight: bold;
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
@@ -210,6 +211,18 @@ div.accornSubTotal {
 }
 
 .PL{
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
+}
+
+.footerReceipt{
+    padding-bottom: 60px;
+    // box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.08);
+    // background: transparent linear-gradient(180deg, #D8D8D800 0%, #6C6C6C4F 158%) 0% 0% no-repeat padding-box;
+    background: linear-gradient(to bottom, #9cecfb, #65c7f7, #0052d4);
+    border-radius: 10% 10% 0% 0%;
+}
+
+.itemfooter{
+    color: #F2F2F2 !important;
 }

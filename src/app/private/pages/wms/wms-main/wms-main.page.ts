@@ -114,6 +114,8 @@ export class WmsMainPage implements OnInit {
         return 'GetWarehouseReceipts';
       case "P008":
         return 'GetWarehousePutAways';
+      case "P011":
+        return 'Get_WarehouseInvPhysicalCount';
     }
   }
 
