@@ -473,7 +473,7 @@ export class WmsReceiptPage implements OnInit {
       const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
 
 
-      if (lpsP.Error) throw (lpsP.Error.Message);
+      if(lpsP.Error) throw (lpsP.Error.Message);
 
 
       console.log(lpsP.length);
@@ -602,6 +602,9 @@ export class WmsReceiptPage implements OnInit {
       }
 
     } catch (error) {
+
+
+      this.intServ.alertFunc(this.jsonService.getAlert('alert', '', error.message));
 
     }
 

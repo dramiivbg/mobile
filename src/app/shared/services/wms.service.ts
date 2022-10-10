@@ -1,4 +1,5 @@
 import { identifierModuleUrl } from "@angular/compiler";
+import { typeWithParameters } from "@angular/compiler/src/render3/util";
 import { Injectable } from "@angular/core";
 
 import { Observable, Subject } from "rxjs";
@@ -159,6 +160,15 @@ export class WmsService {
 
  }
 
+ public setAway(data: any){
+
+    this.data = data;
+ }
+
+ public getAway(){
+
+    return this.data;
+ }
 
 
 
@@ -653,6 +663,8 @@ public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
 
 
 
+
+
 public async GetPossiblesBinFromPutAway(No:any){
 
 
@@ -738,7 +750,141 @@ public async GetPossiblesBinFromPutAway(No:any){
  
      }
 
-     LicensePlatesLines
+
+
+     public async listsPutAways(putAway:any){
+
+
+
+        
+        let list: any[] = [];
+
+         let obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields: {  Type: "",
+            No: 0,
+            LocationCode: "",
+            AssignedUserID: null,
+            AssignmentDate: null,
+            AssignmentTime: null,
+            SortingMethod: '',
+            NoSeries: '',
+            Comment: false,
+            NoPrinted: null,
+            NoofLines: null,
+            PostingDate: null,
+            RegisteringNo: null,
+            LastRegisteringNo: null,
+            RegisteringNoSeries: '',
+            DateofLastPrinting: null,
+            TimeofLastPrinting: null,
+            BreakbulkFilter: false,
+            SourceNo: null,
+            SourceDocument: "",
+            SourceType: "",
+            SourceSubtype: "",
+            DestinationType: "",
+            DestinationNo: null,
+            ExternalDocumentNo: null,
+            ExpectedReceiptDate: null,
+            ShipmentDate: null,
+            ExternalDocumentNo2: null,
+            $systemId: '',
+            SystemCreatedAt: '',
+            SystemCreatedBy: '',
+            SystemModifiedAt: '',
+            SystemModifiedBy: ''
+},
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+
+
+         for (const i  in putAway.WarehousePutAways) {
+
+
+            obj.company = putAway.WarehousePutAways[i].company;
+            obj.fieldCount = putAway.WarehousePutAways[i].fieldCount;
+            obj.id = putAway.WarehousePutAways[i].id;
+            obj.name = putAway.WarehousePutAways[i].name;
+            obj.position = putAway.WarehousePutAways[i].position;
+            obj.recordId = putAway.WarehousePutAways[i].recordId;
+     
+            
+
+            for (const y in putAway.WarehousePutAways[i].fields) {
+
+
+                
+         obj.fields[putAway.WarehousePutAways[i].fields[y].name] =  putAway.WarehousePutAways[i].fields[y].value;
+
+              
+            }
+
+          list.push(obj);
+
+
+          obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields: {  Type: "",
+            No: 0,
+            LocationCode: "",
+            AssignedUserID: null,
+            AssignmentDate: null,
+            AssignmentTime: null,
+            SortingMethod: '',
+            NoSeries: '',
+            Comment: false,
+            NoPrinted: null,
+            NoofLines: null,
+            PostingDate: null,
+            RegisteringNo: null,
+            LastRegisteringNo: null,
+            RegisteringNoSeries: '',
+            DateofLastPrinting: null,
+            TimeofLastPrinting: null,
+            BreakbulkFilter: false,
+            SourceNo: null,
+            SourceDocument: "",
+            SourceType: "",
+            SourceSubtype: "",
+            DestinationType: "",
+            DestinationNo: null,
+            ExternalDocumentNo: null,
+            ExpectedReceiptDate: null,
+            ShipmentDate: null,
+            ExternalDocumentNo2: null,
+            $systemId: '',
+            SystemCreatedAt: '',
+            SystemCreatedBy: '',
+            SystemModifiedAt: '',
+            SystemModifiedBy: ''
+},
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+
+           
+         }
+
+
+
+
+         return list;
+
+     }
 
 
 

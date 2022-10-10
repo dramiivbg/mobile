@@ -22,6 +22,7 @@ import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.com
 
 import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-lp.component';
 import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
+import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 
 
 
@@ -40,7 +41,8 @@ import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
     ListPalletComponent,
     ListPItemsComponent,
     AddItemOrLpComponent,
-    AlertsComponent
+    AlertsComponent,
+    PhysicalIntentoryPage
    
     
   
@@ -63,7 +65,8 @@ import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
     PopoverOptionsComponent,
     LicensePlatesComponent,
     PopoverLpsComponent,
-    EditPutAwayComponent
+    EditPutAwayComponent,
+    PhysicalIntentoryPage
   ]
 })
 export class WmsModule { }

@@ -55,18 +55,26 @@ export class EditPutAwayComponent implements OnInit {
         
   }
 
+  exit(){
+
+    this.modalController.dismiss({});
+  }
+
   async  ngOnInit() {
 
     this.warePW = this.wmsService.getPutAway();
 
-   
 
-    this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
+    if(this.warePW != undefined){
+
+
+      this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
       console.log(this.whsePutAway, this.listPwL);
-  
-
       this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
-
+    }else{
+    this.warePY = this.wmsService.getAway();
+    }
+   
   }
 
 
@@ -75,54 +83,36 @@ export class EditPutAwayComponent implements OnInit {
 
     this.modalController.dismiss({});
 
-  
-  }
+ }
 
 
   public async onBarCodeChange(){
-
-
 
     let line = undefined;
      
     this.barcodeScanner.scan().then(
       async  (barCodeData) => {
-          let code = barCodeData.text;
+       let code = barCodeData.text;
     
-    
-
     line =   this.listBin[0].Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
   
 
     console.log(this.listBin);
 
     if(line === null || line === undefined){
-
-
-      this.intServ.alertFunc(this.js.getAlert('error', '', `The Bin code ${code.toUpperCase()} does not exist`))
+  this.intServ.alertFunc(this.js.getAlert('error', '', `The Bin code ${code.toUpperCase()} does not exist`))
     }else{
-
-
-      this.listsFilter.filter( lp => {
-
-
-
-        lp.fields.PLUBinCode = line.BinCode.toUpperCase();
+     this.listsFilter.filter( lp => {
+      lp.fields.PLUBinCode = line.BinCode.toUpperCase();
        });
 
     }
-         
-
-   
-    
-      
-        }
+         }
       ).catch(
         err => {
           console.log(err);
         }
       )
-     
 
   }
 
@@ -134,18 +124,44 @@ export class EditPutAwayComponent implements OnInit {
     this.intServ.loadingFunc(true);
   let listPallet;
 
+  let listLp;
+
+  let  listLpH;
+
 
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
+  const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
 
+    if(lps.Error){
+      this.modalController.dismiss({});
+      this.intServ.alertFunc(this.js.getAlert('alert', ' ', 'The Whse Put Away this void')); 
+      this.router.navigate(['page/wms/wmsMain']);
+     return;
 
-    const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
-
+    } 
 
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
 
-    const listLp = await this.wmsService.ListLP(lps);
+    if(!lps.Error){
 
+
+       listLp = await this.wmsService.ListLP(lps);
+
+       listLpH = await this.wmsService.ListLPH(lps);
+
+        
+    listLp.filter(lp => {
+
+
+      let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      lp.fields.PLUBinCode = line.fields.PLUBinCode;
+      lp.fields.PLUItemNo = line.fields.PLUItemNo;
+    });
+    }
+
+  
     if(!pallets.Error){
 
    listPallet = await this.wmsService.ListLP(pallets);
@@ -164,32 +180,12 @@ export class EditPutAwayComponent implements OnInit {
     });
 
     }
-    const listLpH = await this.wmsService.ListLPH(lps)
-
    
-
-    
-    listLp.filter(lp => {
-
-
-      let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      lp.fields.PLUBinCode = line.fields.PLUBinCode;
-      lp.fields.PLUItemNo = line.fields.PLUItemNo;
-    });
-
-
-      
-  
-
    
     console.log('pallets =>', listPallet);
 
     console.log('lps =>', listLp);
 
-
-
- 
 
       let line:any = undefined;
       this.intServ.loadingFunc(false);
@@ -199,8 +195,7 @@ export class EditPutAwayComponent implements OnInit {
 
         this.intServ.loadingFunc(true);
 
-
-
+ if(!lps.Error){
        
     for (const key in listLp) {
   
@@ -213,6 +208,8 @@ export class EditPutAwayComponent implements OnInit {
 
         
       }
+
+    }
 
 
       if(!pallets.Error){
@@ -532,10 +529,32 @@ break;
     }else{
 
 
-      this.intServ.alertFunc(this.js.getAlert('alert', 'alert', 'Confirm WH PutAway?'));
+      this.intServ.alertFunc(this.js.getAlert('alert', 'alert', 'Confirm WH PutAway?' , async() =>  {
+
+
+        
+
+      let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+      if(!postAway.Error){
+
+
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted`, () => {
+
+
+
+          this.modalController.dismiss({});
+
+          this.router.navigate(['page/wms/wmsMain']);
+        }));
+      }
+
+
+      }));
 
       console.log(this.listsFilter);
 
+      alert('Hola mundo')
 
 
 /*

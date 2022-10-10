@@ -36,6 +36,7 @@ import { PrivateModule } from '@prv/private.module';
 import { WmsService } from '@svc/wms.service';
 import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
     LoadingComponent,
     AlertsComponent,
     NotifyComponent,
+    EditPutAwayComponent
   
 
   ],

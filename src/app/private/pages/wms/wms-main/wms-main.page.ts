@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { Process } from '@mdl/module';
+import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
+import { WmsService } from '@svc/wms.service';
 
 @Component({
   selector: 'app-wms-main',
@@ -23,7 +26,9 @@ export class WmsMainPage implements OnInit {
     , private intServ: InterceptService
     , private js: JsonService
     , private router: Router
-    , private moduleService: ModuleService
+    , private moduleService: ModuleService,
+    private wmsService:WmsService,
+    private modalCtrl: ModalController
   ) { 
     let objFunc = {
       func: () => {
@@ -75,10 +80,88 @@ export class WmsMainPage implements OnInit {
       let rsl = await this.syncerp.setRequest(p);
       let wareReceipts = rsl.WarehouseReceipts;
 
-      
+      this.intServ.loadingFunc(false);
       await this.mappingWareReceipts(wareReceipts, process);
     }
+  
+    if(process.processId === 'P010'){
+
+
+      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
+      let rsl = await this.syncerp.setRequest(p);
+      console.log(rsl);
+
+      this.intServ.loadingFunc(false);
+
+    }
+
+    if(process.processId === 'P011'){
+
+
+      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
+      let rsl = await this.syncerp.setRequest(p);
+      console.log(rsl);
+
+      this.intServ.loadingFunc(false);
+
+    }
+
+
+    if(process.processId === 'P008'){
+
+      
+      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
+      let rsl = await this.syncerp.setRequest(p);
+    
+   
+    await  this.mappingPutAways(rsl, process);
+    }
+  }
+
+
+
+  private async mappingPutAways(putAway:any , procesos: Process){
+
+
+   let listPutAway = await this.wmsService.listsPutAways(putAway);
+
+   console.log(listPutAway);
+
+
+   if (listPutAway.length > 0 ) {
+
     this.intServ.loadingFunc(false);
+    
+     let obj = this.general.structSearch(listPutAway, `Search ${procesos.description}`, 'Put Aways', async (whsePutAway) => {
+
+
+      this.wmsService.setAway(whsePutAway);
+       console.log('data =>', putAway);
+       const modal = await this.modalCtrl.create({
+        component: EditPutAwayComponent,
+        componentProps: {whsePutAway}
+    
+      
+      });
+      modal.present();
+  
+      const { data, role } = await modal.onWillDismiss();
+  
+  
+       setTimeout(
+         () => {
+           this.intServ.searchShowFunc({});
+         }, 1000
+       )
+     }, false, 4);
+     this.intServ.searchShowFunc(obj);
+   } else {
+     this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${procesos.salesType} were found.`));
+   }
+
+
+   
+
   }
 
   private async mappingWareReceipts(wareReceipts: any, process: Process) {
@@ -116,6 +199,7 @@ export class WmsMainPage implements OnInit {
         return 'GetWarehousePutAways';
       case "P011":
         return 'Get_WarehouseInvPhysicalCount';
+
     }
   }
 
