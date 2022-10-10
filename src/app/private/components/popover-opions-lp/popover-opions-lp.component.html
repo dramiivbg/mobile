@@ -2,39 +2,33 @@
 <ion-content>
   <ng-container class="container">
     <ion-content >
-  <ion-row class="header" class="delivery newColor">
+  <ion-row class="header">
     <ion-col>
       <ion-label>{{options.name}}</ion-label>
     </ion-col>
   </ion-row>
 
     
-      <ion-row  class="delivery newColor">  
+      <ion-row class="delivery newColor">  
             <ion-col size="6">
               UoM:  {{options.menu[1].obj.fields.PLUUnitofMeasureCode}}
             </ion-col>
           
-          </ion-row>
 
 
-          <ion-row  class="delivery newColor">  
             <ion-col size="6">
               LineNo:     {{options.menu[1].obj.fields.PLULineNo}}
             </ion-col>
            
-          </ion-row>
 
       
 
-        <ion-row  class="delivery newColor">
             <ion-col size="6">
              QTY:   {{options.menu[1].obj.fields.PLUQuantity.toFixed(1)}}
             </ion-col>
           
        
-          </ion-row>   
 
-        <ion-row  class="delivery newColor">
             <ion-col size="6">
               
               item: {{options.menu[1].obj.fields.PLUDescription}}

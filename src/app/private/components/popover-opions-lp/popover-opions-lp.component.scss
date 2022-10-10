@@ -1,25 +1,30 @@
 ion-content {
 
-  
-    ion-row.header{
-        background: var(--ion-color-plureBlue);
+    ion-row.header {
+        background: rgba(21, 73, 131, 1);
         color: #ffffff;
-      
+        font-weight: bold;
+        text-align: center !important;
+
     }
+
     ion-list {
         border-bottom: 1px solid #999;
         padding: 0;
+
         ion-row {
             ion-col {
                 ion-icon {
                     font-size: 25px;
                     color: var(--ion-color-plureBlue);
                 }
+
                 ion-label {
                     margin-top: 4px;
                     width: 100%;
                     position: absolute;
                     margin-left: 13px;
+                    font-weight: bold;
                 }
             }
         }
@@ -28,9 +33,7 @@ ion-content {
 
 
 
-ng-container.container{
-
-
+ng-container.container {
     background: var(--ion-color-plureBlue);
     color: #ffffff;
 }
@@ -38,6 +41,8 @@ ng-container.container{
 
 ion-row.newColor {
     background: rgba(21, 73, 131, 1);
-    margin: 5px 0 0;
     color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 0 0 10% 10%;
 }

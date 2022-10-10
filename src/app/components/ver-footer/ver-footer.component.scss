@@ -1,6 +1,6 @@
 div.logofooter {
     bottom: 0;
-    background: transparent linear-gradient(180deg, #D8D8D800 0%, #6C6C6C4F 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(180deg, #D8D8D800 0%, #6C6C6C4F 158%) 0% 0% no-repeat padding-box;
     opacity: 1;
     padding: 10px;
     position: fixed;
@@ -20,13 +20,14 @@ div.logofooter {
 }
 
 div.logofooter2 {
-    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.08);
+    // box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.08);
     color: var(--ion-color-plureBlue);
-    background-color: var(--ion-color-plureHeader);
+    // background-color: var(--ion-color-plureHeader);
     bottom: 0;
     position: fixed;
     text-align: center;
     width: 100%;
+    // font-weight: bold;
 
     img {
         display: inline-block;
@@ -42,3 +43,7 @@ div.logofooter2 {
         font-size: 12px;
     }
 }
+
+// #footer-height{
+//     padding-bottom: 70px;
+// }

@@ -3,14 +3,14 @@
 ion-content.modules {    
     div.content-menu {
         border-radius: 5px;
-        margin-top: 5px;
-        padding-top: 5px;
+        // margin-top: 5px;
+        // padding-top: 5px;
 
         div.grid-content {
             margin: 20px;
             padding: 10px 15px;
             box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.14);
-            border-radius: 5px;
+            border-radius: 23px;
             h1 {
                 color: $plure-init-input-bg;
                 font-family: SourceSansProRegular !important;
@@ -47,7 +47,9 @@ ion-content.modules {
                         }            
                     }
             
-                    div.module-item-icon {            
+                    div.module-item-icon {  
+                        // align-items: center;
+                        // justify-content: center;          
                         text-align: center;
                         display: block;
                         margin: auto;

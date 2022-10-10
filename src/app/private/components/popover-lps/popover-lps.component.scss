@@ -25,9 +25,10 @@
   
  
   ion-col {
-    border: 1px solid black;
+    // border: 1px solid black;
     border-bottom: 0;
-    border-right: 5%;
+    // border-right: 5%;
+    font-weight: 600;
  
  
   }
@@ -50,7 +51,7 @@
     color: var(--ion-color-plureBlue);
 
     ion-col {
-      border: 1px solid black;
+      // border: 1px solid black;
       border-bottom: 0;
       border-right: 0;
       
