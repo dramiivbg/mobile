@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { WmsReceiptEditPage } from './wms-receipt-edit.page';
+import { EditPutAwayComponent } from './edit-put-away.component';
 
-describe('WmsReceiptEditPage', () => {
-  let component: WmsReceiptEditPage;
-  let fixture: ComponentFixture<WmsReceiptEditPage>;
+describe('EditPutAwayComponent', () => {
+  let component: EditPutAwayComponent;
+  let fixture: ComponentFixture<EditPutAwayComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WmsReceiptEditPage ],
+      declarations: [ EditPutAwayComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WmsReceiptEditPage);
+    fixture = TestBed.createComponent(EditPutAwayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

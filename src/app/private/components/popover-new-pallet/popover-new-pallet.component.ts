@@ -222,6 +222,8 @@ public onBack() {
 
 async onBarCode(){
 
+
+  this.intServ.loadingFunc(true);
   let listaL: any[] = [];
 
   let line:any = undefined;
@@ -252,14 +254,14 @@ async onBarCode(){
 
 
 
-
+  this.intServ.loadingFunc(false);
   this.barcodeScanner.scan().then(
   async  (barCodeData) => {
       let code = barCodeData.text;
 
 
 
-
+      this.intServ.loadingFunc(true);
      
   for (const key in listaL) {
 
@@ -270,7 +272,7 @@ async onBarCode(){
    
     
       boolean = true;
-      this.intServ.loadingFunc(false); 
+    
     }
 
         
@@ -283,7 +285,7 @@ async onBarCode(){
           line = items.Possible_ItemsChilds[key];
        
           boolean = false;
-          this.intServ.loadingFunc(false); 
+        
           
         }
       }
@@ -295,8 +297,10 @@ async onBarCode(){
   
 
     if (line === null || line === undefined ) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', `  The license plate '${code}' is not available `));
+
       this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error', 'Error', `  The license plate '${code}' is not available `));
+   
     } else {
 
       switch(boolean){
@@ -328,6 +332,7 @@ async onBarCode(){
 
           if(find != null ||  find != undefined){
 
+            this.intServ.loadingFunc(false);
 
             this.intServ.alertFunc(this.js.getAlert('alert', '', 'The license plate is already assigned'));
 
@@ -344,6 +349,9 @@ async onBarCode(){
           this.listLpsL.push(line);
 
         }
+
+
+        this.intServ.loadingFunc(false);
 
       }
 
@@ -371,7 +379,7 @@ async onBarCode(){
 
         if(find != null ||  find != undefined){
 
-
+          this.intServ.loadingFunc(false);
           this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Item is already assigned'));
 
 
@@ -386,6 +394,8 @@ async onBarCode(){
       }
 
     }
+
+    this.intServ.loadingFunc(false);
 
     break;
     
@@ -620,6 +630,9 @@ this.items = [];
 this.lps = [];
 
   this.boolean = true;
+
+
+
 
  
 

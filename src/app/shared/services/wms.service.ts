@@ -63,6 +63,28 @@ export class WmsService {
  }
 
 
+
+ public async GetLicencesPlateInPW(No: string, boolean: boolean){
+
+
+    try {
+        let obj: any = [{
+            No,
+            IsPallet: boolean,
+            LicensePlateStatus:2,
+          
+        }]; 
+        
+        let p = await this.syncErp.processRequestParams('GetLicencesPlateByStatus', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+
  public set(wareReceipts:any){
 
     this.wareReceipts = wareReceipts;
@@ -614,9 +636,11 @@ public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
           No
         }];
     
+
+        console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('DeleteLPPallet_FromWarehouseReceiptLine', obj);
+        let p = await this.syncErp.processRequestParams('Delete_LPPallet_FromWarehouseReceiptLine', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -624,6 +648,33 @@ public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
         throw error;
     }
 
+
+}
+
+
+
+public async GetPossiblesBinFromPutAway(No:any){
+
+
+    try {
+
+    
+        let obj: any = [{
+    
+          No
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAway', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
 
 }
  
@@ -1592,6 +1643,8 @@ return list;
             fields: {  PLULPDocumentNo: "",
             PLULineNo: 0,
             PLUDocumentType: "",
+            PLUBinCode: "",
+            PLUItemNo: "",
             PLUType: "",
             PLUNo: "",
             PLUVariantCode: null,
@@ -1655,6 +1708,8 @@ return list;
         fields: {  PLULPDocumentNo: "",
         PLULineNo: 0,
         PLUDocumentType: "",
+        PLUItemNo: "",
+        PLUBinCode: "",
         PLUType: "",
         PLUNo: "",
         PLUVariantCode: null,
@@ -1703,6 +1758,281 @@ return list;
  
  
      }
+
+
+     
+     public async ListPallets(listLp: any){
+
+        // console.log(listLp);
+ 
+        let listH: any[] = [];
+
+         let obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields:{ 
+                PLULPDocumentNo: "",
+                PLUDescription: null,
+                PLULPDocumentType: "",
+                PLULicensePlateStatus: "",
+                PLULocationCode: "",
+                PLUZoneCode: "",
+                PLUType: "",
+                PLUNo: "",
+                PLUBinCode: "",
+                PLUDocument: "",
+                PLUDocumentNo: "" ,
+                PLUUnitofMeasure : "",
+                PLUWarehouseEntryNo: null,
+                PLUReferenceDocument: "",
+                PLUReferenceNo: null,
+                PLUWhseDocumentNo: null,
+                PLUWhseDocumentType: "",
+                PLUShipmentSrcDocument: "",
+                PLUShipmentSrcDocumentNo: null,
+                PLUParentLPNo: null,
+                PLUItemNo: "",
+                PLULPTotalQuantities: 0,
+                SystemCreatedAt: "",
+                $systemId: "",
+                SystemCreatedBy: "",
+                SystemModifiedAt: "",
+                SystemModifiedBy: "",
+               },
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+ 
+      for(let i in   listLp.LicensePlates.LPHeaders){
+ 
+        obj.company = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.company;
+        obj.fieldCount = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fieldCount;
+        obj.id = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.id;
+        obj.name = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.name;
+        obj.position = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.position;
+        obj.recordId = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.recordId;
+ 
+        
+     for (const y in listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fields) {
+ 
+
+
+         obj.fields[listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fields[y].name] =  listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fields[y].value;
+
+
+
+      }
+
+      listH.push(obj);
+
+      obj= {
+
+        company: "",
+        fieldCount: 0,
+        fields: { 
+            PLULPDocumentNo: "",
+            PLUDescription: null,
+            PLULPDocumentType: "",
+            PLUType: "",
+            PLUNo: "",
+            PLULicensePlateStatus: "",
+            PLULocationCode: "",
+            PLUZoneCode: "",
+            PLUBinCode: "",
+            PLUDocument: "",
+            PLUDocumentNo: "" ,
+            PLUUnitofMeasure : "",
+            PLUWarehouseEntryNo: null,
+            PLUReferenceDocument: "",
+            PLUReferenceNo: null,
+            PLUWhseDocumentNo: null,
+            PLUWhseDocumentType: "",
+            PLUShipmentSrcDocument: "",
+            PLUShipmentSrcDocumentNo: null,
+            PLUParentLPNo: null,
+            PLUItemNo: "",
+            PLULPTotalQuantities: 0,
+            SystemCreatedAt: "",
+            $systemId: "",
+            SystemCreatedBy: "",
+            SystemModifiedAt: "",
+            SystemModifiedBy: "",
+           },
+        id: 0,
+        name: "",
+        position: "",
+        recordId: ""
+
+
+     
+
+      
+     
+
+ 
+     }
+
+  
+ 
+ 
+ 
+
+      
+     
+
+ 
+     }
+
+  
+ 
+     return listH;
+ 
+
+    
+ 
+ 
+     }
+
+
+     public async ListLPH(listLp: any){
+
+        // console.log(listLp);
+ 
+        let listH: any[] = [];
+
+         let obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields:{ 
+                PLULPDocumentNo: "",
+                PLUDescription: null,
+                PLULPDocumentType: "",
+                PLULicensePlateStatus: "",
+                PLULocationCode: "",
+                PLUZoneCode: "",
+                PLUBinCode: "",
+                PLUDocument: "",
+                PLUDocumentNo: "" ,
+                PLUUnitofMeasure : "",
+                PLUWarehouseEntryNo: null,
+                PLUReferenceDocument: "",
+                PLUReferenceNo: null,
+                PLUWhseDocumentNo: null,
+                PLUWhseDocumentType: "",
+                PLUShipmentSrcDocument: "",
+                PLUShipmentSrcDocumentNo: null,
+                PLUParentLPNo: null,
+                PLUItemNo: "",
+                PLULPTotalQuantities: 0,
+                SystemCreatedAt: "",
+                $systemId: "",
+                SystemCreatedBy: "",
+                SystemModifiedAt: "",
+                SystemModifiedBy: "",
+               },
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+ 
+      for(let i in   listLp.LicensePlates.LPHeaders){
+ 
+        obj.company = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.company;
+        obj.fieldCount = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fieldCount;
+        obj.id = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.id;
+        obj.name = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.name;
+        obj.position = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.position;
+        obj.recordId = listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.recordId;
+ 
+        
+     for (const y in listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fields) {
+ 
+
+
+         obj.fields[listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fields[y].name] =  listLp.LicensePlates.LPHeaders[i].LicensePlatesHeaders.fields[y].value;
+
+
+
+      }
+
+      listH.push(obj);
+
+      obj= {
+
+        company: "",
+        fieldCount: 0,
+        fields: { 
+            PLULPDocumentNo: "",
+            PLUDescription: null,
+            PLULPDocumentType: "",
+            PLULicensePlateStatus: "",
+            PLULocationCode: "",
+            PLUZoneCode: "",
+            PLUBinCode: "",
+            PLUDocument: "",
+            PLUDocumentNo: "" ,
+            PLUUnitofMeasure : "",
+            PLUWarehouseEntryNo: null,
+            PLUReferenceDocument: "",
+            PLUReferenceNo: null,
+            PLUWhseDocumentNo: null,
+            PLUWhseDocumentType: "",
+            PLUShipmentSrcDocument: "",
+            PLUShipmentSrcDocumentNo: null,
+            PLUParentLPNo: null,
+            PLUItemNo: "",
+            PLULPTotalQuantities: 0,
+            SystemCreatedAt: "",
+            $systemId: "",
+            SystemCreatedBy: "",
+            SystemModifiedAt: "",
+            SystemModifiedBy: "",
+           },
+        id: 0,
+        name: "",
+        position: "",
+        recordId: ""
+
+
+     
+
+      
+     
+
+ 
+     }
+
+  
+ 
+ 
+ 
+
+      
+     
+
+ 
+     }
+
+  
+ 
+     return listH;
+ 
+
+    
+ 
+ 
+     }
+
+
 
 
      public async ListLPS(lp: any){

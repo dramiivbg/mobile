@@ -4,7 +4,7 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
 
 import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
 import { WmsMainPage } from './wms-main/wms-main.page';
-import { WmsReceiptEditPage } from './wms-receipt-edit/wms-receipt-edit.page';
+
 
 import { WmsReceiptPage } from './wms-receipt/wms-receipt.page';
 import { WmsComponent } from './wms.component';
@@ -21,8 +21,7 @@ const routes: Routes = [
     { path: 'wmsMain', component: WmsMainPage },
     { path: 'wmsReceipt', component: WmsReceiptPage },
     {path: 'physical-inventory', component: PhysicalIntentoryPage},
-    {path: 'wmsReceiptEdit', component: WmsReceiptEditPage},
-   
+  
     {path: 'newPallet', component: PopoverNewPalletComponent},
     {path: 'listPallet', component: ListPalletComponent},
     {path: 'lists', component: ListPItemsComponent},

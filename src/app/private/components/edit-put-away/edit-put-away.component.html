@@ -1,4 +1,3 @@
-
 <PlureHeader type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 <ion-content>
@@ -13,37 +12,19 @@
                 </ion-col>
             </ion-row>
 
-            <ion-row class="delivery newColor"  >
-      
-                
-               
-       
-                    <ion-icon name="newspaper-outline" style="font-size: 30px;"></ion-icon>
-                     
-                        <ion-input (ionBlur)="onAdd($event)" autocorrect="on" autofocus="on" style="text-align: right; width: 100%;" clearInput="true" clearOnEdit="true" color="primary" inputmode="text" placeholder="Select LP/Pallet:" required="true"></ion-input>
-                        <img src="../../../../assets/img/modules/sales/edit.svg"  style="text-align: right; font-size: 30px;"  />
+            <ion-row class="delivery newColor">
+                <ion-icon name="newspaper-outline" style="font-size: 30px;"></ion-icon>
 
-                    
-                
-                   
-                 
+                <ion-input (ionBlur)="onAdd($event)" autocorrect="on" autofocus="on"
+                    style="text-align: right; width: 100%;" clearInput="true" clearOnEdit="true" color="primary"
+                    inputmode="text" placeholder="Select LP/Pallet:" required="true"></ion-input>
+                <img src="../../../../assets/img/modules/sales/edit.svg" style="text-align: right; font-size: 30px;" />
 
-                  
-                
+            </ion-row>
 
-
-
-
-              
-
-                
-              </ion-row>
-
-
-        
         </div>
 
-<!--
+    
         <div class="accorn">
             <div class="order-details">
                 <ion-row>
@@ -58,12 +39,9 @@
                     <ion-list >
                         <ion-list >
                         <div>
-
                             <ion-item-sliding>
 
-                               
-                        
-                                <ion-item>
+                                       <ion-item>
                                     <div class="label-lines" part="item-width" >
                                         <ion-row  *ngFor="let item of listsFilter">
                                             <ion-col size="15" class="item">
@@ -84,7 +62,7 @@
                                                     </ion-col>
                                                     <ion-col size="3" class="label-line-title"
                                                         >
-                                                         Qty. {{item.fields.PLULPTotalQuantities}}
+                                                         Qty. {{item.fields.PLUQuantity}}
 
                                                         
                                                   
@@ -105,10 +83,12 @@
                                                       Item No: {{item.fields.PLUItemNo}}
                                                     </ion-col>
                                                     <ion-col size="4" class="label-line">
-                                                      Measure: {{item.fields.PLUUnitofMeasure}}
+                                                      Measure: {{item.fields.PLUUnitofMeasureCode
+                                                      }}
                                                     </ion-col>
                                                     <ion-col size="4" class="label-line">
-                                                    LocationCode: {{item.fields.PLULocationCode}}
+                                                    LineNo: {{item.fields.PLUWhseLineNo
+                                                    }}
                                                     </ion-col>
                                                 </ion-row>
                                                 <ion-row>
@@ -139,58 +119,39 @@
                     </ion-list>
                 </div>
             </div>  
-        </div> -->
+        </div>
     </form>
 
 
 
-<!---
+
     <form *ngIf="scanBin">
         <div class="designform-header">
-            <ion-row>
-                <ion-col>
-                    <ion-label>No. {{wareReceipts.No}}</ion-label>
-                </ion-col>
-                <ion-col>
-                    <ion-label>Loc. {{wareReceipts.LocationCode}}</ion-label>
-                </ion-col>
+            
+                <ion-row>
+                    <ion-col>
+                        <ion-label>No. {{whsePutAway.fields.No}}</ion-label>
+                    </ion-col>
+                    <ion-col>
+                        <ion-label>Loc. {{whsePutAway.fields.LocationCode}}</ion-label>
+                    </ion-col>
+                </ion-row>
+                
+     <ion-row class="delivery newColor">
+       <ion-col size="10">
+      <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline" placeholder="group by bin code" ></ion-searchbar>
+    </ion-col>
+    <ion-col size="2" class="barcodebtn">
+      <ion-icon size="large" name="barcode-outline"   (click)="autoComplet()"></ion-icon>
+    </ion-col>
+  
             </ion-row>
 
             
 
 
               
-            <ion-row class="delivery newColor" >
-      
-               
-               
-                <ion-icon name="qr-code-outline" style="font-size: 30px;"></ion-icon>
-                 
-               
-                    <ion-select  interface="popover"  #bin  (ionChange)="onChangeBin(bin.value)" placeholder="Edit Bincode" style="width: 85%; text-align: right;">
-                      <ion-select-option  *ngFor="let item of listBin[0].Bins" [value]="item.BinCode">{{item.BinCode}}</ion-select-option>
-                   
-                    </ion-select>
-               
-
-                  
-                    <img src="../../../../assets/img/modules/sales/edit.svg"  style="text-align: right; font-size: 30px;"  />
-
-                
-            
-               
-             
-
-              
-            
-
-
-
-
           
-
-            
-          </ion-row>
         
         </div>
         <div class="accorn">
@@ -208,10 +169,7 @@
                         <ion-list >
                         <div>
 
-                            <ion-item-sliding>
-
-                               
-                        
+                            <ion-item-sliding>            
                                 <ion-item>
                                     <div class="label-lines" part="item-width" >
                                         <ion-row  *ngFor="let item of listsFilter">
@@ -253,7 +211,8 @@
                                                     </ion-col>
                                                     <ion-col size="3" class="label-line-title"
                                                         >
-                                                         Qty. {{item.fields.PLULPTotalQuantities}}
+                                                         Qty. {{item.fields.PLUQuantity
+                                                         }}
 
                                                         
                                                   
@@ -274,10 +233,10 @@
                                                       Item No: {{item.fields.PLUItemNo}}
                                                     </ion-col>
                                                     <ion-col size="4" class="label-line">
-                                                      Measure: {{item.fields.PLUUnitofMeasure}}
+                                                      Measure: {{item.fields.PLUUnitofMeasureCode}}
                                                     </ion-col>
                                                     <ion-col size="4" class="label-line">
-                                                    LocationCode: {{item.fields.PLULocationCode}}
+                                                    LineNo: {{item.fields.PLUWhseLineNo}}
                                                     </ion-col>
                                                 </ion-row>
                                                 <ion-row>
@@ -314,7 +273,7 @@
                 </div>
             </div>
         </div>
-    </form> -->
+    </form> 
 
 
 
@@ -326,11 +285,27 @@
 
 </ion-content>
 
-<PlureVersion showVersion="0">
+<PlureVersion showVersion="0" *ngIf="scanLP">
     <ion-row>
         <ion-col size="4">
         </ion-col>
         <ion-col size="4" (click)="onBarCode()" >
+            <img src="../../../../assets/img/bar-code.svg" />
+            <div>Bar code</div>
+        </ion-col>
+        <ion-col size="4" (click)="onSubmit()">
+            <img src="../../../../assets/img/save.svg" />
+            <div>Save</div>
+        </ion-col>
+    </ion-row>
+</PlureVersion>
+
+
+<PlureVersion showVersion="0" *ngIf="scanBin">
+    <ion-row>
+        <ion-col size="4">
+        </ion-col>
+        <ion-col size="4" (click)="onBarCodeChange()" >
             <img src="../../../../assets/img/bar-code.svg" />
             <div>Bar code</div>
         </ion-col>
