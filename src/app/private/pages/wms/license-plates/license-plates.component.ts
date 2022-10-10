@@ -111,9 +111,8 @@ if(obj.TotalToReceive == 0){
 
       this.interceptService.alertFunc(this.jsonService.getAlert('sucess','sucess','license plates have been created successfully'));
 
-      this.router.navigate(['/page/wms/wmsMain']);
        
-      this.popoverController.dismiss({});
+      this.popoverController.dismiss({data: 'creado'});
 
       }else{
 

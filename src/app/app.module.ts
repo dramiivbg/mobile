@@ -35,6 +35,7 @@ import { UserService } from '@svc/user.service';
 import { PrivateModule } from '@prv/private.module';
 import { WmsService } from '@svc/wms.service';
 import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popo
     LoadingComponent,
     AlertsComponent,
     NotifyComponent,
-    PopoverOpionsLpComponent
+  
+
   ],
   entryComponents: [],
   imports: [
@@ -57,6 +59,7 @@ import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popo
   providers: [
     PopoverController,
     SplashScreen,
+    BarcodeScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     InterceptService,
     ApiService,
@@ -83,6 +86,8 @@ import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popo
     WmsService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent,],
+
+ 
 })
 export class AppModule {}

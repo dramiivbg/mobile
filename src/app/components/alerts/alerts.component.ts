@@ -5,6 +5,10 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { NavigationExtras, Router } from '@angular/router';
 import { WmsService } from '@svc/wms.service';
+import { ModalController } from '@ionic/angular';
+import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
+
+
 
 @Component({
   selector: 'alert-message',
@@ -14,10 +18,12 @@ import { WmsService } from '@svc/wms.service';
 export class AlertsComponent implements OnInit {
   alertObj: any = {};
   testBool: boolean = false;
-
+  public warePW: any = {};
+  
+  public whsePutAway: any;
   constructor(
      private intServ: InterceptService
-    , private js: JsonService, private router: Router,private wmsService: WmsService
+    , private js: JsonService, private router: Router,private wmsService: WmsService,private modalCtrl: ModalController
   ) { 
     intServ.alert$.subscribe(
       (obj: any) => {
@@ -73,28 +79,45 @@ onItem(opcion:Boolean){
   async onSi(){
 
 
-       this.intServ.loadingFunc(true);
+
+
+
 
 
        let dataPw = this.wmsService.getPutAway();
 
+       
+      
+
+
        let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
 
 
-       console.log('listPW', listWP);
+       
+       this.whsePutAway = await this.wmsService.ListPutAwayH(listWP);
+   
+       this.wmsService.setPutAway(listWP);
 
-        let wareReceipts = this.wmsService.get();
-        let navg: NavigationExtras = {
-          state: {
-            listWP
-          },
-          replaceUrl: true
-        }
-     
 
-        this.router.navigate(['page/wms/wmsReceiptEdit'], navg);
+    
 
-        this.alertObj = {};
+      
+       let whsePutAway = this.whsePutAway;
+
+       this.alertObj = {};
+
+        const modal = await this.modalCtrl.create({
+          component: EditPutAwayComponent,
+          componentProps: {whsePutAway}
+      
+        
+        });
+        modal.present();
+    
+        const { data, role } = await modal.onWillDismiss();
+    
+    
+       
  
 
 
