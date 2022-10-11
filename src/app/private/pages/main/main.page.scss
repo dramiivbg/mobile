@@ -59,6 +59,7 @@ ion-content.main {
                 div.main-menu-item-icon {
                     height: 100%;
                     width: 38px;
+                    --color: var(--ion-color-plureHeader) !important;
 
                     img {
                         position: relative;
@@ -66,6 +67,9 @@ ion-content.main {
                         left: 50%;
                         -ms-transform: translate(-50%, -50%);
                         transform: translate(-50%, -50%);
+                        --color: var(--ion-color-plureHeader) !important;
+                        height: 30px;
+                        width: 30px;
                     }
                 }
 
