@@ -23,6 +23,7 @@ import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.com
 import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-lp.component';
 import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
+import { WmsMovementPage } from './wms-movement/wms-movement.page';
 
 
 
@@ -42,7 +43,8 @@ import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.p
     ListPItemsComponent,
     AddItemOrLpComponent,
     AlertsComponent,
-    PhysicalIntentoryPage
+    PhysicalIntentoryPage,
+    WmsMovementPage
    
     
   
