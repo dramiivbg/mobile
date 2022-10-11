@@ -62,6 +62,7 @@
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "reinstall-node-modules": "^2.0.0",
     "rxjs": "~6.5.5",
+    "sweetalert2": "^11.5.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
   },

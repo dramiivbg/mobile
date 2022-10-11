@@ -7,6 +7,7 @@ import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-edit-put-away',
@@ -64,6 +65,8 @@ export class EditPutAwayComponent implements OnInit {
 
     this.warePW = this.wmsService.getPutAway();
 
+
+    console.log(this.warePW);
 
     if(this.warePW != undefined){
 
@@ -529,32 +532,49 @@ break;
     }else{
 
 
-      this.intServ.alertFunc(this.js.getAlert('alert', 'alert', 'Confirm WH PutAway?' , async() =>  {
+      console.log(this.listsFilter);
 
+      Swal.fire({
+        title: 'Confirm WH PutAway?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, post it!'
+      }).then(async(result) => {
+        if (result.isConfirmed) {
 
         
 
-      let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+          let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
 
+
+          
       if(!postAway.Error){
 
 
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted`, () => {
-
-
-
+       
           this.modalController.dismiss({});
 
+        
+
           this.router.navigate(['page/wms/wmsMain']);
-        }));
+       
+
+          Swal.fire(
+            'Success!',
+            `The Put away ${this.warePY.fields.No} has been posted`,
+            'success'
+          )
+        
       }
 
+    }
+        
+      })
 
-      }));
-
-      console.log(this.listsFilter);
-
-      alert('Hola mundo')
+     
 
 
 /*

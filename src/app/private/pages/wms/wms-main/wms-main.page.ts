@@ -156,6 +156,8 @@ export class WmsMainPage implements OnInit {
      }, false, 4);
      this.intServ.searchShowFunc(obj);
    } else {
+
+    this.intServ.loadingFunc(false);
      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${procesos.salesType} were found.`));
    }
 
