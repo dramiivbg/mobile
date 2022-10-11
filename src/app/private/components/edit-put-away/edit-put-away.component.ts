@@ -66,16 +66,16 @@ export class EditPutAwayComponent implements OnInit {
     this.warePW = this.wmsService.getPutAway();
 
 
-    console.log(this.warePW);
+  
 
-    if(this.warePW != undefined){
+    if(this.warePW.WarehousePutAways){
 
 
       this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
       console.log(this.whsePutAway, this.listPwL);
       this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     }else{
-    this.warePY = this.wmsService.getAway();
+    this.warePY =  this.warePW;
     }
    
   }
@@ -103,7 +103,14 @@ export class EditPutAwayComponent implements OnInit {
     console.log(this.listBin);
 
     if(line === null || line === undefined){
-  this.intServ.alertFunc(this.js.getAlert('error', '', `The Bin code ${code.toUpperCase()} does not exist`))
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `The Bin code ${code.toUpperCase()} does not exist`,
+        footer: ''
+      })
+
     }else{
      this.listsFilter.filter( lp => {
       lp.fields.PLUBinCode = line.BinCode.toUpperCase();
@@ -137,9 +144,23 @@ export class EditPutAwayComponent implements OnInit {
 
     if(lps.Error){
       this.modalController.dismiss({});
-      this.intServ.alertFunc(this.js.getAlert('alert', ' ', 'The Whse Put Away this void')); 
-      this.router.navigate(['page/wms/wmsMain']);
-     return;
+
+      Swal.fire({
+        title: 'The Whse Put Away this void',
+        text: 'Please choose another put away',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['page/wms/wmsMain']);
+         
+        }
+      })
+      
+      return;
 
     } 
 
@@ -239,7 +260,14 @@ export class EditPutAwayComponent implements OnInit {
     
 
       if (line === null || line === undefined) {
-        this.intServ.alertFunc(this.js.getAlert('error', 'Error', `The license plate '${code}' does not exist on the Put Away`));
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `The license plate '${code.toUpperCase()}' does not exist on the Put Away`,
+          footer: ''
+        })
+      
         this.intServ.loadingFunc(false);
       } else {
 
@@ -256,8 +284,23 @@ export class EditPutAwayComponent implements OnInit {
            this.listT.push(line);
           }else{
    
+
+            Swal.fire({
+              title: `The license plate is already assigned`,
+              text: 'Please choose another license plate',
+              icon: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              if (result.isConfirmed) {
+               
+               
+              }
+            })
    
-           this.intServ.alertFunc(this.js.getAlert('alert', 'alert ', `The license plate is already assigned`));
+         
    
           }
          
@@ -370,8 +413,14 @@ switch(this.scanLP){
 
      if (val === '') {
   
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No license plate is Empty',
+        footer: '<a href="">Please enter the number</a>'
+      })
 
-      this.intServ.alertFunc(this.js.getAlert('error', 'error', 'No license plate is Empty'));
 
       this.intServ.loadingFunc(false);
 
@@ -421,7 +470,14 @@ switch(this.scanLP){
     
 
       if (line === null || line === undefined) {
-        this.intServ.alertFunc(this.js.getAlert('error', 'Error', `The license plate '${val.toUpperCase()}' does not exist on the Put Away`));
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `The license plate '${val.toUpperCase()}' does not exist on the Put Away`,
+          footer: ''
+        })
+  
         this.intServ.loadingFunc(false);
       } else {
 
@@ -436,8 +492,23 @@ switch(this.scanLP){
            this.listT.push(line);
           }else{
    
+
+            Swal.fire({
+              title: `The license plate is already assigned`,
+              text: 'Please choose another license plate',
+              icon: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              if (result.isConfirmed) {
+               
+               
+              }
+            })
+            
    
-           this.intServ.alertFunc(this.js.getAlert('alert', 'alert ', `The license plate is already assigned`));
    
           }
          
@@ -568,6 +639,14 @@ break;
             'success'
           )
         
+      }else{
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `The Put away ${this.warePY.fields.No} has been posted`,
+          footer: ''
+        })
       }
 
     }
@@ -643,8 +722,14 @@ break;
 
     }else{
 
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Bin code is Empty',
+        footer: ''
+      })
 
-      this.intServ.alertFunc(this.js.getAlert('error', 'error', 'Bin code is Empty'));
 
       this.intServ.loadingFunc(false);
 

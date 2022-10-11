@@ -139,7 +139,7 @@ export class WmsMainPage implements OnInit {
      let obj = this.general.structSearch(listPutAway, `Search ${procesos.description}`, 'Put Aways', async (whsePutAway) => {
 
 
-      this.wmsService.setAway(whsePutAway);
+      this.wmsService.setPutAway(whsePutAway);
        console.log('data =>', putAway);
        const modal = await this.modalCtrl.create({
         component: EditPutAwayComponent,
