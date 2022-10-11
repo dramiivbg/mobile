@@ -82,8 +82,8 @@ ion-button.add-lines::part(native){
 
 // design
 .designform-header {
-    background: var(--ion-color-plureBlue) !important;
-    margin-top: 5px;
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+    // margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 2.5em;
     position: relative;
@@ -126,7 +126,7 @@ ion-button.add-lines::part(native){
         padding: 5px 20px 0 20px;
     }
     ion-row.newColor {
-        background: rgba(21, 73, 131, 1);
+        background: rgba(21, 73, 131, 0.2);
         margin: 5px 0 0;
     }
     ion-datetime {
@@ -192,6 +192,7 @@ div.accornSubTotal {
     padding: 0 0.2em 0;
     ion-col.txt {
         padding-top: 14px;
+        font-weight: bold;
         ion-label {
             font-size: 20px;
         }
@@ -201,4 +202,21 @@ div.accornSubTotal {
 
 ion-icon{
     color: var(--ion-color-plureBlue);
+}
+
+.footerReceipt{
+    height: 60px;
+    background: linear-gradient(to bottom, #5CABF9, #1A518E);
+    border-radius: 7% 7% 0% 0%;
+    box-shadow: 0px -5px 18px #00000029;
+    bottom: 0;
+
+}
+
+.itemfooter{
+    color: #F2F2F2 !important;
+}
+
+ion-content{
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
 }

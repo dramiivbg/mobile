@@ -24,18 +24,18 @@
     <div class="designform-header">
 
       <ion-row>
-        <ion-col>
+        <ion-col size="5">
           <ion-label>No. {{pallet.fields.PLULPDocumentNo}}</ion-label>
         </ion-col>
-        <ion-col>
+        <ion-col size="7">
           <ion-label>BinCode. {{pallet.fields.PLUBinCode}}</ion-label>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
+        <ion-col size="5">
           <ion-label>Locate. {{pallet.fields.PLULocationCode}}</ion-label>
         </ion-col>
-        <ion-col>
+        <ion-col size="7">
           <ion-label>Company. {{pallet.company}}</ion-label>
         </ion-col>
       </ion-row>
@@ -211,7 +211,8 @@
 
 
 
-<PlureHeader type="1" title="Potential candidates" url="page/wms/newPallet" notify="0" *ngIf="!boolean" (click)="exit()"></PlureHeader>
+<PlureHeader type="1" title="Potential candidates" url="page/wms/newPallet" notify="0" *ngIf="!boolean"
+  (click)="exit()"></PlureHeader>
 
 
 
@@ -219,7 +220,8 @@
 
   <ion-row>
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="lpNo" (ionInput)="onChangeLp($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="booleanL"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="lpNo" (ionInput)="onChangeLp($event)" show-clear-button="always"
+        clear-icon="close-outline" placeholder="Search Pallet" *ngIf="booleanL"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" *ngIf="booleanL" (click)="autoComplet()"></ion-icon>
@@ -232,20 +234,20 @@
     </ion-col>
   </ion-row>
 
-<ion-list>
-  <ion-grid *ngIf="booleanL">
-  
+  <ion-list>
+    <ion-grid *ngIf="booleanL">
+
       <ion-row class=" newColor">
 
         <ion-col>
 
-          <ion-radio-group allow-empty-selection="true"  (ionChange)="select(lps,$event)">
-    
+          <ion-radio-group allow-empty-selection="true" (ionChange)="select(lps,$event)">
+
             <ion-radio value="selectall"></ion-radio>
-         
-       </ion-radio-group>
+
+          </ion-radio-group>
         </ion-col>
-      
+
         <ion-col size="3">
           <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
         </ion-col>
@@ -256,34 +258,35 @@
           <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
         </ion-col>
       </ion-row>
-      
-        <ion-row class=" delivery ContentTable" *ngFor="let item of lps; let i= index" id="radioL">
 
-          <ion-col *ngIf="visilityL">
+      <ion-row class=" delivery ContentTable" *ngFor="let item of lps; let i= index" id="radioL">
 
-            <ion-radio-group allow-empty-selection="true"  (ionChange)="applyLP(item,$event,i)" >
+        <ion-col *ngIf="visilityL">
+
+          <ion-radio-group allow-empty-selection="true" (ionChange)="applyLP(item,$event,i)">
 
 
-              <ion-radio value="IPSingle"  ></ion-radio>
-         </ion-radio-group>
-          </ion-col>
-         
-          <ion-col size="3">
-            <div>{{item.fields.PLULPDocumentNo}}</div>
-          </ion-col>
-          <ion-col size="4">
-            <div>{{item.fields.PLUQuantity}}</div>
-          </ion-col>
-          <ion-col size="4">
-            <div>{{item.fields.PLUUnitofMeasureCode}}</div>
-          </ion-col>
-        </ion-row>
-  </ion-grid>
-</ion-list>
+            <ion-radio value="IPSingle"></ion-radio>
+          </ion-radio-group>
+        </ion-col>
+
+        <ion-col size="3">
+          <div>{{item.fields.PLULPDocumentNo}}</div>
+        </ion-col>
+        <ion-col size="4">
+          <div>{{item.fields.PLUQuantity}}</div>
+        </ion-col>
+        <ion-col size="4">
+          <div>{{item.fields.PLUUnitofMeasureCode}}</div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-list>
 
   <ion-row *ngIf="!booleanL">
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="itemNo" (ionInput)="onChangeI($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!booleanL"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="itemNo" (ionInput)="onChangeI($event)" show-clear-button="always"
+        clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!booleanL"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" *ngIf="!booleanL" (click)="autoComplet()"></ion-icon>
@@ -297,18 +300,18 @@
     </ion-col>
   </ion-row>
 
-<ion-list>
-  <ion-grid *ngIf="!booleanL">
-   
+  <ion-list>
+    <ion-grid *ngIf="!booleanL">
+
       <ion-row class=" newColor">
         <ion-col>
           <ion-radio-group allow-empty-selection="true" (ionChange)="select(items,$event)">
 
-           
-            <ion-radio value="selectall"  ></ion-radio>
-            </ion-radio-group>
+
+            <ion-radio value="selectall"></ion-radio>
+          </ion-radio-group>
         </ion-col>
-      
+
         <ion-col size="3">
           <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
         </ion-col>
@@ -320,50 +323,50 @@
         </ion-col>
       </ion-row>
 
-        <ion-row class=" delivery ContentTable" *ngFor="let item of items; let i=index">
+      <ion-row class=" delivery ContentTable" *ngFor="let item of items; let i=index">
 
 
-          <ion-col  *ngIf="item.Qty > 0  &&  visilityI" id="radioI">
-            <ion-radio-group allow-empty-selection="true"  (ionChange)="applyItem(item,$event,i)">
-  
-              <ion-radio value="ITSingle" ></ion-radio>
+        <ion-col *ngIf="item.Qty > 0  &&  visilityI" id="radioI">
+          <ion-radio-group allow-empty-selection="true" (ionChange)="applyItem(item,$event,i)">
+
+            <ion-radio value="ITSingle"></ion-radio>
 
 
-              </ion-radio-group>
-          </ion-col>
-          
-      
-          <ion-col size="3" *ngIf="item.Qty > 0">
-            <div>{{item.ItemNo}}</div>
-          </ion-col>
-          <ion-col size="4" *ngIf="item.Qty > 0">
-            <div>{{item.Qty}}</div>
-          </ion-col>
-          <ion-col size="4" *ngIf="item.Qty > 0">
-            <div>{{item.LineNo}}</div>
-          </ion-col>
+          </ion-radio-group>
+        </ion-col>
 
-        </ion-row>
-    
 
-  </ion-grid>
-</ion-list>
+        <ion-col size="3" *ngIf="item.Qty > 0">
+          <div>{{item.ItemNo}}</div>
+        </ion-col>
+        <ion-col size="4" *ngIf="item.Qty > 0">
+          <div>{{item.Qty}}</div>
+        </ion-col>
+        <ion-col size="4" *ngIf="item.Qty > 0">
+          <div>{{item.LineNo}}</div>
+        </ion-col>
+
+      </ion-row>
+
+
+    </ion-grid>
+  </ion-list>
 </ion-content>
 
 
 
-<ion-tab-bar slot="bottom" *ngIf="!boolean">
+<ion-tab-bar class="footernewpallettabs" slot="bottom" *ngIf="!boolean">
   <ion-tab-button tab="music" (click)="enableLP()">
-    <ion-label>LPS</ion-label>
-    <ion-icon size="large" name="newspaper-outline"></ion-icon>
+    <ion-label class="itemfooter">LPS</ion-label>
+    <ion-icon class="itemfooter" size="large" name="newspaper-outline"></ion-icon>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)=" enableItem()">
-    <ion-label>Items</ion-label>
-    <ion-icon size="large" name="cube-outline"></ion-icon>
+    <ion-label class="itemfooter">Items</ion-label>
+    <ion-icon class="itemfooter" size="large" name="cube-outline"></ion-icon>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)="disable()">
-    <ion-label>Save</ion-label>
-    <ion-icon size="large" name="save-outline"></ion-icon>
+    <ion-label class="itemfooter">Save</ion-label>
+    <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
   </ion-tab-button>
 
 </ion-tab-bar>
@@ -374,19 +377,19 @@
 
 
 
-<PlureVersion showVersion="0" *ngIf="boolean">
+<PlureVersion class="footernewpallet" showVersion="0" *ngIf="boolean">
   <ion-row>
     <ion-col size="2" (click)="onBarCode()">
 
     </ion-col>
 
     <ion-col size="4" (click)="onBarCode()">
-      <ion-icon size="large" name="barcode-outline"></ion-icon>
-      <div>Bar code</div>
+      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooter">Bar code</div>
     </ion-col>
     <ion-col size="4" (click)="onSubmit(pallet)">
-      <ion-icon size="large" name="save-outline"></ion-icon>
-      <div>Save</div>
+      <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+      <div class="itemfooter">Save</div>
     </ion-col>
   </ion-row>
 

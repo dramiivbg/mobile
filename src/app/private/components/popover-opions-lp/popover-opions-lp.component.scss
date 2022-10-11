@@ -1,7 +1,7 @@
 ion-content {
 
     ion-row.header {
-        background: rgba(21, 73, 131, 1);
+        background: linear-gradient(to top, #1A518E, #1A518E) !important;
         color: #ffffff;
         font-weight: bold;
         text-align: center !important;
@@ -40,7 +40,7 @@ ng-container.container {
 
 
 ion-row.newColor {
-    background: rgba(21, 73, 131, 1);
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
     color: #ffffff;
     font-weight: bold;
     text-align: center;

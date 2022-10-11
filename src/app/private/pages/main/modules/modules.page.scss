@@ -1,70 +1,87 @@
 @import '../../../../../sass/var';
 
-ion-content.modules {    
+ion-content.modules {
+
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
+
     div.content-menu {
         border-radius: 5px;
+        
         // margin-top: 5px;
         // padding-top: 5px;
+
+        ion-list {
+            background: transparent;
+        }
 
         div.grid-content {
             margin: 20px;
             padding: 10px 15px;
             box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.14);
             border-radius: 23px;
+            background: rgb(255, 255, 255, 0.25);
+
             h1 {
-                color: $plure-init-input-bg;
+                color: var(--ion-color-plureMain);
                 font-family: SourceSansProRegular !important;
                 margin: 7px 0;
-            }   
+                // font-weight: bold;
+            }
         }
     }
 
     ion-icon {
         color: #1A518F;
-      }
+    }
 
     ion-grid {
         ion-row {
             ion-col {
                 padding: 15px;
 
-                div.module-item {    
-                    background: rgba(26, 81, 142, 1);    
-                    border: 0.6px solid rgba(85, 85, 105, 0.35);
+                div.module-item {
+                    background: rgba(21, 73, 131, 0.2);
+                    // border: 0.6px solid rgba(85, 85, 105, 0.35);
                     box-sizing: border-box;
                     box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
-                    border-radius: 15px;
+                    border-radius: 20px;
                     padding-bottom: 10px;
-            
-                    div.module-item-title {            
+
+                    div.module-item-title {
                         text-align: center;
+
                         h1 {
                             color: #fff;
                             font-family: SourceSansProRegular !important;
                             font-style: normal;
                             font-size: 16px;
                             line-height: 23px;
-                        }            
+                            font-weight: bold;
+                        }
                     }
-            
-                    div.module-item-icon {  
+
+                    div.module-item-icon {
                         // align-items: center;
-                        // justify-content: center;          
+                        justify-content: center;
                         text-align: center;
                         display: block;
                         margin: auto;
                         padding-bottom: 10px;
                     }
 
-                    div.module-elipse {
-                        text-align: center;
-                        img {
-                            display: inline-block;
-                            padding: 0 3px;
-                        }
-                    }
+                    // div.module-elipse {
+                    //     text-align: center;
+                    //     img {
+                    //         display: inline-block;
+                    //         padding: 0 3px;
+                    //     }
+                    // }
                 }
             }
         }
-    }    
+    }
+}
+
+.toolbar {
+    --background: transparent !important;
 }

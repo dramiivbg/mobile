@@ -300,20 +300,20 @@
   </ion-buttons>
 </ion-toolbar> -->
 
-<PlureVersion showVersion="0" *ngIf="new || edit">
+<PlureVersion class="footerReceipt" showVersion="0" *ngIf="new || edit">
   <ion-row>
     <ion-col size="4" (click)="onItem()">
-      <ion-icon size="large" name="add-circle-outline"></ion-icon>
-      <div>Add</div>
+      <ion-icon class="itemfooter" size="large" name="add-circle-outline"></ion-icon>
+      <div class="itemfooter">Add</div>
     </ion-col>
     <ion-col size="4" (click)="onBarCode()">
-      <ion-icon size="large" name="barcode-outline"></ion-icon>
-      <div>Bar code</div>
+      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooter">Bar code</div>
       <hr />
     </ion-col>
     <ion-col size="4" (click)="onSubmit()">
-      <ion-icon size="large" name="save-outline"></ion-icon>
-      <div>Save</div>
+      <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+      <div class="itemfooter">Save</div>
     </ion-col>
   </ion-row>
 </PlureVersion>

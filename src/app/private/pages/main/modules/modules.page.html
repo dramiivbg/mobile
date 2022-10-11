@@ -1,7 +1,7 @@
 <PlureHeader type="0" title="Modules" notify="1"></PlureHeader>
 
 <ion-content class="modules">
-  <ion-toolbar>
+  <ion-toolbar class="toolbar">
     <ion-buttons slot="end">
       <ion-button type="button" (click)="onGrid(false)" *ngIf="grid">
         <ion-icon size="large" name="list"></ion-icon>
@@ -36,10 +36,10 @@
             <div class="module-item-icon">
               <img src="../../../../assets/img/modules/{{mod.icon}}2.svg" alt="">
             </div>
-            <div class="module-elipse">
+            <!-- <div class="module-elipse">
               <img src="../../../../assets/img/modules/elipse.svg" />
               <img src="../../../../assets/img/modules/elipse.svg" />
-            </div>
+            </div> -->
           </div>
         </ion-col>
       </ion-row>
