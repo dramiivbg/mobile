@@ -12,13 +12,13 @@ ion-content {
     //     }
     // }
     .content-desing {
-        background: linear-gradient(to bottom, #c9d6ff, #e2e2e2);
+        background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
         height: 100%;
         margin-top: -1px;
         padding: 20px;
 
         .content-section {
-            background: rgba(21, 73, 131, 0.1);
+            background: rgba(21, 73, 131, 0.2);
             border-radius: 23px;
             padding: 10px;
             font-weight: bold;
@@ -150,6 +150,10 @@ ion-content {
             }
         }
     }
+}
+
+.Footersales{
+    height: 76px;
 }
 
 .iconfooter{

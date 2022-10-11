@@ -1,7 +1,7 @@
 @import "~src/sass/variables";
 
 ion-item::part(native){
-    --background: #ffffff;
+    --background: transparent;
     padding: 0;
     color: #000;
     font-size: 12px;
@@ -91,13 +91,15 @@ ion-button.add-lines::part(native){
 
 // design
 .designform-header {
-    background: var(--ion-color-plureBlue) !important;
-    margin-top: 5px;
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+    // margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
-    border-radius: 0 0 70% 10%;
+    border-radius: 0 0 70% 0;
+    font-weight: bold;
+    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
 
     ion-col.customer-margin {
         margin: 5px 0 0;
@@ -216,6 +218,7 @@ div.accornSubTotal {
 
 ion-content{  
 
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
 
 
     ion-row.header{
@@ -250,7 +253,7 @@ ion-content{
 
     
 
-    background: var(--ion-color-plure-contrast);
+    // background: var(--ion-color-plure-contrast);
 
     color: #ffffff;
 
@@ -268,7 +271,7 @@ ion-content{
   }
 
   ion-row.ContentTable{
-    background: rgba(21, 73, 131, 0.1);
+    background: rgba(21, 73, 131, 0.2);
     margin: 1px 0 0;
     color: var(--ion-color-plureMain);
 
@@ -288,7 +291,7 @@ ion-radio-group{
 @import "~src/sass/variables";
 
 ion-item::part(native){
-    --background: #ffffff;
+    --background: transparent;
     padding: 0;
     color: #000;
     font-size: 12px;
@@ -378,12 +381,15 @@ ion-button.add-lines::part(native){
 
 // design
 .designform-header {
-    background: var(--ion-color-plureBlue) !important;
-    margin-top: 5px;
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+    // margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
+    border-radius: 0 0 70% 0;
+    font-weight: bold;
+    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
@@ -513,4 +519,24 @@ ion-icon{
 .barcodebtn{
     margin: auto;
     text-align: left;
+}
+
+.footernewpallet, .footernewpallettabs{
+    height: 60px;
+    background: linear-gradient(to bottom, #5CABF9, #1A518E);
+    border-radius: 7% 7% 0% 0%;
+    box-shadow: 0px -5px 18px #00000029;
+}
+
+.footernewpallettabs{
+    --background: linear-gradient(to bottom, #5CABF9, #1A518E) !important;
+    --border: 0px !important;
+}
+
+.itemfooter{
+    color: #F2F2F2 !important;
+}
+
+ion-list{
+    background: transparent;
 }

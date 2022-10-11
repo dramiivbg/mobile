@@ -1,7 +1,8 @@
 @import "~src/sass/variables";
 
 ion-item::part(native){
-    --background: #ffffff;
+    --background: rgb(255, 255, 255, 0.25);
+    box-shadow: 0px 1px 4px rgb(0 0 0 / 9%);
     padding: 0;
     color: #000;
     font-size: 12px;
@@ -91,14 +92,16 @@ ion-button.add-lines::part(native){
 
 // design
 .designform-header {
-    background: linear-gradient(to top, #9cecfb, #65c7f7, #0052d4) !important;
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
     // margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
-    border-radius: 0 0 70% 10%;
+    border-radius: 0 0 70% 0;
     font-weight: bold;
+    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
+
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
@@ -216,13 +219,21 @@ div.accornSubTotal {
 }
 
 .footerReceipt{
-    padding-bottom: 60px;
-    // box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.08);
-    // background: transparent linear-gradient(180deg, #D8D8D800 0%, #6C6C6C4F 158%) 0% 0% no-repeat padding-box;
-    background: linear-gradient(to bottom, #9cecfb, #65c7f7, #0052d4);
-    border-radius: 10% 10% 0% 0%;
+    height: 60px;
+    background: linear-gradient(to bottom, #5CABF9, #1A518E);
+    border-radius: 7% 7% 0% 0%;
+    box-shadow: 0px -5px 18px #00000029;
+
 }
 
 .itemfooter{
     color: #F2F2F2 !important;
+}
+
+ion-content{
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+}
+
+ion-list{
+    background: transparent;
 }
