@@ -255,6 +255,8 @@ ion-col.item{
 
 ion-content{
     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+    height: 90%;
+    overflow: auto;
 }
 
 ion-list{

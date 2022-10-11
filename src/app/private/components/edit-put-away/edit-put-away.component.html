@@ -1,4 +1,4 @@
-<PlureHeader type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader (click)="exit()" type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 <ion-content>
     <form *ngIf="scanLP">
@@ -179,11 +179,26 @@
                                             <ion-row *ngFor="let item of listsFilter">
                                                 <ion-col size="15" class="item">
 
-                                                    <ion-row>
-                                                        <ion-col size="5" style="overflow: hidden;"
-                                                            class="label-line-title blue">
-                                                            {{item.fields.PLULPDocumentNo}}
-                                                        </ion-col>
+                                                <ion-row >
+                                                    <ion-col size="5" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.fields.PLULPDocumentNo}}
+                                                    </ion-col>
+
+                                                    
+
+                                                    <ion-col size="7"  >       
+                                                    
+                                                        <ion-select  interface="popover"  #bin  (ionChange)="onChangeBinOne(item,bin.value)" placeholder="Edit Bincode" style="position:absolute;right: 7%;width: 100%;" class="label-line-title" >
+                                                        <ion-select-option  *ngFor="let item of listBin[0].Bins" [value]="item.BinCode">{{item.BinCode}}</ion-select-option>
+                                                            
+                                                    
+                                                    </ion-select>
+
+                                                 </ion-col>
+                 
+
+                                                 <ion-col size="5" >
 
 
 
