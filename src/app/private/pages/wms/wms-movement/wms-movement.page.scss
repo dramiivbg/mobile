@@ -1,7 +1,8 @@
 @import "~src/sass/variables";
 
 ion-item::part(native){
-    background: transparent;
+    --background: rgb(255, 255, 255, 0.25);
+    box-shadow: 0px 1px 4px rgb(0 0 0 / 9%);
     padding: 0;
     color: #000;
     font-size: 12px;
@@ -94,12 +95,13 @@ ion-button.add-lines::part(native){
     background: linear-gradient(to top, #5CABF9, #1A518E) !important;
     // margin-top: 5px;
     padding-top: 5px;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5em;
     position: relative;
     color: #ffffff;
     border-radius: 0 0 70% 0;
     font-weight: bold;
-    box-shadow: 0px 5px 16px #00000029;
+    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
+
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
@@ -137,19 +139,9 @@ ion-button.add-lines::part(native){
     ion-row {
         padding: 5px 20px 0 20px;
     }
-    .newColor {
-        background: rgb(255, 255, 255, 0.25);
-        border-radius: 23px;
-        width:92%;
-        margin: 5px 0 22px 0;
-        --ion-color-base: var(--ion-color-plureHeader)
-    }
-    .newColor2{
-        // background: rgb(255, 255, 255, 0.25);
-        // border-radius: 23px;
-        width:92%;
-        margin: 5px 0 10px 9px;
-        --ion-color-base: var(--ion-color-plureHeader)
+    ion-row.newColor {
+        background: rgba(21, 73, 131, 1);
+        margin: 5px 0 0;
     }
     ion-datetime {
         border-bottom: 1px solid #fff;
@@ -158,22 +150,16 @@ ion-button.add-lines::part(native){
     }
     div.icon-header {
         float: left;
-        padding-right: 3px;
+        padding-right: 5px;
         width: 35px;
     }
     div.text-header {
         float: left;
         padding-top: 3px;
-        width: 40%;
     }
-
-
     ion-col.edit-header {
         padding-top: 11px;
-
     }
-
-   
     hr {
         background: var(--ion-color-plure-contrast);
         width: 92%;
@@ -183,13 +169,27 @@ ion-button.add-lines::part(native){
 
 .accorn {
     font-size: 12px;
-    // ion-row {
-    //     ion-col {
-    //         ion-label {
-    //           //  color: var(--ion-color-plureMain);
-    //         }
-    //     }
-    // }
+    ion-row {
+        ion-col {
+            ion-label {
+                color: var(--ion-color-plureMain);
+            }
+        }
+
+
+    }
+
+    ion-grid{
+
+
+        ion-col {
+            .label-line-title.blue{
+              color: var(--ion-color-plureBlue);
+            }
+        }
+        
+
+    }
     .accorn-title {
         padding: 5px;
         font-weight: bold;
@@ -220,40 +220,24 @@ div.accornSubTotal {
     padding: 0 0.2em 0;
     ion-col.txt {
         padding-top: 14px;
-        font-weight: bold;
         ion-label {
             font-size: 20px;
+            font-weight: bold;
         }
     }
 }
 
-ion-col.item{
-
-    border-bottom: 2px solid gray;
-    width: 100%;
-   
+.PL{
+    font-size: 15px;
+    font-weight: bold;
 }
 
-
-.barcodebtn{
-    margin: auto;
-    text-align: left;
-}
-
-.newspapper{
-    font-size: 30px;
-    text-align: center;
-    color: var(--ion-color-plureHeader);
-    margin-top: 9px;
-}
-
-.footerputaway{
-    padding-bottom: 60px;
+.footerReceipt{
+    height: 60px;
     background: linear-gradient(to bottom, #5CABF9, #1A518E);
     border-radius: 7% 7% 0% 0%;
-    text-align: center;
-    justify-content: center;
     box-shadow: 0px -5px 18px #00000029;
+
 }
 
 .itemfooter{
@@ -262,8 +246,6 @@ ion-col.item{
 
 ion-content{
     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
-    height: 90%;
-    overflow: auto;
 }
 
 ion-list{

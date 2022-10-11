@@ -13,7 +13,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-list class="list">
+  <ion-list class="list" *ngIf="boolean">
     <ion-row *ngFor="let process of module.processes; let i = index" (click)="onWMS(process)" [ngClass]="{'after': i != module.processes.length - 1}">
       <ion-col size="1">
         <ion-icon name="receipt-outline" *ngIf="process.processId == 'P007'"></ion-icon>
@@ -26,6 +26,67 @@
         <ion-label>{{process.description}}</ion-label>
       </ion-col>
     </ion-row>
+  </ion-list>
+
+
+  
+  <ion-list class="list" *ngIf="!boolean">
+    <ion-row (click)="pageMovement()">
+      <ion-col size="1">
+        <ion-icon name="newspaper-outline"></ion-icon>
+      </ion-col>
+        <ion-col size="5">
+          <ion-label>WH Movement</ion-label>
+      </ion-col>
+    </ion-row>
+
+    <ion-row >
+      <ion-col size="1">
+        <ion-icon name="cube-outline"></ion-icon>
+      </ion-col>
+        <ion-col size="7">
+          <ion-label>WH Item Reclasification</ion-label> 
+      </ion-col>
+    </ion-row>
+
+    <ion-row >
+      <ion-col size="1">
+        <ion-icon name="color-filter-outline"></ion-icon>
+      </ion-col>
+        <ion-col size="5">
+          <ion-label>WH Item Journal</ion-label>
+      </ion-col>
+    </ion-row>
+
+    <ion-row >
+      <ion-col size="1">
+        <ion-icon name="settings-outline"></ion-icon>
+      </ion-col>
+        <ion-col size="5">
+          <ion-label>Split / Merge</ion-label>
+      </ion-col>
+    </ion-row>
+
+    <ion-row >
+      <ion-col size="1">
+        <ion-icon name="server-outline"></ion-icon>
+      </ion-col>
+        <ion-col size="5">
+          <ion-label>Physical Inventory</ion-label>
+        
+      </ion-col>
+    </ion-row>
+
+    <ion-row >
+      <ion-col size="1">
+        <ion-icon name="cash-outline"></ion-icon>
+      </ion-col>
+        <ion-col size="7">
+          <ion-label>WH Non Count Journal</ion-label>
+        </ion-col>
+      
+    </ion-row>
+
   </ion-list>
 </ion-content>
 <PlureVersion showVersion="1"></PlureVersion>

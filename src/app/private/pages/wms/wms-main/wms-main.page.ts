@@ -19,7 +19,7 @@ export class WmsMainPage implements OnInit {
   public module: any = {};
   public sessionLogin: any = {};
   public session: any = {};
-
+  public boolean: Boolean = true;
 
   constructor(private syncerp: SyncerpService
     , private general: GeneralService
@@ -87,9 +87,7 @@ export class WmsMainPage implements OnInit {
     if(process.processId === 'P010'){
 
 
-      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
-      let rsl = await this.syncerp.setRequest(p);
-      console.log(rsl);
+      this.boolean = false;
 
       this.intServ.loadingFunc(false);
 
@@ -118,6 +116,12 @@ export class WmsMainPage implements OnInit {
     }
   }
 
+
+  pageMovement(){
+
+
+    this.router.navigate(['page/wms/wmsMovement']);
+  }
 
 
   private async mappingPutAways(putAway:any , procesos: Process){
