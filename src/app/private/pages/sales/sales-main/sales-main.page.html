@@ -14,7 +14,7 @@
   </ion-row>
 
   <ion-list class="list">
-    <ion-row *ngFor="let process of module.processes; let i = index" (click)="onSales(process)" [ngClass]="{'after': i != module.processes.length - 1}">
+    <ion-row class="rowsales" *ngFor="let process of module.processes; let i = index" (click)="onSales(process)" [ngClass]="{'after': i != module.processes.length - 1}">
       <ion-col size="1">
         <img src="../../../../assets/img/modules/sales/salesorder.svg" *ngIf="process.processId == 'P001'" />
         <img src="../../../../assets/img/modules/sales/returnorder.svg" *ngIf="process.processId == 'P002'" />
