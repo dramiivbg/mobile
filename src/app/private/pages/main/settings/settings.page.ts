@@ -14,7 +14,7 @@ const { App } = Plugins;
 export class SettingsPage implements OnInit {
 
   userSession: any = {}
-  avatar: string = "../../../../assets/img/img-robot.svg"
+  avatar: string = "../../../../assets/img/img-robothead.svg"
 
   constructor(private authService: AuthService
     , private router: Router

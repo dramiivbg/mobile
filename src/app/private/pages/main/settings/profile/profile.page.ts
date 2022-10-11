@@ -16,7 +16,7 @@ import { Camera, CameraResultType } from '@capacitor/camera';
 })
 export class ProfilePage implements OnInit {
   public userSession: any = {}
-  public avatar: string = "../../../../../assets/img/img-robot.svg";
+  public avatar: string = "../../../../../assets/img/img-robothead.svg";
   public frm: FormGroup;
   public showFooter: boolean = true;
 
