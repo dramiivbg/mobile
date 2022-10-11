@@ -144,6 +144,11 @@ ion-button.add-lines::part(native){
         margin: 5px 0 22px 0;
         --ion-color-base: var(--ion-color-plureHeader)
     }
+    .newColor2 {
+        width:92%;
+        margin: 5px 0 10px -5px;
+        --ion-color-base: var(--ion-color-plureHeader)
+    }
     ion-datetime {
         border-bottom: 1px solid #fff;
         padding: 3px 0 0 !important;
