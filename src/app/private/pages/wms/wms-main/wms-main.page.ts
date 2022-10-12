@@ -124,6 +124,12 @@ export class WmsMainPage implements OnInit {
   }
 
 
+  pageItemJournal(){
+
+
+    this.router.navigate(['page/wms/wmsItemJournal']);
+  }
+
   private async mappingPutAways(putAway:any , procesos: Process){
 
 

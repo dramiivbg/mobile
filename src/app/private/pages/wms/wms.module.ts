@@ -24,6 +24,7 @@ import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-
 import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
+import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 
 
 
@@ -44,7 +45,8 @@ import { WmsMovementPage } from './wms-movement/wms-movement.page';
     AddItemOrLpComponent,
     AlertsComponent,
     PhysicalIntentoryPage,
-    WmsMovementPage
+    WmsMovementPage,
+    WmsItemJournalPage
    
     
   
