@@ -4,16 +4,32 @@ ion-item {
     --border-color: var(--ion-color-plureBlue);
 
     ion-row {
-        background: rgba(72, 74, 81, 0.06);
-        border-radius: 5px;
         width: 100%;
-        color: var(--ion-color-plureBlue);
+
         img {
             padding: 13px 0 0 12px;
+        }
+
+        ion-icon {
+            padding: 4px 0 0 0;
+            color: var(--ion-color-plureBlue);
         }
     }
 }
 
-ion-item.padding10 {
-    padding: 0 5px;
+ion-item {
+    --border-width: 0 0 0 0 !important;
+    --background: transparent;
+    .padding10 {
+        padding: 0 5px;
+    }
+}
+
+ion-content {
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
+}
+
+ion-list {
+    padding-top: 15px;
+    background: transparent !important;
 }

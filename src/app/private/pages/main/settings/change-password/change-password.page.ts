@@ -23,7 +23,7 @@ const { App } = Plugins;
 })
 export class ChangePasswordPage implements OnInit {
   public frm: FormGroup;
-  public avatar: string = "../../../../../assets/img/img-robot.svg";
+  public avatar: string = "../../../../../assets/img/img-robothead.svg";
   private scid: string;
   private userSession: any = {};
 

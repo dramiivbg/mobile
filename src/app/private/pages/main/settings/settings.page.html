@@ -1,15 +1,16 @@
 <PlureHeader type="1" title="Settings" url="page/main/modules" notify="1"></PlureHeader>
 <ion-content>
   <ion-list lines="full">
-    <ion-item (click)="onClick('profile')">
-      <ion-avatar slot="start">
-        <img [src]="avatar" />
-      </ion-avatar>
-      <ion-label>
-        <h2>{{userSession.userName}}</h2>
-        <p>{{userSession.email}}</p>
-      </ion-label>
-    </ion-item>
+      <ion-item (click)="onClick('profile')">
+        <ion-avatar slot="start">
+          <img [src]="avatar" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{userSession.userName}}</h2>
+          <p>{{userSession.email}}</p>
+        </ion-label>
+      </ion-item>
+
     <ion-item class="padding10" lines="none" (click)="onClick('change-password')">
       <ion-row>
         <ion-col size="2">
