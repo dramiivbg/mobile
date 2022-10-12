@@ -109,7 +109,7 @@ if(obj.TotalToReceive == 0){
         
       this.interceptService.loadingFunc(false);
 
-      this.interceptService.alertFunc(this.jsonService.getAlert('sucess','sucess','license plates have been created successfully'));
+      this.interceptService.alertFunc(this.jsonService.getAlert('success','sucess','license plates have been created successfully'));
 
        
       this.popoverController.dismiss({data: 'creado'});

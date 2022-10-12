@@ -689,6 +689,37 @@ public async GetPossiblesBinFromPutAway(No:any){
     }
 
 }
+
+
+public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
+
+
+    
+    try {
+
+    
+        let obj: any = [{
+    
+            ZoneCode,
+            LocationCode,
+            BinCode
+
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('GenerateEmptyLP', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+}
  
 
 

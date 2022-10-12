@@ -25,6 +25,7 @@ import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
 import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
+import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popover-lp-empty.component';
 
 
 
@@ -46,7 +47,8 @@ import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
     AlertsComponent,
     PhysicalIntentoryPage,
     WmsMovementPage,
-    WmsItemJournalPage
+    WmsItemJournalPage,
+    PopoverLpEmptyComponent
    
     
   
@@ -70,6 +72,7 @@ import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
     LicensePlatesComponent,
     PopoverLpsComponent,
     EditPutAwayComponent,
+    PopoverLpEmptyComponent,
     PhysicalIntentoryPage
   ]
 })
