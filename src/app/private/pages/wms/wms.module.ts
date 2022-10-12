@@ -25,6 +25,7 @@ import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
 import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
+import { WhitemReclassificationPage } from './whitem-reclassification/whitem-reclassification.page';
 
 
 
@@ -46,7 +47,8 @@ import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
     AlertsComponent,
     PhysicalIntentoryPage,
     WmsMovementPage,
-    WmsItemJournalPage
+    WmsItemJournalPage,
+    WhitemReclassificationPage
    
     
   

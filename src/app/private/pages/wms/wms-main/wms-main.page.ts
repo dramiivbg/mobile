@@ -93,6 +93,7 @@ export class WmsMainPage implements OnInit {
 
     }
 
+
     if(process.processId === 'P011'){
 
 
@@ -121,6 +122,12 @@ export class WmsMainPage implements OnInit {
 
 
     this.router.navigate(['page/wms/wmsMovement']);
+  }
+
+  pageReclassification(){
+
+
+    this.router.navigate(['page/wms/whItemReclassification']);
   }
 
 
