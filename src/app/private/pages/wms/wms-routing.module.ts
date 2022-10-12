@@ -12,6 +12,7 @@ import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.com
 import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-lp.component';
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
+import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 
 
 
@@ -27,10 +28,13 @@ const routes: Routes = [
     {path: 'listPallet', component: ListPalletComponent},
     {path: 'lists', component: ListPItemsComponent},
     {path: 'AddLists', component:  AddItemOrLpComponent},
-    {path: 'wmsMovement', component: WmsMovementPage}
+    {path: 'wmsMovement', component: WmsMovementPage},
    
+    {path: 'wmsItemJournal',component: WmsItemJournalPage},
   ]},
 ,
+ 
+
 
 
 
