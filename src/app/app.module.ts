@@ -44,7 +44,7 @@ import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-awa
     LoadingComponent,
     AlertsComponent,
     NotifyComponent,
-    EditPutAwayComponent
+   
   
 
   ],

@@ -77,6 +77,7 @@ export class PopoverLpEmptyComponent implements OnInit {
       
         
       } catch (error) {
+        
 
         console.log(error.message);
 

@@ -45,7 +45,6 @@ import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popove
     ListPalletComponent,
     ListPItemsComponent,
     AddItemOrLpComponent,
-    AlertsComponent,
     PhysicalIntentoryPage,
     WmsMovementPage,
     WmsItemJournalPage,
