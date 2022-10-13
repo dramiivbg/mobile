@@ -4,6 +4,8 @@ import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-popover-lp-empty',
@@ -60,7 +62,13 @@ export class PopoverLpEmptyComponent implements OnInit {
 
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.jsonService.getAlert('success','sucess','Generate License Plate'));
+        Swal.fire(
+          'Success!',
+          'Generate License Plate',
+          'success'
+        )
+
+    
 
         this.popoverController.dismiss({data: res});
 
@@ -74,7 +82,14 @@ export class PopoverLpEmptyComponent implements OnInit {
 
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.jsonService.getAlert('error', 'error', error.message));
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text:  error.message,
+          footer: ''
+        })
+
+       
 
         
       }
