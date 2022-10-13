@@ -26,6 +26,7 @@ import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.p
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
 import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 import { WhitemReclassificationPage } from './whitem-reclassification/whitem-reclassification.page';
+import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popover-lp-empty.component';
 
 
 
@@ -48,7 +49,8 @@ import { WhitemReclassificationPage } from './whitem-reclassification/whitem-rec
     PhysicalIntentoryPage,
     WmsMovementPage,
     WmsItemJournalPage,
-    WhitemReclassificationPage
+    WhitemReclassificationPage,
+    PopoverLpEmptyComponent
    
     
   
@@ -72,6 +74,7 @@ import { WhitemReclassificationPage } from './whitem-reclassification/whitem-rec
     LicensePlatesComponent,
     PopoverLpsComponent,
     EditPutAwayComponent,
+    PopoverLpEmptyComponent,
     PhysicalIntentoryPage
   ]
 })

@@ -78,6 +78,7 @@ export class WmsMainPage implements OnInit {
     if (process.processId === 'P007') {
       let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
       let rsl = await this.syncerp.setRequest(p);
+
       let wareReceipts = rsl.WarehouseReceipts;
 
       this.intServ.loadingFunc(false);
@@ -89,6 +90,8 @@ export class WmsMainPage implements OnInit {
 
       this.boolean = false;
 
+   
+    
       this.intServ.loadingFunc(false);
 
     }
