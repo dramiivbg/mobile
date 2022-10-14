@@ -20,6 +20,12 @@ export class PopoverNewPalletComponent implements OnInit {
 
   public boolean: Boolean = true;
  
+
+
+  
+ public testListI: any[] = [];
+
+ public testListL: any[] = [];
  
   private lpNo: any = '';
   private itemNo:any = '';
@@ -555,6 +561,15 @@ exit(){
 
 
   this.boolean = true;
+
+  this.items = [];
+this.lps = [];
+
+  this.testListI = [];
+
+  this.testListL = [];
+
+
 }
 
 async listLpOrItem(pallet:any){
@@ -578,6 +593,19 @@ this.intServ.loadingFunc(true);
 
     this.items = items.Possible_ItemsChilds;
 
+
+   
+
+   let checkboxL = {testID: 0, testName: "", checked: false}
+
+   let checkboxI = {testID: 0, testName: "", checked: false}
+
+   console.log(this.items);
+
+  
+
+  
+
     console.log('item =>',this.items);
 
 
@@ -586,13 +614,30 @@ this.intServ.loadingFunc(true);
 
 
       
-    this.lpsNo.filter(async(no) => {
+    this.lpsNo.filter(async(no,index) => {
 
       let lps = await this.wmsService.getLpNo(no);
 
       let lp = await this.wmsService.ListLp(lps);
     
-      this.lps.push(lp);
+      
+      let line = this.lpsL.find(Lp => Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      if(line == undefined || line == null){
+
+
+         this.lps.push(lp);
+
+         checkboxL.testID = Number(index),
+         checkboxL.testName = `test${index}`
+         checkboxL.checked = false;
+   
+         this.testListL.push(checkboxL);
+        checkboxL = {testID: 0, testName: "", checked: false};
+
+
+      }
+     
       
     });
 
@@ -602,14 +647,48 @@ this.intServ.loadingFunc(true);
   
   
         this.items.splice(index,1);
+
       }
+
+      
+      let line = this.itemsL.find(Item => Item.ItemNo === item.ItemNo);
+
+      if(line != undefined || line != null){
+
+          this.items.splice(index,1);
+
+     
+
+      }
+
+     
     })
 
+    for (const i  in this.items) {
+
+
+      checkboxI.testID = Number(i),
+      checkboxI.testName = `test${i}`
+      checkboxI.checked = false;
+
+      this.testListI.push(checkboxI);
+
+     checkboxI = {testID: 0, testName: "", checked: false};
+     
+    }
+
+
+  
     this.lpsT = this.lps;
 
     this.itemsT = this.items;
 
-    console.log(this.itemsT);
+    console.log(this.itemsT, this.lpsT);
+
+   
+
+
+    console.log(this.testListI, this.testListL);
 
     this.intServ.loadingFunc(false);
 
@@ -631,6 +710,10 @@ this.lps = [];
 
   this.boolean = true;
 
+  this.testListI = [];
+
+  this.testListL = [];
+
 
 
 
@@ -639,246 +722,182 @@ this.lps = [];
 }
 
 
-select(item:any,ev){
 
 
-  if(ev.detail.value != undefined){
+checkAll(ev){
 
 
-   
+  console.log(ev);
+switch(ev.detail.checked){
 
-    switch(this.booleanL){
+case true:
+
+if(this.booleanL){
+
+  for(let i =0; i <= this.testListL.length; i++) {
 
 
-      case true:    this.lpsL = item;
-                    this.listLpsL = item;
-                     this.lpsLT = item;
-                     console.log(this.lpsL);
-                    
-                     
-                     this.visilityL = false;
+    this.testListL[i].checked = true;
 
-                     
 
-                    // radioL.style.visibility = 'hidden';
+ 
+    }  
+    console.log(this.testListL);
+  }else{
 
+    for(let i =0; i <= this.testListI.length; i++) {
+      this.testListI[i].checked = true;
+
+
+      }     
+  }
+
+  break;
+
+  
+  case false:
+
+    if(this.booleanL){
+
+      for(let i =0; i <= this.testListL.length; i++) {
+        this.testListL[i].checked = false;
+
+
+        }
+        console.log(this.testListL);
+      }else{
     
+        for(let i =0; i <= this.testListI.length; i++) {
+          this.testListI[i].checked = false;
 
+      
 
-
-      break;         
-
-
-      case false:    this.itemsL = item;
-
-                     this.itemsLT = item;
-
-
-                    this.listItemsL = item;
-                    console.log(this.itemsL);
-                   
-                    this.visilityI = false;
-
-        
-
+          }
+          console.log(this.testListI);
+      }
+  
 
       break;
 
-    }
-
-
-
-  }else{
-
-
-    this.remove();
-
-    
-
-
-  }
-
-
 
 }
 
-
-remove(){
-
-  switch(this.booleanL){
-
-
-    case true:    this.lpsL = [];
-                  this.listLpsL = [];
-                   this.lpsLT = [];
-                   console.log(this.lpsL);
-
-                   this.visilityL = true;
   
-
-
-
-    break;         
-
-
-    case false:    this.itemsL = [];
-
-                   this.itemsLT = [];
-
-
-                  this.listItemsL = [];
-                  console.log(this.itemsL);
-                  this.visilityI = true;
-
-    break;
-
-  }
-
-
-
-
-
 }
 
 
-applyLP(lp:any,ev,i:any){
 
-  
 
-if(ev.detail.value != undefined){
+
+
+applyLP(lp:any,ev){
+
 
 
     
+switch(ev.detail.checked){
 
-let line:any = undefined;
-  this.lpsLT = [];    
- 
- 
-
-  if(this.lpsLT != undefined){
-
-
-  line =  this.listLpsL.find(lp1 => lp1.fields.PLULPDocumentNo == lp.fields.PLULPDocumentNo )
-  }
-
-
-  if(line != null || line != undefined){
-
-    this.intServ.alertFunc(this.js.getAlert('alert', '', 'This pallet has already been assigned'));
-
-    
-  }else{
-
-
-    this.lpsL.push(lp);
-    this.listLpsL.push(lp);
-    this.lpsLT.push(lp);
-  
-    console.log(this.lpsL);
-        
-  }
-
-
-
-
-  }else{
-
-
-    this.lpsL.filter( (Lp, index) => {
-
-      if(Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
-
-
-        this.lpsL.splice(index,1)
-
-        this.listLpsL.splice(index,1)
-        this.lpsLT.splice(index,1)
-      }
-    })
-
-
- 
-  
-
-    console.log('Delete =>',this.listLpsL,this.lpsL, this.lpsLT);
-  }
-
-  
-      
-    
-    
-    }
-  
-  
-    
-  
-  
-    applyItem(item:any,ev,i:any){
-  
-
-
-console.log(ev.detail);
-
-if(ev.detail.value != undefined){
-
-
+  case true:  
   
   let line:any = undefined;
 
- 
-  this.itemsLT = [];
-  this.boolean = true;
 
 
 
-  
-if(this.itemsLT != undefined){
-
-
-line =  this.listItemsL.find(item1 => item1.ItemNo == item.ItemNo)
-}
-
-
-if(line != null || line != undefined){
-
-  this.intServ.alertFunc(this.js.getAlert('alert', '', 'This Item has already been assigned'));
+    this.lpsLT = [];
+   
+    this.lpsL.push(lp);
+     this.listLpsL.push(lp);
+     this.lpsLT.push(lp);
+   
+     console.log(this.lpsL);
 
   
-}else{
+       
 
+    
+  break;
+  
+  case false:
+  
+     this.lpsL.filter( (Lp, index) => {
+  
+        if(Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
+           this.lpsL.splice(index,1)
+          this.listLpsL.splice(index,1)
+          this.lpsLT.splice(index,1)
+        }
+      })
+  
+  
+   console.log('Delete =>',this.listLpsL,this.lpsL, this.lpsLT);
+  
+   break;
+    }
 
-  this.itemsL.push(item);
+  
 
-  this.itemsLT.push(item);
-
-
-  this.listItemsL.push(item);
+  
       
-}
+    
+    
+    }
+  
+  
+    
+  
+  
+applyItem(item:any,ev,){
+  
+
+switch(ev.detail.checked){
+
+case true:
+
+  let line:any = undefined;
+
+    this.itemsLT = [];
 
 
-  console.log(this.itemsL);
+    this.itemsL.push(item);
+  
+    this.itemsLT.push(item);
+  
+  
+    this.listItemsL.push(item);
+  
+  
+        
+  
+   console.log(this.itemsL);
+
+  
 
 
-}else{
+ 
+  break;
+
+case false:
 
 
-  this.itemsL.filter( Item => {
+  this.itemsL.filter( (Item,i) => {
 
     if(Item.ItemNo === item.ItemNo){
 
-      this.itemsL.splice(Number(i),1);
+      this.itemsL.splice(i,1);
 
-      this.itemsLT.push(Number(i),1);
+      this.itemsLT.push(i,1);
     
     
-      this.listItemsL.push(Number(i),1);
+      this.listItemsL.push(i,1);
 
     }
   })
  
 
   console.log('Delete =>', this.listItemsL, this.itemsLT, this.listItemsL);
+
+  break;
 }
 
       

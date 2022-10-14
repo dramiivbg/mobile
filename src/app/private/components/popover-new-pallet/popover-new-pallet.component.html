@@ -234,20 +234,25 @@
     </ion-col>
   </ion-row>
 
+
+
   <ion-list>
+
+
     <ion-grid *ngIf="booleanL">
 
       <ion-row class=" newColor">
 
         <ion-col>
 
-          <ion-radio-group allow-empty-selection="true" (ionChange)="select(lps,$event)">
-
-            <ion-radio value="selectall"></ion-radio>
-
-          </ion-radio-group>
+     
+          <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
+        
+       
         </ion-col>
-
+     
+    
+        
         <ion-col size="3">
           <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
         </ion-col>
@@ -260,15 +265,23 @@
       </ion-row>
 
       <ion-row class=" delivery ContentTable" *ngFor="let item of lps; let i= index" id="radioL">
+ 
 
-        <ion-col *ngIf="visilityL">
+     
+          
+        <ion-col *ngIf="testListL.length > 0">
+        
 
-          <ion-radio-group allow-empty-selection="true" (ionChange)="applyLP(item,$event,i)">
+          <div *ngFor="let member of testListL">
+            
+              <ion-checkbox   (ionChange)="applyLP(item,$event)" [(ngModel)]="member.checked"></ion-checkbox>
+         
+          </div>
 
-
-            <ion-radio value="IPSingle"></ion-radio>
-          </ion-radio-group>
         </ion-col>
+
+      
+  
 
         <ion-col size="3">
           <div>{{item.fields.PLULPDocumentNo}}</div>
@@ -281,6 +294,7 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+
   </ion-list>
 
   <ion-row *ngIf="!booleanL">
@@ -300,16 +314,17 @@
     </ion-col>
   </ion-row>
 
-  <ion-list>
+<ion-list>
+
+
     <ion-grid *ngIf="!booleanL">
 
       <ion-row class=" newColor">
         <ion-col>
-          <ion-radio-group allow-empty-selection="true" (ionChange)="select(items,$event)">
 
+          <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
+        
 
-            <ion-radio value="selectall"></ion-radio>
-          </ion-radio-group>
         </ion-col>
 
         <ion-col size="3">
@@ -325,14 +340,17 @@
 
       <ion-row class=" delivery ContentTable" *ngFor="let item of items; let i=index">
 
+       
 
-        <ion-col *ngIf="item.Qty > 0  &&  visilityI" id="radioI">
-          <ion-radio-group allow-empty-selection="true" (ionChange)="applyItem(item,$event,i)">
+        <ion-col *ngIf="item.Qty > 0  &&  testListI.length > 0">
+        
 
-            <ion-radio value="ITSingle"></ion-radio>
+          <div *ngFor="let member of testListI">
+            
+              <ion-checkbox   (ionChange)="applyItem(item,$event)" [(ngModel)]="member.checked"></ion-checkbox>
+         
+          </div>
 
-
-          </ion-radio-group>
         </ion-col>
 
 
@@ -350,6 +368,7 @@
 
 
     </ion-grid>
+
   </ion-list>
 </ion-content>
 

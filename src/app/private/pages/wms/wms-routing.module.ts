@@ -13,6 +13,7 @@ import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
 import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
+import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 
 
 
@@ -31,8 +32,12 @@ const routes: Routes = [
     {path: 'wmsMovement', component: WmsMovementPage},
    
     {path: 'wmsItemJournal',component: WmsItemJournalPage},
+
+    {path: 'wmsSplitMerge', component: WmsSplitMergePage},
   ]},
 ,
+  
+
  
 
 

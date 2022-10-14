@@ -26,6 +26,11 @@ import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.p
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
 import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popover-lp-empty.component';
+import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
+import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-merge.component';
+import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
+
+
 
 
 
@@ -39,7 +44,6 @@ import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popove
     PopoverOptionsComponent,
     LicensePlatesComponent,
     PopoverLpsComponent,
-    EditPutAwayComponent,
     PopoverNewPalletComponent,
     ListPalletComponent,
     ListPItemsComponent,
@@ -47,7 +51,11 @@ import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popove
     PhysicalIntentoryPage,
     WmsMovementPage,
     WmsItemJournalPage,
-    PopoverLpEmptyComponent
+    PopoverLpEmptyComponent,
+    WmsSplitMergePage,
+    EditPutAwayComponent,
+    PopoverMergeComponent,
+    PopoverSplitComponent
    
     
   
@@ -72,7 +80,9 @@ import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popove
     PopoverLpsComponent,
     EditPutAwayComponent,
     PopoverLpEmptyComponent,
-    PhysicalIntentoryPage
+    PopoverMergeComponent,
+    PopoverSplitComponent
+  
   ]
 })
 export class WmsModule { }
