@@ -34,7 +34,7 @@
 
   <div class="accorn-body">
     <div class="lines">
-      <ion-list>
+      <ion-list class="titlelist">
         <div>
 
           <ion-item-sliding>
@@ -73,6 +73,58 @@
       </ion-list>
     </div>
   </div>
+
+  <ion-row class="rowsubtitles">
+
+    <ion-col class="subtitles" size="3">
+      <div>Zone: Z1</div>
+    </ion-col>
+    <ion-col class="subtitles" size="3">
+      <div>Bin: STO1</div>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="qtyrow">
+    <ion-col class="titleqty" size="4">
+      Comfirm Qty
+    </ion-col>
+    <ion-col size="1">
+      <ion-icon class="btnqty" name="add-circle"></ion-icon>
+    </ion-col>
+    <ion-col size="5">
+      <ion-input [clearInput]="true" placeholder="Confirm Quantity"></ion-input>
+    </ion-col>
+    <ion-col size="1">
+      <ion-icon class="btnqty" name="remove-circle"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+
+
+  <ion-list class="input2">
+    <ion-item>
+      <ion-label class="TitleInput" position="stacked">Scan LP</ion-label>
+      <ion-row class="inputscanRow">
+        <ion-col class="inputscan" size="10">
+          <ion-input [clearInput]="true" placeholder="Scan or enter the LP ID"></ion-input>
+        </ion-col>
+        <ion-col class="barcodeinput" size="2" (click)="onBarCode()">
+          <ion-icon size="large" name="barcode-outline"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-row class="rowsubtitles2">
+
+    <ion-col class="subtitles2" size="12">
+      <div>Zone: Z1</div>
+    </ion-col>
+    <ion-col class="subtitles2" size="12">
+      <div>Bin: STO1</div>
+    </ion-col>
+  </ion-row>
 
 
 
