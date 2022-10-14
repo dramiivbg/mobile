@@ -25,6 +25,10 @@ export class ListPItemsComponent implements OnInit {
   private listLp: any[] = [];
   private  wareReceipts:any;
 
+  public testListI: any[] = [];
+
+  public testListL: any[] = [];
+
   private itemNo:any = '';
   private lpNo: any = '';
   private visibilityL:Boolean = true;
@@ -104,6 +108,43 @@ export class ListPItemsComponent implements OnInit {
     this.listP  = (this.routExtras.listP != undefined) ? this.routExtras.listP : localStorage.getItem('listP');
 
    console.log(this.listItem, this.listLp, this.listP);
+
+
+   
+   
+
+   let checkboxL = {testID: 0, testName: "", checked: false}
+
+   let checkboxI = {testID: 0, testName: "", checked: false}
+
+
+   this.listLp.filter((lp, index) => {
+
+
+    checkboxL.testID = Number(index),
+    checkboxL.testName = `test${index}`
+    checkboxL.checked = false;
+
+    this.testListL.push(checkboxL);
+   checkboxL = {testID: 0, testName: "", checked: false};
+
+   });
+
+
+   this.listItem.filter((item,index) =>{
+
+
+    checkboxI.testID = Number(index),
+    checkboxI.testName = `test${index}`
+    checkboxI.checked = false;
+
+    this.testListI.push(checkboxI);
+   checkboxI = {testID: 0, testName: "", checked: false};
+   })
+
+
+
+
    }
 
 
@@ -197,45 +238,76 @@ export class ListPItemsComponent implements OnInit {
 
   
 
+  checkAll(ev){
 
 
-  select(item:any,ev){
-
-if(ev.detail.value != undefined){
-
-  if(this.boolean){
-
-    this.listL = item;
-
-    console.log(this.listL);
-
-    this.visibilityL = false;
-
-  }else{
-
-
-    this.listI = item;
-    console.log(this.listI);
-
-    this.visibilityI = false;
-
-  }
-
-}else{
-
-  this.remove();
-}
-   
+    console.log(ev);
+  switch(ev.detail.checked){
   
+  case true:
+  
+  if(this.boolean){
+  
+    for(let i =0; i <= this.testListL.length; i++) {
+  
+  
+      this.testListL[i].checked = true;
+  
+  
+   
+      }  
+      console.log(this.testListL);
+    }else{
+  
+      for(let i =0; i <= this.testListI.length; i++) {
+        this.testListI[i].checked = true;
+  
+  
+        }     
+    }
+  
+    break;
+  
+    
+    case false:
+  
+      if(this.boolean){
+  
+        for(let i =0; i <= this.testListL.length; i++) {
+          this.testListL[i].checked = false;
+  
+  
+          }
+          console.log(this.testListL);
+        }else{
+      
+          for(let i =0; i <= this.testListI.length; i++) {
+            this.testListI[i].checked = false;
+  
+        
+  
+            }
+            console.log(this.testListI);
+        }
+    
+  
+        break;
+  
+  
+  }
+  
+    
   }
 
 
   selectl(item:any,ev){
 
 
-if(ev.detail.value != undefined){
+switch(ev.detail.checked){
 
-      
+ case true:
+  
+ 
     if(this.boolean){
 
 
@@ -249,9 +321,14 @@ if(ev.detail.value != undefined){
       console.log(this.listI);
     }
 
-    }else{
+   
+    break;
+
+    case false:
 
       this.removel(item,ev);
+
+      break;
     }
 
     //console.log(item);

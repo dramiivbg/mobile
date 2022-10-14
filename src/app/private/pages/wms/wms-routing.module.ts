@@ -14,6 +14,7 @@ import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.p
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
 import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 import { WhitemReclassificationPage } from './whitem-reclassification/whitem-reclassification.page';
+import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 
 
 
@@ -36,11 +37,21 @@ const routes: Routes = [
 
       {path: 'whItemReclassification', component: WhitemReclassificationPage  },
   
-    ]
-  },
-  ,
+    {path: 'newPallet', component: PopoverNewPalletComponent},
+    {path: 'listPallet', component: ListPalletComponent},
+    {path: 'lists', component: ListPItemsComponent},
+    {path: 'AddLists', component:  AddItemOrLpComponent},
+    {path: 'wmsMovement', component: WmsMovementPage},
+   
+    {path: 'wmsItemJournal',component: WmsItemJournalPage},
 
+    {path: 'wmsSplitMerge', component: WmsSplitMergePage},
+  ]
+},
+,
+  
 
+ 
 
 
 

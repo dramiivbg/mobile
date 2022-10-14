@@ -35,9 +35,8 @@
  
         <ion-row class=" newColor" >
           <ion-col>
-            <ion-radio-group allow-empty-selection="true"  (ionChange)="select(listLp, $event)" >
-              <ion-radio value="selectall"    ></ion-radio>
-            </ion-radio-group>
+            <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
+        
           </ion-col>
         
           <ion-col size="3">
@@ -57,14 +56,16 @@
         <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index">
           
          
-         
-          <ion-col  *ngIf="visibilityL">
-          <ion-radio-group allow-empty-selection="true"   (ionChange)="selectl(item, $event)" >
-      
-          <ion-radio value="IPSingle"   ></ion-radio>
-          </ion-radio-group>
-        </ion-col>
-   
+          <ion-col *ngIf="testListL.length > 0">
+        
+
+            <div *ngFor="let member of testListL">
+              
+                <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]="member.checked"></ion-checkbox>
+           
+            </div>
+  
+          </ion-col>
 
 
        
@@ -130,11 +131,17 @@
 
 
   <ion-row class=" newColor" >
-    <ion-col>
-      <ion-radio-group allow-empty-selection="true"  (ionChange)="select(listItem , $event)">
-        <ion-radio value="selectall"  ></ion-radio>
-        </ion-radio-group>
-    </ion-col>
+  
+
+   
+      <ion-col>
+
+        <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
+      
+
+      </ion-col>
+      
+  
  
     <ion-col size="3">
       <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
@@ -153,16 +160,17 @@
 
   <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index">
 
-    
+    <ion-col *ngIf="item.PLUQuantity > 0  &&  testListI.length > 0">
+        
 
-    <ion-col  *ngIf="item.PLUQuantity > 0  &&  visibilityI">
-    <ion-radio-group allow-empty-selection="true" (ionChange)="selectl(item,$event)">
+      <div *ngFor="let member of testListI">
+        
+          <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]="member.checked"></ion-checkbox>
+     
+      </div>
 
-  <ion-radio value="ITSingle"  ></ion-radio>
-    
-    </ion-radio-group>
+    </ion-col>
 
-  </ion-col>
   
     <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
       <div>{{item.PLUNo}}</div>
@@ -177,7 +185,6 @@
     </ion-col>
 
   </ion-row>
-
 
 
 

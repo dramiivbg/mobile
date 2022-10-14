@@ -140,6 +140,13 @@ export class WmsMainPage implements OnInit {
     this.router.navigate(['page/wms/wmsItemJournal']);
   }
 
+
+  pageSplitMerge(){
+
+
+    this.router.navigate(['page/wms/wmsSplitMerge']);
+  }
+
   private async mappingPutAways(putAway:any , procesos: Process){
 
 
