@@ -508,8 +508,9 @@ div.accornSubTotal {
 
 
 ion-row.newColor {
-    background: rgba(21, 73, 131, 1);
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
     margin: 5px 0 0;
+    font-weight: bold;
 }
 
 ion-icon{
@@ -539,4 +540,8 @@ ion-icon{
 
 ion-list{
     background: transparent;
+}
+
+ion-checkbox{
+    --border-radius: 50%;
 }
