@@ -25,16 +25,16 @@ export class PopoverLpsComponent implements OnInit {
 
   @Input() lps: any = {} ;
 
-  private listLp: Array<Lp> = [];
+  public listLp: Array<Lp> = [];
 
-  private listL: any[] = [];
-  private listQ: any[] = [];
-  private listD: any[] = [];
+  public listL: any[] = [];
+  public listQ: any[] = [];
+  public listD: any[] = [];
 
-  private list: any[] = []
+  public list: any[] = []
 
 
-  private lp : Lp;
+  public lp : Lp;
   
   
   constructor(public popoverController: PopoverController, private intServ: InterceptService, private jsonService: JsonService,

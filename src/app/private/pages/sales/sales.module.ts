@@ -20,7 +20,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
     SalesMainPage,
     SalesPagePage,
     SalesFormPage,
-    SearchComponent
+   
   ],
   imports: [
     CommonModule,

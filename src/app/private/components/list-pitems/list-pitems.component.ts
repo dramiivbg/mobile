@@ -15,28 +15,28 @@ import { PopoverOptionsComponent } from '../popover-options/popover-options.comp
   styleUrls: ['./list-pitems.component.scss'],
 })
 export class ListPItemsComponent implements OnInit {
-  private listL:any[] = [];
-  private listI:any[] = [];
-  private routExtras: any;
-  private listsI: any[] = [];
-  private boolean: Boolean = true;
-  private listItem: any[] = []
- private lists:any[] = [];
-  private listLp: any[] = [];
-  private  wareReceipts:any;
+  public listL:any[] = [];
+  public listI:any[] = [];
+  public routExtras: any;
+  public listsI: any[] = [];
+  public boolean: Boolean = true;
+  public listItem: any[] = []
+  public lists:any[] = [];
+  public listLp: any[] = [];
+  public  wareReceipts:any;
 
   public testListI: any[] = [];
 
   public testListL: any[] = [];
 
-  private itemNo:any = '';
-  private lpNo: any = '';
-  private visibilityL:Boolean = true;
-  private visibilityI:Boolean = true;
-  private pallet:any;
-  private pallets:any;
-  private listLP: any[] = [];
-  private listP: any[] = [];
+  public itemNo:any = '';
+  public lpNo: any = '';
+  public visibilityL:Boolean = true;
+  public visibilityI:Boolean = true;
+  public pallet:any;
+  public pallets:any;
+  public listLP: any[] = [];
+  public listP: any[] = [];
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
     , private js: JsonService

@@ -9,13 +9,14 @@ import { MainPageModule } from './pages/main/main.module';
 import { SalesService } from '@svc/Sales.service';
 import { PopoverLpEditComponent } from './components/popover-lp-edit/popover-lp-edit.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SearchComponent } from './components/search/search.component';
 
 
 
 @NgModule({
   declarations: [
     PrivateComponent,
-    PopoverLpEditComponent
+    SearchComponent
   ],
   imports: [
     CommonModule,

@@ -14,4 +14,15 @@ export class WmsMovementPage implements OnInit {
   ngOnInit() {
   }
 
+
+  onBarCode(){
+
+
+  }
+
+  onSubmit(){
+
+    
+  }
+
 }
