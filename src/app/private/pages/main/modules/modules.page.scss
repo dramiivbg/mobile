@@ -19,7 +19,7 @@ ion-content.modules {
             padding: 10px 15px;
             box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.14);
             border-radius: 23px;
-            background: rgba(21, 73, 131, 0.22);
+            background: rgba(21, 73, 131, 0.4);
 
             h1 {
                 color: var(--ion-color-plureHeader);
@@ -43,7 +43,7 @@ ion-content.modules {
                 padding: 15px;
 
                 div.module-item {
-                    background: rgba(21, 73, 131, 0.22);
+                    background: rgba(21, 73, 131, 0.4);
                     // border: 0.6px solid rgba(85, 85, 105, 0.35);
                     box-sizing: border-box;
                     box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.07);

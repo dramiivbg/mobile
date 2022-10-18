@@ -1,19 +1,19 @@
 
-<PlureHeader type="1" title="" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader type="1" title="Split / Merge" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 <ion-content>
     <form>
         <div class="designform-header">
-            <ion-row>
+            <!-- <ion-row>
                 <ion-col>
                   <h2> + New License Plate</h2>
                 </ion-col>
                
-            </ion-row>
+            </ion-row> -->
 
             
             <ion-row class="delivery newColor2">
-              <ion-col size="10">
+              <ion-col size="11">
                   <ion-searchbar  [ngModelOptions]="{standalone: true}"
                       (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline"
                       placeholder="Scan LP"></ion-searchbar>
@@ -90,7 +90,7 @@
 
 
                                               <ion-row>
-                                                <ion-col size="6" class="label-line">
+                                                <ion-col size="12" class="label-line splitimage">
                                             
                                                   <img src="../../../../assets/img/cable-electrico.jpg" alt="">
                                             </ion-col>
@@ -98,12 +98,12 @@
                                             </ion-row>
 
                                             <ion-row>
-                                              <ion-col size="6" >
+                                              <ion-col size="12" >
                                           
                                                <ion-button style="height: 50px;" expand="block" (click)="popoverSplit($event)">Split</ion-button>
                                           </ion-col>
 
-                                          <ion-col size="6" >
+                                          <ion-col size="12" >
                                           
                                             <ion-button style="height: 50px;" expand="block" (click)="popoverMerge($event)">Merge</ion-button>
                                       </ion-col>
