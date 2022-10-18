@@ -28,6 +28,12 @@ export class EditPutAwayComponent implements OnInit {
   public scanLP: boolean = true;
   public scanBin: boolean = false;
 
+  public split: any; 
+
+  public pallet:any;
+
+  public pallet2:any;
+
   public bin:string = '';
 
   private binCode: any = '';
@@ -65,7 +71,6 @@ export class EditPutAwayComponent implements OnInit {
 
     this.warePW = this.wmsService.getPutAway();
 
-
   
 
     if(this.warePW.WarehousePutAways){
@@ -77,6 +82,15 @@ export class EditPutAwayComponent implements OnInit {
     }else{
     this.warePY =  this.warePW;
     }
+
+
+    
+    this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
+
+
+    console.log('split put away =>',this.split);
+
+
    
   }
 
@@ -134,6 +148,7 @@ export class EditPutAwayComponent implements OnInit {
     this.intServ.loadingFunc(true);
   let listPallet;
 
+
   let listLp;
 
   let  listLpH;
@@ -141,6 +156,9 @@ export class EditPutAwayComponent implements OnInit {
 
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
   const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
+
+
+
 
     if(lps.Error){
       this.modalController.dismiss({});
@@ -188,10 +206,99 @@ export class EditPutAwayComponent implements OnInit {
   
     if(!pallets.Error){
 
+   this.pallet = await this.wmsService.ListLPallet(pallets);
+
+   this.pallet2 = await this.wmsService.ListLPallet(pallets);
+
+
    listPallet = await this.wmsService.ListLP(pallets);
 
 
+  
+
+    for (const i in this.pallet) {
+
+      for (const j in this.pallet2) {
+
+
+        if (this.pallet[i] != undefined) {
+
+          if (this.pallet[i].fields[0].PLUQuantity != null) {
+
+            if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+
+              if (j != i) {
+
+
+
+                let con = this.pallet.splice(Number(j), 1);
+                console.log(i, j);
+                console.log(con)
+
+              }
+
+
+            }
+          } else {
+
+            this.pallet.splice(Number(i), 1);
+
+          }
+        }
+      }
+    }
+
+
+
+    console.log('despues =>', this.pallet);
+    console.log('despues =>', this.pallet2);
+
+
+
+
+
+
+    for (const i in this.pallet) {
+
+      for (const j in this.pallet2) {
+        if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+
+
+
+
+
+          let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
+
+          if (line === null || line === undefined) {
+
+            this.pallet[i].fields.push(this.pallet2[j].fields[0]);
+
+
+
+          }
+
+        }
+      }
+    
+    }
+
    const  listPalletH  = await this.wmsService.ListPallets(pallets);
+
+
+for (const key in this.pallet) {
+
+  this.pallet[key].fields.filter(lp => {
+
+
+    let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
+
+
+    lp.PLUBinCode = line.fields.PLUBinCode;
+    lp.PLUItemNo = line.fields.PLUItemNo;
+
+  })
+}
+
 
      listPallet.filter(lp => {
 
@@ -333,7 +440,9 @@ export class EditPutAwayComponent implements OnInit {
     )
   
 
-}
+    }
+
+  
 
 async onAdd(e) {
 
@@ -357,7 +466,82 @@ async onAdd(e) {
 
     if(!pallets.Error){
 
-   listPallet = await this.wmsService.ListLP(pallets);
+  
+      this.pallet = await this.wmsService.ListLPallet(pallets);
+
+      this.pallet2 = await this.wmsService.ListLPallet(pallets);
+   
+   
+      listPallet = await this.wmsService.ListLP(pallets);
+   
+   
+     
+   
+       for (const i in this.pallet) {
+   
+         for (const j in this.pallet2) {
+   
+   
+           if (this.pallet[i] != undefined) {
+   
+             if (this.pallet[i].fields[0].PLUQuantity != null) {
+   
+               if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+   
+                 if (j != i) {
+   
+   
+   
+                   let con = this.pallet.splice(Number(j), 1);
+                   console.log(i, j);
+                   console.log(con)
+   
+                 }
+   
+   
+               }
+             } else {
+   
+               this.pallet.splice(Number(i), 1);
+   
+             }
+           }
+         }
+       }
+   
+   
+   
+       console.log('despues =>', this.pallet);
+       console.log('despues =>', this.pallet2);
+   
+   
+   
+   
+   
+   
+       for (const i in this.pallet) {
+   
+         for (const j in this.pallet2) {
+           if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+   
+   
+   
+   
+   
+             let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
+   
+             if (line === null || line === undefined) {
+   
+               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
+   
+   
+   
+             }
+   
+           }
+         }
+       
+       }
 
 
    const  listPalletH  = await this.wmsService.ListPallets(pallets);
@@ -693,6 +877,8 @@ break;
  public async onChangeBin(bin:any){
 
 
+
+
   
 
 
@@ -743,6 +929,33 @@ break;
   onChangeBinOne(item:any,bin:any){
 
 
+
+    if(this.pallet != undefined){
+
+      for (const key in this.pallet) {
+        let line = this.pallet[key].fields.find(lp =>  lp.PLUNo === item.fields.PLULPDocumentNo);
+
+        if(line != undefined || line != null){
+  
+  
+          if(bin != this.pallet[key].fields[0].PLUBinCode && bin != 'STO-01'){
+  
+  
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Bin Code children is not compatible with parent Bin ',
+              footer: ''
+            })
+
+            return;
+          }
+        }
+      }
+
+
+    
+    }
 
     this.listsFilter.filter(lp =>{
 

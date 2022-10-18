@@ -59,11 +59,11 @@
           <ion-col *ngIf="testListL.length > 0">
         
 
-            <div *ngFor="let member of testListL">
+
               
-                <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]="member.checked"></ion-checkbox>
+                <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]=" testListL[i].checked"></ion-checkbox>
            
-            </div>
+         
   
           </ion-col>
 
@@ -163,11 +163,10 @@
     <ion-col *ngIf="item.PLUQuantity > 0  &&  testListI.length > 0">
         
 
-      <div *ngFor="let member of testListI">
         
-          <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]="member.checked"></ion-checkbox>
+          <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
      
-      </div>
+     
 
     </ion-col>
 
