@@ -34,6 +34,8 @@ export class EditPutAwayComponent implements OnInit {
 
   public pallet2:any;
 
+  public items:any[] = [];
+
   public bin:string = '';
 
   private binCode: any = '';
@@ -88,7 +90,23 @@ export class EditPutAwayComponent implements OnInit {
     this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
 
 
+    this.split.WarehousePutAwayLines.filter(item => {
+
+
+     
+      let line = this.items.find(Item => item.ItemNo === Item.ItemNo);
+
+      if(line == null || line === undefined){
+
+        this.items.push(item.ItemNo);
+      }
+    
+    });
+
+
     console.log('split put away =>',this.split);
+
+    console.log('put away =>',this.warePW);
 
 
    
@@ -439,6 +457,14 @@ for (const key in this.pallet) {
       }
     )
   
+
+    }
+
+
+    onChangeBinItem(item:any,bin:any){
+     
+      console.log(item,bin);
+
 
     }
 

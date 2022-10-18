@@ -114,7 +114,7 @@ export class WmsMainPage implements OnInit {
       let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
       let rsl = await this.syncerp.setRequest(p);
     
-   
+    
     await  this.mappingPutAways(rsl, process);
     }
   }

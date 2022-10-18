@@ -29,6 +29,7 @@ import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popove
 import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-merge.component';
 import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
+import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
 
 
 
@@ -55,7 +56,8 @@ import { PopoverSplitComponent } from '@prv/components/popover-split/popover-spl
     WmsSplitMergePage,
     EditPutAwayComponent,
     PopoverMergeComponent,
-    PopoverSplitComponent
+    PopoverSplitComponent,
+    PopoverOpionsLpComponent
    
     
   
@@ -81,7 +83,8 @@ import { PopoverSplitComponent } from '@prv/components/popover-split/popover-spl
     EditPutAwayComponent,
     PopoverLpEmptyComponent,
     PopoverMergeComponent,
-    PopoverSplitComponent
+    PopoverSplitComponent,
+    PopoverOpionsLpComponent
   
   ]
 })
