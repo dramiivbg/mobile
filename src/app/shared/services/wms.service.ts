@@ -691,6 +691,32 @@ public async GetPossiblesBinFromPutAway(No:any){
 }
 
 
+public async Prepare_WarehousePutAway(No:any){
+
+
+    try {
+
+    
+        let obj: any = [{
+    
+          No
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Prepare_WarehousePutAway', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+
 public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
 
 
@@ -1919,6 +1945,150 @@ return list;
 
 
      }
+
+      
+     
+
+ 
+     }
+
+  
+ 
+     return list;
+ 
+
+    
+ 
+ 
+     }
+     
+
+
+
+     
+    public async ListLPallet(listLp: any){
+
+        // console.log(listLp);
+ 
+        let list: any[] = [];
+
+        let product = 
+        {  PLULPDocumentNo: "",
+        PLULineNo: 0,
+        PLUDocumentType: "",
+        PLUBinCode: "",
+        PLUItemNo: "",
+        PLUType: "",
+        PLUNo: "",
+        PLUVariantCode: null,
+        PLUQuantity: 0,
+        PLUQtyperUnitofMeasure: 0,
+        PLUQuantityBase: 0 ,
+        PLUUnitofMeasureCode : "",
+        PLUExpirationDate: null,
+        PLUParentLPNo: null,
+        PLUParentLPLineNo: null,
+        PLUStatus: null,
+        PLUSerialNo: null,
+        PLULotNo: null,
+        PLUDescription: "",
+        PLUEntryQuantity: null,
+        PLUSourceDocument: "",
+        PLUSourceDocumentNo: "",
+        PLUDocument: "",
+        PLUDocumentNo: "",
+        PLULicensePlateStatus: "",
+        PLUShipmentSrcDocument: "",
+        PLUShipmentSrcDocumentNo: null,
+        PLUSourceLineNo: 0,
+        PLUWhseLineNo: 0
+}
+
+         let obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields: [],
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+
+
+         }
+ 
+      for(let i in   listLp.LicensePlates.LPLines){
+ 
+        obj.company = listLp.LicensePlates.LPLines[i].company;
+        obj.fieldCount = listLp.LicensePlates.LPLines[i].fieldCount;
+        obj.id = listLp.LicensePlates.LPLines[i].id;
+        obj.name = listLp.LicensePlates.LPLines[i].name;
+        obj.position = listLp.LicensePlates.LPLines[i].position;
+        obj.recordId = listLp.LicensePlates.LPLines[i].recordId;
+ 
+        
+     for (const y in listLp.LicensePlates.LPLines[i].fields) {
+ 
+
+
+         product[listLp.LicensePlates.LPLines[i].fields[y].name] =  listLp.LicensePlates.LPLines[i].fields[y].value;
+
+
+
+      }
+
+      obj.fields.push(product);
+      list.push(obj);
+
+
+      obj= {
+
+        company: "",
+        fieldCount: 0,
+        fields:[],
+        id: 0,
+        name: "",
+        position: "",
+        recordId: ""
+
+
+     }
+
+     product = 
+     {  PLULPDocumentNo: "",
+     PLULineNo: 0,
+     PLUDocumentType: "",
+     PLUBinCode: "",
+     PLUItemNo: "",
+     PLUType: "",
+     PLUNo: "",
+     PLUVariantCode: null,
+     PLUQuantity: 0,
+     PLUQtyperUnitofMeasure: 0,
+     PLUQuantityBase: 0 ,
+     PLUUnitofMeasureCode : "",
+     PLUExpirationDate: null,
+     PLUParentLPNo: null,
+     PLUParentLPLineNo: null,
+     PLUStatus: null,
+     PLUSerialNo: null,
+     PLULotNo: null,
+     PLUDescription: "",
+     PLUEntryQuantity: null,
+     PLUSourceDocument: "",
+     PLUSourceDocumentNo: "",
+     PLUDocument: "",
+     PLUDocumentNo: "",
+     PLULicensePlateStatus: "",
+     PLUShipmentSrcDocument: "",
+     PLUShipmentSrcDocumentNo: null,
+     PLUSourceLineNo: 0,
+     PLUWhseLineNo: 0
+}
+
+
+
+     
 
       
      
