@@ -29,7 +29,6 @@ const routes: Routes = [
       { path: 'newPallet', component: PopoverNewPalletComponent },
       { path: 'listPallet', component: ListPalletComponent },
       { path: 'lists', component: ListPItemsComponent },
-      { path: 'AddLists', component: AddItemOrLpComponent },
       { path: 'wmsMovement', component: WmsMovementPage },
 
       { path: 'wmsItemJournal', component: WmsItemJournalPage },
