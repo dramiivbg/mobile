@@ -44,7 +44,7 @@ export class WmsReceiptPage implements OnInit {
   private LpL: any = [];
 
 
-  private cantidades: number[] = [];
+  public cantidades: number[] = [];
 
   constructor(private wmsService: WmsService
     , private intServ: InterceptService

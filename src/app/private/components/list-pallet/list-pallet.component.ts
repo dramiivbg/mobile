@@ -14,15 +14,15 @@ import { PopoverOptionsComponent } from '../popover-options/popover-options.comp
 })
 export class ListPalletComponent implements OnInit {
 
-  private routExtras: any;
+  public routExtras: any;
 
-  private listPallet: any;
+  public listPallet: any;
 
   public lpsNo: any[] = [];
 
   public lps: any[] = [];
 
-  private wareReceipts: any;
+  public wareReceipts: any;
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
     , private js: JsonService

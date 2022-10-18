@@ -20,7 +20,7 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
 
 import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.component';
 
-import { AddItemOrLpComponent} from '@prv/components/add-item-or-lp/add-item-or-lp.component';
+
 import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
@@ -31,6 +31,7 @@ import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-merge.component';
 import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
 import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
+import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-lp-edit.component';
 
 
 
@@ -42,14 +43,13 @@ import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popo
     WmsComponent,
     WmsMainPage,
     WmsReceiptPage,
-    SearchComponent,
     PopoverOptionsComponent,
     LicensePlatesComponent,
     PopoverLpsComponent,
     PopoverNewPalletComponent,
     ListPalletComponent,
     ListPItemsComponent,
-    AddItemOrLpComponent,
+  
     PhysicalIntentoryPage,
     WmsMovementPage,
     WmsItemJournalPage,
@@ -60,7 +60,8 @@ import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popo
     EditPutAwayComponent,
     PopoverMergeComponent,
     PopoverSplitComponent,
-    PopoverOpionsLpComponent
+    PopoverOpionsLpComponent,
+    PopoverLpEditComponent
    
     
   

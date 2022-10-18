@@ -28,10 +28,10 @@ export class PopoverNewPalletComponent implements OnInit {
 
  public testListL: any[] = [];
  
-  private lpNo: any = '';
-  private itemNo:any = '';
-  private visilityL:Boolean = true;
-  private visilityI:Boolean = true;
+  public lpNo: any = '';
+  public itemNo:any = '';
+  public visilityL:Boolean = true;
+  public visilityI:Boolean = true;
   public booleanL: Boolean = true;
   
 

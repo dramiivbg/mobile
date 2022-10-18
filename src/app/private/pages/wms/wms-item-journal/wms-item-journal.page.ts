@@ -66,4 +66,15 @@ export class WmsItemJournalPage implements OnInit {
     console.log('Details');
 
   }
+
+  onSubmit(){
+
+
+  }
+
+
+  onBarCode(){
+
+    
+  }
 }

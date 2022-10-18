@@ -38,14 +38,14 @@ export class EditPutAwayComponent implements OnInit {
 
   public bin:string = '';
 
-  private binCode: any = '';
+  public binCode: any = '';
   public listBin:any[] = [];
 
   public listsFilter: any[] = [];
   public lists: any = [];
   public warePW: any = {};
 
-  private warePY: any;
+  public warePY: any;
 
 
 
