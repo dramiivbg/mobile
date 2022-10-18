@@ -149,6 +149,13 @@ export class WmsReceiptPage implements OnInit {
     });
     await popover.present();
 
+    const { data } = await popover.onDidDismiss();
+
+    if(data.data == 'eliminado'){
+
+      this.GetLicencesPlateInWR(this.wareReceipts);
+    }
+
 
   }
   public async onPopLicensePlates(ev: any, item: any) {

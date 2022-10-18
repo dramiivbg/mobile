@@ -175,7 +175,7 @@ export class PopoverLpsComponent implements OnInit {
 
              if(lpD.Error) throw Error(lpD.Error.Message);
 
-             this.popoverController.dismiss({});
+             this.popoverController.dismiss({data: 'eliminado'});
              this.intServ.loadingFunc(false);
              this.intServ.alertFunc(this.jsonService.getAlert('success', '', `The license plate ${lpD.LPPallet_DocumentNo} has been successfully deleted`));
           

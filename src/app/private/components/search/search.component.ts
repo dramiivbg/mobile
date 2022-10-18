@@ -91,7 +91,14 @@ export class SearchComponent implements OnInit {
     } else {
       this.listsFilter = this.lists.filter(
         x => {
-          return (x.value.toLowerCase().includes(val.toLowerCase()) || (x.id.toLowerCase().includes(val.toLowerCase())));
+
+          if(x.value != null){
+
+            return (x.value.toLowerCase().includes(val.toLowerCase()) || (x.id.toLowerCase().includes(val.toLowerCase())));
+
+          }
+        
+          
         }
       )
     } 

@@ -399,7 +399,7 @@ switch(ev.detail.checked){
     
   }else{
 
-    let Delete:any;
+   
 
 
     try {
@@ -408,23 +408,23 @@ switch(ev.detail.checked){
 
 
       this.listI.filter(async(item) => {
-        let Delete = await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
+        await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
 
       });
 
    
-      console.log(Delete);
+    
 
-  this.listI.filter(async(item) =>{
+  this.listI.filter(async(Item) =>{
 
-    this.listLp.filter((lp,index) => {
-
-
-      if(lp.PLUNo === item.PLUNo){
+    this.listItem.filter((item,index) => {
 
 
+      if(item.PLUNo === Item.PLUNo){
 
-        this.listLp.splice(index,1);
+
+
+        this.listItem.splice(index,1);
 
 
       }

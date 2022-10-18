@@ -9,6 +9,7 @@ import { WmsService } from '@svc/wms.service';
 
 import { SqlitePlureService} from '@svc/sqlite-plure.service';
 import { AsyncLocalStorage } from 'async_hooks';
+import { ifError } from 'assert';
 
 
 @Component({
@@ -803,6 +804,11 @@ switch(ev.detail.checked){
 
 
 
+  line = this.lpsL.find(Lp =>  Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+
+  if(line == null || line === undefined){
+
 
     this.lpsLT = [];
    
@@ -812,6 +818,9 @@ switch(ev.detail.checked){
    
      console.log(this.lpsL);
 
+  }
+
+  
   
        
 
@@ -856,6 +865,15 @@ case true:
 
   let line:any = undefined;
 
+
+  
+  line = this.itemsL.find(Item =>  Item.ItemNo ===  item.ItemNo);
+
+
+  if(line == null || line === undefined){
+
+
+ 
     this.itemsLT = [];
 
 
@@ -870,6 +888,11 @@ case true:
         
   
    console.log(this.itemsL);
+
+  }
+
+  
+
 
   
 
@@ -986,6 +1009,8 @@ case false:
   enableLP(){
 
     this.booleanL = true;
+
+    
 
 
   }
