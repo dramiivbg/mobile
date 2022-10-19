@@ -153,23 +153,6 @@
 
 
 
-            <ion-row class="delivery newColor2">
-                <ion-col size="10">
-                    <ion-select  #item interface="popover"   placeholder="select item edit" style="position:absolute;right: 7%;width: 100%;" class="label-line-title" >
-                        <ion-select-option  *ngFor="let item of  this.items " [value]="item.ItemNo" >{{item.ItemNo}}</ion-select-option>
-                        
-                    </ion-select>
-
-                </ion-col>
-                <ion-col size="2" class="barcodebtn">
-                    <ion-select  interface="popover"  #bin  (ionChange)="onChangeBinItem(item.value,bin.value)" placeholder="Edit Bincode" style="position:absolute;right: 7%;width: 100%;" class="label-line-title" >
-                        <ion-select-option  *ngFor="let item of listBin[0].Bins" [value]="item.BinCode" >{{item.BinCode}}</ion-select-option>
-                      
-                    </ion-select>
-
-                </ion-col>
-
-            </ion-row>
 
 
 

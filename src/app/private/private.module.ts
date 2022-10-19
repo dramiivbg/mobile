@@ -16,7 +16,7 @@ import { SearchComponent } from './components/search/search.component';
 @NgModule({
   declarations: [
     PrivateComponent,
-    SearchComponent
+    
   ],
   imports: [
     CommonModule,

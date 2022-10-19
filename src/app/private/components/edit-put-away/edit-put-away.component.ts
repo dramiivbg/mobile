@@ -19,6 +19,8 @@ export class EditPutAwayComponent implements OnInit {
   public list: any[] = [] 
   public listT: any[] = [] 
 
+  public modify:any[] = [];
+
   @Input() whsePutAway:any;
 
 
@@ -27,6 +29,8 @@ export class EditPutAwayComponent implements OnInit {
    public lpsP: any = {}
   public scanLP: boolean = true;
   public scanBin: boolean = false;
+
+  public groupItems:any[] = [];
 
   public split: any; 
 
@@ -93,18 +97,52 @@ export class EditPutAwayComponent implements OnInit {
     this.split.WarehousePutAwayLines.filter(item => {
 
 
-     
-      let line = this.items.find(Item => item.ItemNo === Item.ItemNo);
+     if(this.items.length > 0){
 
-      if(line == null || line === undefined){
+
+      let line = this.items.find(Item => Item === item.ItemNo);
+
+      if(line === null || line === undefined){
 
         this.items.push(item.ItemNo);
       }
+     }else{
+
+      this.items.push(item.ItemNo);
+
+     }
+    
     
     });
 
 
-    console.log('split put away =>',this.split);
+    let tempory:any[] = [];
+
+    for (const key in this.items) {
+
+
+      this.split.WarehousePutAwayLines.filter(Item => {
+
+        if(Item.ItemNo ===  this.items[key]){
+
+          tempory.push(Item);
+
+        }
+      });
+
+
+      this.groupItems[this.items[key]] = tempory;
+
+      tempory = [];
+
+
+      
+
+    
+    }
+
+
+    console.log('split put away =>',this.groupItems);
 
     console.log('put away =>',this.warePW);
 
@@ -146,7 +184,25 @@ export class EditPutAwayComponent implements OnInit {
     }else{
      this.listsFilter.filter( lp => {
       lp.fields.PLUBinCode = line.BinCode.toUpperCase();
+    
+
+      let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
+
+
+        LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
+
+      }else if(LpExist === null || LpExist === undefined){
+
+        this.modify.push(lp);
+
+
+      }
+
        });
+
+
 
     }
          }
@@ -826,6 +882,9 @@ break;
       }).then(async(result) => {
         if (result.isConfirmed) {
 
+
+
+
         
 
           let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
@@ -900,56 +959,7 @@ break;
 
 
 
- public async onChangeBin(bin:any){
 
-
-
-
-  
-
-
-  console.log(bin);
-
-
-    this.intServ.loadingFunc(true);
-
-
-    if(bin != ''){
-    
-
-       this.listsFilter.filter(
-        async(lp) => {
-
-
-
-        
-
-
-          lp.fields.PLUBinCode = bin.toUpperCase();
-         
-        }
-      )
-
-      this.intServ.loadingFunc(false);
-
-    }else{
-
-      
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Bin code is Empty',
-        footer: ''
-      })
-
-
-      this.intServ.loadingFunc(false);
-
-    }
-
-
-
-  }
 
 
   onChangeBinOne(item:any,bin:any){
@@ -990,6 +1000,22 @@ break;
 
 
         lp.fields.PLUBinCode = bin.toUpperCase();
+
+
+        
+      let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
+
+
+        LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
+
+      }else if(LpExist === null || LpExist === undefined){
+
+        this.modify.push(lp);
+
+
+      }
 
       }
     });
