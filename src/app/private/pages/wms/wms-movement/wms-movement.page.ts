@@ -12,6 +12,7 @@ export class WmsMovementPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    
   }
 
 
@@ -22,7 +23,7 @@ export class WmsMovementPage implements OnInit {
 
   onSubmit(){
 
-    
+
   }
 
 }

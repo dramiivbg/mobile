@@ -633,6 +633,37 @@ export class WmsService {
    }
 
 
+   public async Update_WarehousePutAway_Lines(WarehousePutAwayLines:any){
+
+
+    
+    
+    try {
+
+    
+        let obj: any = [{
+    
+            WarehousePutAwayLines
+            
+        }];
+
+        console.log(JSON.stringify(obj));
+    
+    
+        
+        let p = await this.syncErp.processRequestParams('Update_WarehousePutAway_Lines', obj);
+        let rsl = await this.syncErp.setRequest(p);
+       return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+
+   }
+
+
 
 public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
 
