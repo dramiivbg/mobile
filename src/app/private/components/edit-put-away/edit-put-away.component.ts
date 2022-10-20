@@ -199,75 +199,9 @@ export class EditPutAwayComponent implements OnInit {
 
     }else{
      this.listsFilter.filter( lp => {
-      for (const key in this.pallet) {
-        let line = this.pallet[key].fields.find(Lp =>  Lp.PLUNo === lp.fields.PLULPDocumentNo);
-
-        if(line != undefined || line != null){
   
-  
-          Swal.fire({
-            title: `Are you sure?`,
-            text: `The license plate belongs to pallet ${this.pallet[key].fields[0].PLULPDocumentNo} , do you want to change also the bin to pallet including children?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Change all!'
-          }).then(async(result) => {
-            if (result.isConfirmed) {
-    
-    
-    
-    this.listsFilter.filter(lp =>{
 
-      let line =   this.pallet[key].fields.find(Lp =>  Lp.PLUNo === lp.fields.PLULPDocumentNo);
-
-
-      if(line != null || line != undefined){
-
-        lp.fields.PLUBinCode = code.toUpperCase();
-
-      }
-
-
-        
-      let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
-
-
-        LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
-
-      }else if(LpExist === null || LpExist === undefined){
-
-        this.modify.push(lp);
-
-
-      
-
-      }
-    });
-
-
-    this.pallet[key].fields.find(Lp => {
-
-
-      Lp.PLUBinCode =  code.toUpperCase();
-
-    });
-
-    
-            
-    
-        
-    
-        }
-            
-          })
-        }
-      }
-
-
+      lp.fields.PLUBinCode = code.toUpperCase();
 
     })
     }
