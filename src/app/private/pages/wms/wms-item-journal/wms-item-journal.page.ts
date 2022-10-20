@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { IonInfiniteScroll, PopoverController } from '@ionic/angular';
 import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popover-lp-empty.component';
 import { InterceptService } from '@svc/intercept.service';
@@ -13,8 +15,33 @@ export class WmsItemJournalPage implements OnInit {
 
 
 
+  public boolean:Boolean = false;
 
-  constructor(public router: Router, public popoverController: PopoverController, private intServ: InterceptService) { }
+
+
+
+  public frm: FormGroup;
+
+
+  public binCode:any = '';
+
+
+  public zone:any = '';
+
+  constructor(public router: Router, public popoverController: PopoverController, private intServ: InterceptService, 
+    private barcodeScanner: BarcodeScanner, private formBuilder: FormBuilder) { 
+
+
+      this.frm = this.formBuilder.group(
+        {
+          bin: [' ', Validators.required],
+          qty: [0, Validators.required],
+          ItemNo: [' ', Validators.required],
+          lpNo: [' ', Validators.required],
+    
+        }
+      )
+    }
 
   
 
@@ -49,7 +76,47 @@ export class WmsItemJournalPage implements OnInit {
     const { data } = await popover.onDidDismiss();
 
 
+    if(data != null){
+
+
+      this.zone = data.zone.toUpperCase();
+
+      let lpNo = data.data.LPNo;
+
+
+      this.frm.patchValue({
+
+        lpNo 
+
+      })
+
+      this.boolean = true;
+
+    }
   
+
+  }
+
+  add(){
+
+  let qty =  this.frm.get('qty').value;
+
+    qty +=1
+
+    this.frm.get('qty').setValue(qty);
+
+  }
+
+  res(){
+
+    let qty =  this.frm.get('qty').value;
+
+    if(qty > 0){
+ 
+     qty -=1
+
+     this.frm.get('qty').setValue(qty);
+     }
 
   }
 
@@ -75,6 +142,71 @@ export class WmsItemJournalPage implements OnInit {
 
   onBarCode(){
 
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text;
+     
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
     
+  }
+
+
+  onScanBin(){
+
+
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let bin = barCodeData.text.toUpperCase();
+
+        this.binCode = barCodeData.text.toUpperCase();
+
+
+        this.frm.patchValue({
+
+          bin
+        })
+    
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+
+
+  }
+
+
+  onScanItem(){
+
+
+
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let ItemNo = barCodeData.text;
+
+
+        this.frm.patchValue({
+
+          ItemNo
+        })
+      
+
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+
   }
 }

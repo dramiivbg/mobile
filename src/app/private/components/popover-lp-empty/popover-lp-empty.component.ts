@@ -70,7 +70,7 @@ export class PopoverLpEmptyComponent implements OnInit {
 
     
 
-        this.popoverController.dismiss({data: res});
+        this.popoverController.dismiss({data: res, zone:  obj.ZoneCode });
 
         console.log(res);
 
