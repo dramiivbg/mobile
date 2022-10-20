@@ -1,4 +1,5 @@
-<PlureHeader (click)="exit()" type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader (click)="exit()" *ngIf="scanLP" type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader (click)="back()" *ngIf="scanBin" type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 <ion-content>
     <form *ngIf="scanLP">
@@ -123,6 +124,7 @@
             </div>
         </div>
     </form>
+
 
 
 
@@ -302,7 +304,7 @@
         </ion-col>
         <ion-col size="6" (click)="onSubmit()">
             <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
-            <div class="itemfooter">Save</div>
+            <div class="itemfooter">Take</div>
         </ion-col>
     </ion-row>
 </PlureVersion>
@@ -314,7 +316,7 @@
         </ion-col> -->
         <ion-col size="6" (click)="onBarCodeChange()">
             <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-            <div class="itemfooter">Bar code</div>
+            <div class="itemfooter">Bar BinCode</div>
         </ion-col>
         <ion-col size="6" (click)="onSubmit()">
             <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>

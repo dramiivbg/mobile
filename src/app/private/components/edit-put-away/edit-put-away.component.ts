@@ -21,6 +21,8 @@ export class EditPutAwayComponent implements OnInit {
 
   public modify:any[] = [];
 
+  public modifyP:any[] = [];
+
   @Input() whsePutAway:any;
 
 
@@ -71,6 +73,18 @@ export class EditPutAwayComponent implements OnInit {
   exit(){
 
     this.modalController.dismiss({});
+  }
+
+
+  back(){
+
+
+         
+    this.scanLP = true;
+    this.scanBin = false;
+
+
+    
   }
 
   async  ngOnInit() {
@@ -172,6 +186,7 @@ export class EditPutAwayComponent implements OnInit {
 
     console.log(this.listBin);
 
+
     if(line === null || line === undefined){
 
       Swal.fire({
@@ -183,9 +198,38 @@ export class EditPutAwayComponent implements OnInit {
 
     }else{
      this.listsFilter.filter( lp => {
-      lp.fields.PLUBinCode = line.BinCode.toUpperCase();
-    
+      for (const key in this.pallet) {
+        let line = this.pallet[key].fields.find(Lp =>  Lp.PLUNo === lp.fields.PLULPDocumentNo);
 
+        if(line != undefined || line != null){
+  
+  
+          Swal.fire({
+            title: `Are you sure?`,
+            text: `The license plate belongs to pallet ${this.pallet[key].fields[0].PLULPDocumentNo} , do you want to change also the bin to pallet including children?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Change all!'
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+    
+    
+    
+    this.listsFilter.filter(lp =>{
+
+      let line =   this.pallet[key].fields.find(Lp =>  Lp.PLUNo === lp.fields.PLULPDocumentNo);
+
+
+      if(line != null || line != undefined){
+
+        lp.fields.PLUBinCode = code.toUpperCase();
+
+      }
+
+
+        
       let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
       if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
@@ -198,15 +242,35 @@ export class EditPutAwayComponent implements OnInit {
         this.modify.push(lp);
 
 
+      
+
+      }
+    });
+
+
+    this.pallet[key].fields.find(Lp => {
+
+
+      Lp.PLUBinCode =  code.toUpperCase();
+
+    });
+
+    
+            
+    
+        
+    
+        }
+            
+          })
+        }
       }
 
-       });
 
 
-
+    })
     }
-         }
-      ).catch(
+    } ).catch(
         err => {
           console.log(err);
         }
@@ -386,8 +450,10 @@ for (const key in this.pallet) {
 
     }
    
+
+    console.log('palletsM =>', this.pallet);
    
-    console.log('pallets =>', listPallet);
+   // console.log('pallets =>', listPallet);
 
     console.log('lps =>', listLp);
 
@@ -638,6 +704,21 @@ async onAdd(e) {
       
     });
 
+
+    for (const key in this.pallet) {
+
+      this.pallet[key].fields.filter(lp => {
+    
+    
+        let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
+    
+    
+        lp.PLUBinCode = line.fields.PLUBinCode;
+        lp.PLUItemNo = line.fields.PLUItemNo;
+    
+      })
+    }
+
     }
     const listLpH = await this.wmsService.ListLPH(lps)
 
@@ -657,8 +738,9 @@ async onAdd(e) {
       
   
 
+    console.log('pallets =>', this.pallet);
    
-    console.log('pallets =>', listPallet);
+   // console.log('pallets =>', listPallet);
 
     console.log('lps =>', listLp);
 
@@ -677,22 +759,9 @@ switch(this.scanLP){
    
  
 
-     if (val === '') {
-  
-      
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'No license plate is Empty',
-        footer: '<a href="">Please enter the number</a>'
-      })
+     if (val !== '') {
 
 
-      this.intServ.loadingFunc(false);
-
-
-   
-    } else {
 
     
 
@@ -883,70 +952,200 @@ break;
         if (result.isConfirmed) {
 
 
+          let request = {
 
+            ActivityType: 1,
+            No: "",
+            ItemNo: "",
+            LineNo: "",
+            ZoneCode: "",
+            LocationCode: "",
+            BinCode: "",
+            Quantity: 0,
+            LP: ""
+          }
+
+       
+          for (const key in this.groupItems) {
+
+        
+            this.groupItems[key].filter(lp => {
+
+
+                lp.BinCode = this.groupItems[key][0].BinCode;
+
+            })
+         
+          }
 
         
 
-          let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+            
+          for (const key in this.groupItems) {
+
+        
+            this.groupItems[key].filter(Lp => {
+
+
+              
+            this.split.WarehousePutAwayLines.filter(lp => {
+
+
+              if(lp.LP === Lp.LP){
+
+
+                lp = Lp;
+              }
+
+            })
+             
+
+            })
+         
+          }
+
+
+      //    console.log(this.split);
+
+
+
+          this.modify.filter(
+
+            (lp,index) => {
+              if(lp.fields.PLUBinCode.startsWith('REC')){
+
+                this.modify.splice(index,1);
+
+              } 
+            }
+          )
 
 
           
-      if(!postAway.Error){
+        //  console.log(this.modify);
+
+        let list:any[] = [];
 
 
-       
-          this.modalController.dismiss({});
+          this.modify.filter(Lp =>  {
 
+
+            this.split.WarehousePutAwayLines.filter(lp => {
+
+
+              if(Lp.fields.PLULPDocumentNo === lp.LP){
+
+
+                lp.BinCode = Lp.fields.PLUBinCode;
+              }
+
+            })
+          })
+
+
+
+          console.log(this.split);
+
+      
+
+
+          this.split.WarehousePutAwayLines.filter(lp => {
+
+            request.ActivityType = 1;
+            request.BinCode = lp.BinCode;
+            request.ItemNo = lp.ItemNo;
+            request.LP = lp.LP;
+            request.LineNo = lp.LineNo;
+            request.LocationCode = lp.LocationCode;
+            request.No = lp.No;
+            request.Quantity = lp.Quantity;
+            request.ZoneCode = lp.ZoneCode;
+
+            list.push(request);
+
+            request = {
+
+              ActivityType: 1,
+              No: "",
+              ItemNo: "",
+              LineNo: "",
+              ZoneCode: "",
+              LocationCode: "",
+              BinCode: "",
+              Quantity: 0,
+              LP: ""
+            }
+
+
+          });
+
+
+
+          let update = await this.wmsService.Update_WarehousePutAway_Lines(list);
         
+          console.log(update);
 
-          this.router.navigate(['page/wms/wmsMain']);
-       
+   if(!update.Error){
 
-          Swal.fire(
-            'Success!',
-            `The Put away ${this.warePY.fields.No} has been posted`,
-            'success'
-          )
-        
-      }else{
 
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: `The Put away ${this.warePY.fields.No} has been posted`,
-          footer: ''
-        })
-      }
+    let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
 
+
+          
+    if(!postAway.Error){
+
+
+     
+        this.modalController.dismiss({});
+
+      
+
+        this.router.navigate(['page/wms/wmsMain']);
+     
+
+        Swal.fire(
+          'Success!',
+          `The Put away ${this.warePY.fields.No} has been posted`,
+          'success'
+        )
+      
+    }else{
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `The Put away ${this.warePY.fields.No} has been posted`,
+        footer: ''
+      })
     }
+    
+   }else{
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: update.Error.Message,
+      footer: ''
+    })
+   }
+        
+
+       
+
+      
+    }
+
+  
         
       })
 
      
 
 
-/*
-      this.intServ.loadingFunc(true);
 
-      let res = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
-
-      console.log('error =>',res);
-
-      if(!res.Error){
-
-       this.intServ.loadingFunc(false);
-
-       this.intServ.alertFunc(this.js.getAlert('sucess', 'sucess', ' warehouse Receipts successfully registered', () => this.router.navigate(['/page/wms/wmsMain'])))
-
-
-      }else{
-
-       this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error','error','There is nothing to publish, please create license plate'));
-
-      }
-
-      */
+    
+    
       
 
     }
@@ -965,64 +1164,159 @@ break;
   onChangeBinOne(item:any,bin:any){
 
 
+    let type: any[] = [];
 
-    if(this.pallet != undefined){
+   type = item.recordId.split(',')
+  
+switch(type[1]){
 
-      for (const key in this.pallet) {
-        let line = this.pallet[key].fields.find(lp =>  lp.PLUNo === item.fields.PLULPDocumentNo);
+case 'Single': 
 
-        if(line != undefined || line != null){
-  
-  
-          if(bin != this.pallet[key].fields[0].PLUBinCode && bin != 'STO-01'){
-  
-  
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Bin Code children is not compatible with parent Bin ',
-              footer: ''
-            })
 
-            return;
-          }
-        }
+console.log('single.....');
+
+  if(this.pallet != undefined){
+
+    for (const key in this.pallet) {
+      let line = this.pallet[key].fields.find(lp =>  lp.PLUNo === item.fields.PLULPDocumentNo);
+
+      if(line != undefined || line != null){
+
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Unable to change bin',
+          text: `To change the bin must be done on the pallet ${this.pallet[key].fields[0].PLULPDocumentNo} `,
+          footer: ''
+        });
+
+        return;
+
+
+
       }
+
+
+
+      }
+
+      this.listsFilter.filter(lp =>{
+
+       
+      
+      
+        if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+    
+          lp.fields.PLUBinCode = bin.toUpperCase();
+    
+        }});
+
+      
+    }else{
+
+      this.listsFilter.filter(lp =>{
+
+       
+      
+      
+        if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+    
+          lp.fields.PLUBinCode = bin.toUpperCase();
+    
+        }
+
+
+            
+    let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+    if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
+
+
+      LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
+
+      
+
+    }else if(LpExist === null || LpExist === undefined){
+
+      this.modify.push(lp);
+
+    
+
+
+    }
+      
+      });
+    }
+  
+  
+
+
+    console.log('modify =>', this.modify);
+   // console.log('pallet =>', this.pallet);
+
+  //  console.log('filter =>',this.listsFilter);
+  
+  
+    break;
 
 
     
+case 'Pallet': 
+
+
+
+    for (const key in this.pallet) {
+      let line = this.pallet[key].fields.find(lp =>  lp.PLULPDocumentNo=== item.fields.PLULPDocumentNo);
+
+      if(line != undefined || line != null){
+
+
+   this.listsFilter.filter(lp =>{
+
+
+    if( lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo)
+
+      lp.fields.PLUBinCode = bin.toUpperCase();
+
+   });
+
+
+  let tempory:any[] = [];
+
+  let indice:any;
+
+  this.pallet[key].fields.filter(Lp => {
+
+    Lp.PLUBinCode =  bin.toUpperCase();
+
+   tempory.push(Lp);
+
+   this.listsFilter.filter(lp => {
+
+    if(Lp.PLUNo === lp.fields.PLULPDocumentNo){
+
+      lp.fields.PLUBinCode = bin.toUpperCase();
+
     }
+   })
 
-    this.listsFilter.filter(lp =>{
-
-
-      if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
-
-
-        lp.fields.PLUBinCode = bin.toUpperCase();
+  
+  });
 
 
-        
-      let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+  this.modifyP[this.pallet[key].fields[0].PLULPDocumentNo] = tempory;
 
-      if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
+  console.log(this.modifyP);
 
+  tempory = [];
 
-        LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
-
-      }else if(LpExist === null || LpExist === undefined){
-
-        this.modify.push(lp);
-
-
-      }
-
-      }
-    });
-
-
-
+  
+  } 
+}
+    
   }
+   
+}
 
   
   autoComplet(){
