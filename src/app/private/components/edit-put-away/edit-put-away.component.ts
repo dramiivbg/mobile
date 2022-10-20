@@ -26,6 +26,7 @@ export class EditPutAwayComponent implements OnInit {
   @Input() whsePutAway:any;
 
 
+  public select: Boolean = true;
   public listPwL: any[] = [];
   public contador:number = 0;
    public lpsP: any = {}
@@ -480,7 +481,7 @@ for (const key in this.pallet) {
         
       }
 
-    }
+    
 
 
       if(!pallets.Error){
@@ -570,7 +571,7 @@ for (const key in this.pallet) {
        
       }
 
- 
+    }
   
       }
     ).catch(
@@ -600,6 +601,8 @@ async onAdd(e) {
     
     let listPallet;
 
+    let  listLp; 
+
 
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
 
@@ -610,7 +613,7 @@ async onAdd(e) {
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
 
-    const listLp = await this.wmsService.ListLP(lps);
+   
 
     if(!pallets.Error){
 
@@ -720,19 +723,51 @@ async onAdd(e) {
     }
 
     }
-    const listLpH = await this.wmsService.ListLPH(lps)
 
-   
+
+    if(!lps.Error){
+
+      const listLpH = await this.wmsService.ListLPH(lps)
+
+     listLp = await this.wmsService.ListLP(lps);
 
     
-    listLp.filter(lp => {
+      listLp.filter(lp => {
+  
+  
+        let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+  
+        lp.fields.PLUBinCode = line.fields.PLUBinCode;
+        lp.fields.PLUItemNo = line.fields.PLUItemNo;
+      });
 
 
-      let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+      console.log('lps =>', listLp);
 
-      lp.fields.PLUBinCode = line.fields.PLUBinCode;
-      lp.fields.PLUItemNo = line.fields.PLUItemNo;
-    });
+    }else{
+
+
+      this.modalController.dismiss({});
+
+      Swal.fire({
+        title: 'The Whse Put Away this void',
+        text: 'Please choose another put away',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['page/wms/wmsMain']);
+         
+        }
+      })
+      
+      return;
+
+    }
+  
 
 
       
@@ -742,8 +777,7 @@ async onAdd(e) {
    
    // console.log('pallets =>', listPallet);
 
-    console.log('lps =>', listLp);
-
+  
  
 
    
@@ -769,7 +803,7 @@ switch(this.scanLP){
 
 
   
-
+ if(!lps.Error){
        
     for (const key in listLp) {
   
@@ -866,7 +900,7 @@ switch(this.scanLP){
        
       }
 
- 
+    }
   
     }
 
@@ -1156,6 +1190,150 @@ break;
   }
 
 
+
+ async  onScanAll(){
+
+
+ let  listPallet;
+    
+    const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
+
+
+    const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
+
+
+    console.log('ls =>', lps);
+    console.log('pallet =>', pallets);
+
+   
+
+    if(!pallets.Error){
+
+  
+   
+   
+      listPallet = await this.wmsService.ListLP(pallets);
+   
+
+   const  listPalletH  = await this.wmsService.ListPallets(pallets);
+
+     listPallet.filter(lp => {
+
+
+      let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      lp.fields.PLUBinCode = line.fields.PLUBinCode;
+      lp.fields.PLUItemNo = line.fields.PLUItemNo;
+
+      let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      if(find == null || find === undefined){
+
+        this.listsFilter.push(lp);
+
+        this.listT.push(lp);
+
+      }
+
+
+
+      
+    });
+
+
+
+
+    }
+
+    if(!lps.Error){
+
+
+      const listLp = await this.wmsService.ListLP(lps);
+
+      const listLpH = await this.wmsService.ListLPH(lps)
+
+   
+
+    
+      listLp.filter(lp => {
+  
+  
+        let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+  
+        lp.fields.PLUBinCode = line.fields.PLUBinCode;
+        lp.fields.PLUItemNo = line.fields.PLUItemNo;
+
+        let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+        if(find == null || find === undefined){
+  
+          this.listsFilter.push(lp);
+          this.listT.push(lp);
+        }
+      });
+
+    }else{
+
+
+      
+      this.modalController.dismiss({});
+
+      Swal.fire({
+        title: 'The Whse Put Away this void',
+        text: 'Please choose another put away',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['page/wms/wmsMain']);
+         
+        }
+      })
+      
+      return;
+    }
+  
+
+
+
+
+    this.select = false;
+
+
+
+  }
+
+
+  remove(item:any){
+
+
+    this.listsFilter.filter((lp, index) => {
+
+
+      if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+
+        this.listsFilter.splice(index,1);
+      }
+    })
+
+
+  }
+
+
+  onRemoveAll(){
+
+
+    this.listsFilter = [];
+
+    this.select = true;
+
+
+
+
+  }
 
 
 

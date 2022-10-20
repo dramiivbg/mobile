@@ -13,7 +13,7 @@
                 </ion-col>
             </ion-row>
 
-            <ion-row>
+            <ion-row *ngIf="select">
                 <ion-col size="10" class="delivery newColor">
                     <ion-input (ionBlur)="onAdd($event)" autocorrect="on" autofocus="on"
                         style="text-align: left; width: 100%;" clearInput="true" clearOnEdit="true"
@@ -43,12 +43,16 @@
                    
                         <ion-list>
                             <div>
-                                <ion-item-sliding>
+                               
 
                                     <ion-item>
                                         <div class="label-lines" part="item-width">
                                             <ion-row *ngFor="let item of listsFilter">
-                                                <ion-col size="15" class="item">
+
+                                            <ion-item-sliding>
+                                                    
+                                             <ion-item style="width: 100%;">
+                                                  <ion-col size="15" class="item" >
 
                                                     <ion-row>
                                                         <ion-col size="6" style="overflow: hidden;"
@@ -64,7 +68,7 @@
                                                             class="label-line-title blue">
                                                             {{item.company}}
                                                         </ion-col>
-                                                        <ion-col size="3" class="label-line-title">
+                                                        <ion-col size="2" class="label-line-title">
                                                             Qty. {{item.fields.PLUQuantity}}
 
 
@@ -85,7 +89,7 @@
                                                         <ion-col size="4" class="label-line">
                                                             Item No: {{item.fields.PLUItemNo}}
                                                         </ion-col>
-                                                        <ion-col size="4" class="label-line">
+                                                        <ion-col size="3" class="label-line">
                                                             Measure: {{item.fields.PLUUnitofMeasureCode
                                                             }}
                                                         </ion-col>
@@ -100,6 +104,16 @@
                                                         </ion-col>
                                                     </ion-row>
                                                 </ion-col>
+
+                                            </ion-item>
+                                                
+                                    <ion-item-options>
+                                        <ion-item-option color="danger" (click)="remove(item)">
+                                            <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                          </ion-item-option>
+                                    </ion-item-options>
+
+                                </ion-item-sliding>
                                             </ion-row>
                                         </div>
 
@@ -111,12 +125,6 @@
                                     </ion-item>
 
 
-                                    <ion-item-options>
-
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </ion-item-options>
-
-                                </ion-item-sliding>
                             </div>
                         </ion-list>
                     
@@ -192,7 +200,7 @@
 
                                                     
 
-                                                    <ion-col size="7"  >       
+                                                    <ion-col size="7"  *ngIf="select">       
                                                     
                                                         <ion-select  interface="popover"  #bin  (ionChange)="onChangeBinOne(item,bin.value)" placeholder="Edit Bincode" style="position:absolute;right: 7%;width: 100%;" class="label-line-title" >
                                                         <ion-select-option  *ngFor="let item of listBin[0].Bins" [value]="item.BinCode" >{{item.BinCode}}</ion-select-option>
@@ -265,16 +273,6 @@
                                     </ion-item>
 
 
-                                    <ion-item-options>
-
-                                        <ion-row>
-                                            <ion-col class="label-line" size="4">
-                                                <ion-icon style="font-size: 40px;" name="trash-outline"></ion-icon>
-                                            </ion-col>
-                                        </ion-row>
-
-                                    </ion-item-options>
-
                                 </ion-item-sliding>
                             </div>
                         </ion-list>
@@ -291,18 +289,27 @@
 
 
 
-
+   
 </ion-content>
 
 <PlureVersion class="footerputaway" showVersion="0" *ngIf="scanLP">
     <ion-row>
         <!-- <ion-col size="4">
         </ion-col> -->
-        <ion-col size="6" (click)="onBarCode()">
-            <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-            <div class="itemfooter">Bar code</div>
+        <ion-col size="4" (click)="onBarCode()" >
+            <ion-icon class="itemfooter" size="large" name="barcode-outline" *ngIf="select"></ion-icon>
+            <div class="itemfooter" *ngIf="select">Bar code</div>
         </ion-col>
-        <ion-col size="6" (click)="onSubmit()">
+        <ion-col size="4" (click)="onScanAll()" *ngIf="select">
+            <ion-button class="itemfooter"  shape="round">Scan All</ion-button>
+       
+        </ion-col>
+
+        <ion-col size="4" (click)="onRemoveAll()" *ngIf="!select">
+            <ion-button color="danger" shape="round" >Remove All</ion-button>
+       
+        </ion-col>
+        <ion-col size="4" (click)="onSubmit()">
             <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
             <div class="itemfooter">Take</div>
         </ion-col>
