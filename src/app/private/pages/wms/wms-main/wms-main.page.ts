@@ -114,7 +114,7 @@ export class WmsMainPage implements OnInit {
       
       let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
       let rsl = await this.syncerp.setRequest(p);
-    
+  
     
     await  this.mappingPutAways(rsl, process);
     }
@@ -159,10 +159,20 @@ export class WmsMainPage implements OnInit {
 
     this.intServ.loadingFunc(false);
     
-     let obj = this.general.structSearch(listPutAway, `Search ${procesos.description}`, 'Put Aways', async (whsePutAway) => {
+     let obj = this.general.structSearch(listPutAway, `Search ${procesos.description}`, 'Put Aways', async (whsePutAwayL) => {
 
 
-      this.wmsService.setPutAway(whsePutAway);
+      let putAway = await this.wmsService.GetWarehousePutAway(whsePutAwayL.fields.No);
+
+     let whsePutAwayH = await this.wmsService.ListPutAwayH(putAway);
+   
+      this.wmsService.setPutAway(putAway);
+
+
+        let whsePutAway = whsePutAwayH;
+        console.log(whsePutAway, putAway)
+        
+      this.wmsService.setPutAway(putAway);
        console.log('data =>', putAway);
        const modal = await this.modalCtrl.create({
         component: EditPutAwayComponent,
@@ -175,6 +185,8 @@ export class WmsMainPage implements OnInit {
       const { data, role } = await modal.onWillDismiss();
   
   
+    
+
        setTimeout(
          () => {
            this.intServ.searchShowFunc({});
@@ -182,12 +194,16 @@ export class WmsMainPage implements OnInit {
        )
      }, false, 4);
      this.intServ.searchShowFunc(obj);
+
+    
    } else {
 
     this.intServ.loadingFunc(false);
      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${procesos.salesType} were found.`));
    }
 
+
+   
 
    
 
