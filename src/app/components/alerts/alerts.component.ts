@@ -78,31 +78,16 @@ onItem(opcion:Boolean){
 
   async onSi(){
 
-
-
-
-
-
-
        let dataPw = this.wmsService.getPutAway();
-
-       
-      
-
 
        let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
 
-
-       
        this.whsePutAway = await this.wmsService.ListPutAwayH(listWP);
    
        this.wmsService.setPutAway(listWP);
 
 
-    
-
-      
-       let whsePutAway = this.whsePutAway;
+         let whsePutAway = this.whsePutAway;
 
        this.alertObj = {};
 
@@ -116,11 +101,6 @@ onItem(opcion:Boolean){
     
         const { data, role } = await modal.onWillDismiss();
     
-    
-       
- 
-
-
-  }
+    }
 
 }

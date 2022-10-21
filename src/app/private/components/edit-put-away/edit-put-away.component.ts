@@ -94,15 +94,11 @@ export class EditPutAwayComponent implements OnInit {
 
   
 
-    if(this.warePW.WarehousePutAways){
-
 
       this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
       console.log(this.whsePutAway, this.listPwL);
       this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
-    }else{
-    this.warePY =  this.warePW;
-    }
+    
 
 
     
@@ -162,6 +158,9 @@ export class EditPutAwayComponent implements OnInit {
     console.log('put away =>',this.warePW);
 
 
+    console.log('put away line =>',this.listPwL);
+
+
    
   }
 
@@ -204,6 +203,8 @@ export class EditPutAwayComponent implements OnInit {
       lp.fields.PLUBinCode = code.toUpperCase();
 
     })
+
+    this.modify = this.listsFilter;
     }
     } ).catch(
         err => {
@@ -464,6 +465,7 @@ for (const key in this.pallet) {
    
            this.listsFilter.push(line);
            this.listT.push(line);
+           
           }else{
    
 
@@ -933,7 +935,11 @@ break;
             LP: ""
           }
 
-       
+
+        if(this.modify.length !== this.listsFilter.length){
+
+
+          
           for (const key in this.groupItems) {
 
         
@@ -1101,7 +1107,33 @@ break;
 
        
 
-      
+
+
+
+        }else{
+
+
+          let list:any[] = [];
+
+
+          this.listPwL.filter(lp => {
+
+
+            if(lp.fields.ActionType === 'Place'){
+
+              list.push(lp);
+
+
+            }
+          })
+
+
+
+
+
+        }  
+
+             
     }
 
   
