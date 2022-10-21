@@ -79,7 +79,7 @@
 
 
 
-              <ion-grid>
+              <ion-grid class="gridtakeplace">
 
 
                 <ion-row class="titlespecs">
@@ -104,20 +104,20 @@
 
 
 
-                <ion-row style="padding-left: 30px;" *ngFor="let item of vector">
+                <ion-row *ngFor="let item of vector">
 
                   <ion-col size="3">
-                    <div style=" font-size: 15px;">{{item}}</div>
+                    <div class="titletakeplace">{{item}}</div>
                   </ion-col>
 
                   <ion-col size="3">
-                    <div style=" font-size: 15px;" class="label-line-title blue">Z1</div>
+                    <div class="label-line-title blue">Z1</div>
                   </ion-col>
                   <ion-col size="3">
                     <div style=" font-size: 15px ">REC</div>
                   </ion-col>
                   <ion-col size="3">
-                    <div style=" font-size: 15px;" class="label-line-title blue">0/10</div>
+                    <div class="label-line-title blue">0/10</div>
                   </ion-col>
 
                 </ion-row>
@@ -137,7 +137,7 @@
                   <ion-col>F.Exp</ion-col>
                   <ion-col>Qty</ion-col>
                 </ion-row>
-                <ion-row>
+                <ion-row class="datatable">
                   <ion-col size="3">LP-0000234</ion-col>
                   <ion-col>s00001</ion-col>
                   <ion-col>LOT1</ion-col>
