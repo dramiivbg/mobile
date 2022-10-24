@@ -19,6 +19,7 @@ export class EditPutAwayComponent implements OnInit {
   public list: any[] = [] 
   public listT: any[] = [] 
 
+  public initV:any[] = [];
   public modify:any[] = [];
 
   public modifyP:any[] = [];
@@ -58,6 +59,9 @@ export class EditPutAwayComponent implements OnInit {
 
   constructor(private router: Router
  ,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, private general: GeneralService , private modalController: ModalController) { 
+
+
+
 
 
   let objFunc = {
@@ -101,66 +105,9 @@ export class EditPutAwayComponent implements OnInit {
     
 
 
-    
-    this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
-
-
-    this.split.WarehousePutAwayLines.filter(item => {
-
-
-     if(this.items.length > 0){
-
-
-      let line = this.items.find(Item => Item === item.ItemNo);
-
-      if(line === null || line === undefined){
-
-        this.items.push(item.ItemNo);
-      }
-     }else{
-
-      this.items.push(item.ItemNo);
-
-     }
-    
-    
-    });
-
-
-    let tempory:any[] = [];
-
-    for (const key in this.items) {
-
-
-      this.split.WarehousePutAwayLines.filter(Item => {
-
-        if(Item.ItemNo ===  this.items[key]){
-
-          tempory.push(Item);
-
-        }
-      });
-
-
-      this.groupItems[this.items[key]] = tempory;
-
-      tempory = [];
-
-
-      
+      this.init();
 
     
-    }
-
-
-    console.log('split put away =>',this.groupItems);
-
-    console.log('put away =>',this.warePW);
-
-
-    console.log('put away line =>',this.listPwL);
-
-
    
   }
 
@@ -204,6 +151,8 @@ export class EditPutAwayComponent implements OnInit {
 
     })
 
+    this.modify = [];
+
     this.modify = this.listsFilter;
     }
     } ).catch(
@@ -234,27 +183,7 @@ export class EditPutAwayComponent implements OnInit {
 
 
 
-    if(lps.Error){
-      this.modalController.dismiss({});
-
-      Swal.fire({
-        title: 'The Whse Put Away this void',
-        text: 'Please choose another put away',
-        icon: 'warning',
-        showCancelButton: false,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ok'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['page/wms/wmsMain']);
-         
-        }
-      })
-      
-      return;
-
-    } 
+ 
 
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
@@ -601,21 +530,12 @@ async onAdd(e) {
        console.log('despues =>', this.pallet);
        console.log('despues =>', this.pallet2);
    
-   
-   
-   
-   
-   
-       for (const i in this.pallet) {
+   for (const i in this.pallet) {
    
          for (const j in this.pallet2) {
            if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
    
-   
-   
-   
-   
-             let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
+              let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
    
              if (line === null || line === undefined) {
    
@@ -656,9 +576,7 @@ async onAdd(e) {
         lp.PLUItemNo = line.fields.PLUItemNo;
     
       })
-    }
-
-    }
+    } }
 
 
     if(!lps.Error){
@@ -667,8 +585,7 @@ async onAdd(e) {
 
      listLp = await this.wmsService.ListLP(lps);
 
-    
-      listLp.filter(lp => {
+     listLp.filter(lp => {
   
   
         let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
@@ -680,66 +597,16 @@ async onAdd(e) {
 
       console.log('lps =>', listLp);
 
-    }else{
-
-
-      this.modalController.dismiss({});
-
-      Swal.fire({
-        title: 'The Whse Put Away this void',
-        text: 'Please choose another put away',
-        icon: 'warning',
-        showCancelButton: false,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ok'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['page/wms/wmsMain']);
-         
-        }
-      })
-      
-      return;
-
     }
   
-
-
-      
-  
-
-    console.log('pallets =>', this.pallet);
+  console.log('pallets =>', this.pallet);
    
    // console.log('pallets =>', listPallet);
 
-  
- 
-
-   
-switch(this.scanLP){
-
-
-  
-  
-   case true:
-
-   let line:any =  undefined;
-
-   
- 
-
-     if (val !== '') {
-
-
-
-    
-
+let line:any =  undefined;
+if (val !== '') {
       let line:any = undefined;
-
-
-  
- if(!lps.Error){
+      if(!lps.Error){
        
     for (const key in listLp) {
   
@@ -748,10 +615,7 @@ switch(this.scanLP){
         line = listLp[key];
         this.intServ.loadingFunc(false);  
       
-      }
-
-        
-      }
+      } }
 
       if(!pallets.Error){
         for (const key in listPallet) {
@@ -761,20 +625,11 @@ switch(this.scanLP){
             line = listPallet[key];
             this.intServ.loadingFunc(false);  
           
-          }
-    
-            
-          }
+          } }
 
       }
 
-    
-
-
-
-    
-
-      if (line === null || line === undefined) {
+       if (line === null || line === undefined) {
 
         Swal.fire({
           icon: 'error',
@@ -795,6 +650,7 @@ switch(this.scanLP){
    
            this.listsFilter.push(line);
            this.listT.push(line);
+           
           }else{
    
 
@@ -813,25 +669,15 @@ switch(this.scanLP){
               }
             })
             
-   
-   
-          }
+     }
          
            }else{
 
             this.listsFilter = []
-
-            
-
             this.listsFilter.push(line);
             this.listT.push(line);
-
-
-            this.scanLP  = true;
-
-
-
-           }
+           this.scanLP  = true;
+ }
 
        
       }
@@ -842,36 +688,12 @@ switch(this.scanLP){
 
   
 
-break;
-
-
-   case false:
-
-   console.log('false')
-
-
-     if (val === '') {
-  
-      this.listsFilter = this.listT;
 
 
 
   
-
-   
-    } else {
-   this.listsFilter =  this.listT.filter(
-        lp => {
-
-
-             return (lp.fields.PLULPDocumentNo.toUpperCase().includes(val.toUpperCase()) )
-
-                       
-      });
-
-     } 
   
-  }
+  
 
  
 
@@ -936,7 +758,70 @@ break;
           }
 
 
-        if(this.modify.length !== this.listsFilter.length){
+        if(this.modify.length !== this.initV.length){
+
+
+          this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
+
+          console.log()
+
+          this.split.WarehousePutAwayLines.filter(item => {
+      
+      
+           if(this.items.length > 0){
+      
+      
+            let line = this.items.find(Item => Item === item.ItemNo);
+      
+            if(line === null || line === undefined){
+      
+              this.items.push(item.ItemNo);
+            }
+           }else{
+      
+            this.items.push(item.ItemNo);
+      
+           }
+          
+          
+          });
+      
+      
+          let tempory:any[] = [];
+      
+          for (const key in this.items) {
+      
+      
+            this.split.WarehousePutAwayLines.filter(Item => {
+      
+              if(Item.ItemNo ===  this.items[key]){
+      
+                tempory.push(Item);
+      
+              }
+            });
+      
+      
+            this.groupItems[this.items[key]] = tempory;
+      
+            tempory = [];
+      
+      
+            
+      
+          
+          }
+      
+      
+          console.log('split put away =>',this.groupItems);
+      
+          console.log('put away =>',this.warePW);
+      
+      
+          console.log('put away line =>',this.listPwL);
+      
+      
+         
 
 
           
@@ -984,16 +869,6 @@ break;
 
 
 
-          this.modify.filter(
-
-            (lp,index) => {
-              if(lp.fields.PLUBinCode.startsWith('REC')){
-
-                this.modify.splice(index,1);
-
-              } 
-            }
-          )
 
 
           
@@ -1056,7 +931,7 @@ break;
 
 
 
-          let update = await this.wmsService.Update_WarehousePutAway_Lines(list);
+          let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
         
           console.log(update);
 
@@ -1114,7 +989,7 @@ break;
 
 
           let list:any[] = [];
-
+          let listP:any[] = [];
 
           this.listPwL.filter(lp => {
 
@@ -1125,36 +1000,287 @@ break;
 
 
             }
-          })
+          });
+
+
+          console.log(list);
+
+
+         let request2 = {
+
+            ActivityType: 1,
+            No: "",
+            ItemNo: "",
+            LineNo: "",
+            ZoneCode: "",
+            LocationCode: "",
+            BinCode: "",
+            Quantity: 0,
+           
+          }
 
 
 
+         
+
+/*
+        list.filter((item,index) => {
+
+          if(item.fields.BinCode === null || item.fields.ZoneCode === null){
+
+            list.splice(index);
+          }
+        });
+
+        console.log(list);
+
+        */
+
+
+          
+      if(this.modify[0].fields.PLUBinCode.startsWith('REC')){
+
+        list.filter(lp => {
+
+          request2.ActivityType = 1;
+          request2.No = lp.fields.No;
+          request2.ItemNo = lp.fields.ItemNo;
+          request2.LineNo = lp.fields.LineNo;
+          request2.ZoneCode = lp.fields.ZoneCode;
+          request2.LocationCode = lp.fields.LocationCode;
+          request2.BinCode =   lp.fields.BinCode;
+          request2.Quantity = lp.fields.Quantity;
+        
+
+          listP.push(request2);
+
+          request2 = {
+
+            ActivityType: 1,
+            No: "",
+            ItemNo: "",
+            LineNo: "",
+            ZoneCode: "",
+            LocationCode: "",
+            BinCode: "",
+            Quantity: 0,
+          
+          }
+
+
+        });
+
+
+
+
+
+
+      }else{
+
+
+        list.filter(lp => {
+
+          request2.ActivityType = 1;
+          request2.No = lp.fields.No;
+          request2.ItemNo = lp.fields.ItemNo;
+          request2.LineNo = lp.fields.LineNo;
+          request2.ZoneCode = lp.fields.ZoneCode;
+          request2.LocationCode = lp.fields.LocationCode;
+          request2.BinCode =  this.modify[0].fields.PLUBinCode;
+          request2.Quantity = lp.fields.Quantity;
+          
+
+          listP.push(request2);
+
+          request2 = {
+
+            ActivityType: 1,
+            No: "",
+            ItemNo: "",
+            LineNo: "",
+            ZoneCode: "",
+            LocationCode: "",
+            BinCode: "",
+            Quantity: 0,
+           
+          }
+
+
+        });
+
+
+        
+     
+        
+      }
+
+
+      let update = await this.wmsService.Update_Wsheput_Lines_V2(listP);
+      
+      console.log(update);
+
+if(!update.error){
+
+
+let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+
+console.log('post =>',  postAway);
+      
+if(!postAway.Error || !update.error){
+
+
+ 
+    this.modalController.dismiss({});
+
+  
+
+    this.router.navigate(['page/wms/wmsMain']);
+ 
+
+    Swal.fire(
+      'Success!',
+      `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`,
+      'success'
+    )
+  
+}else{
+
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: (postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message,
+    footer: ''
+  })
+}
+
+}else{
+
+
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text:  'An error occurred while serializing the json in Business Central',
+    footer: ''
+  })
+
+}
+
+
+   
 
 
         }  
 
              
-    }
+    }});
+
+     }
+
+}
+
+async init(){
+
+
+  let  listPallet;
+    
+    const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
+
+
+    const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
+
+
+    console.log('ls =>', lps);
+    console.log('pallet =>', pallets);
+
+   
+
+    if(!pallets.Error){
 
   
-        
-      })
+   
+   
+      listPallet = await this.wmsService.ListLP(pallets);
+   
 
-     
+   const  listPalletH  = await this.wmsService.ListPallets(pallets);
+
+     listPallet.filter(lp => {
+
+
+      let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      lp.fields.PLUBinCode = line.fields.PLUBinCode;
+      lp.fields.PLUItemNo = line.fields.PLUItemNo;
+
+      this.initV.push(lp);
 
 
 
-    
-    
       
+    });
+
+
+
 
     }
 
-    
+    if(!lps.Error){
+
+
+      const listLp = await this.wmsService.ListLP(lps);
+
+      const listLpH = await this.wmsService.ListLPH(lps)
+
+   
 
     
-  }
+      listLp.filter(lp => {
+  
+  
+        let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+  
+        lp.fields.PLUBinCode = line.fields.PLUBinCode;
+        lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
+       
+        this.initV.push(lp);
+      });
+
+    }else{
+
+
+      
+      this.modalController.dismiss({});
+
+      Swal.fire({
+        title: 'The Whse Put Away this void',
+        text: 'Please choose another put away',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['page/wms/wmsMain']);
+         
+        }
+      })
+      
+      return;
+    }
+  
+
+
+
+
+ 
+
+
+
+
+}
 
 
  async  onScanAll(){
@@ -1199,6 +1325,8 @@ break;
 
         this.listT.push(lp);
 
+        this.modify.push(lp)
+
       }
 
 
@@ -1235,38 +1363,13 @@ break;
   
           this.listsFilter.push(lp);
           this.listT.push(lp);
+          this.modify.push(lp);
         }
       });
 
-    }else{
-
-
-      
-      this.modalController.dismiss({});
-
-      Swal.fire({
-        title: 'The Whse Put Away this void',
-        text: 'Please choose another put away',
-        icon: 'warning',
-        showCancelButton: false,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ok'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['page/wms/wmsMain']);
-         
-        }
-      })
-      
-      return;
     }
   
-
-
-
-
-    this.select = false;
+  this.select = false;
 
 
 
@@ -1293,6 +1396,8 @@ break;
 
 
     this.listsFilter = [];
+    this.modify = [];
+    this.list = [];
 
     this.select = true;
 
@@ -1393,6 +1498,18 @@ console.log('single.....');
     }
   
   
+
+    
+    this.modify.filter(
+
+      (lp,index) => {
+        if(lp.fields.PLUBinCode.startsWith('REC')){
+
+          this.modify.splice(index,1);
+
+        } 
+      }
+    )
 
 
     console.log('modify =>', this.modify);
