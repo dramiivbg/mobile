@@ -35,6 +35,9 @@ export class PopoverNewPalletComponent implements OnInit {
   public booleanL: Boolean = true;
   
 
+
+  public QtyLP:number = 0;
+  public QtyItem: number = 0;
   
   public items:any [] = [];
 
@@ -318,17 +321,14 @@ async onBarCode(){
          if(this.lpsL.length < 1){
       
 
-          
-
-
-            
-            this.lpsL.push(line);
+          this.lpsL.push(line);
 
             console.log(this.lpsL);
       
             this.lpsLT = [];
       
             this.listLpsL.push(line);
+            this.intServ.loadingFunc(false);
           }
 
         else{
@@ -355,6 +355,8 @@ async onBarCode(){
     
           this.listLpsL.push(line);
 
+          this.intServ.loadingFunc(false);
+
         }
 
 
@@ -376,6 +378,7 @@ async onBarCode(){
           this.itemsLT = [];
   
           this.listItemsL.push(line);
+          this.intServ.loadingFunc(false);
         }
 
       else{
@@ -397,6 +400,8 @@ async onBarCode(){
         this.itemsLT = [];
 
         this.listItemsL.push(line);
+
+        this.intServ.loadingFunc(false);
 
       }
 
@@ -570,6 +575,10 @@ this.lps = [];
 
   this.testListL = [];
 
+  this.QtyItem = 0;
+
+  this.QtyLP = 0;
+
 
 }
 
@@ -620,6 +629,8 @@ this.intServ.loadingFunc(true);
       let lps = await this.wmsService.getLpNo(no);
 
       let lp = await this.wmsService.ListLp(lps);
+
+   
     
       
       let line = this.lpsL.find(Lp => Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
@@ -628,6 +639,8 @@ this.intServ.loadingFunc(true);
 
 
          this.lps.push(lp);
+
+         this.QtyLP++;
 
          checkboxL.testID = Number(index),
          checkboxL.testName = `test${index}`
@@ -694,7 +707,9 @@ this.intServ.loadingFunc(true);
     this.intServ.loadingFunc(false);
 
 
-  
+   
+
+  this.QtyItem = this.items.length;
  
 
   

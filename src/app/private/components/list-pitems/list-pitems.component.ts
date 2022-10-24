@@ -29,6 +29,10 @@ export class ListPItemsComponent implements OnInit {
 
   public testListL: any[] = [];
 
+  
+  public QtyLP:number = 0;
+  public QtyItem: number = 0;
+
   public itemNo:any = '';
   public lpNo: any = '';
   public visibilityL:Boolean = true;
@@ -120,7 +124,7 @@ export class ListPItemsComponent implements OnInit {
 
    this.listLp.filter((lp, index) => {
 
-
+     this.QtyLP++;
     checkboxL.testID = Number(index),
     checkboxL.testName = `test${index}`
     checkboxL.checked = false;
@@ -133,7 +137,7 @@ export class ListPItemsComponent implements OnInit {
 
    this.listItem.filter((item,index) =>{
 
-
+    this.QtyItem++;
     checkboxI.testID = Number(index),
     checkboxI.testName = `test${index}`
     checkboxI.checked = false;
@@ -370,9 +374,8 @@ switch(ev.detail.checked){
 
       if(lp.PLUNo === item.PLUNo){
 
-
-
-        this.listLp.splice(index,1);
+       this.listLp.splice(index,1);
+       this.QtyLP-=1;
 
 
       }
@@ -422,9 +425,9 @@ switch(ev.detail.checked){
 
       if(item.PLUNo === Item.PLUNo){
 
+      this.listItem.splice(index,1);
 
-
-        this.listItem.splice(index,1);
+      this.QtyItem-=1;
 
 
       }
