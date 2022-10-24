@@ -633,7 +633,7 @@ export class WmsService {
    }
 
 
-   public async Update_WarehousePutAway_Lines(WarehousePutAwayLines:any){
+   public async Update_Wsheput_Lines_V1(WarehousePutAwayLines:any){
 
 
     
@@ -651,7 +651,40 @@ export class WmsService {
     
     
         
-        let p = await this.syncErp.processRequestParams('Update_WarehousePutAway_Lines', obj);
+        let p = await this.syncErp.processRequestParams('Update_Wsheput_Lines_V1', obj);
+        let rsl = await this.syncErp.setRequest(p);
+       return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+
+   }
+
+
+
+
+   public async Update_Wsheput_Lines_V2(WarehousePutAwayLines:any){
+
+
+    
+    
+    try {
+
+    
+        let obj: any = [{
+    
+            WarehousePutAwayLines
+            
+        }];
+
+        console.log(JSON.stringify(obj));
+    
+    
+        
+        let p = await this.syncErp.processRequestParams('Update_Wsheput_Lines_V2', obj);
         let rsl = await this.syncErp.setRequest(p);
        return rsl;
        
@@ -1876,7 +1909,7 @@ return list;
             fieldCount: 0,
             fields: {  PLULPDocumentNo: "",
             PLULineNo: 0,
-            PLUDocumentType: "",
+            PLULPDocumentType: "",
             PLUBinCode: "",
             PLUItemNo: "",
             PLUType: "",
@@ -1941,7 +1974,7 @@ return list;
         fieldCount: 0,
         fields: {  PLULPDocumentNo: "",
         PLULineNo: 0,
-        PLUDocumentType: "",
+        PLULPDocumentType: "",
         PLUItemNo: "",
         PLUBinCode: "",
         PLUType: "",

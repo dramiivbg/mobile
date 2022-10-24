@@ -50,15 +50,24 @@
                                             <ion-row *ngFor="let item of listsFilter">
 
                                             <ion-item-sliding>
-                                                    
+                                                
                                              <ion-item style="width: 100%;">
                                                   <ion-col size="15" class="item" >
 
                                                     <ion-row>
-                                                        <ion-col size="6" style="overflow: hidden;"
+                                                        <ion-col size="5.5" style="overflow: hidden;"
                                                             class="label-line-title blue">
                                                             {{item.fields.PLULPDocumentNo}}
                                                         </ion-col>
+
+                                                     <ion-col size="3" style="padding-top: 7px;"
+                                                     class="label-line">
+                                                     Document Type: 
+                                                    </ion-col>
+                                                    <ion-col size="2" style="padding-top: 7px;"
+                                                     class="negrilla">
+                                                     {{item.fields.PLULPDocumentType}}
+                                                    </ion-col>
 
 
                                                     </ion-row>
@@ -76,7 +85,7 @@
                                                         </ion-col>
                                                         <ion-col size="5" class="label-line-title"
                                                             style="text-align: right;">
-                                                            BinCode. {{item.fields.PLUBinCode}}
+                                                            Bin Code. {{item.fields.PLUBinCode}}
 
 
 
