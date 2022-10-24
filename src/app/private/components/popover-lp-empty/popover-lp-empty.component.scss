@@ -34,3 +34,12 @@ ion-button{
     --backround: var(--ion-color-plureBlue) !important;
     border-radius: 23px;
 }
+
+.inputpopup{
+    border-bottom: 1px solid #999;
+}
+
+.buttonpoppup{
+    width: 100%;
+    --border-radius: 23px;
+}

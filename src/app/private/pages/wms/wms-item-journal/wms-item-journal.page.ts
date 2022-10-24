@@ -17,7 +17,7 @@ export class WmsItemJournalPage implements OnInit {
 
   public boolean:Boolean = false;
 
-
+  public buttonmenuprinc:Boolean = true;
 
 
   public frm: FormGroup;
@@ -80,6 +80,7 @@ export class WmsItemJournalPage implements OnInit {
 
 
       this.zone = data.zone.toUpperCase();
+      this.buttonmenuprinc = false;
 
       let lpNo = data.data.LPNo;
 

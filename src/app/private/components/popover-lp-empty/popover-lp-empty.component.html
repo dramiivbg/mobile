@@ -14,7 +14,7 @@
           ZoneCode
         </ion-col>
         <ion-col size="6" style="padding-top: 20px;">
-          <ion-input  formControlName="ZoneCode" ></ion-input>
+          <ion-input class="inputpopup"  formControlName="ZoneCode" ></ion-input>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -22,15 +22,14 @@
           LocationCode
         </ion-col>
         <ion-col size="6" style="padding-top: 20px;">
-          <ion-input  formControlName="LocationCode" ></ion-input>
+          <ion-input class="inputpopup"  formControlName="LocationCode" ></ion-input>
         </ion-col>
       </ion-row>
       
       <ion-row class="footer">
-        <ion-col size="4"></ion-col>
-        <ion-col size="8">
-          <ion-button type="submit" style="padding-right: 30px ;">Send</ion-button >
-          <ion-button type="button" style="text-align: right;" (click)="closePopover()">Cancel</ion-button>
+        <ion-col size="12">
+          <ion-button class="buttonpoppup" type="submit">Send</ion-button >
+          <ion-button class="buttonpoppup" type="button" (click)="closePopover()">Cancel</ion-button>
         </ion-col>
       </ion-row>
     </form>

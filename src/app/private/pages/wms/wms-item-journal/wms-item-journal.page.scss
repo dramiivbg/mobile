@@ -1,5 +1,10 @@
 ion-content {
     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
+    --padding-start: 0px;
+    --padding-end: 0px;
+    --padding-top: 0px;
+    --padding-bottom: 0px;
+
 }
 
 .designform-header {
@@ -37,15 +42,15 @@ ion-list {
     padding: 5px 20px 0 20px !important;
 }
 
-.inputscanRow{
+.inputscanRow {
     padding: 0 !important;
 }
 
-.inputscan{
+.inputscan {
     padding: 11px 0 0 0;
 }
 
-.barcodeinput{
+.barcodeinput {
     padding: 11px 0 0 6px;
 }
 
@@ -71,12 +76,12 @@ ion-list {
     }
 }
 
-.titlelist{
+.titlelist {
     padding: 20px 0 0 3px;
-    background: transparent;  
+    background: transparent;
 }
 
-.labelitem{
+.labelitem {
     width: 100% !important;
     --border-width: 0 0 0 0 !important;
 
@@ -84,36 +89,43 @@ ion-list {
 
 .label-lines {
     width: 85% !important;
+
     ion-col {
         padding: 2px 10px 2px 0 !important;
     }
+
     .label-line-title {
-        font-size: 14px; 
+        font-size: 14px;
         font-weight: bold;
+
         img.noImage {
             padding-top: 20px;
         }
     }
+
     .label-line-title.blue {
         color: var(--ion-color-plureBlue);
         font-size: 16px;
         font-family: SourceSansProBold;
     }
+
     .label-line {
         color: rgba(85, 85, 105, 0.5);
-        font-size: 10px; 
+        font-size: 10px;
         padding: 0 10px 0 0;
     }
 }
 
-.subtitles, .subtitles2{
+.subtitles,
+.subtitles2 {
     font-size: 16px;
     color: var(--ion-color-plureBlue);
     font-weight: bold;
     padding: 2px 10px 2px 0 !important;
 }
 
-.rowsubtitles, .rowsubtitles2{
+.rowsubtitles,
+.rowsubtitles2 {
     padding: 14px 0 0 20PX !important;
     width: 100%;
 }
@@ -122,50 +134,68 @@ ion-list {
 //     padding-top: 15px !important;
 // }
 
-.qtyrow{
+.qtyrow {
     padding: 25px 0 0 15px !important;
 }
 
-.titleqty{
+.titleqty {
     color: var(--ion-color-plureBlue) !important;
     font-weight: bold;
+    padding-top: 10px;
 }
 
-.btnqty{
+.btnqty {
     color: var(--ion-color-plureBlue);
     font-size: 30px;
 }
 
-ion-list{
+ion-list {
 
-    ion-icon.icon{
+    ion-icon.icon {
 
-
-        padding-right: 60px;
-        font-size: 30px;
+        padding-right: 60px !important;
+        font-size: 30px !important;
     }
 
-    ion-icon.icon2{
+    ion-button {
 
-
-        padding-right: 120px;
-        font-size: 30px;
+        height: 60px;
+        background: linear-gradient(to bottom, #5CABF9, #1A518E);
+        border-radius: 7% 7% 0% 0%;
+        box-shadow: 0px -5px 18px #00000029;
     }
 
-    ion-icon.icon3{
 
-
-        padding-right: 120px;
-        font-size: 30px;
-    }
-
-ion-button{
-
-    height: 60px;
-    background: linear-gradient(to bottom, #5CABF9, #1A518E);
-    border-radius: 7% 7% 0% 0%;
-    box-shadow: 0px -5px 18px #00000029;
 }
 
+.confirmqty {
+    width: 100% !important;
+    padding: 0 0 0 0;
+}
 
+.listbuttons {
+    padding: 20px 0 0 20px;
+}
+
+.buttonmenu {
+    width: 90%;
+    background: transparent !important;
+}
+
+.titlepage {
+    text-align: center;
+}
+
+.buttonmenuprinc {
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    width: 50%;
+    margin-left: 100px;
+    color: var(--ion-color-plureHeader);
+    --background: linear-gradient(to left, #5CABF9, #1A518E);
+    --border-radius: 23px;
+    height: 50px;
+    font-weight: bold;
+    font-size: 16px;
 }

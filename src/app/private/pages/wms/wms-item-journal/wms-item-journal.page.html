@@ -1,39 +1,38 @@
 <ion-menu contentId="main-content">
   <ion-header>
-    <ion-toolbar>
-  
-      <PlureHeader type="1" title="WH Item journal" url="page/main/modules" notify="0"></PlureHeader>
+    <ion-toolbar class="titlepage">
+      <ion-title>Manage Item Journal</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content class="ion-padding" >
+  <ion-content class="ion-padding">
 
 
- <ion-list>
-    
-    <ion-button  color="light" (click)="newLP($event)" expand="full">
+    <ion-list class="listbuttons">
 
-      <ion-icon class="icon" name="document-outline"></ion-icon>
+      <ion-button class="buttonmenu" color="light" (click)="newLP($event)" expand="block">
 
-      New License Plate
-    </ion-button><br>
+        <ion-icon class="icon" name="document-outline"></ion-icon>
 
-
-    <ion-button color="light" (click)=" newPallet()" expand="full" >
-
-      <ion-icon class="icon2" name="cube-outline" ></ion-icon>
-
-      New Pallet
-    </ion-button><br>
+        New L Plate
+      </ion-button><br>
 
 
-    <ion-button  color="light" (click)="Details()"  expand="full" >
+      <ion-button class="buttonmenu" color="light" (click)=" newPallet()" expand="block">
 
-      <ion-icon class="icon3" name="newspaper-outline"></ion-icon>
+        <ion-icon class="icon" name="cube-outline"></ion-icon>
 
-      Details LP
-    </ion-button>
+        New Pallet
+      </ion-button><br>
 
-  </ion-list>          
+
+      <ion-button class="buttonmenu" color="light" (click)="Details()" expand="block">
+
+        <ion-icon class="icon" name="newspaper-outline"></ion-icon>
+
+        Details LP
+      </ion-button>
+
+    </ion-list>
 
 
 
@@ -43,10 +42,7 @@
 <div class="ion-page" id="main-content">
   <ion-header>
     <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Menu</ion-title>
+      <PlureHeader type="1" title="Item Journal" url="page/wms/wmsMain" notify="0"></PlureHeader>
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
@@ -65,121 +61,125 @@
         </ion-col>
       </ion-row>
     </div>
-  
-<form [formGroup]="frm" >
-    <ion-list *ngIf="boolean">
-      <ion-item>
-        <ion-label class="TitleInput" position="stacked">Scan LP</ion-label>
-        <ion-row class="inputscanRow">
-          <ion-col class="inputscan" size="10">
-            <ion-input formControlName="lpNo" [clearInput]="true" placeholder="Scan or enter the LP ID"></ion-input>
-          </ion-col>
-        </ion-row>
-      </ion-item>
+
+    <ion-menu-toggle>
+      <ion-button class="buttonmenuprinc" *ngIf="buttonmenuprinc">Manage</ion-button>
+    </ion-menu-toggle>
+
+    <form [formGroup]="frm">
+      <ion-list *ngIf="boolean">
+        <ion-item>
+          <ion-label class="TitleInput" position="stacked">Scan LP</ion-label>
+          <ion-row class="inputscanRow">
+            <ion-col class="inputscan" size="10">
+              <ion-input formControlName="lpNo" [clearInput]="true" placeholder="Scan or enter the LP ID"></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-item>
 
 
-      <ion-item>
-        <ion-label class="TitleInput" position="stacked">Scan Item</ion-label>
-        <ion-row class="inputscanRow">
-          <ion-col class="inputscan" size="10">
-            <ion-input formControlName="ItemNo" [clearInput]="true" placeholder="Scan or enter the Item"></ion-input>
-          </ion-col>
-          <ion-col class="barcodeinput" size="2" (click)="onScanItem()">
-            <ion-icon size="large" name="barcode-outline"></ion-icon>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-  
-    </ion-list>
-  
-    <div class="accorn-body" *ngIf="boolean">
-      <div class="lines">
-        <ion-list class="titlelist">
-          <div>
-  
-            <ion-item-sliding>
-  
-              <ion-item class="labelitem">
-                <div class="label-lines" part="item-width">
-                  <ion-row>
-                    <ion-col size="10">
-                      <ion-row>
-                        <ion-col size="7" style="overflow: hidden;" class="label-line-title blue">
-                          Gane
-                        </ion-col>
-                        <ion-col size="5" class="label-line-title" style="text-align: right;">
-                          Qty. 5
-  
-                        </ion-col>
-  
-                      </ion-row>
-                      <ion-row>
-                        <ion-col size="4" class="label-line">
-                          Item No: 1007P
-                        </ion-col>
-                        <ion-col size="4" class="label-line">
-                          Measure: Pcs
-                        </ion-col>
-  
-                      </ion-row>
-  
-                    </ion-col>
-                  </ion-row>
-                </div>
-              </ion-item>
-  
-            </ion-item-sliding>
-          </div>
-        </ion-list>
+        <ion-item>
+          <ion-label class="TitleInput" position="stacked">Scan Item</ion-label>
+          <ion-row class="inputscanRow">
+            <ion-col class="inputscan" size="10">
+              <ion-input formControlName="ItemNo" [clearInput]="true" placeholder="Scan or enter the Item"></ion-input>
+            </ion-col>
+            <ion-col class="barcodeinput" size="2" (click)="onScanItem()">
+              <ion-icon size="large" name="barcode-outline"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+      </ion-list>
+
+      <div class="accorn-body" *ngIf="boolean">
+        <div class="lines">
+          <ion-list class="titlelist">
+            <div>
+
+              <ion-item-sliding>
+
+                <ion-item class="labelitem">
+                  <div class="label-lines" part="item-width">
+                    <ion-row>
+                      <ion-col size="10">
+                        <ion-row>
+                          <ion-col size="7" style="overflow: hidden;" class="label-line-title blue">
+                            Gane
+                          </ion-col>
+                          <ion-col size="5" class="label-line-title" style="text-align: right;">
+                            Qty. 5
+
+                          </ion-col>
+
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="4" class="label-line">
+                            Item No: 1007P
+                          </ion-col>
+                          <ion-col size="4" class="label-line">
+                            Measure: Pcs
+                          </ion-col>
+
+                        </ion-row>
+
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                </ion-item>
+
+              </ion-item-sliding>
+            </div>
+          </ion-list>
+        </div>
       </div>
-    </div>
-  
-    <ion-row class="rowsubtitles" *ngIf="boolean">
-  
-      <ion-col class="subtitles" size="3">
-        <div>Zone:{{zone}}</div>
-      </ion-col>
-      <ion-col class="subtitles" size="3">
-        <div>Bin: {{binCode}}</div>
-      </ion-col>
-    </ion-row>
-  
-    <ion-row class="qtyrow" *ngIf="boolean">
-      <ion-col class="titleqty" size="4">
-        Comfirm Qty
-      </ion-col>
-      <ion-col size="1">
-        <ion-icon class="btnqty" name="add-circle" (click)="add()"></ion-icon>
-      </ion-col>
-      <ion-col size="5">
-        <ion-input formControlName="qty" [clearInput]="true"   type="number" placeholder="Confirm Quantity"></ion-input>
-      </ion-col>
-      <ion-col size="1">
-        <ion-icon class="btnqty" name="remove-circle"  (click)="res()"></ion-icon>
-      </ion-col>
-    </ion-row>
-  
-  
-  
-    <ion-list class="input2" *ngIf="boolean">
-      <ion-item>
-        <ion-label class="TitleInput" position="stacked">Scan to Bin</ion-label>
-        <ion-row class="inputscanRow">
-          <ion-col class="inputscan" size="10">
-            <ion-input formControlName="bin"  [clearInput]="true" placeholder="Scan or enter the Bin"></ion-input>
-          </ion-col>
-          <ion-col class="barcodeinput" size="2" (click)="onScanBin()">
-            <ion-icon size="large" name="barcode-outline"></ion-icon>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-  
-    </ion-list>
 
-  </form> 
-  
+      <ion-row class="rowsubtitles" *ngIf="boolean">
+
+        <ion-col class="subtitles" size="3">
+          <div>Zone:{{zone}}</div>
+        </ion-col>
+        <ion-col class="subtitles" size="3">
+          <div>Bin: {{binCode}}</div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="qtyrow" *ngIf="boolean">
+        <ion-col class="titleqty" size="4">
+          Comfirm Qty
+        </ion-col>
+        <ion-col size="1">
+          <ion-icon class="btnqty" name="add-circle" (click)="add()"></ion-icon>
+        </ion-col>
+        <ion-col class="confirmqty" size="5">
+          <ion-input formControlName="qty" [clearInput]="true" type="number" placeholder="Confirm Quantity"></ion-input>
+        </ion-col>
+        <ion-col size="1">
+          <ion-icon class="btnqty" name="remove-circle" (click)="res()"></ion-icon>
+        </ion-col>
+      </ion-row>
+
+
+
+      <ion-list class="input2" *ngIf="boolean">
+        <ion-item>
+          <ion-label class="TitleInput" position="stacked">Scan to Bin</ion-label>
+          <ion-row class="inputscanRow">
+            <ion-col class="inputscan" size="10">
+              <ion-input formControlName="bin" [clearInput]="true" placeholder="Scan or enter the Bin"></ion-input>
+            </ion-col>
+            <ion-col class="barcodeinput" size="2" (click)="onScanBin()">
+              <ion-icon size="large" name="barcode-outline"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+      </ion-list>
+
+    </form>
+
     <ion-row class="rowsubtitles2" *ngIf="boolean">
-  
+
       <ion-col class="subtitles2" size="12">
         <div>Zone: {{zone}}</div>
       </ion-col>
@@ -192,26 +192,11 @@
 
   <PlureVersion class="footerReceipt" showVersion="0">
     <ion-row>
-      <ion-col size="6" (click)="onBarCode()">
-        <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-        <div class="itemfooter">Bar code</div>
-    </ion-col>
-    <ion-col size="6" (click)="onSubmit()">
+      <ion-col size="12" (click)="onSubmit()">
         <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
         <div class="itemfooter">Save</div>
-    </ion-col>
+      </ion-col>
     </ion-row>
   </PlureVersion>
-  
+
 </div>
-
-
-
-
-
-
-
-
-
-
-
