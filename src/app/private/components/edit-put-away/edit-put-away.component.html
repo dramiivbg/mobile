@@ -1,6 +1,14 @@
 <PlureHeader (click)="exit()" *ngIf="scanLP" type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
 <PlureHeader (click)="back()" *ngIf="scanBin" type="1" title="Put-Away" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
+
+<ion-header *ngIf="loading">
+    <ion-toolbar>
+      <ion-title>Loading....</ion-title>
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </ion-toolbar>
+  </ion-header>
+
 <ion-content>
     <form *ngIf="scanLP">
         <div class="designform-header">

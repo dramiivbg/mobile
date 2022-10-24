@@ -374,10 +374,12 @@
   <ion-tab-button tab="music" (click)="enableLP()">
     <ion-label class="itemfooter">LPS</ion-label>
     <ion-icon class="itemfooter" size="large" name="newspaper-outline"></ion-icon>
+    <ion-badge>{{QtyLP}}</ion-badge>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)=" enableItem()">
     <ion-label class="itemfooter">Items</ion-label>
     <ion-icon class="itemfooter" size="large" name="cube-outline"></ion-icon>
+    <ion-badge>{{QtyItem}}</ion-badge>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)="disable()">
     <ion-label class="itemfooter">Save</ion-label>

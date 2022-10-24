@@ -27,6 +27,8 @@ export class EditPutAwayComponent implements OnInit {
   @Input() whsePutAway:any;
 
 
+  public loading:Boolean = false;
+
   public select: Boolean = true;
   public listPwL: any[] = [];
   public contador:number = 0;
@@ -167,6 +169,9 @@ export class EditPutAwayComponent implements OnInit {
   public async  onBarCode() {
 
     //console.log(this.wareReceipts);
+
+    this.scanLP = false;
+    this.loading = true;
 
     this.intServ.loadingFunc(true);
   let listPallet;
@@ -322,6 +327,8 @@ for (const key in this.pallet) {
 
     console.log('lps =>', listLp);
 
+    this.loading = false;
+    this.scanLP = true;
 
       let line:any = undefined;
       this.intServ.loadingFunc(false);
@@ -459,6 +466,11 @@ for (const key in this.pallet) {
   
 
 async onAdd(e) {
+
+  this.scanBin = false;
+  this.scanLP = false;
+
+  this.loading = true;
 
   this.intServ.loadingFunc(true);
     let val = e.target.value;
@@ -683,7 +695,15 @@ if (val !== '') {
       }
 
     }
+
+    this.loading = false;
+    this.scanLP = true;
+    
   
+    }else{
+
+      this.loading = false;
+      this.scanLP = true;
     }
 
   
@@ -706,27 +726,18 @@ if (val !== '') {
    
     if(this.scanLP){
 
-      
-      this.intServ.loadingFunc(true);
-
-      this.scanBin = true;
       this.scanLP = false;
-
-      this.intServ.loadingFunc(false);
-
-
-
-        
-        let bins = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
+      this.loading = true;
+      let bins = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
 
         this.listBin.push(bins);
 
         console.log(this.listBin);
 
-    
+        this.scanBin = true;
+        this.loading = false;
 
-
-
+  
     }else{
 
 
@@ -759,6 +770,9 @@ if (val !== '') {
 
 
         if(this.modify.length !== this.initV.length){
+
+          this.scanBin = false;
+          this.loading = true;
 
 
           this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
@@ -935,7 +949,7 @@ if (val !== '') {
         
           console.log(update);
 
-   if(!update.Error){
+   if(!update.Error && !update.error){
 
 
     let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
@@ -948,45 +962,52 @@ if (val !== '') {
      
         this.modalController.dismiss({});
 
+        this.loading = false;
       
 
         this.router.navigate(['page/wms/wmsMain']);
      
+        
 
         Swal.fire(
           'Success!',
-          `The Put away ${this.warePY.fields.No} has been posted`,
+          `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`,
           'success'
         )
       
     }else{
 
+      this.loading = false;
+      this.scanBin = true;
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `The Put away ${this.warePY.fields.No} has been posted`,
+        text: (postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message,
         footer: ''
       })
     }
     
    }else{
 
+    this.loading = false;
+    this.scanBin = true;
+
     Swal.fire({
       icon: 'error',
       title: 'Oops...',
-      text: update.Error.Message,
+      text: 'An error occurred while serializing the json in Business Central',
       footer: ''
     })
    }
         
 
        
-
-
-
-
+   
         }else{
 
+
+          this.scanBin = false;
+          this.loading = true;
 
           let list:any[] = [];
           let listP:any[] = [];
@@ -1017,27 +1038,9 @@ if (val !== '') {
             BinCode: "",
             Quantity: 0,
            
-          }
+         }
 
 
-
-         
-
-/*
-        list.filter((item,index) => {
-
-          if(item.fields.BinCode === null || item.fields.ZoneCode === null){
-
-            list.splice(index);
-          }
-        });
-
-        console.log(list);
-
-        */
-
-
-          
       if(this.modify[0].fields.PLUBinCode.startsWith('REC')){
 
         list.filter(lp => {
@@ -1119,7 +1122,7 @@ if (val !== '') {
       
       console.log(update);
 
-if(!update.error){
+if(!update.Error && !update.error){
 
 
 let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
@@ -1127,13 +1130,14 @@ let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.N
 
 console.log('post =>',  postAway);
       
-if(!postAway.Error || !update.error){
+if(!postAway.Error && !postAway.error){
 
 
  
     this.modalController.dismiss({});
 
   
+    this.loading = false;
 
     this.router.navigate(['page/wms/wmsMain']);
  
@@ -1146,6 +1150,10 @@ if(!postAway.Error || !update.error){
   
 }else{
 
+  
+  this.loading = false;
+  this.scanBin = true;
+
   Swal.fire({
     icon: 'error',
     title: 'Oops...',
@@ -1155,6 +1163,11 @@ if(!postAway.Error || !update.error){
 }
 
 }else{
+
+
+  
+  this.loading = false;
+  this.scanBin = true;
 
 
   Swal.fire({
@@ -1182,6 +1195,8 @@ if(!postAway.Error || !update.error){
 async init(){
 
 
+  this.scanLP = false;
+  this.loading = true;
   let  listPallet;
     
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
@@ -1250,6 +1265,7 @@ async init(){
     }else{
 
 
+      this.loading = false;
       
       this.modalController.dismiss({});
 
@@ -1275,7 +1291,8 @@ async init(){
 
 
 
- 
+ this.scanLP = true;
+ this.loading = false;
 
 
 
@@ -1285,6 +1302,9 @@ async init(){
 
  async  onScanAll(){
 
+  this.scanLP = false;
+
+  this.loading = true;
 
  let  listPallet;
     
@@ -1292,19 +1312,12 @@ async init(){
 
 
     const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
-
-
     console.log('ls =>', lps);
-    console.log('pallet =>', pallets);
+   console.log('pallet =>', pallets);
 
-   
+  if(!pallets.Error){
 
-    if(!pallets.Error){
-
-  
-   
-   
-      listPallet = await this.wmsService.ListLP(pallets);
+  listPallet = await this.wmsService.ListLP(pallets);
    
 
    const  listPalletH  = await this.wmsService.ListPallets(pallets);
@@ -1318,26 +1331,24 @@ async init(){
       lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
       let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
+      let find2 = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+      
       if(find == null || find === undefined){
 
         this.listsFilter.push(lp);
 
         this.listT.push(lp);
 
-        this.modify.push(lp)
-
       }
 
+      if(find2 == null || find === undefined){
 
+        this.modify.push(lp);
+      }
 
-      
-    });
+});
 
-
-
-
-    }
+   }
 
     if(!lps.Error){
 
@@ -1346,10 +1357,7 @@ async init(){
 
       const listLpH = await this.wmsService.ListLPH(lps)
 
-   
-
-    
-      listLp.filter(lp => {
+       listLp.filter(lp => {
   
   
         let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
@@ -1358,22 +1366,27 @@ async init(){
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
         let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+        let find2 = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
         if(find == null || find === undefined){
   
           this.listsFilter.push(lp);
           this.listT.push(lp);
+        }
+
+        if(find2 == null || find === undefined){
+
           this.modify.push(lp);
         }
       });
 
     }
+
+    this.loading = false;
+    this.scanLP = true;
   
   this.select = false;
-
-
-
-  }
+}
 
 
   remove(item:any){
@@ -1382,11 +1395,27 @@ async init(){
     this.listsFilter.filter((lp, index) => {
 
 
-      if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+    if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
 
         this.listsFilter.splice(index,1);
       }
-    })
+    });
+
+
+   this.modify.filter((lp, index) => {
+
+
+      if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+
+        this.modify.splice(index,1);
+      }
+    });
+
+    if(this.listsFilter.length === 0){
+
+      this.select = true;
+    
+    }
 
 
   }
@@ -1413,11 +1442,9 @@ async init(){
   onChangeBinOne(item:any,bin:any){
 
 
-    let type: any[] = [];
-
-   type = item.recordId.split(',')
+   
   
-switch(type[1]){
+switch(item.fields.PLULPDocumentType){
 
 case 'Single': 
 
