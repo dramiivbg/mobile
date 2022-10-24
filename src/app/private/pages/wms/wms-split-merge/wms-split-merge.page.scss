@@ -84,7 +84,7 @@ ion-button.add-lines {
     width: 52px;
 }
 ion-button.add-lines::part(native){
-    border-radius: 10px;
+    border-radius: 15px;
 }
 
 .select-floating {
@@ -226,7 +226,7 @@ div.accornSubTotal {
     color: #aaaaaa;
     padding: 0 0.2em 0;
     ion-col.txt {
-        padding-top: 14px;
+        padding: 14px 0 0 15px;
         ion-label {
             font-size: 20px;
             font-weight: bold;
@@ -395,6 +395,7 @@ ion-list {
 
 ion-item {
     --background: transparent;
+    --inner-border-width:0;
 }
 
 
@@ -409,7 +410,15 @@ ion-item {
     padding: 20px 0 20px 0 !important;
 }
 
+.buttonsplitmerge{
+    height: 50px;
+    color: var(--ion-color-plureHeader);
+    --background: linear-gradient(to left, #5CABF9, #1A518E);
+}
 
-
-
+.popoverSplitComponent{
+    top: 253.324px;
+    left: 75px;
+    transform-origin: left bottom;
+}
 
