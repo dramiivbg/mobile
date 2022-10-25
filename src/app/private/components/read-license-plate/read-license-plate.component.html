@@ -1,0 +1,245 @@
+
+<PlureHeader type="1" title="Read license plate" url="page/main/modules" notify="0"></PlureHeader>
+
+<ion-content>
+ <div class="designform-header">
+
+  <ion-row class="headerow" *ngIf="lp != undefined ">
+    <ion-col size="4">
+      Whse. Document. 
+    </ion-col>
+    <ion-col size="7">
+      {{lp.fields.PLUWhseDocument}}
+    </ion-col>
+  </ion-row>
+
+
+  <ion-row class="headerow" *ngIf="lp != undefined ">
+    <ion-col size="4">
+      Reference No.
+    </ion-col>
+    <ion-col size="7"> 
+      {{lp.fields.PLUWhseDocumentNo}}
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="headerow">
+    <ion-col>
+      
+    </ion-col>
+  </ion-row>
+  </div>
+
+  <ion-list *ngIf="lp != undefined ">
+
+    <ion-item >
+
+     <h2><strong>General</strong></h2> 
+    </ion-item>
+
+    <ion-row style="padding-top: 20px;">
+
+      <ion-col >
+
+        Document No.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+
+        {{lp.fields.PLULPDocumentNo}}
+      </ion-col>
+    </ion-row>
+
+    
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col >
+
+        Location Code.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+
+        {{lp.fields.PLULocationCode}}
+      </ion-col>
+    </ion-row>
+
+      
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col >
+
+        Zone Code.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+
+        {{lp.fields.PLUZoneCode}}
+      </ion-col>
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col >
+
+       License Plate Status.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+
+        {{lp.fields.PLULicensePlateStatus}}
+      </ion-col>
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col >
+
+       Bin Code.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+
+        {{lp.fields.PLUBinCode}}
+      </ion-col>
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col >
+
+       Unit of Measure (LP).
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+
+        {{lp.fields.PLUUnitofMeasureCode}}
+      </ion-col>
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col >
+
+       Reference Document No.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+
+        {{lp.fields.PLUReferenceDocument}}
+      </ion-col>
+    </ion-row>
+
+
+    <ion-item>
+
+      <h3><strong>Lines</strong></h3> 
+     </ion-item>
+
+
+
+    <ion-row style="padding-top: 20px;">
+
+      <ion-col>
+
+        LP Type.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+
+        {{lp.fields.PLUType}}
+      </ion-col>
+
+     
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col>
+
+        No.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+
+        {{lp.fields.PLUNo}}
+      </ion-col>
+
+     
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col>
+
+        Description.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+
+        {{lp.fields.PLUDescription}}
+      </ion-col>
+
+     
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col>
+
+        Quantity.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+
+        {{lp.fields.PLUQuantity}}
+      </ion-col>
+
+     
+    </ion-row>
+
+    <ion-row style="padding-top: 10px;">
+
+      <ion-col>
+
+        Unit of Measure Code.
+      </ion-col>
+
+
+      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+
+        {{lp.fields.PLUUnitofMeasureCode}}
+      </ion-col>
+
+     
+    </ion-row>
+
+
+
+  </ion-list>
+
+
+
+
+</ion-content>
+
+
+<PlureVersion class="footerReceipt" showVersion="0">
+  <ion-row>
+    <ion-col size="12" (click)="onBarCode()">
+      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooter">Bar code</div>
+  </ion-col>
+  </ion-row>
+</PlureVersion>

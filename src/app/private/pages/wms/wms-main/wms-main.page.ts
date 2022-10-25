@@ -21,6 +21,11 @@ export class WmsMainPage implements OnInit {
   public session: any = {};
   public boolean: Boolean = true;
 
+  public booleanM: Boolean = false;
+  public booleanInQ:Boolean = false;
+
+  public processes:any[] = [];
+
   constructor(private syncerp: SyncerpService
     , private general: GeneralService
     , private intServ: InterceptService
@@ -38,14 +43,28 @@ export class WmsMainPage implements OnInit {
     this.intServ.appBackFunc(objFunc);
   }
 
-  public ngOnInit() {
+  public async ngOnInit() {
+
+
+    
   }
 
   public async ionViewWillEnter() {
     try {
       this.intServ.loadingFunc(true);
       this.module = await this.moduleService.getSelectedModule();
-     // console.log('modules =>',this.module);
+
+      this.module.processes.filter(mod => {
+
+        if(mod.processId != 'P011'){
+  
+  
+          this.processes.push(mod);
+  
+        }
+      });
+
+   
       this.session = (await this.js.getSession()).login;
     //  console.log('session =>',this.session)
       this.intServ.loadingFunc(false);
@@ -90,6 +109,8 @@ export class WmsMainPage implements OnInit {
 
       this.boolean = false;
 
+      this.booleanM = true;
+
    
     
       this.intServ.loadingFunc(false);
@@ -120,6 +141,32 @@ export class WmsMainPage implements OnInit {
     }
   }
 
+
+  menuInqueris(){
+
+
+    this.boolean = false;
+    this.booleanInQ = true;
+
+
+  }
+
+
+  pageReadLicensePlate(){
+
+
+
+    this.router.navigate(['page/wms/readLicensePlate']);
+  }
+
+
+  pageReadBinContent(){
+
+
+    
+    this.router.navigate(['page/wms/readBinContent']);
+
+  }
 
   pageMovement(){
 

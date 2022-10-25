@@ -32,6 +32,8 @@ import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-mer
 import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
 import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
 import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-lp-edit.component';
+import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/read-license-plate.component';
+import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
 
 
 
@@ -61,7 +63,9 @@ import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-
     PopoverMergeComponent,
     PopoverSplitComponent,
     PopoverOpionsLpComponent,
-    PopoverLpEditComponent
+    PopoverLpEditComponent,
+    ReadLicensePlateComponent,
+    ReadBinContentComponent
    
     
   
@@ -88,7 +92,9 @@ import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-
     PopoverLpEmptyComponent,
     PopoverMergeComponent,
     PopoverSplitComponent,
-    PopoverOpionsLpComponent
+    PopoverOpionsLpComponent,
+    ReadLicensePlateComponent,
+    ReadBinContentComponent
   
   ]
 })

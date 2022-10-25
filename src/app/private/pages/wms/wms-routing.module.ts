@@ -15,6 +15,9 @@ import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 import { WhitemReclassificationPage } from './whitem-reclassification/whitem-reclassification.page';
 import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 
+import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/read-license-plate.component';
+import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
+
 
 
 
@@ -44,6 +47,8 @@ const routes: Routes = [
     {path: 'wmsItemJournal',component: WmsItemJournalPage},
 
     {path: 'wmsSplitMerge', component: WmsSplitMergePage},
+    {path: 'readLicensePlate', component: ReadLicensePlateComponent},
+    {path: 'readBinContent', component: ReadBinContentComponent }
   ]
 },
 ,
