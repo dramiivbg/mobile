@@ -744,7 +744,7 @@ if (val !== '') {
       console.log(this.listsFilter);
 
       Swal.fire({
-        title: 'Confirm WH PutAway?',
+        title: 'Confirm Whse. PutAway?',
         text: "You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,
@@ -1270,7 +1270,7 @@ async init(){
       this.modalController.dismiss({});
 
       Swal.fire({
-        title: 'The Whse Put Away this void',
+        title: 'The Whse. Put Away this void',
         text: 'Please choose another put away',
         icon: 'warning',
         showCancelButton: false,
