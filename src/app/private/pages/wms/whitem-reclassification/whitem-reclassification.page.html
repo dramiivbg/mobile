@@ -16,15 +16,15 @@
       </ion-col>
     </ion-row>
   </div>
-
+<form [formGroup]="frm">
   <ion-list>
     <ion-item>
       <ion-label class="TitleInput" position="stacked">Scan LP</ion-label>
       <ion-row class="inputscanRow">
         <ion-col class="inputscan" size="10">
-          <ion-input [clearInput]="true" placeholder="Scan or enter the LP ID"></ion-input>
+          <ion-input formControlName="lpNo" [clearInput]="true" placeholder="Scan or enter the LP ID"></ion-input>
         </ion-col>
-        <ion-col class="barcodeinput" size="2">
+        <ion-col class="barcodeinput" size="2" (click)="onScanLP()">
           <ion-icon size="large" name="barcode-outline"></ion-icon>
         </ion-col>
       </ion-row>
@@ -89,13 +89,13 @@
       Comfirm Qty
     </ion-col>
     <ion-col size="1">
-      <ion-icon class="btnqty" name="add-circle"></ion-icon>
+      <ion-icon class="btnqty" name="add-circle" (click)="add()"></ion-icon>
     </ion-col>
     <ion-col class="confirmqty" size="5">
-      <ion-input [clearInput]="true" type="number" placeholder="Confirm Quantity"></ion-input>
+      <ion-input formControlName="qty" [clearInput]="true" type="number" placeholder="Confirm Quantity"></ion-input>
     </ion-col>
     <ion-col size="1">
-      <ion-icon class="btnqty" name="remove-circle"></ion-icon>
+      <ion-icon class="btnqty" name="remove-circle" (click)="res()"></ion-icon>
     </ion-col>
   </ion-row>
 
@@ -103,18 +103,19 @@
 
   <ion-list class="input2">
     <ion-item>
-      <ion-label class="TitleInput" position="stacked">Scan LP</ion-label>
+      <ion-label class="TitleInput" position="stacked">Scan Bin Code</ion-label>
       <ion-row class="inputscanRow">
         <ion-col class="inputscan" size="10">
-          <ion-input [clearInput]="true" placeholder="Scan or enter the LP ID"></ion-input>
+          <ion-input formControlName="bin" [clearInput]="true" placeholder="Scan or enter the Bin Code"></ion-input>
         </ion-col>
-        <ion-col class="barcodeinput" size="2">
+        <ion-col class="barcodeinput" size="2" (click)="onScanBin()">
           <ion-icon size="large" name="barcode-outline"></ion-icon>
         </ion-col>
       </ion-row>
     </ion-item>
 
   </ion-list>
+</form>
 
   <ion-row class="rowsubtitles2">
 
