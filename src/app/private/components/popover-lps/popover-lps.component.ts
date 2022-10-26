@@ -163,7 +163,7 @@ export class PopoverLpsComponent implements OnInit {
   }else
       if(data.name == 'Delete'){
 
-        let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm','confirm','Surely you want to eliminate it?', async() => {
+        let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Surely you want to eliminate it?', async() => {
 
 
           this.intServ.loadingFunc(true);

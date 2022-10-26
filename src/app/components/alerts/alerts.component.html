@@ -11,7 +11,7 @@
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'select'" />
     </div>
     <div class="alert-body">
-  <strong>{{alertObj.title}}</strong><br>
+  <strong *ngIf="alertObj.type !== 'edit'">{{alertObj.title}}</strong><br>
 
       {{alertObj.desc}}
       <div class="alert-btn" *ngIf="alertObj.type != 'confirm' && alertObj.type != 'continue' && alertObj.type != 'edit' && alertObj.type !== 'select' ">

@@ -443,6 +443,12 @@ for (const key in this.pallet) {
        
       }
 
+      if(this.listsFilter.length === this.initV.length){
+
+        this.select = false;
+       
+    }
+
     }
   
       }
@@ -695,6 +701,13 @@ if (val !== '') {
       }
 
     }
+
+
+    if(this.listsFilter.length === this.initV.length){
+
+      this.select = false;
+     
+  }
 
     this.loading = false;
     this.scanLP = true;
@@ -1041,6 +1054,9 @@ if (val !== '') {
          }
 
 
+      
+
+
       if(this.modify[0].fields.PLUBinCode.startsWith('REC')){
 
         list.filter(lp => {
@@ -1080,6 +1096,7 @@ if (val !== '') {
 
       }else{
 
+    
 
         list.filter(lp => {
 
@@ -1539,6 +1556,7 @@ console.log('single.....');
     )
 
 
+   
     console.log('modify =>', this.modify);
    // console.log('pallet =>', this.pallet);
 
