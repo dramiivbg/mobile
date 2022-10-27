@@ -110,7 +110,7 @@ export class WmsReceiptPage implements OnInit {
         let code = barCodeData.text;
         let line = this.wareReceipts.lines.find(x => x.ItemNo === code);
         if (line === null || line === undefined) {
-          this.intServ.alertFunc(this.js.getAlert('error', 'Error', `The item '${code}' does not exist on this receipt`));
+          this.intServ.alertFunc(this.js.getAlert('error', ' ', `The item '${code}' does not exist on this receipt`));
         } else {
           console.log(line);
         }
@@ -154,6 +154,7 @@ export class WmsReceiptPage implements OnInit {
     if(data.data == 'eliminado'){
 
       this.GetLicencesPlateInWR(this.wareReceipts);
+      this.getReceipt();
     }
 
 
@@ -183,12 +184,13 @@ export class WmsReceiptPage implements OnInit {
 
 
         this.GetLicencesPlateInWR(this.wareReceipts);
+        this.getReceipt();
 
       }
     } else {
 
       this.interceptService.loadingFunc(false);
-      this.interceptService.alertFunc(this.jsonService.getAlert('alert', 'alert', 'you have created all the LP Pending To Receive'))
+      this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', 'You have created all the LP Pending To Receive'))
     }
 
   }
@@ -200,7 +202,7 @@ export class WmsReceiptPage implements OnInit {
     let receipt = await this.wmsService.getReceiptByNo(wms.id);
 
     if (receipt.Error !== undefined) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', receipt.Error.Message));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', receipt.Error.Message));
     } else {
       this.mappingReceipt(receipt);
     }
@@ -448,7 +450,7 @@ export class WmsReceiptPage implements OnInit {
 
       this.intServ.loadingFunc(false);
 
-      this.intServ.alertFunc(this.js.getAlert('error', 'error', pallet.Error.Message));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', pallet.Error.Message));
 
 
 
@@ -625,7 +627,7 @@ export class WmsReceiptPage implements OnInit {
   async onSubmit() {
 
 
-    this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm', 'Confirm WH Receipt?', async () => {
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', 'Confirm Whse Receipt?', async () => {
 
       this.intServ.loadingFunc(true);
 
@@ -644,7 +646,7 @@ export class WmsReceiptPage implements OnInit {
           this.intServ.loadingFunc(false);
 
 
-          this.intServ.alertFunc(this.js.getAlert('continue', 'continue', 'Continue Process Put-Away?', () => {
+          this.intServ.alertFunc(this.js.getAlert('continue', '', 'Continue Process Put-Away?', () => {
 
             this.intServ.loadingFunc(true);
 
@@ -678,7 +680,7 @@ export class WmsReceiptPage implements OnInit {
 
 
                   this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('success', '', 'The put-away was done successfully', () => {
+                  this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
 
 
                     this.router.navigate(['/page/wms/wmsReceipt']);

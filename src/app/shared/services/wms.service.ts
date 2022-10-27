@@ -1035,6 +1035,7 @@ public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
             PLUParentLPLineNo: null,
             PLUStatus: null,
             PLUSerialNo: null,
+            PLUUnitofMeasure: null,
             PLULotNo: null,
             PLUDescription: "",
             PLULocationCode: "",
@@ -1101,6 +1102,7 @@ public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
         PLUVariantCode: null,
         PLUQuantity: 0,
         PLUQtyperUnitofMeasure: 0,
+        PLUUnitofMeasure:null,
         PLUQuantityBase: 0 ,
         PLUUnitofMeasureCode : "",
         PLULocationCode: "",
@@ -1314,6 +1316,107 @@ public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
  
  
      }
+
+
+
+     public async PalletL(listLp: any){
+
+        // console.log(listLp);
+ 
+        let list: any[] = [];
+
+
+
+        let product = {  
+       PLULPDocumentNo: "",
+        PLULineNo: 0,
+        PLULPDocumentType: "",
+        PLUType: "",
+        PLUNo: "",
+        PLUVariantCode: null,
+        PLUQuantity: 0,
+        PLUQtyperUnitofMeasure: 0,
+        PLUQuantityBase: 0 ,
+        PLUUnitofMeasureCode : "",
+        PLUExpirationDate: null,
+        PLUParentLPNo: null,
+        PLUParentLPLineNo: null,
+        PLUStatus: null,
+        PLUSerialNo: null,
+        PLULotNo: null,
+        PLUDescription: "",
+        PLUEntryQuantity: null,
+        PLUSourceDocument: "",
+        PLUSourceDocumentNo: "",
+        PLUDocument: "",
+        PLUDocumentNo: "",
+        PLULicensePlateStatus: "",
+        PLUShipmentSrcDocument: "",
+        PLUShipmentSrcDocumentNo: null,
+        PLUSourceLineNo: 0,
+        PLUWhseLineNo: 0
+}
+
+       
+
+      for(let i in   listLp.LicensePlates.LicensePlatesLines){
+ 
+       for (const y in  listLp.LicensePlates.LicensePlatesLines[i].fields) {
+ 
+         product[listLp.LicensePlates.LicensePlatesLines[i].fields[y].name] =   listLp.LicensePlates.LicensePlatesLines[i].fields[y].value;
+
+
+         }
+
+
+
+   list.push(product);
+
+     
+     product = {  
+        PLULPDocumentNo: "",
+         PLULineNo: 0,
+         PLULPDocumentType: "",
+         PLUType: "",
+         PLUNo: "",
+         PLUVariantCode: null,
+         PLUQuantity: 0,
+         PLUQtyperUnitofMeasure: 0,
+         PLUQuantityBase: 0 ,
+         PLUUnitofMeasureCode : "",
+         PLUExpirationDate: null,
+         PLUParentLPNo: null,
+         PLUParentLPLineNo: null,
+         PLUStatus: null,
+         PLUSerialNo: null,
+         PLULotNo: null,
+         PLUDescription: "",
+         PLUEntryQuantity: null,
+         PLUSourceDocument: "",
+         PLUSourceDocumentNo: "",
+         PLUDocument: "",
+         PLUDocumentNo: "",
+         PLULicensePlateStatus: "",
+         PLUShipmentSrcDocument: "",
+         PLUShipmentSrcDocumentNo: null,
+         PLUSourceLineNo: 0,
+         PLUWhseLineNo: 0
+ }
+ 
+       
+
+ 
+      }
+
+
+      return list;
+    
+ 
+ 
+     }
+
+
+
 
 
 
@@ -1903,12 +2006,89 @@ return list;
      return list;
  
  
- 
+}
+
+
+
+
+public async PalletH(listLp: any){
+
+    // console.log(listLp);
+
+
 
     
- 
- 
+     let obj= {
+
+        company: "",
+        fieldCount: 0,
+        fields:{ 
+            PLULPDocumentNo: "",
+            PLUDescription: null,
+            PLUDocumentType: "",
+            PLULicensePlateStatus: "",
+            PLULocationCode: "",
+            PLUZoneCode: "",
+            PLUBinCode: "",
+            PLUDocument: "",
+            PLUDocumentNo: "" ,
+            PLUUnitofMeasure : "",
+            PLUWarehouseEntryNo: null,
+            PLUReferenceDocument: "",
+            PLUReferenceNo: null,
+            PLUWhseDocumentNo: null,
+            PLUWhseDocumentType: "",
+            PLUShipmentSrcDocument: "",
+            PLUShipmentSrcDocumentNo: null,
+            PLUParentLPNo: null,
+            PLUItemNo: "",
+            PLULPTotalQuantities: 0,
+            SystemCreatedAt: "",
+            $systemId: "",
+            SystemCreatedBy: "",
+            SystemModifiedAt: "",
+            SystemModifiedBy: "",
+           } ,
+        id: 0,
+        name: "",
+        position: "",
+        recordId: ""
+
+
      }
+
+
+
+      
+     
+
+    obj.company = listLp.LicensePlates.LicensePlatesHeaders.company;
+    obj.fieldCount = listLp.LicensePlates.LicensePlatesHeaders.fieldCount;
+    obj.id = listLp.LicensePlates.LicensePlatesHeaders.id;
+    obj.name = listLp.LicensePlates.LicensePlatesHeaders.name;
+    obj.position = listLp.LicensePlates.LicensePlatesHeaders.position;
+    obj.recordId = listLp.LicensePlates.LicensePlatesHeaders.recordId;
+
+    
+ for (const y in listLp.LicensePlates.LicensePlatesHeaders.fields) {
+
+
+
+     obj.fields[listLp.LicensePlates.LicensePlatesHeaders.fields[y].name] =  listLp.LicensePlates.LicensePlatesHeaders.fields[y].value;
+
+
+
+  }
+
+
+ return obj;
+
+
+ }
+
+
+
+
 
 
 

@@ -85,13 +85,13 @@ export class LicensePlatesComponent implements OnInit {
 
 if(obj.TotalToReceive == 0){
   this.interceptService.loadingFunc(false);
-  this.interceptService.alertFunc(this.jsonService.getAlert('alert','alert','please put how many license plate you want'));
+  this.interceptService.alertFunc(this.jsonService.getAlert('alert',' ','Please put how many license plate you want'));
  
 }else
 
    if(obj.NoofPackLP == 0){
     this.interceptService.loadingFunc(false);
-    this.interceptService.alertFunc(this.jsonService.getAlert('alert','alert',' please put how many packs each license plate will have'));
+    this.interceptService.alertFunc(this.jsonService.getAlert('alert',' ',' Please put how many packs each license plate will have'));
     
    }else{
 
@@ -109,7 +109,7 @@ if(obj.TotalToReceive == 0){
         
       this.interceptService.loadingFunc(false);
 
-      this.interceptService.alertFunc(this.jsonService.getAlert('success','sucess','license plates have been created successfully'));
+      this.interceptService.alertFunc(this.jsonService.getAlert('success',' ','License plates have been created successfully'));
 
        
       this.popoverController.dismiss({data: 'creado'});
@@ -117,7 +117,7 @@ if(obj.TotalToReceive == 0){
       }else{
 
         this.interceptService.loadingFunc(false);
-        this.interceptService.alertFunc(this.jsonService.getAlert('alert','alert','you can not send more than you expect to receive'));
+        this.interceptService.alertFunc(this.jsonService.getAlert('alert',' ','You can not send more than you expect to receive'));
       }
 
     
