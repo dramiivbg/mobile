@@ -17,6 +17,12 @@ export class WmsSplitMergePage implements OnInit {
 
   public lp:any = undefined;
 
+  public lps:any[] = [];
+
+  public pallets:any[] = [];
+
+  public palletsL:any[] = [];
+
   public palletH:any = undefined;
   public palletL:any[] = [];
 
@@ -69,6 +75,15 @@ export class WmsSplitMergePage implements OnInit {
   
             this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument
             this.lp.fields.PLUUnitofMeasure =  lpH.fields.PLUUnitofMeasure;
+
+          let line =  this.lps.find(lp => lp.fields.PLULPDocumentNo === this.lp.fields.PLULPDocumentNo);
+
+          if(line === undefined || line === null){
+
+            this.lps.push(this.lp);
+
+          }
+            
   
             
             
@@ -82,11 +97,22 @@ export class WmsSplitMergePage implements OnInit {
 
             this.palletH = await this.wmsService.PalletH(lp);
 
-            this.palletL = await this.wmsService.PalletL(lp);
+            let line =  this.pallets.find(pallet => pallet.fields.PLULPDocumentNo === this.palletH.fields.PLULPDocumentNo);
 
-            console.log(this.palletH);
+            if(line === undefined || line === null){
+  
+              this.pallets.push(this.palletH);
 
-            console.log(this.palletL);
+              this.palletL = await this.wmsService.PalletL(lp);
+
+              this.palletsL[this.palletH.fields.PLULPDocumentNo] = this.palletL;
+  
+            }
+              
+
+        
+
+             console.log(this.palletsL);
 
             this.intServ.loadingFunc(false);
 
@@ -116,7 +142,7 @@ export class WmsSplitMergePage implements OnInit {
   }
 
 
- async popoverSplit(ev){
+ async popoverSplit(lp:any,ev){
 
 
     const popover = await this.popoverController.create({
@@ -124,7 +150,7 @@ export class WmsSplitMergePage implements OnInit {
       cssClass: 'popoverSplitComponent',
       event: ev,
       translucent: true,
-      componentProps: {}
+      componentProps: {lp}
     });
     await popover.present();
 
@@ -134,18 +160,32 @@ export class WmsSplitMergePage implements OnInit {
   }
 
 
- async popoverMerge(ev){
+ async popoverMerge(lp:any,ev){
 
     const popover = await this.popoverController.create({
       component: PopoverMergeComponent,
       cssClass: 'popoverSplitComponent',
       event: ev,
       translucent: true,
-      componentProps: {}
+      componentProps: {lp}
     });
     await popover.present();
 
     const { data } = await popover.onDidDismiss();
+
+  }
+
+ async option(pallet:any,ev){
+
+
+  
+  let lines = this.palletsL[pallet.fields.PLULPDocumentNo];
+
+
+  }
+
+async  popoverMergeP(pallet:any,ev){
+
 
   }
 

@@ -105,7 +105,7 @@ export class ReadLicensePlateComponent implements OnInit {
    let log = await this.wmsService.Get_LPLedgerEntries(No.toUpperCase());
     const popover = await this.popoverController.create({
       component: PopoverLogLpComponent,
-      cssClass: 'popoverPls',
+      cssClass: 'my-custom-class',
       event: ev,
       translucent: true,
       componentProps: { logs: log }
