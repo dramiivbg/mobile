@@ -810,6 +810,30 @@ public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
 
 
 }
+
+
+public async Get_LPLedgerEntries(No:any){
+
+    try {
+
+    
+        let obj: any = [{
+    
+          No
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Get_LPLedgerEntries', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+}
  
 
 

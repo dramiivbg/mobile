@@ -1,0 +1,70 @@
+
+#taula {
+
+   // overflow-y: auto;
+  
+  
+    --ion-grid-column-padding: 0.8px;
+    border-collapse: collapse;
+    border-style: hidden;
+   
+    
+  
+  
+  
+  
+   
+    ion-row{
+  
+      width: 100%;
+     
+    }
+   
+    
+   
+    ion-col {
+      // border: 1px solid black;
+      border-bottom: 0;
+      // border-right: 5%;
+      font-weight: 600;
+   
+   
+    }
+  
+  
+    .col{
+  
+      width: 100px;
+      
+  
+    }
+  }
+  
+  
+  .row{
+  
+
+    
+    
+      background: var(--ion-color-plureheader);
+      font-weight: bold;
+      color: var(--ion-color-plureBlue);
+  
+      ion-col {
+       
+        border-bottom: 0;
+        border-right: 0;
+        
+     
+     
+      }
+  
+  }
+  
+
+  ion-grid{
+
+    height: 50%;
+
+    width: 100%;
+  }

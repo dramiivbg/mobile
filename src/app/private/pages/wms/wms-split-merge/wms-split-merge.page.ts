@@ -3,6 +3,10 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-merge.component';
 import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
+import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
+import { WmsService } from '@svc/wms.service';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-wms-split-merge',
@@ -11,7 +15,13 @@ import { PopoverSplitComponent } from '@prv/components/popover-split/popover-spl
 })
 export class WmsSplitMergePage implements OnInit {
 
-  constructor( private barcodeScanner: BarcodeScanner, public popoverController: PopoverController) { }
+  public lp:any = undefined;
+
+  public palletH:any = undefined;
+  public palletL:any[] = [];
+
+  constructor( private barcodeScanner: BarcodeScanner, public popoverController: PopoverController, private wmsService:WmsService,
+    private intServ: InterceptService,  private js: JsonService) { }
 
   ngOnInit() {
   }
@@ -27,19 +37,70 @@ export class WmsSplitMergePage implements OnInit {
 
 
   public onBarCode() {
+
+    let lp;
+
     this.barcodeScanner.scan().then(
-      barCodeData => {
-        let code = barCodeData.text;
+      async(barCodeData) => {
+        let No = barCodeData.text;
        
 
-        console.log(code);
-      /*  if (line === null || line === undefined) {
-          this.intServ.alertFunc(this.js.getAlert('error', 'Error', `The item '${code}' does not exist on this receipt`));
-        } else {
-          console.log(line);
-        }
+        this.intServ.loadingFunc(true);
 
-        */
+        try {
+
+           lp = await this.wmsService.getLpNo(No.toUpperCase());
+
+           console.log(lp);
+
+
+          if(lp.Error) throw Error(lp.Error.Message);
+
+          let lpH = await this.wmsService.ListLpH(lp);
+          this.lp = await this.wmsService.ListLp(lp);
+
+          if(this.lp.fields.PLULicensePlateStatus !== 'Stored') throw Error('The license plate to scan must be in storage');
+
+          if(this.lp.fields.PLULPDocumentType === 'Single'){
+
+            this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
+            this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
+            this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
+  
+            this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument
+            this.lp.fields.PLUUnitofMeasure =  lpH.fields.PLUUnitofMeasure;
+  
+            
+            
+  
+            console.log(this.lp);
+  
+            this.intServ.loadingFunc(false);
+
+          }else{
+
+
+            this.palletH = await this.wmsService.PalletH(lp);
+
+            this.palletL = await this.wmsService.PalletL(lp);
+
+            console.log(this.palletH);
+
+            console.log(this.palletL);
+
+            this.intServ.loadingFunc(false);
+
+          }
+
+      
+          
+        } catch (error) {
+
+          this.intServ.loadingFunc(false);
+
+          this.intServ.alertFunc(this.js.getAlert('error',' ' , error.message));
+          
+        }
       }
     ).catch(
       err => {

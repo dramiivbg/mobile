@@ -1,0 +1,45 @@
+
+ <ion-content class="ion-margin" >
+
+    
+  <ion-grid>
+
+      <ion-row style="text-align: center;" class="row">
+        <ion-col>BinCode</ion-col>
+        <ion-col>Document</ion-col>
+        <ion-col>DocumentNo</ion-col>
+        <ion-col>EntryType</ion-col>
+        <ion-col>LicensePlateStatus</ion-col>
+        <ion-col>LocationCode</ion-col>
+        <ion-col>PostingDate</ion-col>
+        <ion-col>Quantity</ion-col>
+        <ion-col>UnitofMeasure</ion-col>
+        <ion-col>UserName</ion-col>
+      
+    
+      </ion-row>
+
+      <div id="taula"  > 
+        <ion-row *ngFor="let item of logs.LicensePlateEntries">
+        
+         <ion-col >{{item.BinCode}}</ion-col>
+         <ion-col>{{item.Document}}</ion-col>
+         <ion-col>{{item.DocumentNo}}</ion-col>
+         <ion-col>{{item.EntryType}}</ion-col>
+         <ion-col>{{item.LicensePlateStatus}}</ion-col>
+         <ion-col>{{item.LocationCode}}</ion-col>
+         <ion-col>{{item.PostingDate}}</ion-col>
+         <ion-col>{{item.Quantity}}</ion-col>
+         <ion-col>{{item.UnitofMeasure}}</ion-col>
+         <ion-col>{{item.UserName}}</ion-col>
+        
+
+        </ion-row>
+  
+
+
+   
+      </div>  
+    </ion-grid>
+
+</ion-content>

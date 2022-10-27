@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
+import { PopoverLogLpComponent } from '../popover-log-lp/popover-log-lp.component';
 
 @Component({
   selector: 'app-read-license-plate',
@@ -17,7 +19,7 @@ export class ReadLicensePlateComponent implements OnInit {
   public palletH:any = undefined;
   public palletL:any[] = [];
   constructor(private barcodeScanner: BarcodeScanner,  private intServ: InterceptService, private wmsService: WmsService,
-    private js: JsonService ) { }
+    private js: JsonService, public popoverController: PopoverController ) { }
 
   ngOnInit() {}
 
@@ -86,7 +88,7 @@ export class ReadLicensePlateComponent implements OnInit {
 
           this.intServ.loadingFunc(false);
 
-          this.intServ.alertFunc(this.js.getAlert('error',lp.Error.Code , error.message));
+          this.intServ.alertFunc(this.js.getAlert('error',' ' , error.message));
           
         }
       
@@ -100,5 +102,28 @@ export class ReadLicensePlateComponent implements OnInit {
 
 
   }
+
+
+  async log(No:any,ev){
+
+
+   let log = await this.wmsService.Get_LPLedgerEntries(No.toUpperCase());
+    const popover = await this.popoverController.create({
+      component: PopoverLogLpComponent,
+      cssClass: 'popoverPls',
+      event: ev,
+      translucent: true,
+      componentProps: { logs: log }
+    });
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+
+    
+    
+
+  }
+
+
 
 }
