@@ -13,9 +13,8 @@ import { PopoverLogLpComponent } from '../popover-log-lp/popover-log-lp.componen
 })
 export class ReadLicensePlateComponent implements OnInit {
 
-
+  public principalcontent:boolean=true;
   public lp:any = undefined;
-
   public palletH:any = undefined;
   public palletL:any[] = [];
   constructor(private barcodeScanner: BarcodeScanner,  private intServ: InterceptService, private wmsService: WmsService,
@@ -51,6 +50,8 @@ export class ReadLicensePlateComponent implements OnInit {
             this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
             this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
             this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
+
+            this.principalcontent = false
   
             this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument
             this.lp.fields.PLUUnitofMeasure =  lpH.fields.PLUUnitofMeasure;
@@ -64,6 +65,7 @@ export class ReadLicensePlateComponent implements OnInit {
 
           }else{
 
+            this.principalcontent = false;
 
             this.palletH = await this.wmsService.PalletH(lp);
 

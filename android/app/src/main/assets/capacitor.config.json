@@ -12,6 +12,10 @@
 	"cordova": {},
 	"server": {
 		"cleartext": true,
+<<<<<<< HEAD
 		"url": "http://192.168.40.224:8100"
+=======
+		"url": "http://192.168.0.85:8100"
+>>>>>>> 4fcba00faddbb52e9cc88872d64230a9d0560da7
 	}
 }
