@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 <PlureHeader type="1" title="Read License Plate" url="page/wms/wmsMain" notify="0"></PlureHeader>
+=======
+<PlureHeader type="1" title="Read license plate" url="page/wms/wmsMain" notify="0"></PlureHeader>
+>>>>>>> ivan.dario
 
 <ion-content>
   <div class="designform-header">
@@ -43,8 +47,10 @@
     </ion-row>
 
     <ion-row class="headerowprinc" *ngIf="principalcontent">
-      <ion-col></ion-col>
-      <ion-col></ion-col>
+      <ion-col size="12">Please scan or enter the License Plate ID</ion-col>
+      <ion-col class="inputscan" size="6">
+        <ion-input [clearInput]="true" placeholder="Enter the LP ID"></ion-input>
+      </ion-col>
     </ion-row>
   </div>
 
@@ -70,13 +76,20 @@
 
     <ion-item class="Title">
 
-      <ion-row size="6">
-        <ion-col>
+      <ion-row>
+        <ion-col size="6">
 
+<<<<<<< HEAD
           <h2><strong>General</strong></h2>
 
         </ion-col>
         <ion-col class="buttonhistory" size="6">
+=======
+          <h3><strong>General</strong></h3>
+
+        </ion-col>
+        <ion-col size="6" class="buttonhistory">
+>>>>>>> ivan.dario
 
           <ion-button style="color: #F2F2F2 !important" (click)="log(lp.fields.PLULPDocumentNo,$event)">
             <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
@@ -87,7 +100,7 @@
 
     </ion-item>
 
-    <ion-row style="padding-top: 20px;">
+    <ion-row class="rowlistfirst">
 
       <ion-col class="Subtitle">
 
@@ -101,9 +114,15 @@
       </ion-col>
     </ion-row>
 
+<<<<<<< HEAD
 
     <ion-row style="padding-top: 10px;">
 
+=======
+
+    <ion-row class="rowlist">
+
+>>>>>>> ivan.dario
       <ion-col class="Subtitle">
 
         Location Code.
@@ -116,9 +135,15 @@
       </ion-col>
     </ion-row>
 
+<<<<<<< HEAD
 
     <ion-row style="padding-top: 10px;">
 
+=======
+
+    <ion-row class="rowlist">
+
+>>>>>>> ivan.dario
       <ion-col class="Subtitle">
 
         Zone Code.
@@ -131,7 +156,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -145,7 +170,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -159,7 +184,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -173,7 +198,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -187,12 +212,21 @@
       </ion-col>
     </ion-row>
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> ivan.dario
 
 
-    <ion-row style="padding-top: 10px;">
+<<<<<<< HEAD
+      <ion-col class="Subtitle">
+
+=======
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
+>>>>>>> ivan.dario
         Document Type.
       </ion-col>
 
@@ -211,7 +245,7 @@
 
 
 
-    <ion-row style="padding-top: 20px;">
+    <ion-row class="rowlistfirst">
 
       <ion-col class="Subtitle">
 
@@ -227,7 +261,7 @@
 
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -243,7 +277,7 @@
 
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -259,7 +293,7 @@
 
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -275,7 +309,7 @@
 
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -300,23 +334,23 @@
 
     <ion-item class="Title">
 
-     <ion-row size="6">
-      <ion-col>
+      <ion-row size="6">
+        <ion-col>
 
-        <h2><strong>General</strong></h2> 
+          <h2><strong>General</strong></h2>
 
-      </ion-col>
-      <ion-col size="6"  style="padding-top: 15px;padding-left: 110px;">
+        </ion-col>
+        <ion-col size="6" class="buttonhistory">
 
-        <ion-button style="color: #F2F2F2 !important" (click)="log(palletH.fields.PLULPDocumentNo,$event)">
-          <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
-          Logs
-        </ion-button>
-      </ion-col>
-    </ion-row>
+          <ion-button style="color: #F2F2F2 !important" (click)="log(palletH.fields.PLULPDocumentNo,$event)">
+            <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
+            Logs
+          </ion-button>
+        </ion-col>
+      </ion-row>
     </ion-item>
 
-    <ion-row style="padding-top: 20px;">
+    <ion-row class="rowlistfirst">
 
       <ion-col class="Subtitle">
 
@@ -324,43 +358,67 @@
       </ion-col>
 
 
+<<<<<<< HEAD
       <ion-col class="label" size="5">
+=======
+      <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
         {{palletH.fields.PLULPDocumentNo}}
       </ion-col>
     </ion-row>
 
+<<<<<<< HEAD
 
     <ion-row style="padding-top: 10px;">
 
+=======
+
+    <ion-row class="rowlist">
+
+>>>>>>> ivan.dario
       <ion-col class="Subtitle">
 
         Location Code.
       </ion-col>
 
 
+<<<<<<< HEAD
       <ion-col class="label" size="5">
+=======
+      <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
         {{palletH.fields.PLULocationCode}}
       </ion-col>
     </ion-row>
 
+<<<<<<< HEAD
 
     <ion-row style="padding-top: 10px;">
 
+=======
+
+    <ion-row class="rowlist">
+
+>>>>>>> ivan.dario
       <ion-col class="Subtitle">
 
         Zone Code.
       </ion-col>
 
 
+<<<<<<< HEAD
       <ion-col class="label" size="5">
+=======
+      <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
         {{palletH.fields.PLUZoneCode}}
       </ion-col>
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -368,13 +426,17 @@
       </ion-col>
 
 
+<<<<<<< HEAD
       <ion-col class="label" size="5">
+=======
+      <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
         {{palletH.fields.PLULicensePlateStatus}}
       </ion-col>
     </ion-row>
 
-    <ion-row style="padding-top: 10px;">
+    <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
 
@@ -382,22 +444,38 @@
       </ion-col>
 
 
+<<<<<<< HEAD
       <ion-col class="label" size="5">
+=======
+      <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
         {{palletH.fields.PLUBinCode}}
       </ion-col>
     </ion-row>
 
+<<<<<<< HEAD
 
     <ion-row style="padding-top: 10px;">
 
       <ion-col class="Subtitle">
 
+=======
+
+    <ion-row class="rowlist">
+
+      <ion-col class="Subtitle">
+
+>>>>>>> ivan.dario
         Document Type.
       </ion-col>
 
 
+<<<<<<< HEAD
       <ion-col class="label" size="5">
+=======
+      <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
         {{palletH.fields.PLULPDocumentType}}
       </ion-col>
@@ -411,7 +489,11 @@
 
 
     <ion-list class="list" *ngFor="let item of palletL">
+<<<<<<< HEAD
       <ion-row style="padding-top: 20px;">
+=======
+      <ion-row class="rowlistfirst">
+>>>>>>> ivan.dario
 
         <ion-col class="Subtitle">
 
@@ -419,7 +501,11 @@
         </ion-col>
 
 
+<<<<<<< HEAD
         <ion-col class="label" size="5">
+=======
+        <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
           {{item.PLUType}}
         </ion-col>
@@ -427,7 +513,11 @@
 
       </ion-row>
 
+<<<<<<< HEAD
       <ion-row style="padding-top: 10px;">
+=======
+      <ion-row class="rowlist">
+>>>>>>> ivan.dario
 
         <ion-col class="Subtitle">
 
@@ -435,7 +525,11 @@
         </ion-col>
 
 
+<<<<<<< HEAD
         <ion-col class="label" size="5">
+=======
+        <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
           {{item.PLUNo}}
         </ion-col>
@@ -443,7 +537,11 @@
 
       </ion-row>
 
+<<<<<<< HEAD
       <ion-row style="padding-top: 10px;">
+=======
+      <ion-row class="rowlist">
+>>>>>>> ivan.dario
 
         <ion-col class="Subtitle">
 
@@ -451,7 +549,11 @@
         </ion-col>
 
 
+<<<<<<< HEAD
         <ion-col class="label" size="5">
+=======
+        <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
           {{item.PLUDescription}}
         </ion-col>
@@ -459,7 +561,11 @@
 
       </ion-row>
 
+<<<<<<< HEAD
       <ion-row style="padding-top: 10px;">
+=======
+      <ion-row class="rowlist">
+>>>>>>> ivan.dario
 
         <ion-col class="Subtitle">
 
@@ -467,7 +573,11 @@
         </ion-col>
 
 
+<<<<<<< HEAD
         <ion-col class="label" size="5">
+=======
+        <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
           {{item.PLUQuantity}}
         </ion-col>
@@ -475,7 +585,11 @@
 
       </ion-row>
 
+<<<<<<< HEAD
       <ion-row style="padding-top: 10px;">
+=======
+      <ion-row class="rowlist">
+>>>>>>> ivan.dario
 
         <ion-col class="Subtitle">
 
@@ -483,7 +597,11 @@
         </ion-col>
 
 
+<<<<<<< HEAD
         <ion-col  class="label" size="5">
+=======
+        <ion-col size="5" class="label">
+>>>>>>> ivan.dario
 
           {{item.PLUUnitofMeasureCode}}
         </ion-col>

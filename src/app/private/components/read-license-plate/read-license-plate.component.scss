@@ -3,8 +3,11 @@ ion-content {
 }
 
 ion-list {
+
+
     background: transparent !important;
     padding: 0 20px 0 20px;
+
 }
 
 .designform-header {
@@ -20,25 +23,67 @@ ion-list {
     height: 105px;
 }
 
-.headerow, .headerowprinc {
+.headerow,
+.headerowprinc {
     padding: 0 0 0 20px;
 }
 
-.headerowprinc{
-    height: 50px;
+.headerowprinc {
+    height: 40px !important;
 }
 
 .order-details {
     color: var(--ion-color-plureBlue);
-    padding: 0 0.2em 0;
+    padding: 12px 0.2em 0;
 
     ion-col.txt {
-    padding: 14px 0 0 20px;
+        padding: 14px 0 0 20px;
+
         ion-label {
             font-size: 20px;
             font-weight: bold;
         }
     }
+}
+
+.inputscan {
+    padding: 11px 0 0 0;
+    border-bottom: 1px solid var(--ion-color-plureMain);
+    width: 80% !important;
+}
+
+
+ion-item {
+    --background: transparent !important;
+    border-bottom: 1px solid black;
+}
+
+.Title {
+    color: var(--ion-color-plureBlue);
+    padding-top: 5px;
+    font-weight: bold;
+    font-size: 20px;
+
+}
+
+.Subtitle {
+    color: var(--ion-color-plureBlue);
+}
+
+.label {
+    background-color: rgba(21, 73, 131, 0.2);
+    height: 25px;
+    border-radius: 23px;
+}
+
+.list {
+    border-bottom: 2px solid #aaaaaa;
+    padding: 5px 0 5px 0 !important;
+}
+
+.buttonhistory {
+    padding-top: 20px;
+    padding-left: 65px;
 }
 
 .footerReceipt {
@@ -62,37 +107,14 @@ ion-list {
 }
 
 ion-item {
-    --background: transparent !important;
-    border-bottom: 1px solid black;
+
+    border-bottom: 2px solid black;
 }
 
-.inputwrite{
-    --background: transparent;
+.rowlistfirst {
     padding-top: 10px;
 }
 
-.Title{
-    color: var(--ion-color-plureBlue);
-     padding-top: 20px;
-
+.rowlist {
+    padding-top: 4px;
 }
-
-.Subtitle{
-    color: var(--ion-color-plureBlue);
-}
-
-.label{
-    background-color: rgba(21, 73, 131, 0.2);
-    height: 25px;
-    border-radius: 23px;
-}
-
-.list{
-    border-bottom: 2px solid #aaaaaa;
-}
-
-.buttonhistory{
-    padding-top: 15px;
-    padding-left: 65px;
-}
- 
