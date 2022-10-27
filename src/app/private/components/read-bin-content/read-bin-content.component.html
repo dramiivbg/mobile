@@ -1,3 +1,33 @@
-<p>
-  read-bin-content works!
-</p>
+<PlureHeader type="1" title="Read Bin" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
+<ion-content>
+  <form>
+    <div class="designform-header">
+      <ion-row>
+        <ion-col size="4">
+          <ion-label>Bin.</ion-label>
+        </ion-col>
+        <ion-col size="4">
+          <ion-label>Loc.</ion-label>
+        </ion-col>
+        <ion-col size="4">
+          <ion-label>Zone.</ion-label>
+        </ion-col>
+        <ion-col size="12">
+          <ion-label>Posting Date.</ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+
+
+  </form>
+</ion-content>
+
+<PlureVersion class="footerReceipt" showVersion="0">
+  <ion-row>
+    <ion-col size="12" (click)="onBarCode()">
+      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooter">Bar code</div>
+    </ion-col>
+  </ion-row>
+</PlureVersion>

@@ -11,7 +11,7 @@ import { WmsService } from '@svc/wms.service';
 })
 export class ReadLicensePlateComponent implements OnInit {
 
-
+  public principalcontent:boolean=true;
   public lp:any = undefined;
   constructor(private barcodeScanner: BarcodeScanner,  private intServ: InterceptService, private wmsService: WmsService,
     private js: JsonService ) { }
@@ -44,7 +44,9 @@ export class ReadLicensePlateComponent implements OnInit {
           this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
           this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
 
-          this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument
+          this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument;
+
+          this.principalcontent = false
 
           
           
