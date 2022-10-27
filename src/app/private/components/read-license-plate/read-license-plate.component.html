@@ -62,7 +62,7 @@
         </ion-col>
         <ion-col size="6"  style="padding-top: 15px;padding-left: 110px;">
 
-          <ion-button style="color: #F2F2F2 !important">
+          <ion-button style="color: #F2F2F2 !important" (click)="log(lp.fields.PLULPDocumentNo,$event)">
             <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
             Logs
           </ion-button>
@@ -284,7 +284,20 @@
 
     <ion-item >
 
-     <h2><strong>General</strong></h2> 
+     <ion-row size="6">
+      <ion-col>
+
+        <h2><strong>General</strong></h2> 
+
+      </ion-col>
+      <ion-col size="6"  style="padding-top: 15px;padding-left: 110px;">
+
+        <ion-button style="color: #F2F2F2 !important" (click)="log(palletH.fields.PLULPDocumentNo,$event)">
+          <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
+          Logs
+        </ion-button>
+      </ion-col>
+    </ion-row>
     </ion-item>
 
     <ion-row style="padding-top: 20px;">
