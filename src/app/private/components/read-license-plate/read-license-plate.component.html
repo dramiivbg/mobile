@@ -1,53 +1,70 @@
-<PlureHeader type="1" title="Read License Plate" url="page/main/modules" notify="0"></PlureHeader>
+<PlureHeader type="1" title="Read License Plate" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 <ion-content>
   <div class="designform-header">
 
-  <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single'">
-    <ion-col size="4">
-      Whse. Document. 
-    </ion-col>
-    <ion-col size="7">
-      {{lp.fields.PLUWhseDocument}}
-    </ion-col>
-  </ion-row>
+    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single'">
+      <ion-col size="4">
+        Whse. Document.
+      </ion-col>
+      <ion-col size="7">
+        {{lp.fields.PLUWhseDocument}}
+      </ion-col>
+    </ion-row>
 
 
-  <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single' ">
-    <ion-col size="4">
-      Reference No.
-    </ion-col>
-    <ion-col size="7"> 
-      {{lp.fields.PLUWhseDocumentNo}}
-    </ion-col>
-  </ion-row>
+    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single' ">
+      <ion-col size="4">
+        Reference No.
+      </ion-col>
+      <ion-col size="7">
+        {{lp.fields.PLUWhseDocumentNo}}
+      </ion-col>
+    </ion-row>
 
 
-  <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Pallet'">
-    <ion-col size="4">
-      Whse. Document. 
-    </ion-col>
-    <ion-col size="7">
-      {{palletH.fields.PLUWhseDocument}}
-    </ion-col>
-  </ion-row>
+    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Pallet'">
+      <ion-col size="4">
+        Whse. Document.
+      </ion-col>
+      <ion-col size="7">
+        {{palletH.fields.PLUWhseDocument}}
+      </ion-col>
+    </ion-row>
 
 
-  <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Pallet' ">
-    <ion-col size="4">
-      Reference No.
-    </ion-col>
-    <ion-col size="7"> 
-      {{palletH.fields.PLUWhseDocumentNo}}
-    </ion-col>
-  </ion-row>
+    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Pallet' ">
+      <ion-col size="4">
+        Reference No.
+      </ion-col>
+      <ion-col size="7">
+        {{palletH.fields.PLUWhseDocumentNo}}
+      </ion-col>
+    </ion-row>
 
-  <ion-row class="headerow">
-    <ion-col>
-      
-    </ion-col>
-  </ion-row>
+    <ion-row class="headerowprinc" *ngIf="principalcontent">
+      <ion-col></ion-col>
+      <ion-col></ion-col>
+    </ion-row>
   </div>
+
+  <div class="order-details" *ngIf="principalcontent">
+    <ion-row>
+      <ion-col size="12" class="txt">
+        <ion-label>Please scan or enter the License Plate ID</ion-label>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <ion-list *ngIf="principalcontent">
+    <ion-item class="inputwrite">
+      <ion-row class="inputscanRow">
+        <ion-col class="inputscan" size="10">
+          <ion-input [clearInput]="true" placeholder="Enter the LP ID"></ion-input>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
 
   <ion-list *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single'">
 
@@ -56,10 +73,10 @@
       <ion-row size="6">
         <ion-col>
 
-          <h2><strong>General</strong></h2> 
+          <h2><strong>General</strong></h2>
 
         </ion-col>
-        <ion-col size="6"  style="padding-top: 15px;padding-left: 110px;">
+        <ion-col class="buttonhistory" size="6">
 
           <ion-button style="color: #F2F2F2 !important">
             <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
@@ -67,7 +84,7 @@
           </ion-button>
         </ion-col>
       </ion-row>
-  
+
     </ion-item>
 
     <ion-row style="padding-top: 20px;">
@@ -170,17 +187,17 @@
       </ion-col>
     </ion-row>
 
-    
+
 
     <ion-row style="padding-top: 10px;">
 
-      <ion-col >
+      <ion-col class="Subtitle">
 
-      Document Type.
+        Document Type.
       </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+      <ion-col size="5" class="label">
 
         {{lp.fields.PLULPDocumentType}}
       </ion-col>
@@ -281,50 +298,50 @@
 
   <ion-list *ngIf="palletH != undefined && lp.fields.PLULPDocumentType === 'Pallet'">
 
-    <ion-item >
+    <ion-item class="Title">
 
-     <h2><strong>General</strong></h2> 
+      <h2><strong>General</strong></h2>
     </ion-item>
 
     <ion-row style="padding-top: 20px;">
 
-      <ion-col >
+      <ion-col class="Subtitle">
 
         Document No.
       </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+      <ion-col class="label" size="5">
 
         {{palletH.fields.PLULPDocumentNo}}
       </ion-col>
     </ion-row>
 
-    
+
     <ion-row style="padding-top: 10px;">
 
-      <ion-col >
+      <ion-col class="Subtitle">
 
         Location Code.
       </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+      <ion-col class="label" size="5">
 
         {{palletH.fields.PLULocationCode}}
       </ion-col>
     </ion-row>
 
-      
+
     <ion-row style="padding-top: 10px;">
 
-      <ion-col >
+      <ion-col class="Subtitle">
 
         Zone Code.
       </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+      <ion-col class="label" size="5">
 
         {{palletH.fields.PLUZoneCode}}
       </ion-col>
@@ -332,13 +349,13 @@
 
     <ion-row style="padding-top: 10px;">
 
-      <ion-col >
+      <ion-col class="Subtitle">
 
-       License Plate Status.
+        License Plate Status.
       </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+      <ion-col class="label" size="5">
 
         {{palletH.fields.PLULicensePlateStatus}}
       </ion-col>
@@ -346,124 +363,124 @@
 
     <ion-row style="padding-top: 10px;">
 
-      <ion-col >
+      <ion-col class="Subtitle">
 
-       Bin Code.
+        Bin Code.
       </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+      <ion-col class="label" size="5">
 
         {{palletH.fields.PLUBinCode}}
       </ion-col>
     </ion-row>
 
-  
+
     <ion-row style="padding-top: 10px;">
 
-      <ion-col >
+      <ion-col class="Subtitle">
 
-      Document Type.
+        Document Type.
       </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+      <ion-col class="label" size="5">
 
         {{palletH.fields.PLULPDocumentType}}
       </ion-col>
 
     </ion-row>
 
-    <ion-item>
+    <ion-item class="Title">
 
-      <h3><strong>Lines</strong></h3> 
-     </ion-item>
-
-
-<ion-list class="list" *ngFor="let item of palletL">
-    <ion-row style="padding-top: 20px;">
-
-      <ion-col>
-
-        LP Type.
-      </ion-col>
+      <h3><strong>Lines</strong></h3>
+    </ion-item>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+    <ion-list class="list" *ngFor="let item of palletL">
+      <ion-row style="padding-top: 20px;">
 
-        {{item.PLUType}}
-      </ion-col>
+        <ion-col class="Subtitle">
 
-     
-    </ion-row>
-
-    <ion-row style="padding-top: 10px;">
-
-      <ion-col>
-
-        No.
-      </ion-col>
+          LP Type.
+        </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px;">
+        <ion-col class="label" size="5">
 
-        {{item.PLUNo}}
-      </ion-col>
-
-     
-    </ion-row>
-
-    <ion-row style="padding-top: 10px;">
-
-      <ion-col>
-
-        Description.
-      </ion-col>
+          {{item.PLUType}}
+        </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 20px; height: 25px; width: 30px;">
+      </ion-row>
 
-        {{item.PLUDescription}}
-      </ion-col>
+      <ion-row style="padding-top: 10px;">
 
-     
-    </ion-row>
+        <ion-col class="Subtitle">
 
-    <ion-row style="padding-top: 10px;">
-
-      <ion-col>
-
-        Quantity.
-      </ion-col>
+          No.
+        </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+        <ion-col class="label" size="5">
 
-        {{item.PLUQuantity}}
-      </ion-col>
-
-     
-    </ion-row>
-
-    <ion-row style="padding-top: 10px;">
-
-      <ion-col>
-
-        Unit of Measure Code.
-      </ion-col>
+          {{item.PLUNo}}
+        </ion-col>
 
 
-      <ion-col size="5" style="background-color:  #aaaaaa; padding-right: 100px; height: 25px; width: 30px;">
+      </ion-row>
 
-        {{item.PLUUnitofMeasureCode}}
-      </ion-col>
+      <ion-row style="padding-top: 10px;">
 
-     
-    </ion-row>
+        <ion-col class="Subtitle">
 
- </ion-list>
+          Description.
+        </ion-col>
 
-</ion-list>
+
+        <ion-col class="label" size="5">
+
+          {{item.PLUDescription}}
+        </ion-col>
+
+
+      </ion-row>
+
+      <ion-row style="padding-top: 10px;">
+
+        <ion-col class="Subtitle">
+
+          Quantity.
+        </ion-col>
+
+
+        <ion-col class="label" size="5">
+
+          {{item.PLUQuantity}}
+        </ion-col>
+
+
+      </ion-row>
+
+      <ion-row style="padding-top: 10px;">
+
+        <ion-col class="Subtitle">
+
+          Unit of Measure Code.
+        </ion-col>
+
+
+        <ion-col  class="label" size="5">
+
+          {{item.PLUUnitofMeasureCode}}
+        </ion-col>
+
+
+      </ion-row>
+
+    </ion-list>
+
+  </ion-list>
 
 
 

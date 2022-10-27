@@ -40,18 +40,19 @@ export class ReadLicensePlateComponent implements OnInit {
 
 
           if(lp.Error) throw Error(lp.Error.Message);
-
           let lpH = await this.wmsService.ListLpH(lp);
           this.lp = await this.wmsService.ListLp(lp);
 
           if(this.lp.fields.PLULPDocumentType === 'Single'){
 
+            this.principalcontent = false;
             this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
             this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
             this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
   
-            this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument
+            this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument;
             this.lp.fields.PLUUnitofMeasure =  lpH.fields.PLUUnitofMeasure;
+           
   
             
             
@@ -62,7 +63,7 @@ export class ReadLicensePlateComponent implements OnInit {
 
           }else{
 
-
+            this.principalcontent = false;
             this.palletH = await this.wmsService.PalletH(lp);
 
             this.palletL = await this.wmsService.PalletL(lp);
@@ -70,6 +71,10 @@ export class ReadLicensePlateComponent implements OnInit {
             console.log(this.palletH);
 
             console.log(this.palletL);
+
+            console.log(this.palletH,this.palletL);
+
+          
 
             this.intServ.loadingFunc(false);
 
