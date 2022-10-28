@@ -1237,15 +1237,30 @@ async init(){
 
    const  listPalletH  = await this.wmsService.ListPallets(pallets);
 
-     listPallet.filter(lp => {
+     listPallet.filter((lp,index) => {
+
+    
+
+     let  line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      
+
+        lp.fields.PLUBinCode = line.fields.PLUBinCode;
+        lp.fields.PLUItemNo = line.fields.PLUItemNo;
+  
+        this.initV.push(lp);
+
+        for (const key in this.initV) {
 
 
-      let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+          if(this.initV[key].fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
 
-      lp.fields.PLUBinCode = line.fields.PLUBinCode;
-      lp.fields.PLUItemNo = line.fields.PLUItemNo;
-
-      this.initV.push(lp);
+            this.initV.splice(index,1);
+          }
+        
+        }
+      
+  
 
 
 
@@ -1269,15 +1284,20 @@ async init(){
     
       listLp.filter(lp => {
   
+        
   
         let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-  
+
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
        
         this.initV.push(lp);
-      });
+      
+      
+    });
+
+      console.log(this.initV);
 
     }else{
 

@@ -35,6 +35,7 @@ import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-
 import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/read-license-plate.component';
 import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
 import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-log-lp.component';
+import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 
 
 
@@ -52,7 +53,7 @@ import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-lo
     PopoverNewPalletComponent,
     ListPalletComponent,
     ListPItemsComponent,
-  
+    OptionsLpsOrItemsComponent,
     PhysicalIntentoryPage,
     WmsMovementPage,
     WmsItemJournalPage,
@@ -97,7 +98,8 @@ import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-lo
     PopoverOpionsLpComponent,
     ReadLicensePlateComponent,
     ReadBinContentComponent,
-    PopoverLogLpComponent
+    PopoverLogLpComponent,
+    OptionsLpsOrItemsComponent,
   
   ]
 })
