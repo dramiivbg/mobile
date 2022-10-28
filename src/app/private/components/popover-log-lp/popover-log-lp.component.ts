@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 
 @Component({
@@ -11,12 +12,18 @@ export class PopoverLogLpComponent implements OnInit {
 
   @Input() logs: any = {} ;
  
-  constructor( private intServ: InterceptService) { }
+  constructor( private intServ: InterceptService, private modalCtrl: ModalController) { }
 
   ngOnInit() {
 
 
    
+  }
+
+  exit(){
+
+    this.modalCtrl.dismiss({});
+
   }
 
 }
