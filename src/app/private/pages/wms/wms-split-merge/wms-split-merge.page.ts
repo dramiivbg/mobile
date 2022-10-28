@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { PopoverController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
+import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-merge.component';
 import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
 import { InterceptService } from '@svc/intercept.service';
@@ -27,7 +28,7 @@ export class WmsSplitMergePage implements OnInit {
   public palletL:any[] = [];
 
   constructor( private barcodeScanner: BarcodeScanner, public popoverController: PopoverController, private wmsService:WmsService,
-    private intServ: InterceptService,  private js: JsonService) { }
+    private intServ: InterceptService,  private js: JsonService, private modalCtrl: ModalController) { }
 
   ngOnInit() {
   }
@@ -181,6 +182,22 @@ export class WmsSplitMergePage implements OnInit {
   
   let lines = this.palletsL[pallet.fields.PLULPDocumentNo];
 
+  let No = pallet.fields.PLULPDocumentNo;
+
+
+  const modal = await this.modalCtrl.create({
+    component: OptionsLpsOrItemsComponent,
+    componentProps: {lists:lines,No}
+
+  
+  });
+  modal.present();
+
+  const { data, role } = await modal.onWillDismiss();
+
+
+
+  console.log(data);
 
   }
 
@@ -188,5 +205,10 @@ async  popoverMergeP(pallet:any,ev){
 
 
   }
+
+
+ 
+
+
 
 }
