@@ -11,10 +11,32 @@ import { InterceptService } from '@svc/intercept.service';
 export class PopoverLogLpComponent implements OnInit {
 
   @Input() logs: any = {} ;
+
+  public listLogs:any[] = [];
+
+  public listLogsFilter:any[] = [];
  
   constructor( private intServ: InterceptService, private modalCtrl: ModalController) { }
 
   ngOnInit() {
+
+
+    this.logs.LicensePlateEntries.filter(log => {
+
+      let f  = new  Date(log.PostingDate);
+
+      let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
+
+      log.PostingDate = fecha;
+
+
+    });
+
+
+    this.listLogsFilter = this.logs.LicensePlateEntries;
+
+    this.listLogs = this.logs.LicensePlateEntries;
+
 
 
    
@@ -23,6 +45,25 @@ export class PopoverLogLpComponent implements OnInit {
   exit(){
 
     this.modalCtrl.dismiss({});
+
+  }
+
+  onChange(e){
+
+    let val = e.target.value;
+
+    if (val === '') {
+      this.listLogsFilter = this.listLogs;
+     } else {
+       this.listLogsFilter = this.listLogs.filter(
+         x => {
+           return (x.BinCode.toLowerCase().includes(val.toLowerCase()) || x.Document.toLowerCase().includes(val.toLowerCase()) || x.DocumentNo.toLowerCase().includes(val.toLowerCase())
+           || x.EntryType.toLowerCase().includes(val.toLowerCase()) || x.LicensePlateStatus.toLowerCase().includes(val.toLowerCase()) || x.LocationCode.toLowerCase().includes(val.toLowerCase())
+            || x.PostingDate.toLowerCase().includes(val.toLowerCase()) || x.Quantity.toLowerCase().includes(val.toLowerCase()) || x.UnitofMeasure.toLowerCase().includes(val.toLowerCase())
+             || x.UserName.toLowerCase().includes(val.toLowerCase()));
+         }
+       )
+     }
 
   }
 

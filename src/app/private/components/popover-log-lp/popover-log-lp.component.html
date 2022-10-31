@@ -20,10 +20,10 @@
 
   <ion-item>
     <ion-label class="inputlabel" position="floating">Filter</ion-label>
-    <ion-input [clearInput]="true" placeholder="Search"></ion-input>
+    <ion-input [clearInput]="true" (ionInput)="onChange($event)" placeholder="Search"></ion-input>
   </ion-item>
 
-  <ion-grid class="table" *ngFor="let item of logs.LicensePlateEntries">
+  <ion-grid class="table" *ngFor="let item of listLogsFilter">
     <ion-row class="rowtable">
       <ion-col size="5" class="titleitem">Bin Code</ion-col>
       <ion-col size="7" class="dataitem">{{item.BinCode}}</ion-col>

@@ -43,7 +43,7 @@
                         
                                 <ion-item>
                                     <div class="label-lines" part="item-width" >
-                                        <ion-row class="row1" *ngIf="lp !== undefined && lp.fields.PLULPDocumentType === 'Single'">
+                                        <ion-row class="row1" *ngIf="lp !== undefined">
                                             <ion-col size="15" *ngFor="let item of lps">
                                                 <ion-row >
                                                     <ion-col size="5" style="overflow: hidden;"
@@ -129,7 +129,7 @@
                                         </ion-row>
 
 
-                                        <ion-row class="row2" *ngIf="palletH  !== undefined && palletH.fields.PLULPDocumentType === 'Pallet'" >
+                                        <ion-row class="row2" *ngIf="palletH  !== undefined " >
                                             <ion-col size="15" *ngFor="let item of pallets">
                                                 <ion-row >
                                                     <ion-col size="5" style="overflow: hidden;"
