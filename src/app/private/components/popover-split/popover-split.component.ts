@@ -77,7 +77,7 @@ export class PopoverSplitComponent implements OnInit {
 
         let qtyN = obj['Quantity'];
   
-        let qty = this.lp.fields.PLUQuantity;
+        let qty = this.lp.fields.PLUQuantity - qtyN;
   
         let lpO = this.lp.fields.PLULPDocumentNo;
   

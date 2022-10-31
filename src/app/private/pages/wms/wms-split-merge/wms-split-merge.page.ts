@@ -279,8 +279,12 @@ export class WmsSplitMergePage implements OnInit {
 
 
 
-    if(data.data.PLUType === 'LP'){
+  switch(data.data.PLUType){
 
+
+    case 'LP':
+
+      this.intServ.loadingFunc(true);
 
       let palletN = await this.wmsService.GenerateEmptyLP(pallet.fields.PLUZoneCode,pallet.fields.PLULocationCode,"",'Pallet');
 
@@ -297,25 +301,66 @@ export class WmsSplitMergePage implements OnInit {
 
         let res = await this.wmsService.SplitPallet_LPSingle(obj);
 
+        console.log(res);
+
         if(res.Error) throw new Error(res.Error.Message);
         
+        console.log(res);
         
+        this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('success', '', `The license plate ${data.data.PLUNo} has been removed from the pallet ${pallet.fields.PLULPDocumentNo} to the pallet
          ${palletN.LPNo}`));
 
+         this.intServ.loadingFunc(true);
+         let lp = await this.wmsService.getLpNo(pallet.fields.PLULPDocumentNo.toUpperCase());
+
+         if(!lp.Error){
+
+          this.palletL = await this.wmsService.PalletL(lp);
+ 
+         this.palletsL[pallet.fields.PLULPDocumentNo] = this.palletL;
+
+         this.intServ.loadingFunc(false);
+         
+         
+         }else{
+
+          this.pallets.filter((Pallet,index) => {
+
+            if(Pallet.fields.PLULPDocumentNo === pallet.fields.PLULPDocumentNo){
+
+              this.pallets.splice(index,1);
+              
+            }
+          });
+
+          if(this.pallets.length === 0){
+            this.palletH = undefined;
+          }
+
+          this.intServ.loadingFunc(false);
+         }
+      
+
+
+
       } catch (error) {
 
-
+        this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('error','', error.message));
         
       }
 
      
+      break;
+
+    case 'Item':
+
+
+
+      break;
      
 
-
-
-    }else{
 
 
     }
