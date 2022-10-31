@@ -1,70 +1,86 @@
+ion-content {
+  --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
 
-#taula {
-
-   // overflow-y: auto;
-  
-  
-    --ion-grid-column-padding: 0.8px;
-    border-collapse: collapse;
-    border-style: hidden;
-   
-    
-  
-  
-  
-  
-   
-    ion-row{
-  
-      width: 100%;
-     
-    }
-   
-    
-   
-    ion-col {
-      // border: 1px solid black;
-      border-bottom: 0;
-      // border-right: 5%;
-      font-weight: 600;
-   
-   
-    }
-  
-  
-    .col{
-  
-      width: 100px;
-      
-  
-    }
+  .designform-header {
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+    padding-top: 5px;
+    padding-bottom: 0.5em;
+    position: relative;
+    color: #ffffff;
+    border-radius: 0 0 70% 0;
+    font-weight: bold;
+    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
   }
-  
-  
-  .row{
-  
 
-    
-    
-      background: var(--ion-color-plureheader);
+  .headerow {
+    padding: 5px 20px 0 20px !important;
+    text-align: center;
+  }
+
+  ion-item{
+    --background: transparent;
+
+    .inputlabel{
       font-weight: bold;
       color: var(--ion-color-plureBlue);
-  
-      ion-col {
-       
-        border-bottom: 0;
-        border-right: 0;
-        
-     
-     
-      }
-  
+    }
+
   }
-  
 
-  ion-grid{
+  .table {
+    padding: 25px 20px 15px 20px;
 
-    height: 50%;
+    .rowtable {
+      padding: 4px 0 4px 0;
+    }
 
-    width: 100%;
+    .titleitem{
+      font-weight: bold;
+      color: var(--ion-color-plureBlue);
+    }
+
+    .dataitem{
+      font-size: 14px;
+      background-color: rgba(21, 73, 131, 0.2);
+      border-radius: 23px;
+      font-weight: 600;
+      text-align: center;
+      text-transform: capitalize !important;
+    }
+
+    .spacer{
+      border: 2px solid var(--ion-color-plureMain);
+      padding: 5px 0 5px 0;
+    }
+
   }
+
+}
+
+ion-row {
+  width: 100%;
+}
+
+ion-col {
+  border-bottom: 0;
+  font-weight: 600;
+}
+
+.col {
+  width: 100px;
+}
+
+.row {
+  background: var(--ion-color-plureheader);
+  font-weight: bold;
+  color: var(--ion-color-plureBlue);
+
+  ion-col {
+    border-bottom: 0;
+    border-right: 0;
+  }
+}
+
+ion-grid {
+  width: 100%;
+}

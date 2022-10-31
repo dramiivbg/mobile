@@ -1,47 +1,68 @@
+<PlureHeader type="1" title="Time Line" url="page/wms/readLicensePlate" (click)="exit()" notify="0"></PlureHeader>
 
-<PlureHeader type="1" title="Split / Merge" url="page/wms/readLicensePlate" (click)="exit()" notify="0"></PlureHeader>
+<ion-content class="ion-margin">
 
- <ion-content class="ion-margin" >
-
-    
-  <ion-grid>
-
-      <ion-row style="text-align: center;" class="row">
-        <ion-col>BinCode</ion-col>
-        <ion-col>Document</ion-col>
-        <ion-col>DocumentNo</ion-col>
-        <ion-col>EntryType</ion-col>
-        <ion-col>LicensePlateStatus</ion-col>
-        <ion-col>LocationCode</ion-col>
-        <ion-col>PostingDate</ion-col>
-        <ion-col>Quantity</ion-col>
-        <ion-col>UnitofMeasure</ion-col>
-        <ion-col>UserName</ion-col>
-      
-    
+  <div class="designform-header">
+    <ion-row class="headerow" *ngFor="LP">
+      <ion-col>
+        <ion-label>License Plate Single </ion-label>
+      </ion-col>
+      <ion-row class="headerow" *ngFor="Pallet">
+        <ion-col>
+          <ion-label>Pallet </ion-label>
+        </ion-col>
       </ion-row>
+    </ion-row>
+    <ion-row>
+      <ion-col><br></ion-col>
+    </ion-row>
+  </div>
 
-      <div id="taula"  > 
-        <ion-row *ngFor="let item of logs.LicensePlateEntries">
-        
-         <ion-col >{{item.BinCode}}</ion-col>
-         <ion-col>{{item.Document}}</ion-col>
-         <ion-col>{{item.DocumentNo}}</ion-col>
-         <ion-col>{{item.EntryType}}</ion-col>
-         <ion-col>{{item.LicensePlateStatus}}</ion-col>
-         <ion-col>{{item.LocationCode}}</ion-col>
-         <ion-col>{{item.PostingDate}}</ion-col>
-         <ion-col>{{item.Quantity}}</ion-col>
-         <ion-col>{{item.UnitofMeasure}}</ion-col>
-         <ion-col>{{item.UserName}}</ion-col>
-        
+  <ion-item>
+    <ion-label class="inputlabel" position="floating">Filter</ion-label>
+    <ion-input [clearInput]="true" placeholder="Search"></ion-input>
+  </ion-item>
 
-        </ion-row>
-  
-
-
-   
-      </div>  
-    </ion-grid>
-
+  <ion-grid class="table" *ngFor="let item of logs.LicensePlateEntries">
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Bin Code</ion-col>
+      <ion-col size="7" class="dataitem">{{item.BinCode}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Document</ion-col>
+      <ion-col size="7" class="dataitem">{{item.Document}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Document No.</ion-col>
+      <ion-col size="7" class="dataitem">{{item.DocumentNo}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Entry Type</ion-col>
+      <ion-col size="7" class="dataitem">{{item.EntryType}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">LP Status</ion-col>
+      <ion-col size="7" class="dataitem">{{item.LicensePlateStatus}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Location Code</ion-col>
+      <ion-col size="7" class="dataitem">{{item.LocationCode}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Posting Date</ion-col>
+      <ion-col size="7" class="dataitem">{{item.PostingDate}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Quantity</ion-col>
+      <ion-col size="7" class="dataitem">{{item.Quantity}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">Unit of Measure</ion-col>
+      <ion-col size="7" class="dataitem">{{item.UnitofMeasure}}</ion-col>
+    </ion-row>
+    <ion-row class="rowtable">
+      <ion-col size="5" class="titleitem">User Name</ion-col>
+      <ion-col size="7" class="dataitem">{{item.UserName}}</ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
