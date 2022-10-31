@@ -50,7 +50,7 @@ export class ModulesPage implements OnInit {
   {
     let objBack = {
       func: () => {
-        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+        this.intServ.alertFunc(this.js.getAlert('confirm', ' ', 'Do you want to close the app?',
           () => {
             App.exitApp();
           }
@@ -141,11 +141,11 @@ export class ModulesPage implements OnInit {
   }
 
   async onSync(mod) {
-    this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Synchronization will be performed in the background',
+    this.intServ.alertFunc(this.js.getAlert('alert', ' ', 'Synchronization will be performed in the background',
       async () => {
         let objAlert = {
           funcError: (error) => {
-            this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
+            this.intServ.alertFunc(this.js.getAlert('error', '', error));
           },
           func: () => {
             let obj = undefined;
@@ -181,7 +181,7 @@ export class ModulesPage implements OnInit {
       };
       this.router.navigate(['page/sales/main'], navigationExtras);
     } catch (error) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', JSON.stringify(error)));
     }
   }
 
@@ -195,7 +195,7 @@ export class ModulesPage implements OnInit {
       };
       this.router.navigate(['page/wms/wmsMain'], navigationExtras);
     } catch (error) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', JSON.stringify(error)));
     }
   }
 
@@ -210,10 +210,10 @@ export class ModulesPage implements OnInit {
         };
         this.router.navigate(['page/payments/paymentMain'], navigationExtras);
       } else {
-        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This module is not available for the offline version.'));
+        this.intServ.alertFunc(this.js.getAlert('alert', ' ', 'This module is not available for the offline version.'));
       }
     } catch (error) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', JSON.stringify(error)));
     }
   }
 

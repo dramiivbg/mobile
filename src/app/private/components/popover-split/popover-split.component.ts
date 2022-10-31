@@ -93,7 +93,7 @@ export class PopoverSplitComponent implements OnInit {
 
         console.log(res);
 
-        if(res.Error) throw new Error(lpN.Error.Message);
+        if(res.Error) throw new Error(res.Error.Message);
 
 
         Swal.fire(
@@ -104,7 +104,7 @@ export class PopoverSplitComponent implements OnInit {
 
        
 
-        this.popoverController.dismiss({});
+        this.popoverController.dismiss({data: 'split', obj: this.lp.fields.PLULPDocumentNo});
 
       
 

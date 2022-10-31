@@ -20,6 +20,10 @@ export class WmsSplitMergePage implements OnInit {
 
   public lps:any[] = [];
 
+  public listLp:any[] = [];
+
+  public listPallet:any[] = [];
+
   public pallets:any[] = [];
 
   public palletsL:any[] = [];
@@ -36,11 +40,30 @@ export class WmsSplitMergePage implements OnInit {
 
   onFilter(e){
 
-    console.log(e.target.value);
+    let val = e.target.value;
 
 
+    if (val === '') {
+      this.lps = this.listLp;
+      this.pallets = this.listPallet;
+    } else {
+      this.lps = this.listLp.filter(
+        x => {
+           return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
 
+          });
+
+      this.pallets = this.listPallet.filter(
+           x => {
+            return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+
+          });
+     
+
+  
   }
+
+}
 
 
   public onBarCode() {
@@ -82,6 +105,7 @@ export class WmsSplitMergePage implements OnInit {
           if(line === undefined || line === null){
 
             this.lps.push(this.lp);
+            this.listLp.push(this.lp);
 
           }
             
@@ -103,6 +127,7 @@ export class WmsSplitMergePage implements OnInit {
             if(line === undefined || line === null){
   
               this.pallets.push(this.palletH);
+              this.listPallet.push(this.palletH);
 
               this.palletL = await this.wmsService.PalletL(lp);
 
@@ -158,6 +183,63 @@ export class WmsSplitMergePage implements OnInit {
     const { data } = await popover.onDidDismiss();
 
 
+    if(data.data == 'split'){
+
+      this.intServ.loadingFunc(true);
+
+      try {
+
+        lp = await this.wmsService.getLpNo(data.obj.toUpperCase());
+
+      if(!lp.Error){
+
+        let lpH = await this.wmsService.ListLpH(lp);
+        this.lp = await this.wmsService.ListLp(lp);
+
+        this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
+        this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
+        this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
+  
+        this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument
+        this.lp.fields.PLUUnitofMeasure =  lpH.fields.PLUUnitofMeasure;
+  
+        this.lps.filter(lp => {
+
+
+          if(lp.fields.PLULPDocumentNo  === this.lp.fields.PLULPDocumentNo){
+
+
+            lp.fields.PLUQuantity = this.lp.fields.PLUQuantity;
+          }
+      
+      });
+
+      this.intServ.loadingFunc(false);
+
+      }else{
+
+        this.lps.filter((lp,index) => {
+
+          if(lp.fields.PLUBinCode === data.obj.toUpperCase()){
+
+            this.lps.splice(index,1);
+
+          }
+        });
+
+        this.intServ.loadingFunc(false);
+        
+      }
+    
+  
+              
+      } catch (error) {
+        
+
+        this.intServ.loadingFunc(false);
+      }
+        }
+
   }
 
 
@@ -197,7 +279,48 @@ export class WmsSplitMergePage implements OnInit {
 
 
 
-  console.log(data);
+    if(data.data.PLUType === 'LP'){
+
+
+      let palletN = await this.wmsService.GenerateEmptyLP(pallet.fields.PLUZoneCode,pallet.fields.PLULocationCode,"",'Pallet');
+
+
+     
+      let obj = {
+
+          OldLPPalletCode: pallet.fields.PLULPDocumentNo,
+          NewLPPalletCode: palletN.LPNo,
+          LPChildSingleCode: data.data.PLUNo
+      }
+
+      try {
+
+        let res = await this.wmsService.SplitPallet_LPSingle(obj);
+
+        if(res.Error) throw new Error(res.Error.Message);
+        
+        
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The license plate ${data.data.PLUNo} has been removed from the pallet ${pallet.fields.PLULPDocumentNo} to the pallet
+         ${palletN.LPNo}`));
+
+      } catch (error) {
+
+
+        this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+        
+      }
+
+     
+     
+
+
+
+    }else{
+
+
+    }
+
+  
 
   }
 

@@ -30,10 +30,7 @@
         
          
                 <ion-row class=" newColor" >
-                  <ion-col>
-                    <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
-                
-                  </ion-col>
+                 
                 
                   <ion-col size="3">
                     <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
@@ -49,20 +46,9 @@
               
               
               
-                <ion-row class=" delivery ContentTable" *ngFor="let item of lists ; let i= index">
+                <ion-row class=" delivery ContentTable" *ngFor="let item of lists ; let i= index" (click)="select(item,$event)">
                   
                  
-                  <ion-col *ngIf="testList.length > 0">
-                
-        
-        
-                      
-                        <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]=" testList[i].checked"></ion-checkbox>
-                   
-                 
-          
-                  </ion-col>
-        
         
                
                   <ion-col size="3">
@@ -88,14 +74,7 @@
           </ion-list>
         </ion-content>
 
-        <ion-tab-bar class="footerlistpitems" slot="bottom">
- 
-          <ion-tab-button tab="games" (click)="onSubmit()">
-            <ion-icon class="itemfooter" size="large" name="arrow-redo-outline"></ion-icon>
-            <div class="itemfooter">Take</div>
-
-           </ion-tab-button>
-         </ion-tab-bar>
+      
   
  
  

@@ -893,6 +893,34 @@ public async Merge(LicensePlatesHeadersAddedCode:any,LicensePlatesHeadersBaseCod
     }
 
 }
+
+
+public async SplitPallet_LPSingle(objP:any){
+
+
+    
+    try {
+
+    
+        let obj: any = [  {
+            OldLPPalletCode: objP.OldLPPalletCode,
+            NewLPPalletCode: objP.NewLPPalletCode,
+            LPChildSingleCode: objP.LPChildSingleCode
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('SplitPallet_LPSingle', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
  
 
 
