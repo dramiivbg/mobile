@@ -781,7 +781,7 @@ public async Prepare_WarehousePutAway(No:any){
 }
 
 
-public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
+public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any,LPType:any){
 
 
     
@@ -790,6 +790,7 @@ public async GenerateEmptyLP(ZoneCode:any, LocationCode:any, BinCode:any){
     
         let obj: any = [{
     
+            LPType,
             ZoneCode,
             LocationCode,
             BinCode
@@ -833,6 +834,64 @@ public async Get_LPLedgerEntries(No:any){
     } catch (error) {
         throw error;
     }
+}
+
+
+public async SplitLPSingle(objS:any){
+
+
+    try {
+
+    
+        let obj: any = [{
+    
+            NewLicensePlateCode: objS.NewLicensePlateCode,
+            NewQuantity: objS.NewQuantity,
+            OriginalQuantityModified: objS.OriginalQuantityModified,
+            OriginalLicensePlateCode: objS.OriginalLicensePlateCode
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('SplitLPSingle', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+
+public async Merge(LicensePlatesHeadersAddedCode:any,LicensePlatesHeadersBaseCode:any){
+
+
+    try {
+
+    
+        let obj: any = [{
+    
+            LicensePlatesHeadersAddedCode,
+            LicensePlatesHeadersBaseCode
+
+        
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('SplitLPSingle', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
 }
  
 

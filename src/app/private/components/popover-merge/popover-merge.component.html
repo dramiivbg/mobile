@@ -1,6 +1,14 @@
 <ng-container>
-  <ion-content>
-    <form>
+ <ion-content >
+
+  <ion-header *ngIf="loading">
+    <ion-toolbar>
+      <ion-title>Loading....</ion-title>
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </ion-toolbar>
+  </ion-header>
+
+    <form *ngIf="boolean">
       <ion-row class="header">
         <ion-col>
           <ion-label>Confirm LP to merge</ion-label>
@@ -26,7 +34,7 @@
           Item No
         </ion-col>
         <ion-col size="6">
-          1896-S
+          {{lp.fields.PLUNo}}
         </ion-col>
       </ion-row>
       <ion-row>
@@ -34,7 +42,7 @@
           Unit of measure
         </ion-col>
         <ion-col size="6">
-          PCS
+          {{lp.fields.PLUUnitofMeasureCode}}
         </ion-col>
       </ion-row>
       <ion-row>
@@ -42,7 +50,8 @@
          Quantity
         </ion-col>
         <ion-col size="6">
-          10
+          {{lp.fields.PLUQuantity
+          }}
         </ion-col>
       </ion-row>
     
@@ -61,3 +70,5 @@
     </form>
   </ion-content>
 </ng-container>
+
+

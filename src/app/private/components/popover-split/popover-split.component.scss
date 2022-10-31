@@ -34,3 +34,17 @@ ion-button{
     --backround: var(--ion-color-plureBlue) !important;
     border-radius: 23px;
 }
+
+ion-input{
+
+
+    border-bottom: 1px solid  #aaaaaa;
+    padding-bottom: 10px;
+}
+
+.btnqty {
+    color: var(--ion-color-plureBlue);
+    font-size: 20px;
+
+    padding-top: 10px;
+}
