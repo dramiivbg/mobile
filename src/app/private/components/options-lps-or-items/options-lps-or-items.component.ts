@@ -24,13 +24,12 @@ export class OptionsLpsOrItemsComponent implements OnInit {
 
   ngOnInit() {
 
+   this.listsT = this.lists;
+
    
     
   }
 
-
-
- 
 
 
   onChange(e, lpNo:any = ''){
@@ -88,7 +87,11 @@ export class OptionsLpsOrItemsComponent implements OnInit {
 
 
  
+  exit(){
 
+    this.modalCtrl.dismiss({});
+
+  }
 
 
 

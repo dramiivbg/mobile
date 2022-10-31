@@ -36,6 +36,7 @@ import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/re
 import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
 import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-log-lp.component';
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
+import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
 
 
 
@@ -68,7 +69,8 @@ import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items
     PopoverLpEditComponent,
     ReadLicensePlateComponent,
     ReadBinContentComponent,
-    PopoverLogLpComponent
+    PopoverLogLpComponent,
+    SplitItemComponent
    
     
   
@@ -100,6 +102,7 @@ import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items
     ReadBinContentComponent,
     PopoverLogLpComponent,
     OptionsLpsOrItemsComponent,
+    SplitItemComponent
   
   ]
 })

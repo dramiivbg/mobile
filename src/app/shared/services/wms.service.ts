@@ -921,6 +921,35 @@ public async SplitPallet_LPSingle(objP:any){
     }
 
 }
+
+public async SplitPallet_Item(objI){
+
+    
+    
+    try {
+
+    
+        let obj: any = [   {
+            NewLicensePlateCode: objI.NewLicensePlateCode,
+            NewQuantity: objI.NewQuantity,
+            OriginalQuantityModified: objI.OriginalQuantityModified,
+            OriginalLicensePlateCode: objI.OriginalLicensePlateCode,
+            ItemCode: objI.ItemCode
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('SplitPallet_Item', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
  
 
 
