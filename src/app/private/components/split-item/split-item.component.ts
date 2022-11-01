@@ -41,6 +41,8 @@ export class SplitItemComponent implements OnInit {
   ngOnInit() {
 
     console.log(this.item);
+
+    console.log(this.pallet);
   }
 
 
@@ -73,8 +75,10 @@ export class SplitItemComponent implements OnInit {
         
       try {
 
-        let lpN = await this.wmsService.GenerateEmptyLP(this.pallet.fields.PLUZoneCode,this.pallet.fields.PLULocationCode,'', 'Pallet');
+        let lpN = await this.wmsService.GenerateEmptyLP(this.pallet.fields.PLUZoneCode,this.pallet.fields.PLULocationCode," ", 'Pallet');
        
+
+        console.log(lpN);
 
         let qtyN = obj['Quantity'];
   
@@ -82,25 +86,29 @@ export class SplitItemComponent implements OnInit {
   
         let itemNo = this.item.PLUNo;
   
-        let objI = {
-          NewLicensePlateCode: lpN.PLUNo,
+        let objP = {
+          NewLicensePlateCode: lpN.LPNo,
           NewQuantity: qtyN,
           OriginalQuantityModified: qty,
-          OriginalLicensePlateCode: this.item.PLULPDocumentNo,
+          OriginalLicensePlateCode: this.pallet.fields.PLULPDocumentNo,
           ItemCode: itemNo
         };
+
+        console.log('inicio =>',objP);
   
   
-        let res = await this.wmsService.SplitLPSingle(objI);
+        let res = await this.wmsService.SplitPallet_Item(objP);
 
         console.log(res);
 
         if(res.Error) throw new Error(res.Error.Message);
 
+        if(res.message) throw new Error(res.message);
+        
 
         Swal.fire(
           'Success!',
-          `Has been successfully created`,
+          `The created item has been successfully moved to the pallet ${lpN.LPNo}`,
           'success'
         )
 

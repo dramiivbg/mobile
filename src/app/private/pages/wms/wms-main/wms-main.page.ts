@@ -66,7 +66,7 @@ export class WmsMainPage implements OnInit {
 
    
       this.session = (await this.js.getSession()).login;
-    //  console.log('session =>',this.session)
+      console.log('session =>',this.session)
       this.intServ.loadingFunc(false);
     } catch (error) {
       this.intServ.loadingFunc(false);
@@ -187,6 +187,11 @@ export class WmsMainPage implements OnInit {
     this.router.navigate(['page/wms/wmsItemJournal']);
   }
 
+
+  selectPI(locale:any){
+
+
+  }
 
   pageSplitMerge(){
 

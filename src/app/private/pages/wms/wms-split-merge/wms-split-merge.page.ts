@@ -87,12 +87,15 @@ export class WmsSplitMergePage implements OnInit {
 
           if(lp.Error) throw Error(lp.Error.Message);
 
+          if(lp.message) throw new Error(lp.message);
+          
+
           let lpH = await this.wmsService.ListLpH(lp);
           this.lp = await this.wmsService.ListLp(lp);
 
-          if(this.lp.fields.PLULicensePlateStatus !== 'Stored') throw Error('The license plate to scan must be in storage');
+          if(this.lp.fields.PLULicensePlateStatus !== "Stored" ) throw Error('The license plate to scan must be in storage');
 
-          if(this.lp.fields.PLULPDocumentType === 'Single'){
+          if(this.lp.fields.PLULPDocumentType === "Single" ){
 
             this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
             this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
@@ -248,7 +251,7 @@ export class WmsSplitMergePage implements OnInit {
 
     const popover = await this.popoverController.create({
       component: PopoverMergeComponent,
-      cssClass: 'popoverSplitComponent',
+      cssClass: 'popoverMergeComponent',
       event: ev,
       translucent: true,
       componentProps: {lp}
@@ -256,6 +259,54 @@ export class WmsSplitMergePage implements OnInit {
     await popover.present();
 
     const { data } = await popover.onDidDismiss();
+
+
+    if(data.action === 'join'){
+
+      this.intServ.loadingFunc(true);
+      
+      lp = await this.wmsService.getLpNo(data.data.toUpperCase());
+
+      if(!lp.Error){
+
+        let lpH = await this.wmsService.ListLpH(lp);
+        this.lp = await this.wmsService.ListLp(lp);
+
+        this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
+        this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
+        this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
+  
+        this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument
+        this.lp.fields.PLUUnitofMeasure =  lpH.fields.PLUUnitofMeasure;
+  
+        this.lps.filter(lp => {
+
+
+          if(lp.fields.PLULPDocumentNo  === this.lp.fields.PLULPDocumentNo){
+
+
+            lp.fields.PLUQuantity = this.lp.fields.PLUQuantity;
+          }
+      
+      });
+
+      this.intServ.loadingFunc(false);
+    }else{
+
+
+      this.lps.filter((lp,index) => {
+
+
+        if(lp.fields.PLULPDocumentNo  === data.data.toUpperCase()){
+
+
+           this.lps.splice(index,1);
+        }
+    
+    });
+
+    }
+  }
 
   }
 
