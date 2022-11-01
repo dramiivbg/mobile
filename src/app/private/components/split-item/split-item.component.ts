@@ -7,14 +7,15 @@ import { WmsService } from '@svc/wms.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-popover-split',
-  templateUrl: './popover-split.component.html',
-  styleUrls: ['./popover-split.component.scss'],
+  selector: 'app-split-item',
+  templateUrl: './split-item.component.html',
+  styleUrls: ['./split-item.component.scss'],
 })
-export class PopoverSplitComponent implements OnInit {
+export class SplitItemComponent implements OnInit {
   public frm: FormGroup;
 
-  @Input() lp:any;
+  @Input() item:any;
+  @Input() pallet:any;
 
   
   public boolean:Boolean = true;
@@ -39,7 +40,7 @@ export class PopoverSplitComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(this.lp);
+    console.log(this.item);
   }
 
 
@@ -64,7 +65,7 @@ export class PopoverSplitComponent implements OnInit {
 
      
      
-     if(obj['Quantity'] <= this.lp.fields.PLUQuantity){
+     if(obj['Quantity'] <= this.item.PLUQuantity){
 
       if(obj['Quantity'] > 0){
 
@@ -72,24 +73,25 @@ export class PopoverSplitComponent implements OnInit {
         
       try {
 
-        let lpN = await this.wmsService.GenerateEmptyLP(this.lp.fields.PLUZoneCode,this.lp.fields.PLULocationCode,'', 'Single');
+        let lpN = await this.wmsService.GenerateEmptyLP(this.pallet.fields.PLUZoneCode,this.pallet.fields.PLULocationCode,'', 'Pallet');
        
 
         let qtyN = obj['Quantity'];
   
-        let qty = this.lp.fields.PLUQuantity - qtyN;
+        let qty = this.item.PLUQuantity - qtyN;
   
-        let lpO = this.lp.fields.PLULPDocumentNo;
+        let itemNo = this.item.PLUNo;
   
-        let objP =   {
-          NewLicensePlateCode: lpN.LPNo,
+        let objI = {
+          NewLicensePlateCode: lpN.PLUNo,
           NewQuantity: qtyN,
           OriginalQuantityModified: qty,
-          OriginalLicensePlateCode: lpO
+          OriginalLicensePlateCode: this.item.PLULPDocumentNo,
+          ItemCode: itemNo
         };
   
   
-        let res = await this.wmsService.SplitLPSingle(objP);
+        let res = await this.wmsService.SplitLPSingle(objI);
 
         console.log(res);
 
@@ -104,7 +106,7 @@ export class PopoverSplitComponent implements OnInit {
 
        
 
-        this.popoverController.dismiss({data: 'split', obj: this.lp.fields.PLULPDocumentNo});
+        this.popoverController.dismiss({data: 'split', obj: this.item.PLULPDocumentNo});
 
       
 
@@ -147,7 +149,7 @@ export class PopoverSplitComponent implements OnInit {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `The quantity must not be greater than the original License Plate Single ${this.lp.fields.PLULPDocumentNo}`,
+        text: `The quantity must not be greater than the original Item ${this.item.PLUNo}`,
         footer: ''
       });
 
@@ -163,7 +165,7 @@ export class PopoverSplitComponent implements OnInit {
 
     let qty =  this.frm.get('Quantity').value;
   
-    if(qty < this.lp.fields.PLUQuantity){
+    if(qty < this.item.PLUQuantity){
 
       qty +=1
   
@@ -185,9 +187,5 @@ export class PopoverSplitComponent implements OnInit {
        }
   
     }
-
-
-    
-
 
 }

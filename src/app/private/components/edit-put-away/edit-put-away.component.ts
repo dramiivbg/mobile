@@ -782,6 +782,8 @@ if (val !== '') {
           }
 
 
+
+
         if(this.modify.length !== this.initV.length){
 
           this.scanBin = false;
@@ -892,14 +894,6 @@ if (val !== '') {
           }
 
 
-      //    console.log(this.split);
-
-
-
-
-
-          
-        //  console.log(this.modify);
 
         let list:any[] = [];
 
@@ -1247,23 +1241,16 @@ async init(){
 
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
-  
-        this.initV.push(lp);
-
-        for (const key in this.initV) {
 
 
-          if(this.initV[key].fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
-
-            this.initV.splice(index,1);
-          }
-        
-        }
+        let find = this.initV.find(lpI => lpI.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
       
+        if(find === null || find === undefined){
   
-
-
-
+          this.initV.push(lp);
+  
+        }
+  
       
     });
 
@@ -1368,9 +1355,9 @@ async init(){
       lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
       let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-      let find2 = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+      let find2 = this.modify.find(lpM => lpM.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
       
-      if(find == null || find === undefined){
+      if(find === null || find === undefined){
 
         this.listsFilter.push(lp);
 
@@ -1378,10 +1365,14 @@ async init(){
 
       }
 
-      if(find2 == null || find === undefined){
+      if(find2 === null || find2 === undefined){
 
         this.modify.push(lp);
       }
+
+
+
+      console.log(this.modify,this.initV);
 
 });
 
@@ -1403,15 +1394,15 @@ async init(){
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
         let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-        let find2 = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+        let find2 = this.modify.find(lpM => lpM.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
-        if(find == null || find === undefined){
+        if(find === null || find === undefined){
   
           this.listsFilter.push(lp);
           this.listT.push(lp);
         }
 
-        if(find2 == null || find === undefined){
+        if(find2 === null || find2 === undefined){
 
           this.modify.push(lp);
         }

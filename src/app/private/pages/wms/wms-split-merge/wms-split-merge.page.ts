@@ -4,6 +4,7 @@ import { ModalController, PopoverController } from '@ionic/angular';
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-merge.component';
 import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
+import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
@@ -279,8 +280,13 @@ export class WmsSplitMergePage implements OnInit {
 
 
 
-    if(data.data.PLUType === 'LP'){
 
+  switch(data.data.PLUType){
+
+
+    case 'LP':
+
+      this.intServ.loadingFunc(true);
 
       let palletN = await this.wmsService.GenerateEmptyLP(pallet.fields.PLUZoneCode,pallet.fields.PLULocationCode,"",'Pallet');
 
@@ -297,25 +303,111 @@ export class WmsSplitMergePage implements OnInit {
 
         let res = await this.wmsService.SplitPallet_LPSingle(obj);
 
+        console.log(res);
+
         if(res.Error) throw new Error(res.Error.Message);
         
+        console.log(res);
         
+        this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('success', '', `The license plate ${data.data.PLUNo} has been removed from the pallet ${pallet.fields.PLULPDocumentNo} to the pallet
          ${palletN.LPNo}`));
 
+         this.intServ.loadingFunc(true);
+         let lp = await this.wmsService.getLpNo(pallet.fields.PLULPDocumentNo.toUpperCase());
+
+         if(!lp.Error){
+
+          this.palletL = await this.wmsService.PalletL(lp);
+ 
+         this.palletsL[pallet.fields.PLULPDocumentNo] = this.palletL;
+
+         this.intServ.loadingFunc(false);
+         
+         
+         }else{
+
+          this.pallets.filter((Pallet,index) => {
+
+            if(Pallet.fields.PLULPDocumentNo === pallet.fields.PLULPDocumentNo){
+
+              this.pallets.splice(index,1);
+              
+            }
+          });
+
+          if(this.pallets.length === 0){
+            this.palletH = undefined;
+          }
+
+          this.intServ.loadingFunc(false);
+         }
+      
+
+
+
       } catch (error) {
 
-
+        this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('error','', error.message));
         
       }
 
      
+      break;
+
+    case 'Item':
+
+
+    
+
+    let res =   await this.splitQ(data.data,pallet);
+
+   if(res.data === 'split'){
+
+
+    this.intServ.loadingFunc(true);
+    
+    let lp = await this.wmsService.getLpNo(pallet.fields.PLULPDocumentNo.toUpperCase());
+
+
+    if(!lp.Error){
+
+      this.palletL = await this.wmsService.PalletL(lp);
+
+     this.palletsL[pallet.fields.PLULPDocumentNo] = this.palletL;
+
+     this.intServ.loadingFunc(false);
+     
+     
+     }else{
+
+      this.pallets.filter((Pallet,index) => {
+
+        if(Pallet.fields.PLULPDocumentNo === pallet.fields.PLULPDocumentNo){
+
+          this.pallets.splice(index,1);
+          
+        }
+      });
+
+      if(this.pallets.length === 0){
+        this.palletH = undefined;
+      }
+
+      this.intServ.loadingFunc(false);
+     }
+    
+
+    
+
+   }
+  
+
+
+      break;
      
 
-
-
-    }else{
 
 
     }
@@ -332,6 +424,22 @@ async  popoverMergeP(pallet:any,ev){
 
  
 
+  async splitQ(item:any,pallet:any){
+
+    const popover = await this.popoverController.create({
+      component: SplitItemComponent,
+      cssClass: ' splitItemComponent',
+      translucent: true,
+      componentProps: {item,pallet}
+    });
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+
+
+    return data;
+    
+  }
 
 
 }
