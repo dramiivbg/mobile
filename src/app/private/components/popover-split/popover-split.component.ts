@@ -98,7 +98,7 @@ export class PopoverSplitComponent implements OnInit {
 
         Swal.fire(
           'Success!',
-          `Has been successfully created`,
+          `Has been successfully created the License Plate Single ${lpN.LPNo}`,
           'success'
         )
 
