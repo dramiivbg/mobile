@@ -54,11 +54,7 @@ export class PopoverLpEmptyComponent implements OnInit {
       try {
 
 
-<<<<<<< HEAD
-        let res = await this.wmsService.GenerateEmptyLP( obj.ZoneCode,obj.LocationCode, "","Single");
-=======
         let res = await this.wmsService.GenerateEmptyLP( obj.ZoneCode,obj.LocationCode, "", 'Single');
->>>>>>> ivan.dario
 
      
 

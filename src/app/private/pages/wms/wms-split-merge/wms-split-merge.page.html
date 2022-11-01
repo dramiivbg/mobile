@@ -1,4 +1,3 @@
-
 <PlureHeader type="1" title="Split / Merge" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 <ion-content>
@@ -11,16 +10,15 @@
                
             </ion-row> -->
 
-            
+
             <ion-row class="delivery newColor2">
-              <ion-col size="11">
-                  <ion-searchbar  [ngModelOptions]="{standalone: true}"
-                      (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline"
-                      placeholder="Filter LP"></ion-searchbar>
-              </ion-col>
-          </ion-row>
-          
-          
+                <ion-col size="11">
+                    <ion-searchbar [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
+                        show-clear-button="always" clear-icon="close-outline" placeholder="Filter LP"></ion-searchbar>
+                </ion-col>
+            </ion-row>
+
+
         </div>
         <div class="accorn">
             <div class="order-details">
@@ -35,32 +33,32 @@
             </div>
             <div class="accorn-body">
                 <div class="lines">
-                    <ion-list >
+                    <ion-list>
                         <div>
 
                             <ion-item-sliding>
 
-                        
+
                                 <ion-item>
-                                    <div class="label-lines" part="item-width" >
+                                    <div class="label-lines" part="item-width">
                                         <ion-row class="row1" *ngIf="lp !== undefined">
                                             <ion-col size="15" *ngFor="let item of lps">
-                                                <ion-row >
+                                                <ion-row>
                                                     <ion-col size="5" style="overflow: hidden;"
                                                         class="label-line-title blue">
                                                         {{item.company}}
                                                     </ion-col>
                                                     <ion-col size="3" class="label-line-title"
                                                         style="text-align: right;">
-                                                      Qty.  {{item.fields.PLUQuantity
+                                                        Qty. {{item.fields.PLUQuantity
                                                         }}
 
-                                                  </ion-col>
+                                                    </ion-col>
 
-                                                 
 
-                                                        
-                                                    
+
+
+
 
                                                 </ion-row>
                                                 <ion-row>
@@ -72,79 +70,80 @@
                                                         Measure: {{item.fields.PLUUnitofMeasure}}
                                                     </ion-col>
 
-                                                    <ion-col style="padding-left: 25px ;" size="4" class="label-line-ligth">
-                                                      Loc. {{item.fields.PLULocationCode}}
-                                                  </ion-col>
-                                                    
+                                                    <ion-col style="padding-left: 25px ;" size="4"
+                                                        class="label-line-ligth">
+                                                        Loc. {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+
                                                 </ion-row>
 
 
                                                 <ion-row>
-                                                  <ion-col size="3" class="label-line">
-                                                  Line: {{item.fields.PLUWhseLineNo}}
-                                              </ion-col>
-
-                                               
-                                              <ion-col size="3" 
-                                              class="label-line">
-                                              Document Type: 
-                                             </ion-col>
-                                             <ion-col size="2" style="padding-bottom: 10px;"
-                                              class="negrilla">
-                                              {{item.fields.PLULPDocumentType}}
-                                             </ion-col>
-
-                                              <ion-col size="3" class="label-line-ligth"
-                                                  style="text-align: right;">
-                                                  Bin. {{item.fields.PLUBinCode
-                                                  }}
-
-                                            </ion-col>
-                                                  
-                                              </ion-row>
+                                                    <ion-col size="3" class="label-line">
+                                                        Line: {{item.fields.PLUWhseLineNo}}
+                                                    </ion-col>
 
 
-                                              <ion-row>
-                                                <ion-col size="12" class="label-line splitimage">
-                                            
-                                                  <img src="../../../../assets/img/cable-electrico.jpg" alt="">
-                                            </ion-col>
-                                        
-                                            </ion-row>
+                                                    <ion-col size="3" class="label-line">
+                                                        Document Type:
+                                                    </ion-col>
+                                                    <ion-col size="2" style="padding-bottom: 10px;" class="negrilla">
+                                                        {{item.fields.PLULPDocumentType}}
+                                                    </ion-col>
 
-                                            <ion-row>
-                                              <ion-col size="12" >
-                                          
-                                               <ion-button class="buttonsplitmerge" expand="block" (click)="popoverSplit(item,$event)">Split License Plate Single</ion-button>
-                                          </ion-col>
+                                                    <ion-col size="3" class="label-line-ligth"
+                                                        style="text-align: right;">
+                                                        Bin. {{item.fields.PLUBinCode
+                                                        }}
 
-                                          <ion-col size="12" >
-                                          
-                                            <ion-button class="buttonsplitmerge" expand="block" (click)="popoverMerge(item,$event)">Merge License Plate Single</ion-button>
-                                      </ion-col>
-                                      
-                                          </ion-row>
-                                               
+                                                    </ion-col>
+
+                                                </ion-row>
+
+
+                                                <ion-row>
+                                                    <ion-col size="12" class="label-line splitimage">
+
+                                                        <img src="../../../../assets/img/cable-electrico.jpg" alt="">
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                                <ion-row>
+                                                    <ion-col size="12">
+
+                                                        <ion-button class="buttonsplitmerge" expand="block"
+                                                            (click)="popoverSplit(item,$event)">Split License Plate
+                                                            Single</ion-button>
+                                                    </ion-col>
+
+                                                    <ion-col size="12">
+
+                                                        <ion-button class="buttonsplitmerge" expand="block"
+                                                            (click)="popoverMerge(item,$event)">Merge License Plate
+                                                            Single</ion-button>
+                                                    </ion-col>
+
+                                                </ion-row>
+
                                             </ion-col>
                                         </ion-row>
 
 
-                                        <ion-row class="row2" *ngIf="palletH  !== undefined " >
+                                        <ion-row class="row2" *ngIf="palletH  !== undefined ">
                                             <ion-col size="15" *ngFor="let item of pallets">
-                                                <ion-row >
+                                                <ion-row>
                                                     <ion-col size="5" style="overflow: hidden;"
                                                         class="label-line-title blue">
                                                         {{item.company}}
                                                     </ion-col>
 
-                                                    <ion-col size="3" 
-                                                    class="label-line" style="padding-top: 7px;">
-                                                    Document Type: 
-                                                   </ion-col>
-                                                   <ion-col size="2" style="padding-top: 7px;"
-                                                    class="negrilla">
-                                                    {{item.fields.PLULPDocumentType}}
-                                                   </ion-col>
+                                                    <ion-col size="3" class="label-line" style="padding-top: 7px;">
+                                                        Document Type:
+                                                    </ion-col>
+                                                    <ion-col size="2" style="padding-top: 7px;" class="negrilla">
+                                                        {{item.fields.PLULPDocumentType}}
+                                                    </ion-col>
 
 
                                                 </ion-row>
@@ -158,66 +157,69 @@
                                                         Zone Code: {{item.fields.PLUZoneCode}}
                                                     </ion-col>
 
-                                                    <ion-col  size="4" class="label-line-ligth">
-                                                      Loc. {{item.fields.PLULocationCode}}
-                                                  </ion-col>
-                                                    
+                                                    <ion-col size="4" class="label-line-ligth">
+                                                        Loc. {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+
                                                 </ion-row>
 
 
                                                 <ion-row>
-                                                  <ion-col size="5" class="label-line">
-                                                  Status: {{item.fields.PLULicensePlateStatus}}
-                                              </ion-col>
-
-                                               
-                                             
-
-                                              <ion-col size="5" class="label-line-ligth"
-                                                  style="text-align: right;">
-                                                  Bin. {{item.fields.PLUBinCode
-
-                                                  }}
-
-                                            </ion-col>
-                                                  
-                                              </ion-row>
+                                                    <ion-col size="5" class="label-line">
+                                                        Status: {{item.fields.PLULicensePlateStatus}}
+                                                    </ion-col>
 
 
-                                              <ion-row>
-                                                <ion-col size="12" class="label-line splitimage">
-                                            
-                                                  <img src="../../../../assets/img/cable-electrico.jpg" alt="">
-                                            </ion-col>
-                                        
-                                            </ion-row>
 
-                                            <ion-row>
-                                              <ion-col size="12" >
-                                          
-                                               <ion-button class="buttonsplitmerge" expand="block" (click)="option(item,$event)">Split Pallet</ion-button>
-                                             </ion-col>
 
-                                          <ion-col size="12" >
-                                          
-                                            <ion-button class="buttonsplitmerge" expand="block" (click)="popoverMergeP(item,$event)">Merge Pallet</ion-button>
-                                      </ion-col>
-                                      
-                                          </ion-row>
-                                               
+                                                    <ion-col size="5" class="label-line-ligth"
+                                                        style="text-align: right;">
+                                                        Bin. {{item.fields.PLUBinCode
+
+                                                        }}
+
+                                                    </ion-col>
+
+                                                </ion-row>
+
+
+                                                <ion-row>
+                                                    <ion-col size="12" class="label-line splitimage">
+
+                                                        <img src="../../../../assets/img/cable-electrico.jpg" alt="">
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                                <ion-row>
+                                                    <ion-col size="12">
+
+                                                        <ion-button class="buttonsplitmerge" expand="block"
+                                                            (click)="option(item,$event)">Split Pallet</ion-button>
+                                                    </ion-col>
+
+                                                    <ion-col size="12">
+
+                                                        <ion-button class="buttonsplitmerge" expand="block"
+                                                            (click)="popoverMergeP(item,$event)">Merge Pallet
+                                                        </ion-button>
+                                                    </ion-col>
+
+                                                </ion-row>
+
                                             </ion-col>
                                         </ion-row>
                                     </div>
-                           
-              
-                                 
-                                </ion-item>    
-                                
-                          
+
+
+
+                                </ion-item>
+
+
                             </ion-item-sliding>
 
 
-          
+
                         </div>
                     </ion-list>
                 </div>
@@ -229,10 +231,10 @@
 
 <PlureVersion class="footerReceipt" showVersion="0">
     <ion-row>
-      <ion-col size="12" (click)="onBarCode()" >
-        <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-        <div class="itemfooter">Bar code</div>
-    </ion-col>
- 
+        <ion-col size="12" (click)="onBarCode()">
+            <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+            <div class="itemfooter">Bar code</div>
+        </ion-col>
+
     </ion-row>
 </PlureVersion>
