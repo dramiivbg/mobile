@@ -62,12 +62,14 @@ export class PopoverMergeComponent implements OnInit {
           let lp = await this.wmsService.ListLp(res);
 
 
-          if(lp.fields.PLULicensePlateStatus === 'Stored'){
+          console.log(lp);
 
-            if(lp.fields.PLUDocumentType === 'Single'){
+          if(lp.fields.PLULicensePlateStatus === "Stored" ){
+
+            if(lp.fields.PLULPDocumentType === "Single" ){
 
               this.lpNo = code.toUpperCase();
-
+ 
 
               this.onFilter('', this.lpNo);
 
@@ -135,20 +137,43 @@ export class PopoverMergeComponent implements OnInit {
 
  async onSubmit(){
 
+  this.boolean = false;
+  this.loading = true;
 try {
 
-  let res = await this.wmsService.Merge(this.lpNo,this.lp.fields.PLULPDocumentNo);
+  let res = await this.wmsService.MergeLPSingle(this.lpNo,this.lp.fields.PLULPDocumentNo);
 
   if(res.Error) throw new Error(res.Error.Message);
 
+  if(res.message) throw new Error(res.message);
+  
 
 
+   
+  this.loading = false;
+  
+  Swal.fire(
+    'Success!',
+    `The license plate single ${this.lpNo} has been successfully joined to the LP single ${this.lp.fields.PLULPDocumentNo}`,
+    'success'
+  )
 
   
-  this.popoverController.dismiss({});
+  this.popoverController.dismiss({action: 'join', data: this.lp.fields.PLULPDocumentNo});
   
   
 } catch (error) {
+
+  
+  this.boolean = true;
+  this.loading = false;
+
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: error.message,
+    footer: ''
+  });
   
 }
 

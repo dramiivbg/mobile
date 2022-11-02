@@ -866,7 +866,7 @@ public async SplitLPSingle(objS:any){
 }
 
 
-public async Merge(LicensePlatesHeadersAddedCode:any,LicensePlatesHeadersBaseCode:any){
+public async MergeLPSingle(LicensePlatesHeadersAddedCode:any,LicensePlatesHeadersBaseCode:any){
 
 
     try {
@@ -884,7 +884,7 @@ public async Merge(LicensePlatesHeadersAddedCode:any,LicensePlatesHeadersBaseCod
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('SplitLPSingle', obj);
+        let p = await this.syncErp.processRequestParams('MergeLPSingle', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -922,19 +922,20 @@ public async SplitPallet_LPSingle(objP:any){
 
 }
 
-public async SplitPallet_Item(objI){
+public async SplitPallet_Item(objP:any){
 
     
     
     try {
 
     
-        let obj: any = [   {
-            NewLicensePlateCode: objI.NewLicensePlateCode,
-            NewQuantity: objI.NewQuantity,
-            OriginalQuantityModified: objI.OriginalQuantityModified,
-            OriginalLicensePlateCode: objI.OriginalLicensePlateCode,
-            ItemCode: objI.ItemCode
+        let obj: any = [{
+
+            NewLicensePlateCode: objP.NewLicensePlateCode,
+            NewQuantity: objP.NewQuantity,
+            OriginalQuantityModified: objP.OriginalQuantityModified,
+            OriginalLicensePlateCode: objP.OriginalLicensePlateCode,
+            ItemCode: objP.ItemCode
           }];
     
 
@@ -950,6 +951,9 @@ public async SplitPallet_Item(objI){
     }
 
 }
+
+
+
  
 
 
@@ -1162,6 +1166,7 @@ public async SplitPallet_Item(objI){
             fields: {  PLULPDocumentNo: "",
             PLULineNo: 0,
             PLUDocumentType: "",
+            PLULPDocumentType: "",
             PLUType: "",
             PLUNo: "",
             PLUVariantCode: null,
