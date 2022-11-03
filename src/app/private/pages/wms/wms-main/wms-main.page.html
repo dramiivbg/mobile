@@ -74,6 +74,19 @@
 
   
   <ion-list class="list" *ngIf="booleanM">
+
+    <ion-row (click)="pageBintoBin()">
+      <ion-col size="1">
+        <ion-icon name="barcode-outline"></ion-icon>
+      </ion-col>
+        <ion-col size="3">
+          <ion-label>Bin To Bin</ion-label>
+      </ion-col>
+      <ion-col size="1">
+        <ion-icon name="move-outline"></ion-icon>
+      </ion-col>
+    </ion-row>
+
     <ion-row (click)="pageMovement()">
       <ion-col size="1">
         <ion-icon name="move-outline"></ion-icon>

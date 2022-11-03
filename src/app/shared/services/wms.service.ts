@@ -953,6 +953,97 @@ public async SplitPallet_Item(objP:any){
 }
 
 
+public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,ItemNo:any,Qty:any,UnitofMeasureCode:any){
+
+
+    try {
+
+    
+        let obj: any = [{
+
+            LPNo,
+            Zone,
+            Bin,
+            LocationCode,
+            ItemNo,
+            Qty,
+            UnitofMeasureCode
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('WarehouseItemJournal_LP', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+}
+
+
+   public async CalculateWhseAdjustment(ItemNo:any,PostingDate:any){
+
+    
+    try {
+
+    
+        let obj: any = [{
+
+            ItemNo,
+            PostingDate
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('CalculateWhseAdjustment', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
+
+
+   public async MoveBinToBin_LP(LPNo:any,Zone:any,FromBin:any,ToBin:any,LocationCode:any,ItemNo:any,Qty:any,UnitofMeasureCode:any){
+
+    try {
+
+    
+        let obj: any = [{
+
+            LPNo,
+            Zone,
+            FromBin,
+            ToBin,
+            LocationCode,
+            ItemNo,
+            Qty,
+            UnitofMeasureCode
+
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('MoveBinToBin_LP', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
 
  
 
@@ -1194,6 +1285,7 @@ public async SplitPallet_Item(objP:any){
             PLULicensePlateStatus: "",
             PLUShipmentSrcDocument: "",
             PLUShipmentSrcDocumentNo: null,
+            PLUWhseDocumentNo: "",
             PLUSourceLineNo: 0,
             PLUWhseLineNo: 0,
             $systemId: '',
@@ -1242,6 +1334,7 @@ public async SplitPallet_Item(objP:any){
         fields: {  PLULPDocumentNo: "",
         PLULineNo: 0,
         PLUDocumentType: "",
+        PLULPDocumentType: "",
         PLUType: "",
         PLUNo: "",
         PLUVariantCode: null,
@@ -1270,6 +1363,7 @@ public async SplitPallet_Item(objP:any){
         PLUShipmentSrcDocument: "",
         PLUShipmentSrcDocumentNo: null,
         PLUSourceLineNo: 0,
+        PLUWhseDocumentNo: "",
         PLUWhseLineNo: 0,
         $systemId: '',
         SystemCreatedAt: '',
@@ -1285,21 +1379,13 @@ public async SplitPallet_Item(objP:any){
 
      }
 
-      
-     
+         }
 
- 
-     }
+   }
+
+
 
   
- 
- 
- 
-
-    
- 
- 
-     }
 
 
      
@@ -2757,36 +2843,71 @@ public async PalletH(listLp: any){
         position: "",
         recordId: ""
 
-
-     
-
-      
-     
-
- 
      }
 
   
- 
- 
- 
-
-      
-     
-
- 
-     }
+ }
 
   
- 
      return listH;
  
-
-    
- 
  
      }
 
+
+
+   public async listItem(item:any){
+
+
+    let obj = {
+
+        company: "",
+        id: 0,
+        name: "",
+        fields: {
+
+            timestamp:'',
+            No: '',
+            Description: '',
+            BaseUnitofMeasure: '',
+            Type: '',
+            UnitPrice: 0,
+            UnitCost: 0.0,
+            VendorNo: null,
+            VendorItemNo: null,
+            GrossWeight: null,
+            NetWeight: null,
+            UnitVolume: null,
+            Blocked: false,
+            BlockReason:null,
+            GenProdPostingGroup: '',
+            Picture: '',
+            VATProdPostingGroup:null,
+            GlobalDimension1Code: null,
+            GlobalDimension2Code: null,
+            GTIN: null,
+            SalesUnitofMeasure: '',
+            ItemCategoryCode: null,
+            IdentifierCode: null
+
+        }
+    };
+
+    obj.company = item.company;
+    obj.id = item.id;
+    obj.name = item.name;
+
+    for (const key in item.fields) {
+
+
+        obj.fields[item.fields[key].name] = item.fields[key].value;
+           
+    }
+
+
+    return obj;
+
+   }  
 
 
 

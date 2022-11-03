@@ -16,6 +16,10 @@ export class PopoverLpEmptyComponent implements OnInit {
 
 
   public frm: FormGroup;
+
+  public boolean:Boolean = true;
+
+  public loading:Boolean = false;
   constructor(public popoverController: PopoverController, private intServ: InterceptService,  private formBuilder: FormBuilder, 
     private jsonService: JsonService, private wmsService: WmsService) {
 
@@ -39,6 +43,9 @@ export class PopoverLpEmptyComponent implements OnInit {
     if (this.frm.valid) {
 
 
+      this.boolean =false;
+      this.loading = true;
+
 
       this.intServ.loadingFunc(true);
 
@@ -60,7 +67,10 @@ export class PopoverLpEmptyComponent implements OnInit {
 
         if(res.Error) throw Error(res.Error.Message);
 
-        this.intServ.loadingFunc(false);
+       
+        
+      
+      this.loading = false;
 
         Swal.fire(
           'Success!',
@@ -79,9 +89,9 @@ export class PopoverLpEmptyComponent implements OnInit {
       } catch (error) {
         
 
-        console.log(error.message);
-
-        this.intServ.loadingFunc(false);
+      this.loading = false; 
+      this.boolean = true;
+    
 
         Swal.fire({
           icon: 'error',
@@ -106,6 +116,6 @@ export class PopoverLpEmptyComponent implements OnInit {
 
 
   public async closePopover() {
-    this.popoverController.dismiss({});
+    this.popoverController.dismiss({data: null});
   }
 }

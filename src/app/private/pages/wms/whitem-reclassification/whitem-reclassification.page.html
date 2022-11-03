@@ -1,6 +1,6 @@
 <PlureHeader type="1" title="Item Reclassification" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
-<ion-content>
+<ion-content *ngIf="boolean">
   <div class="designform-header">
     <ion-row class="headerow">
       <ion-col>
@@ -75,10 +75,10 @@
   <ion-row class="rowsubtitles">
 
     <ion-col class="subtitles" size="3">
-      <div *ngIf="lpH != undefined">Zone: {{PLUZoneCode}}</div>
+      <div>Zone: {{PLUZoneCode}}</div>
     </ion-col>
     <ion-col class="subtitles" size="3">
-      <div *ngIf="lpH != undefined">Bin: {{PLUBinCode}}</div>
+      <div>Bin: {{PLUBinCode}}</div>
     </ion-col>
   </ion-row>
 
@@ -125,6 +125,104 @@
     </ion-col>
   </ion-row>
 
+</ion-content>
+
+<ion-content *ngIf="!boolean">
+  <div class="designform-header">
+    <ion-row class="headerow">
+      <ion-col>
+        <ion-label *ngIf="palletH != undefined">No. {{lp.fields.PLUWhseDocumentNo}} </ion-label>
+      </ion-col>
+      <ion-col>
+        <ion-label *ngIf="palletH != undefined">Loc. {{lpH.fields.PLULocationCode}} </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row class="headerow">
+      <ion-col>
+        <ion-label *ngIf="palletH != undefined">Registering Date: {{lpH.fields.SystemCreatedAt}} </ion-label>
+      </ion-col>
+    </ion-row>
+  </div>
+<form [formGroup]="frm">
+  <ion-list>
+    <ion-item>
+      <ion-label class="TitleInput" position="stacked">LP No</ion-label>
+      <ion-row class="inputscanRow">
+        <ion-col class="inputscan" size="10">
+          <ion-input formControlName="lpNo" [clearInput]="true"  placeholder="Scan or enter the LP ID" readonly></ion-input>
+        </ion-col>
+        
+      </ion-row>
+    </ion-item>
+
+  </ion-list>
+
+  <br><br>
+
+  <div class="accorn-body">
+    <div class="lines"  style="text-align: center;">   
+    <div class="div">
+          <ion-grid class="ion-margin">
+            <ion-row class="titletable">
+              <ion-col >Item</ion-col>
+              <ion-col >Description</ion-col>
+              <ion-col>No/S</ion-col>
+              <ion-col>Lote</ion-col>
+              <ion-col>F.Exp</ion-col>
+              <ion-col>UoM</ion-col>
+              <ion-col>Qty</ion-col>
+            </ion-row>
+           
+            <ion-row class="datatable" *ngFor="let item of listItem" style="overflow-y:auto;">
+              <ion-col >{{item.fields.PLUNo}}</ion-col>
+              <ion-col >{{item.fields.PLUDescription}}</ion-col>
+              <ion-col> </ion-col>
+              <ion-col> </ion-col>
+              <ion-col> </ion-col>
+              <ion-col>{{item.fields.PLUUnitofMeasureCode}}</ion-col>
+              <ion-col>{{item.fields.PLUQuantity}}</ion-col>
+            </ion-row>
+          </ion-grid>
+    </div>
+    </div>
+  </div>
+
+  <ion-row class="rowsubtitles">
+
+    <ion-col class="subtitles" size="3">
+      <div>Zone: {{PLUZoneCode}}</div>
+    </ion-col>
+    <ion-col class="subtitles" size="3">
+      <div>Bin: {{PLUBinCode}}</div>
+    </ion-col>
+  </ion-row>
+
+  <ion-list class="input2">
+    <ion-item>
+      <ion-label class="TitleInput" position="stacked">Scan Bin Code</ion-label>
+      <ion-row class="inputscanRow">
+        <ion-col class="inputscan" size="10">
+          <ion-input formControlName="bin" [clearInput]="true" placeholder="Scan or enter the Bin Code"></ion-input>
+        </ion-col>
+        <ion-col class="barcodeinput" size="2" (click)="onScanBin()">
+          <ion-icon size="large" name="barcode-outline"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+  </ion-list>
+</form>
+
+  <ion-row class="rowsubtitles2">
+
+    <ion-col class="subtitles2" size="12">
+      <div>Zone: {{PLUZoneCode}}</div>
+    </ion-col>
+    <ion-col class="subtitles2" size="12">
+      <div>Bin: {{binCode}}</div>
+    </ion-col>
+  </ion-row>
+
 
 
 
@@ -132,11 +230,25 @@
 
 
 
-<PlureVersion class="footerReceipt" showVersion="0">
+<PlureVersion class="footerReceipt" showVersion="0" *ngIf="boolean">
   <ion-row>
     <ion-col size="6">
       <ion-icon class="itemfooter" size="large" name="barcode-outline" (click)="onScanLP()"></ion-icon>
       <div class="itemfooter">Scan LP</div>
+    </ion-col>
+    <ion-col size="6">
+      <ion-icon class="itemfooter" size="large" name="save-outline" (click)="onSubmit()"></ion-icon>
+      <div class="itemfooter">Save</div>
+    </ion-col>
+  </ion-row>
+</PlureVersion>
+
+
+<PlureVersion class="footerReceipt" showVersion="0" *ngIf="!boolean">
+  <ion-row>
+    <ion-col size="6">
+      <ion-icon class="itemfooter" size="large" name="barcode-outline" (click)="onScanPallet()"></ion-icon>
+      <div class="itemfooter">Scan Pallet</div>
     </ion-col>
     <ion-col size="6">
       <ion-icon class="itemfooter" size="large" name="save-outline" (click)="onSubmit()"></ion-icon>

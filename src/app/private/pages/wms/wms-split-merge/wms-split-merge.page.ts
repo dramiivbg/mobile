@@ -23,6 +23,8 @@ export class WmsSplitMergePage implements OnInit {
 
   public listLp:any[] = [];
 
+  public listPicture: any[] = [];
+
   public listPallet:any[] = [];
 
   public pallets:any[] = [];
@@ -31,6 +33,8 @@ export class WmsSplitMergePage implements OnInit {
 
   public palletH:any = undefined;
   public palletL:any[] = [];
+
+  public image:Boolean = false;
 
   constructor( private barcodeScanner: BarcodeScanner, public popoverController: PopoverController, private wmsService:WmsService,
     private intServ: InterceptService,  private js: JsonService, private modalCtrl: ModalController) { }
@@ -111,6 +115,13 @@ export class WmsSplitMergePage implements OnInit {
             this.lps.push(this.lp);
             this.listLp.push(this.lp);
 
+            let item =  await this.wmsService.GetItem(this.lp.fields.PLUNo);
+
+            let listI = await this.wmsService.listItem(item);
+            this.listPicture.push(listI);
+
+            console.log(this.listPicture);
+
           }
             
   
@@ -165,11 +176,7 @@ export class WmsSplitMergePage implements OnInit {
     )
   }
 
-  onSubmit(){
 
-
-    console.log('guardado');
-  }
 
 
  async popoverSplit(lp:any,ev){
@@ -244,6 +251,17 @@ export class WmsSplitMergePage implements OnInit {
       }
         }
 
+  }
+
+
+  public UploadI(){
+
+    this.image = true;
+  }
+
+  public RemoveI(){
+
+    this.image = false;
   }
 
 

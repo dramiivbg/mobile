@@ -168,6 +168,14 @@ export class WmsMainPage implements OnInit {
 
   }
 
+
+  pageBintoBin(){
+
+
+    this.router.navigate(['page/wms/binToBin']);
+
+  }
+
   pageMovement(){
 
 
