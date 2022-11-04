@@ -434,6 +434,8 @@ ion-item {
     border-bottom: 2px solid #aaaaaa;
 
     border-top: 2px solid #aaaaaa;
+
+  
 }
 
 .row2{
@@ -443,23 +445,28 @@ ion-item {
     border-top: 2px solid #aaaaaa;
 
    
+   
 }
 
 
 
 
-ion-popover {
-    --background: rgba(40, 173, 218, 0.6);
-    --backdrop-opacity: 0.6;
-    --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6);
-    --color: white;
-    --width: 300px;
-  }
-  
-  ion-popover ion-content {
-    --background: rgba(40, 173, 218, 0.6);
-  }
-  
-  ion-popover::part(backdrop) {
-    background-color: rgb(6, 14, 106);
-  }
+
+  .custom-file{
+
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 0;
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+    cursor: pointer;
+    color: #ffffff;
+    width: 35%;
+
+}
+
+.container-input-file{
+
+    
+
+    text-align: right;
+}

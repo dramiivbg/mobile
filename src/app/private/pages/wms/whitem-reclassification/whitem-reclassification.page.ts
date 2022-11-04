@@ -18,6 +18,7 @@ export class WhitemReclassificationPage implements OnInit {
 
   public lp:any;
 
+  public listItem:any[] = [];
   public lpH:any;
 
   public company:any = '';
@@ -31,6 +32,8 @@ export class WhitemReclassificationPage implements OnInit {
   public PLUZoneCode:any = '';
 
   public PLUBinCode:any = '';
+
+  public boolean:Boolean = true;
 
   constructor(
     private barcodeScanner: BarcodeScanner,private formBuilder: FormBuilder,private wmsService: WmsService, private intServ: InterceptService
@@ -101,11 +104,11 @@ export class WhitemReclassificationPage implements OnInit {
   
     }
 
-  onScanLP(){
+onScanLP(){
 
 
 
-    this.barcodeScanner.scan().then(
+this.barcodeScanner.scan().then(
     async(barCodeData) => {
         let lpNo = barCodeData.text.toUpperCase();
 
@@ -113,50 +116,98 @@ export class WhitemReclassificationPage implements OnInit {
 
         let res = await this.wmsService.getLpNo(lpNo);
 
-        console.log(res);
-
         this.lp = await this.wmsService.ListLp(res);
 
-        this.company = this.lp.company;
+switch(this.lp.fields.PLULPDocumentType){
 
-        this.PLUQuantity = this.lp.fields.PLUQuantity;
+  case 'Single': 
+    console.log(this.lp);
 
-        this.PLUNo = this.lp.fields.PLUNo;
+    this.company = this.lp.company;
 
-        this.PLUUnitofMeasureCode = this.lp.fields.PLUUnitofMeasureCode;
+    this.PLUQuantity = this.lp.fields.PLUQuantity;
 
-        this.lpH = await this.wmsService.ListLpH(res);
+    this.PLUNo = this.lp.fields.PLUNo;
 
-        this.PLUZoneCode = this.lpH.fields.PLUZoneCode;
+    this.PLUUnitofMeasureCode = this.lp.fields.PLUUnitofMeasureCode;
+
+    this.lpH = await this.wmsService.ListLpH(res);
+
+    this.PLUZoneCode = this.lpH.fields.PLUZoneCode;
 
 
-        let f  = new  Date(this.lpH.fields.SystemCreatedAt);
+    let f  = new  Date(this.lpH.fields.SystemCreatedAt);
 
-        let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
+    let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
+
+    this.lpH.fields.SystemCreatedAt = fecha;
+
+    this.binCode = this.lpH.fields.PLUBinCode;
+
+    this.PLUBinCode = this.lpH.fields.PLUBinCode;
+
+    let qty =  this.lp.fields.PLUQuantity;
+    
+    this.frm.setValue({
+
+      bin: this.PLUBinCode,
+      lpNo,
+      qty
+    });
+
+   
+    this.intServ.loadingFunc(false);
+
+    break;
+
   
-        this.lpH.fields.SystemCreatedAt = fecha;
+  case 'Pallet':
+    
+  
+     this.boolean = false;
 
-        this.binCode = this.lpH.fields.PLUBinCode;
 
-        this.PLUBinCode = this.lpH.fields.PLUBinCode;
+     let palletH = await this.wmsService.PalletH(res);
 
-        let qty =  this.lp.fields.PLUQuantity;
-        
-        this.frm.setValue({
+     let palletL = await this.wmsService.PalletL(res);
 
-          bin: this.PLUBinCode,
-          lpNo,
-          qty
-        });
+   
 
-       
-        this.intServ.loadingFunc(false);
+     palletL.filter(async(lpI) => {
+
+      let lp = await this.wmsService.getLpNo(lpI.PLUNo);
+
+      if(!lp.Error){
+
+      let Lp = await this.wmsService.ListLp(lp);
+
+      this.listItem.push(Lp);
+      }
 
 
 
       
 
+     });
 
+
+
+
+   //  console.log('palletH =>',palletH);
+   //  console.log('palletL =>',palletL);
+
+   console.log('list =>',this.listItem);
+
+     this.intServ.loadingFunc(false);
+
+     break;
+
+  
+
+
+  }
+      
+  
       }
     ).catch(
       err => {

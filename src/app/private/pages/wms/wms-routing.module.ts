@@ -17,6 +17,7 @@ import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 
 import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/read-license-plate.component';
 import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
+import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
 
 
 
@@ -48,10 +49,14 @@ const routes: Routes = [
 
     {path: 'wmsSplitMerge', component: WmsSplitMergePage},
     {path: 'readLicensePlate', component: ReadLicensePlateComponent},
-    {path: 'readBinContent', component: ReadBinContentComponent }
+    {path: 'readBinContent', component: ReadBinContentComponent },
+
+    {path: 'binToBin', component: BinToBinPage}
   ]
 },
-,
+
+
+
   
 
  

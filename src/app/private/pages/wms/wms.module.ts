@@ -20,7 +20,7 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
 
 import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.component';
 
-
+import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
 import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
 import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
@@ -37,6 +37,7 @@ import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-b
 import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-log-lp.component';
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
+
 
 
 
@@ -70,7 +71,8 @@ import { SplitItemComponent } from '@prv/components/split-item/split-item.compon
     ReadLicensePlateComponent,
     ReadBinContentComponent,
     PopoverLogLpComponent,
-    SplitItemComponent
+    SplitItemComponent,
+    BinToBinPage
    
     
   
@@ -102,7 +104,7 @@ import { SplitItemComponent } from '@prv/components/split-item/split-item.compon
     ReadBinContentComponent,
     PopoverLogLpComponent,
     OptionsLpsOrItemsComponent,
-    SplitItemComponent
+    SplitItemComponent,
   
   ]
 })
