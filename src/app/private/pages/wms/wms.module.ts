@@ -37,6 +37,7 @@ import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-b
 import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-log-lp.component';
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
+import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
 
 
 
@@ -72,7 +73,8 @@ import { SplitItemComponent } from '@prv/components/split-item/split-item.compon
     ReadBinContentComponent,
     PopoverLogLpComponent,
     SplitItemComponent,
-    BinToBinPage
+    BinToBinPage,
+    CreatePhysicalInventoryComponent
    
     
   
@@ -105,6 +107,7 @@ import { SplitItemComponent } from '@prv/components/split-item/split-item.compon
     PopoverLogLpComponent,
     OptionsLpsOrItemsComponent,
     SplitItemComponent,
+    CreatePhysicalInventoryComponent
   
   ]
 })

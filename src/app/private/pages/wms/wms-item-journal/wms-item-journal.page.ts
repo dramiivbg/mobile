@@ -77,8 +77,6 @@ public frm: FormGroup;
     const popover = await this.popoverController.create({
       component: PopoverLpEmptyComponent,
       cssClass: 'popoverLpEmptyComponent',
-      event: ev,
-      translucent: true,
      backdropDismiss: false
     });
    
@@ -160,13 +158,12 @@ public frm: FormGroup;
 
     let qty =  this.frm.get('qty').value;
 
-    if(qty > 0){
+    
  
      qty -=1
 
      this.frm.get('qty').setValue(qty);
-     }
-
+     
   }
 
   newPallet(){

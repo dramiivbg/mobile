@@ -537,7 +537,11 @@ async onBarCode(){
 
          this.intServ.loadingFunc(false);
   
-         this.intServ.alertFunc(this.js.getAlert('success', 'success', ` `, () =>{this.router.navigate(['/page/wms/wmsReceipt'])}));
+         this.intServ.alertFunc(this.js.getAlert('success', 'success', ` `, () =>{ 
+
+          this.QtyLP -= this.lpsL.length;
+          this.QtyItem -= this.itemsL.length;
+          this.itemsL = []; this.itemsLT = undefined; this.lpsL = []; this.lpsLT = undefined}));
      
      
 
