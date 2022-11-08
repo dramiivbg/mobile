@@ -215,10 +215,10 @@ export class WmsMainPage implements OnInit {
 
 
           
-  //  let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: "wms" }]);
-  //  let rsl = await this.syncerp.setRequest(p);
+    let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locate }]);
+    let rsl = await this.syncerp.setRequest(p);
 
- //   console.log(rsl);
+    console.log(rsl);
 
   
  // await  this.mappingPhysicalI(rsl);

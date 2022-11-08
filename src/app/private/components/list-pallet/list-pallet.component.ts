@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router, RouterEvent } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { PopoverController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
+import Swal from 'sweetalert2';
+import { parse } from 'path';
 
 @Component({
   selector: 'app-list-pallet',
@@ -14,20 +16,29 @@ import { PopoverOptionsComponent } from '../popover-options/popover-options.comp
 })
 export class ListPalletComponent implements OnInit {
 
-  public routExtras: any;
+ 
 
-  public listPallet: any;
+  @Input() Pallet: any;
 
   public lpsNo: any[] = [];
 
+  public boolean:Boolean = true;
   public lps: any[] = [];
 
+  @Input() WareReceipts: any;
+
+  private listPallet
+
   public wareReceipts: any;
+
+  
+  public pallet: any;
+
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
     , private js: JsonService
     , private route: ActivatedRoute
-    , private router: Router, private popoverController: PopoverController,private barcodeScanner: BarcodeScanner) {
+    , private router: Router, private popoverController: PopoverController,private barcodeScanner: BarcodeScanner,private modalCtrl: ModalController) {
 
     let objFunc = {
       func: () => {
@@ -35,41 +46,21 @@ export class ListPalletComponent implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
-    this.route.queryParams.subscribe(async params => {
-      if (this.router.getCurrentNavigation().extras.state) {
-        this.routExtras = this.router.getCurrentNavigation().extras.state;
 
-      
-        
-      } else {
-        this.router.navigate(['page/wms/wmsReceipt'], { replaceUrl: true });
-      }
-    });
    }
 
   async ngOnInit() {
 
+   
+    
 
-    if(this.routExtras != undefined){
+    this.wareReceipts = this.WareReceipts 
 
-      let wareReceipts = this.routExtras.wareReceipts;
-      let pallet = this.routExtras.pallet;
-      localStorage.setItem('wareReceipts', JSON.stringify(wareReceipts));
-      localStorage.setItem('pallet', JSON.stringify(pallet));
-
-      
-    }
-
-    console.log(localStorage.getItem('wareReceipts'));
-     // console.log(localStorage.getItem('pallet'));
-
-
-
-    this.wareReceipts = (this.routExtras != undefined) ? this.routExtras.wareReceipts : localStorage.getItem('wareReceipts'); 
-
-    this.listPallet = (this.routExtras  != undefined) ? this.routExtras.pallet :  localStorage.getItem('pallet');
+    this.listPallet = this.Pallet;
 
     console.log('pallet =>',this.listPallet);
+
+    
 
     this.intServ.loadingFunc(false);
 
@@ -86,26 +77,9 @@ export class ListPalletComponent implements OnInit {
       
     lp.fields[0].SystemCreatedAt = fecha;
    
-   
+  
+    });
     
-   
-     
-     
-
-
-
-    })
-    
-
-
-
-    this.intServ.loadingFunc(false);
-
-
-
-    
-
-
 
   }
 
@@ -160,6 +134,8 @@ export class ListPalletComponent implements OnInit {
 
    let wareReceipts = this.wareReceipts;
 
+   this.modalCtrl.dismiss({});
+
     let navigationExtras: NavigationExtras = {
       state: {
         listItem, 
@@ -182,44 +158,74 @@ export class ListPalletComponent implements OnInit {
 
   delete(item:any){
 
-
     let line:any = undefined;
-    this.intServ.alertFunc(this.js.getAlert('confirm', '', `You are sure to delete the Pallet ${item.fields[0].PLULPDocumentNo} `, async() => {
 
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You are sure to delete the Pallet ${item.fields[0].PLULPDocumentNo} `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async(result) => {
+      if (result.isConfirmed) {
 
-      this.intServ.loadingFunc(true);
+        this.boolean = false;
 
-  
+        try {
 
+          
       let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.fields[0].PLULPDocumentNo);
-
-      if(!res.Error){
-
-        this.listPallet.filter((pallet,index) => {
-
-
-          if(pallet.fields[0].PLULPDocumentNo === item.fields[0].PLULPDocumentNo){
-
-
-
-            this.listPallet.splice(index,1);
-
-
-          }
-        })
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.fields[0].PLULPDocumentNo} has been removed correctly`));
+       if(res.Error) throw new Error(res.Error.Message);
+       
       
-      }else{
+       this.listPallet.filter((pallet,index) => {
 
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', '', res.Error.Message));
+
+        if(pallet.fields[0].PLULPDocumentNo === item.fields[0].PLULPDocumentNo){
+
+           this.listPallet.splice(index,1);
+
+        }
+      });
+
+      this.boolean = true;
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: `The pallet ${item.fields[0].PLULPDocumentNo} has been removed correctly`,
+        showConfirmButton: false,
+        timer: 1500
+      });
+
+
+          
+        } catch (error) {
+
+          this.boolean = true;
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+            footer: ''
+          });
+          
+        }
+        
       }
-    }));
-
-
+       
+        
+      
+    });
+  
   }
 
+
+  exit(){
+
+    this.modalCtrl.dismiss({});
+  }
 
 
 

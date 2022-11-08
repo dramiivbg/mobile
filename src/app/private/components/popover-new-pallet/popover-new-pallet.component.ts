@@ -262,6 +262,10 @@ async onBarCode(){
     
   });
 
+  console.log(listaL);
+
+  console.log(items);
+
 
 
   this.intServ.loadingFunc(false);
@@ -290,7 +294,7 @@ async onBarCode(){
 
 
       for (const key in items.Possible_ItemsChilds) {
-        if (items.Possible_ItemsChilds[key].ItemNo === code) {
+        if (items.Possible_ItemsChilds[key].ItemNo.toUpperCase() === code.toUpperCase()) {
         
           line = items.Possible_ItemsChilds[key];
        

@@ -1,7 +1,11 @@
-<PlureHeader type="1" title="List Pallet" url="page/main/modules" notify="0"></PlureHeader>
+<PlureHeader *ngIf="boolean" (click)="exit()" type="1" title="List Pallet" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
-<ion-content>
-    <form>
+<div class="container glass-fx" *ngIf="!boolean">
+    <img src="../../../assets/gif/gif_loader.gif" width="50%" class="center" />
+  </div>
+
+<ion-content *ngIf="boolean">
+    <form >
         <div class="designform-header">
             <ion-row>
                 <ion-col>

@@ -58,7 +58,8 @@ export class WmsReceiptPage implements OnInit {
     , private interceptService: InterceptService
     , private jsonService: JsonService
     , private sqlitePlureService: SqlitePlureService
-    , private alertController: AlertController
+    , private alertController: AlertController,
+    private modalCtrl: ModalController
   ) {
     let objFunc = {
       func: () => {
@@ -126,8 +127,6 @@ export class WmsReceiptPage implements OnInit {
     const popover = await this.popoverController.create({
       component: PopoverOptionsComponent,
       cssClass: 'popoverOptions',
-      event: ev,
-      translucent: true,
       componentProps: this.listMenu(item)
     });
     await popover.present();
@@ -143,8 +142,6 @@ export class WmsReceiptPage implements OnInit {
     const popover = await this.popoverController.create({
       component: PopoverLpsComponent,
       cssClass: 'popoverPls',
-      event: ev,
-      translucent: true,
       componentProps: { lps: items }
     });
     await popover.present();
@@ -171,8 +168,6 @@ export class WmsReceiptPage implements OnInit {
       const popover = await this.popoverController.create({
         component: LicensePlatesComponent,
         cssClass: 'popLicensePlate',
-        event: ev,
-        translucent: true,
         componentProps: { options: { item, lp, lstUoM } },
         backdropDismiss: false
       });
@@ -573,33 +568,19 @@ export class WmsReceiptPage implements OnInit {
 
         console.log('final =>', pallet);
 
-
-
-
-
-
-
-
-
         let wareReceipts = this.wareReceipts;
 
+        this.intServ.loadingFunc(false);
 
-
-
-        let navigationExtras: NavigationExtras = {
-          state: {
-            pallet,
-            wareReceipts,
-            new: false
-          },
-          replaceUrl: true
-        };
-        this.router.navigate(['page/wms/listPallet'], navigationExtras);
-
-
-
-
-
+        const modal = await this.modalCtrl.create({
+          component: ListPalletComponent,
+          componentProps: { Pallet:pallet,WareReceipts:wareReceipts}
+      
+        
+        });
+        modal.present();
+    
+  
 
       }
       else {

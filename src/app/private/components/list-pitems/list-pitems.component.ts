@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { PopoverController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import { error } from 'console';
+import { ListPalletComponent } from '../list-pallet/list-pallet.component';
 import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
 
 @Component({
@@ -45,7 +46,8 @@ export class ListPItemsComponent implements OnInit {
     , private intServ: InterceptService
     , private js: JsonService
     , private route: ActivatedRoute
-    , private router: Router,  public popoverController: PopoverController,   private general: GeneralService, private barcodeScanner: BarcodeScanner) { 
+    , private router: Router,  public popoverController: PopoverController,   private general: GeneralService, private barcodeScanner: BarcodeScanner,
+    private modalCtrl: ModalController) { 
 
       let objFunc = {
         func: () => {
@@ -455,6 +457,18 @@ switch(ev.detail.checked){
     
     }))
 
+  }
+
+
+ async back(){
+
+    const modal = await this.modalCtrl.create({
+      component: ListPalletComponent,
+      componentProps: { Pallet:this.pallets,WareReceipts:this.wareReceipts}
+  
+    
+    });
+    modal.present();
   }
 
 
