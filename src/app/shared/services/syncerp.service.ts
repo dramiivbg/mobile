@@ -80,6 +80,7 @@ export class SyncerpService {
           let obj: any = {};
           if (rsl.temp !== undefined) {
             obj = rsl;
+
           } else {
             obj = JSON.parse(rsl.value);
           }

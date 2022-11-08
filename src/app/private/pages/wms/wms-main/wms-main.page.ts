@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
+import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
@@ -33,7 +34,8 @@ export class WmsMainPage implements OnInit {
     , private router: Router
     , private moduleService: ModuleService,
     private wmsService:WmsService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    public popoverController: PopoverController
   ) { 
     let objFunc = {
       func: () => {
@@ -139,6 +141,7 @@ export class WmsMainPage implements OnInit {
     
     await  this.mappingPutAways(rsl, process);
     }
+
   }
 
 
@@ -150,6 +153,8 @@ export class WmsMainPage implements OnInit {
 
 
   }
+
+
 
 
   pageReadLicensePlate(){
@@ -196,8 +201,27 @@ export class WmsMainPage implements OnInit {
   }
 
 
-  selectPI(locale:any){
+ async selectPI(ev){
 
+
+  const popover = await this.popoverController.create({
+    component: CreatePhysicalInventoryComponent,
+    cssClass: 'createPhysicalInventoryComponent',
+    backdropDismiss: false
+  });
+  await popover.present();
+
+  const { data } = await popover.onDidDismiss();
+
+
+          
+  //  let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: "wms" }]);
+  //  let rsl = await this.syncerp.setRequest(p);
+
+ //   console.log(rsl);
+
+  
+ // await  this.mappingPhysicalI(rsl);
 
   }
 
@@ -206,6 +230,69 @@ export class WmsMainPage implements OnInit {
 
     this.router.navigate(['page/wms/wmsSplitMerge']);
   }
+
+  
+  private async mappingPhysicalI(putAway:any){
+
+
+    let listPutAway = await this.wmsService.listsPutAways(putAway);
+ 
+    console.log(listPutAway);
+ 
+ 
+    if (listPutAway.length > 0 ) {
+ 
+     this.intServ.loadingFunc(false);
+     
+      let obj = this.general.structSearch(listPutAway, `Search Physical Inventory `, 'Physical Inventory', async (whsePutAwayL) => {
+ 
+ 
+       let putAway = await this.wmsService.GetWarehousePutAway(whsePutAwayL.fields.No);
+ 
+      let whsePutAwayH = await this.wmsService.ListPutAwayH(putAway);
+    
+       this.wmsService.setPutAway(putAway);
+ 
+ 
+         let whsePutAway = whsePutAwayH;
+         console.log(whsePutAway, putAway)
+         
+       this.wmsService.setPutAway(putAway);
+        console.log('data =>', putAway);
+        const modal = await this.modalCtrl.create({
+         component: EditPutAwayComponent,
+         componentProps: {whsePutAway}
+     
+       
+       });
+       modal.present();
+   
+       const { data, role } = await modal.onWillDismiss();
+   
+   
+     
+ 
+        setTimeout(
+          () => {
+            this.intServ.searchShowFunc({});
+          }, 1000
+        )
+      }, false, 4);
+      this.intServ.searchShowFunc(obj);
+ 
+     
+    } else {
+ 
+     this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `list Physical Inventory  Empty`));
+    }
+ 
+ 
+    
+ 
+    
+ 
+   }
 
   private async mappingPutAways(putAway:any , procesos: Process){
 

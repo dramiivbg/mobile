@@ -1045,6 +1045,69 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
    }
 
+
+
+   public async GetBinByLocation(Location:any){
+
+    
+    try {
+
+    
+        let obj: any = [{
+
+            Location
+
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('GetBinByLocation', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+   }
+
+
+   public async Create_WarehouseInvPhysicalCount(ZoneCode:any,BinCode:any,LocationCode:any,RegisteringDate:any,WhseDocumentNo:any){
+
+
+    
+    try {
+
+    
+        let obj: any = [{
+
+            ZoneCode,
+            BinCode,
+            LocationCode,
+            RegisteringDate,
+            WhseDocumentNo
+
+
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Create_WarehouseInvPhysicalCount', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+   }
+
  
 
 
