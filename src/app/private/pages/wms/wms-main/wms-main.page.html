@@ -13,9 +13,10 @@
     </ion-col>
   </ion-row>
 
-<ion-list class="list" *ngIf="boolean">
-   
-    <ion-row *ngFor="let process of processes; let i = index" (click)="onWMS(process)" [ngClass]="{'after': i != processes.length - 1}">
+  <ion-list class="list" *ngIf="boolean">
+
+    <ion-row *ngFor="let process of processes; let i = index" (click)="onWMS(process)"
+      [ngClass]="{'after': i != processes.length - 1}">
       <ion-col size="1">
         <ion-icon name="receipt-outline" *ngIf="process.processId == 'P007'"></ion-icon>
         <ion-icon name="cube-outline" *ngIf="process.processId == 'P008'"></ion-icon>
@@ -31,8 +32,8 @@
       <ion-col size="1">
         <ion-icon name="analytics-outline"></ion-icon>
       </ion-col>
-        <ion-col size="5">
-          <ion-label>InQueris</ion-label>
+      <ion-col size="5">
+        <ion-label>InQueris</ion-label>
       </ion-col>
     </ion-row>
 
@@ -40,50 +41,47 @@
       <ion-col size="1">
         <ion-icon name="stats-chart-outline"></ion-icon>
       </ion-col>
-        <ion-col size="5">
-          <ion-label>Reporting</ion-label>
+      <ion-col size="5">
+        <ion-label>Reporting</ion-label>
       </ion-col>
     </ion-row>
-   </ion-list>
+  </ion-list>
 
 
-   <ion-list class="list" *ngIf="booleanInQ">
+  <ion-list class="list" *ngIf="booleanInQ">
     <ion-row (click)="pageReadLicensePlate()">
       <ion-col size="1">
         <ion-icon name="barcode-outline"></ion-icon>
       </ion-col>
-        <ion-col size="5">
-          <ion-label>Read License Plate</ion-label>
+      <ion-col size="5">
+        <ion-label>Read License Plate</ion-label>
       </ion-col>
     </ion-row>
 
-    
-    <ion-row (click)="pageReadBinContent()" >
+
+    <ion-row (click)="pageReadBinContent()">
       <ion-col size="1">
         <ion-icon name="barcode-outline"></ion-icon>
       </ion-col>
-        <ion-col size="7">
-          <ion-label>Read Bin Content</ion-label>
-        </ion-col>
-      
+      <ion-col size="7">
+        <ion-label>Read Bin Content</ion-label>
+      </ion-col>
+
     </ion-row>
-    
+
 
   </ion-list>
 
 
-  
+
   <ion-list class="list" *ngIf="booleanM">
 
     <ion-row (click)="pageBintoBin()">
       <ion-col size="1">
-        <ion-icon name="barcode-outline"></ion-icon>
+        <ion-icon name="shuffle-outline"></ion-icon>
       </ion-col>
-        <ion-col size="3">
-          <ion-label>Bin To Bin</ion-label>
-      </ion-col>
-      <ion-col size="1">
-        <ion-icon name="move-outline"></ion-icon>
+      <ion-col size="3">
+        <ion-label>Bin To Bin</ion-label>
       </ion-col>
     </ion-row>
 
@@ -91,8 +89,8 @@
       <ion-col size="1">
         <ion-icon name="move-outline"></ion-icon>
       </ion-col>
-        <ion-col size="5">
-          <ion-label>Whse. Movement</ion-label>
+      <ion-col size="5">
+        <ion-label>Whse. Movement</ion-label>
       </ion-col>
     </ion-row>
 
@@ -100,8 +98,8 @@
       <ion-col size="1">
         <ion-icon name="cube-outline"></ion-icon>
       </ion-col>
-        <ion-col size="7">
-          <ion-label>Whse. Item Reclassification</ion-label> 
+      <ion-col size="7">
+        <ion-label>Whse. Item Reclassification</ion-label>
       </ion-col>
     </ion-row>
 
@@ -109,8 +107,8 @@
       <ion-col size="1">
         <ion-icon name="color-filter-outline"></ion-icon>
       </ion-col>
-        <ion-col size="5">
-          <ion-label>Whse. Item Journal</ion-label>
+      <ion-col size="5">
+        <ion-label>Whse. Item Journal</ion-label>
       </ion-col>
     </ion-row>
 
@@ -118,8 +116,8 @@
       <ion-col size="1">
         <ion-icon name="settings-outline"></ion-icon>
       </ion-col>
-        <ion-col size="5">
-          <ion-label>Split / Merge</ion-label>
+      <ion-col size="5">
+        <ion-label>Split / Merge</ion-label>
       </ion-col>
     </ion-row>
 
@@ -127,20 +125,20 @@
       <ion-col size="1">
         <ion-icon name="server-outline"></ion-icon>
       </ion-col>
-        <ion-col size="5">
-          <ion-label>Physical Inventory</ion-label>
-        
+      <ion-col size="5">
+        <ion-label>Physical Inventory</ion-label>
+
       </ion-col>
     </ion-row>
 
-    <ion-row >
+    <ion-row>
       <ion-col size="1">
         <ion-icon name="cash-outline"></ion-icon>
       </ion-col>
-        <ion-col size="7">
-          <ion-label>Whse. Non Count Journal</ion-label>
-        </ion-col>
-      
+      <ion-col size="7">
+        <ion-label>Whse. Non Count Journal</ion-label>
+      </ion-col>
+
     </ion-row>
 
   </ion-list>
