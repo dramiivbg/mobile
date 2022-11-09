@@ -193,7 +193,35 @@ public frm: FormGroup;
 
         if(res.Error) throw new Error(res.Error.Message);
 
-        let just = await  this.wmsService.CalculateWhseAdjustment(obj.ItemNo,this.fechaC);
+
+        let month:any;
+        let day:any;
+        let date = new Date(this.fechaC);
+
+        if((date.getMonth()+1) < 9) {
+          month = '0'+ (date.getMonth()+1)
+      }else{
+  
+        month = (date.getMonth()+1);
+      }
+  
+  
+      if(date.getDate() <= 9) {
+        day = '0'+ date.getDate();
+    }else{
+  
+      day = date.getDate();
+    }
+  
+  
+        let fecha = date.getFullYear() +'-'+month+'-'+day;
+  
+        console.log(fecha)
+  
+
+        let just = await  this.wmsService.CalculateWhseAdjustment(obj.ItemNo,fecha);
+
+
 
         if(just.Error) throw new Error(just.Error.Message);
 

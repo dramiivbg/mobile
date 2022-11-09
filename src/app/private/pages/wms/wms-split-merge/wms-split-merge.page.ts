@@ -118,6 +118,9 @@ export class WmsSplitMergePage implements OnInit {
             let item =  await this.wmsService.GetItem(this.lp.fields.PLUNo);
 
             let listI = await this.wmsService.listItem(item);
+
+           listI.fields.Picture =  `data:image/jpeg;base64,${listI.fields.Picture}`;
+           
             this.listPicture.push(listI);
 
             console.log(this.listPicture);

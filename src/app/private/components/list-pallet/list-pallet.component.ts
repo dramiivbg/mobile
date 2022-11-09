@@ -18,21 +18,22 @@ export class ListPalletComponent implements OnInit {
 
  
 
-  @Input() Pallet: any;
+ // @Input() Pallet: any;
 
   public lpsNo: any[] = [];
 
   public boolean:Boolean = true;
   public lps: any[] = [];
 
-  @Input() WareReceipts: any;
+ // @Input() WareReceipts: any;
 
-  private listPallet
+  private routExtras: any;
+  private listPallet:any;
 
   public wareReceipts: any;
 
   
-  public pallet: any;
+
 
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
@@ -46,6 +47,15 @@ export class ListPalletComponent implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
+    this.route.queryParams.subscribe(async params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.routExtras = this.router.getCurrentNavigation().extras;
+
+
+      } else {
+        this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
+      }
+    });
 
    }
 
@@ -54,16 +64,11 @@ export class ListPalletComponent implements OnInit {
    
     
 
-    this.wareReceipts = this.WareReceipts 
+    this.wareReceipts = this.routExtras.state.wareReceipts; 
 
-    this.listPallet = this.Pallet;
+    this.listPallet = this.routExtras.state.pallet;
 
     console.log('pallet =>',this.listPallet);
-
-    
-
-    this.intServ.loadingFunc(false);
-
 
 
     this.listPallet.filter(lp => {
@@ -79,6 +84,9 @@ export class ListPalletComponent implements OnInit {
    
   
     });
+
+    
+    this.intServ.loadingFunc(false);
     
 
   }
@@ -158,74 +166,52 @@ export class ListPalletComponent implements OnInit {
 
   delete(item:any){
 
-    let line:any = undefined;
+  
 
-    Swal.fire({
-      title: 'Are you sure?',
-      text: `You are sure to delete the Pallet ${item.fields[0].PLULPDocumentNo} `,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then(async(result) => {
-      if (result.isConfirmed) {
+    this.intServ.alertFunc(this.js.getAlert('alert', '', `You are sure to delete the Pallet ${item.fields[0].PLULPDocumentNo}`, async() => {
 
-        this.boolean = false;
-
-        try {
+      this.intServ.loadingFunc(true);
+      try {
 
           
-      let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.fields[0].PLULPDocumentNo);
-       if(res.Error) throw new Error(res.Error.Message);
-       
-      
-       this.listPallet.filter((pallet,index) => {
+        let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.fields[0].PLULPDocumentNo);
 
-
-        if(pallet.fields[0].PLULPDocumentNo === item.fields[0].PLULPDocumentNo){
-
-           this.listPallet.splice(index,1);
-
-        }
-      });
-
-      this.boolean = true;
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: `The pallet ${item.fields[0].PLULPDocumentNo} has been removed correctly`,
-        showConfirmButton: false,
-        timer: 1500
-      });
-
-
-          
-        } catch (error) {
-
-          this.boolean = true;
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: error.message,
-            footer: ''
-          });
-          
-        }
+         if(res.Error) throw new Error(res.Error.Message);
+         
         
-      }
-       
-        
+         this.listPallet.filter((pallet,index) => {
+  
+  
+          if(pallet.fields[0].PLULPDocumentNo === item.fields[0].PLULPDocumentNo){
+  
+             this.listPallet.splice(index,1);
+  
+          }
+        });
+  
+        this.intServ.loadingFunc(false);
+     
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.fields[0].PLULPDocumentNo} has been removed correctly`));
+    
+  
+  
+            
+          } catch (error) {
+  
+            this.intServ.loadingFunc(false);
+
+            this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+            
+          }
       
-    });
+    }))
+
+
   
   }
 
 
-  exit(){
-
-    this.modalCtrl.dismiss({});
-  }
+  
 
 
 

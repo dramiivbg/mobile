@@ -168,6 +168,29 @@ div.logofooter2 {
     color: var(--ion-color-plureHeader);
 }
 
-// ion-row {
-//     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
-// }
+
+.bin{
+
+
+    padding-left: 60px;
+    color: #5CABF9;
+   
+}
+
+.label-line-title {
+    font-size: 14px; 
+    font-weight: bold;
+    img.noImage {
+        padding-top: 20px;
+    }
+}
+.label-line-title.blue {
+    color: var(--ion-color-plureBlue);
+    font-size: 16px;
+    font-family: SourceSansProBold;
+}
+.label-line {
+    color: rgba(85, 85, 105, 0.5);
+    font-size: 10px; 
+    padding: 0 10px 0 0;
+}

@@ -1109,6 +1109,180 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
    }
 
  
+   public async listPI(lists:any){
+
+
+    
+    let list: any[] = [];
+
+    let obj= {
+
+       company: "",
+       fieldCount: 0,
+       fields: { 
+        JournalTemplateName: "",
+        JournalBatchName: "",
+        LineNo: 0,
+        RegisteringDate: '',
+        LocationCode: '',
+        FromZoneCode: '',
+        FromBinCode: '',
+        Description:'',
+        ItemNo: '',
+        Quantity:null,
+        ZoneCode: '',
+        BinCode: '',
+        SourceType:null,
+        SourceSubtype: '',
+        SourceNo: null,
+        SourceLineNo: null,
+        SourceSublineNo:null,
+        SourceDocument: '',
+        SourceCode: '',
+        ToZoneCode: '',
+        ToBinCode: '',
+        ReasonCode: null,
+        RegisteringNoSeries: null,
+        FromBinTypeCode: '',
+        Cubage: null,
+        Weight: null,
+        WhseDocumentNo: '',
+        WhseDocumentType: '',
+        WhseDocumentLineNo: null,
+        QtyCalculated: 0,
+        QtyPhysInventory: 0,
+        QtyBase: null,
+        QtyAbsolute: null,
+        QtyAbsoluteBase: null,
+        VariantCode: null,
+        QtyperUnitofMeasure: 0,
+        UnitofMeasureCode: '',
+        QtyRoundingPrecision: 0,
+        QtyRoundingPrecisionBase: 0,
+        SerialNo: null,
+        LotNo: null,
+        WarrantyDate: null,
+        ExpirationDate: null,
+        NewSerialNo: null,
+        NewLotNo: null,
+        NewExpirationDate: null,
+        PackageNo: null,
+        NewPackageNo: null,
+        PhysInvtCountingPeriodCode: null,
+        PhysInvtCountingPeriodType: '',
+        PLULicensePlates: '',
+        PLULPPallets: null,
+       $systemId: '',
+       SystemCreatedAt: '',
+       SystemCreatedBy: '',
+       SystemModifiedAt: '',
+       SystemModifiedBy: ''
+},
+       id: 0,
+       name: "",
+       position: "",
+       recordId: ""
+
+
+    }
+
+    for (const i in lists.Warehouse_Physical_Inventory_Journal) {
+
+
+        obj.company = lists.Warehouse_Physical_Inventory_Journal[i].company;
+        obj.fieldCount = lists.Warehouse_Physical_Inventory_Journal[i].fieldCount;
+        obj.id = lists.Warehouse_Physical_Inventory_Journal[i].id;
+        obj.name = lists.Warehouse_Physical_Inventory_Journal[i].name;
+        obj.position = lists.Warehouse_Physical_Inventory_Journal[i].position;
+        obj.recordId = lists.Warehouse_Physical_Inventory_Journal[i].recordId;
+
+
+        for (const j in lists.Warehouse_Physical_Inventory_Journal[i].fields) {
+
+
+            obj.fields[lists.Warehouse_Physical_Inventory_Journal[i].fields[j].name] = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
+         
+        }
+
+        list.push(obj);
+
+
+        obj= {
+
+            company: "",
+            fieldCount: 0,
+            fields: { 
+             JournalTemplateName: "",
+             JournalBatchName: "",
+             LineNo: 0,
+             RegisteringDate: '',
+             LocationCode: '',
+             FromZoneCode: '',
+             FromBinCode: '',
+             Description:'',
+             ItemNo: '',
+             Quantity:null,
+             ZoneCode: '',
+             BinCode: '',
+             SourceType:null,
+             SourceSubtype: '',
+             SourceNo: null,
+             SourceLineNo: null,
+             SourceSublineNo:null,
+             SourceDocument: '',
+             SourceCode: '',
+             ToZoneCode: '',
+             ToBinCode: '',
+             ReasonCode: null,
+             RegisteringNoSeries: null,
+             FromBinTypeCode: '',
+             Cubage: null,
+             Weight: null,
+             WhseDocumentNo: '',
+             WhseDocumentType: '',
+             WhseDocumentLineNo: null,
+             QtyCalculated: 0,
+             QtyPhysInventory: 0,
+             QtyBase: null,
+             QtyAbsolute: null,
+             QtyAbsoluteBase: null,
+             VariantCode: null,
+             QtyperUnitofMeasure: 0,
+             UnitofMeasureCode: '',
+             QtyRoundingPrecision: 0,
+             QtyRoundingPrecisionBase: 0,
+             SerialNo: null,
+             LotNo: null,
+             WarrantyDate: null,
+             ExpirationDate: null,
+             NewSerialNo: null,
+             NewLotNo: null,
+             NewExpirationDate: null,
+             PackageNo: null,
+             NewPackageNo: null,
+             PhysInvtCountingPeriodCode: null,
+             PhysInvtCountingPeriodType: '',
+             PLULicensePlates: '',
+             PLULPPallets: null,
+            $systemId: '',
+            SystemCreatedAt: '',
+            SystemCreatedBy: '',
+            SystemModifiedAt: '',
+            SystemModifiedBy: ''
+     },
+            id: 0,
+            name: "",
+            position: "",
+            recordId: ""
+     
+     
+         }
+
+   }
+
+    return list;
+
+   }
 
 
     public async createListLP(listLp: any){
@@ -1315,6 +1489,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
          let obj= {
 
+            image: '',
             company: "",
             fieldCount: 0,
             fields: {  PLULPDocumentNo: "",
@@ -1393,6 +1568,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
       obj= {
 
         company: "",
+        image: '',
         fieldCount: 0,
         fields: {  PLULPDocumentNo: "",
         PLULineNo: 0,

@@ -220,7 +220,7 @@
 
   <ion-row>
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="lpNo" (ionInput)="onChangeLp($event)" show-clear-button="always"
+      <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event)" show-clear-button="always"
         clear-icon="close-outline" placeholder="Search Pallet" *ngIf="booleanL"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
@@ -297,7 +297,7 @@
 
   <ion-row *ngIf="!booleanL">
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="itemNo" (ionInput)="onChangeI($event)" show-clear-button="always"
+      <ion-searchbar [(ngModel)]="itemNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeI($event)" show-clear-button="always"
         clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!booleanL"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">

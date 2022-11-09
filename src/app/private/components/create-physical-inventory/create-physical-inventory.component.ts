@@ -65,11 +65,11 @@ export class CreatePhysicalInventoryComponent implements OnInit {
     }
 
 
-    if(date.getDate() < 9) {
+    if(date.getDate() <= 9) {
       day = '0'+ date.getDate();
   }else{
 
-    day = date.getDate;
+    day = date.getDate();
   }
 
 

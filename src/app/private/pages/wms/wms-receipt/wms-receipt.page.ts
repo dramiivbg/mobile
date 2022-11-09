@@ -570,18 +570,19 @@ export class WmsReceiptPage implements OnInit {
 
         let wareReceipts = this.wareReceipts;
 
-        this.intServ.loadingFunc(false);
-
-        const modal = await this.modalCtrl.create({
-          component: ListPalletComponent,
-          componentProps: { Pallet:pallet,WareReceipts:wareReceipts}
       
-        
-        });
-        modal.present();
-    
-  
 
+        let navigationExtras: NavigationExtras = {
+          state: {
+            pallet,
+            wareReceipts,
+            new: false
+          },
+          replaceUrl: true
+        };
+        this.router.navigate(['page/wms/listPallet'], navigationExtras);
+
+  
       }
       else {
 
