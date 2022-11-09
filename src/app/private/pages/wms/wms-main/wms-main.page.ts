@@ -214,14 +214,13 @@ export class WmsMainPage implements OnInit {
   const { data } = await popover.onDidDismiss();
 
 
+  this.intServ.loadingFunc(true);
+
           
     let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locate }]);
     let rsl = await this.syncerp.setRequest(p);
-
-    console.log(rsl);
-
   
- // await  this.mappingPhysicalI(rsl);
+  await  this.mappingPhysicalI(rsl);
 
   }
 
@@ -232,52 +231,41 @@ export class WmsMainPage implements OnInit {
   }
 
   
-  private async mappingPhysicalI(putAway:any){
+  private async mappingPhysicalI(listPI:any){
 
 
-    let listPutAway = await this.wmsService.listsPutAways(putAway);
+    let lists = await this.wmsService.listPI(listPI);
  
-    console.log(listPutAway);
+    console.log(lists);
  
  
-    if (listPutAway.length > 0 ) {
+    if (lists.length > 0 ) {
  
      this.intServ.loadingFunc(false);
      
-      let obj = this.general.structSearch(listPutAway, `Search Physical Inventory `, 'Physical Inventory', async (whsePutAwayL) => {
+      let obj = this.general.structSearch(lists, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data) => {
  
  
-       let putAway = await this.wmsService.GetWarehousePutAway(whsePutAwayL.fields.No);
- 
-      let whsePutAwayH = await this.wmsService.ListPutAwayH(putAway);
-    
-       this.wmsService.setPutAway(putAway);
- 
- 
-         let whsePutAway = whsePutAwayH;
-         console.log(whsePutAway, putAway)
-         
-       this.wmsService.setPutAway(putAway);
-        console.log('data =>', putAway);
-        const modal = await this.modalCtrl.create({
-         component: EditPutAwayComponent,
-         componentProps: {whsePutAway}
-     
-       
-       });
-       modal.present();
-   
-       const { data, role } = await modal.onWillDismiss();
-   
-   
-     
- 
-        setTimeout(
-          () => {
-            this.intServ.searchShowFunc({});
-          }, 1000
-        )
-      }, false, 4);
+        var alert = setTimeout(() => {
+
+          console.log(data);
+
+
+          let obj = this.general.structSearch(data,  `Physical Inv Journal-Counting `, 'Scan/Type License Plate', async (data) => {
+
+            setTimeout(
+              () => {
+                this.intServ.searchShowFunc({});
+              }, 1000
+            )
+
+          }, false, 6);
+
+          this.intServ.searchShowFunc(obj);
+          clearTimeout(alert);
+        }, 100)
+  
+      }, false, 5);
       this.intServ.searchShowFunc(obj);
  
      
@@ -286,6 +274,8 @@ export class WmsMainPage implements OnInit {
      this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `list Physical Inventory  Empty`));
     }
+
+    
  
  
     

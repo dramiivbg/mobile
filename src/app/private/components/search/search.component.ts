@@ -1,6 +1,8 @@
+import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Network } from '@capacitor/network';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Module, Process } from '@mdl/module';
@@ -39,6 +41,15 @@ export class SearchComponent implements OnInit {
   private delete: boolean = false;
   private post: boolean = false;
 
+  public visible: Boolean = false;
+
+  public lps:any[] = [];
+  public active: Boolean = false;
+  public lpNo:any = '';
+  public bin:any = '';
+
+  public listPicture:any[] = [];
+
   constructor(private platform: Platform
     , private syncerp: SyncerpService
     , private general: GeneralService
@@ -49,7 +60,8 @@ export class SearchComponent implements OnInit {
     , private offline: OfflineService
     , private storage: Storage
     , private salesService: SalesService,
-    private wmsService: WmsService
+    private wmsService: WmsService,
+    private barcodeScanner: BarcodeScanner
   ) {
     intServ.searchShow$.subscribe(
       async obj => {
@@ -121,6 +133,40 @@ export class SearchComponent implements OnInit {
     } 
   }
 
+
+  onChangeL(e, lpNo:any = '') {
+  
+    switch(lpNo){
+
+      case '':
+        let val = e.target.value;
+      
+        if (val === '') {
+          this.listsFilter = this.lists;
+        } else {
+          this.listsFilter = this.lists.filter(
+            x => {
+              return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || x.fields.PLUNo.toLowerCase().includes(val.toLowerCase()));
+            }
+          )
+        }
+        
+        break;
+  
+    default:
+  
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
+        }
+      )
+  
+     
+      
+  
+     } 
+  }
+
   onChangeP(e) {
     let val = e.target.value;
 
@@ -153,6 +199,43 @@ export class SearchComponent implements OnInit {
     } 
   }
 
+
+  onChangePI(e, bin:any = '') {
+
+
+   switch(bin){
+
+    case '':
+      let val = e.target.value;
+    
+      if (val === '') {
+        this.listsFilter = this.lists;
+      } else {
+        this.listsFilter = this.lists.filter(
+          x => {
+            return (x.fields.ZoneCode.toLowerCase().includes(val.toLowerCase()) || x.fields.BinCode.toLowerCase().includes(val.toLowerCase()) ||  x.fields.ItemNo.toLowerCase().includes(val.toLowerCase()));
+          }
+        )
+      }
+      
+      break;
+
+  default:
+
+    this.listsFilter = this.lists.filter(
+      x => {
+        return (x.fields.BinCode.toLowerCase().includes(bin.toLowerCase()));
+      }
+    )
+
+    this.active = true;
+
+    
+
+   } 
+ 
+  }
+
   onHeight() {
     this.platform.ready().then(
       () => {
@@ -164,6 +247,126 @@ export class SearchComponent implements OnInit {
           let height = this.platform.height();
           this.height = height;
         }
+      }
+    )
+  }
+
+
+  
+ public onFilter(){
+
+
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text.toUpperCase();
+
+        
+
+        this.lpNo = code;
+
+        this.onChangeL('', code);
+      
+       
+      
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+  public onBarCode() {
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text.toUpperCase();
+
+      
+        this.bin = code;
+
+        this.onChangePI('', code);
+      
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+  }
+
+  
+  public onBarCodeLP() {
+
+    
+    this.barcodeScanner.scan().then(
+     async (barCodeData) => {
+        let code = barCodeData.text.toUpperCase();
+
+   
+        this.intServ.loadingFunc(true);
+
+        let line = this.listsFilter.find(inv => inv.fields.PLULicensePlates === code);
+        
+       if(line !== null || line !== undefined){
+
+        try {
+          
+          let res = await this.wmsService.getLpNo(code);
+
+          
+          if(res.Error) throw new Error(res.Error.Message);
+
+          let lp = await this.wmsService.ListLp(res);
+
+          let lpH = await this.wmsService.ListLpH(res);
+
+          lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
+          lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
+
+          let item =  await this.wmsService.GetItem(lp.fields.PLUNo);
+
+          let listI = await this.wmsService.listItem(item);
+
+
+          listI.fields.Picture =  `data:image/jpeg;base64,${listI.fields.Picture}`;
+
+          this.listPicture.push(listI);
+
+          
+          this.lps.push(lp);
+
+          this.visible = true;
+          this.intServ.loadingFunc(false);
+
+
+          console.log(this.lps);
+
+          console.log(this.listPicture);
+
+          
+          
+        } catch (error) {
+
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+          
+        }
+
+    
+       }else{
+
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', '', `The license Plate ${code} does not exist`));
+       } 
+           
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
       }
     )
   }
@@ -210,6 +413,20 @@ export class SearchComponent implements OnInit {
       }
       this.intServ.appBackFunc(appBack);
     }
+
+    }
+
+
+    onSubmit(){
+
+
+      
+      this.searchObj.func(this.listsFilter);
+      if (this.searchObj.clear) this.onBack();
+      let appBack = {
+        old: true
+      }
+      this.intServ.appBackFunc(appBack);
 
     }
   

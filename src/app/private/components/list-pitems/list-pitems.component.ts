@@ -462,13 +462,15 @@ switch(ev.detail.checked){
 
  async back(){
 
-    const modal = await this.modalCtrl.create({
-      component: ListPalletComponent,
-      componentProps: { Pallet:this.pallets,WareReceipts:this.wareReceipts}
-  
-    
-    });
-    modal.present();
+  let navigationExtras: NavigationExtras = {
+    state: {
+      pallet:this.pallets,
+      wareReceipts:this.wareReceipts,
+      new: false
+    },
+    replaceUrl: true
+  };
+  this.router.navigate(['page/wms/listPallet'], navigationExtras);
   }
 
 
