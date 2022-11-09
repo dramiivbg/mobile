@@ -43,6 +43,8 @@ export class SearchComponent implements OnInit {
 
   public visible: Boolean = false;
 
+  private session:any;
+
   public lps:any[] = [];
   public active: Boolean = false;
   public lpNo:any = '';
@@ -85,13 +87,26 @@ export class SearchComponent implements OnInit {
         /** start permissions for sales */
         this.onResetPermissions();
         this.getPermissions();
+        this.getSession();
         // this.onHeight();
         /** end permissions for sales */
       }
     )
+
+    
   }
 
-  ngOnInit() {}
+ async ngOnInit() {
+
+  
+  }
+
+ async getSession(){
+
+    this.session = (await this.js.getSession()).login;
+
+    console.log(this.session);
+  }
 
   onChange(e) {
     let val = e.target.value;
@@ -297,6 +312,11 @@ export class SearchComponent implements OnInit {
     )
   }
 
+
+ async onSubmitP(){
+
+
+  }
   
   public onBarCodeLP() {
 
@@ -370,6 +390,33 @@ export class SearchComponent implements OnInit {
       }
     )
   }
+
+  
+  add(index:any){
+
+    let qty =  this.lps[index].fields.PLUQuantity;
+  
+      qty +=1
+  
+      this.lps[index].fields.PLUQuantity = qty;
+    
+    
+  
+    }
+  
+    res(index:any){
+  
+      
+    let qty =  this.lps[index].fields.PLUQuantity;
+  
+      if(qty > 1){
+   
+       qty -=1
+  
+       this.lps[index].fields.PLUQuantity = qty;
+       }
+  
+    }
 
   onResetPermissions() {
     this.new = false;
