@@ -244,3 +244,13 @@ ion-content {
 ion-list{
     background: transparent;
 }
+
+div.glass {
+    background-color: rgb(255, 255, 255, 0.1);
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(20px);
+    align-items: center;
+    display: flex;        
+    justify-content: center;
+}

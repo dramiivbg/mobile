@@ -47,14 +47,33 @@ export class CreatePhysicalInventoryComponent implements OnInit {
       console.log(obj);
 
 
+      let month:any;
+
+      let day:any;
+
       if(data === "")  data = Math.floor(Math.random() * 1000000000); 
 
       
 
       let date = new Date();
 
+      if((date.getMonth()+1) < 9) {
+        month = '0'+ (date.getMonth()+1)
+    }else{
 
-      let fecha = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
+      month = (date.getMonth()+1);
+    }
+
+
+    if(date.getDate() < 9) {
+      day = '0'+ date.getDate();
+  }else{
+
+    day = date.getDate;
+  }
+
+
+      let fecha = date.getFullYear() +'-'+month+'-'+day;
 
       console.log(fecha)
 
@@ -70,7 +89,7 @@ export class CreatePhysicalInventoryComponent implements OnInit {
         if(res.error) throw new Error(res.error.message);
 
 
-        this.popoverController.dismiss({data: res});
+        this.popoverController.dismiss({data: res, locate: obj.LocationCode });
         
         
       } catch (error) {

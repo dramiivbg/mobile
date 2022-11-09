@@ -16,8 +16,6 @@ import { PopoverLpsComponent} from '../../components/popover-lps/popover-lps.com
 import {AlertController} from '@ionic/angular';
 import { EditPutAwayComponent } from '../../components/edit-put-away/edit-put-away.component';
 import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
-import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
-
 import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.component';
 
 import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
@@ -38,6 +36,7 @@ import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-lo
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
 import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
+import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 
 
 
@@ -54,7 +53,6 @@ import { CreatePhysicalInventoryComponent } from '@prv/components/create-physica
     LicensePlatesComponent,
     PopoverLpsComponent,
     PopoverNewPalletComponent,
-    ListPalletComponent,
     ListPItemsComponent,
     OptionsLpsOrItemsComponent,
     PhysicalIntentoryPage,
@@ -74,7 +72,9 @@ import { CreatePhysicalInventoryComponent } from '@prv/components/create-physica
     PopoverLogLpComponent,
     SplitItemComponent,
     BinToBinPage,
-    CreatePhysicalInventoryComponent
+    CreatePhysicalInventoryComponent,
+    ListPalletComponent
+   
    
     
   
@@ -107,7 +107,8 @@ import { CreatePhysicalInventoryComponent } from '@prv/components/create-physica
     PopoverLogLpComponent,
     OptionsLpsOrItemsComponent,
     SplitItemComponent,
-    CreatePhysicalInventoryComponent
+    CreatePhysicalInventoryComponent,
+    ListPalletComponent
   
   ]
 })
