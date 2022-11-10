@@ -157,9 +157,9 @@ export class SearchComponent implements OnInit {
         let val = e.target.value;
       
         if (val === '') {
-          this.listsFilter = this.lists;
+          this.lps = this.lists;
         } else {
-          this.listsFilter = this.lists.filter(
+          this.lps = this.lists.filter(
             x => {
               return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || x.fields.PLUNo.toLowerCase().includes(val.toLowerCase()));
             }
@@ -170,7 +170,7 @@ export class SearchComponent implements OnInit {
   
     default:
   
-      this.listsFilter = this.lists.filter(
+      this.lps = this.lists.filter(
         x => {
           return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
         }
@@ -181,6 +181,8 @@ export class SearchComponent implements OnInit {
   
      } 
   }
+
+  
 
   onChangeP(e) {
     let val = e.target.value;
@@ -313,8 +315,220 @@ export class SearchComponent implements OnInit {
   }
 
 
- async onSubmitP(){
+  edit(e,index:any){
 
+    let val = e.target.value;
+
+    this.lps[index].fields.PLUQuantity = val;
+
+  }
+
+ async onSubmitP(listLp:any){
+
+ 
+
+  let listI:any[] = [];
+
+  listLp.filter(lp => {
+
+    let line = this.listsFilter.find(inv => inv.fields.PLULicensePlates === lp.fields.PLULPDocumentNo);
+
+    if(line !== undefined || line !== null){
+
+      line.fields.QtyPhysInventory = lp.fields.PLUQuantity;
+
+      listI.push(line);
+    }
+
+  });
+
+
+  let lists:any[] = [];
+
+  let  list = {
+    name: "WarehouseJournalLine",
+    fields: [ {
+      name: "JournalTemplateName",
+      value: "",
+    },
+    {
+      name: "JournalBatchName",
+      value: "",
+    },
+    {
+      name: "LineNo",
+      value: "",
+    },
+    {
+      name: "RegisteringDate",
+      value: "",
+    },
+    {
+      name: "LocationCode",
+      value: "",   
+    },
+    {
+      name: "ItemNo",
+      value: "",
+    },
+    {
+      name: "Qty(PhysInventory)",
+      value: "",
+    },
+    {
+      name: "UserID",
+      value: "",    
+    },
+    {
+      name: "VariantCode",
+      value: "",
+    },
+    {
+      name: "SerialNo",
+      value: "",      
+    },
+    {
+      name: "LotNo",
+      value: "",     
+    },   
+    {
+      name: "PLULicensePlates",
+      value: "",      
+    }]
+  };
+
+  listI.filter(inv => {
+
+    list = {
+      name: "WarehouseJournalLine",
+      fields: [ {
+        name: "JournalTemplateName",
+        value: inv.fields.JournalTemplateName,
+      },
+      {
+        name: "JournalBatchName",
+        value: inv.fields.JournalBatchName,
+      },
+      {
+        name: "LineNo",
+        value: inv.fields.LineNo,
+      },
+      {
+        name: "RegisteringDate",
+        value: inv.fields.RegisteringDate,
+      },
+      {
+        name: "LocationCode",
+        value: inv.fields.LocationCode,   
+      },
+      {
+        name: "ItemNo",
+        value: inv.fields.ItemNo,
+      },
+      {
+        name: "Qty(PhysInventory)",
+        value: Number(inv.fields.QtyPhysInventory),
+      },
+      {
+        name: "UserID",
+        value: inv.fields.UserID,    
+      },
+      {
+        name: "VariantCode",
+        value: inv.fields.VariantCode,
+      },
+      {
+        name: "SerialNo",
+        value: inv.fields.SerialNo,      
+      },
+      {
+        name: "LotNo",
+        value: inv.fields.LotNo,     
+      },   
+      {
+        name: "PLULicensePlates",
+        value: inv.fields.PLULicensePlates,      
+      }]
+    };
+
+    lists.push(list);
+
+    list = {
+      name: "WarehouseJournalLine",
+      fields: [ {
+        name: "JournalTemplateName",
+        value: "",
+      },
+      {
+        name: "JournalBatchName",
+        value: "",
+      },
+      {
+        name: "LineNo",
+        value: "",
+      },
+      {
+        name: "RegisteringDate",
+        value: "",
+      },
+      {
+        name: "LocationCode",
+        value: "",   
+      },
+      {
+        name: "ItemNo",
+        value: "",
+      },
+      {
+        name: "Qty(PhysInventory)",
+        value: "",
+      },
+      {
+        name: "UserID",
+        value: "",    
+      },
+      {
+        name: "VariantCode",
+        value: "",
+      },
+      {
+        name: "SerialNo",
+        value: "",      
+      },
+      {
+        name: "LotNo",
+        value: "",     
+      },   
+      {
+        name: "PLULicensePlates",
+        value: "",      
+      }]
+    };
+
+  });
+
+  try {
+
+    let res = await this.wmsService.Write_WarehouseInvPhysicalCount(lists);
+
+    if(res.Error) throw new Error(res.Error.Message);
+
+    
+    if(res.error) throw new Error(res.error.message);
+
+    console.log(res);
+    
+    
+  } catch (error) {
+
+
+    this,this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+    
+  }
+
+
+
+  
 
   }
   
@@ -345,7 +559,8 @@ export class SearchComponent implements OnInit {
 
           lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
           lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
-
+          lp.fields.PLUQuantity = line.fields.QtyPhysInventory;
+          
           let item =  await this.wmsService.GetItem(lp.fields.PLUNo);
 
           let listI = await this.wmsService.listItem(item);
@@ -357,6 +572,8 @@ export class SearchComponent implements OnInit {
 
           
           this.lps.push(lp);
+
+          this.lists = this.lps;
 
           this.visible = true;
           this.intServ.loadingFunc(false);
@@ -411,6 +628,7 @@ export class SearchComponent implements OnInit {
   
       if(qty > 1){
    
+
        qty -=1
   
        this.lps[index].fields.PLUQuantity = qty;
