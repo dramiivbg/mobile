@@ -1108,6 +1108,32 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
    }
 
+   public async Write_WarehouseInvPhysicalCount(list:any){
+
+    
+    
+    try {
+
+    
+        let obj: any = [{
+            Warehouse_Physical_Inventory_Journal: [list]
+
+
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Write_WarehouseInvPhysicalCount', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+   }
+
  
    public async listPI(lists:any){
 
@@ -1202,6 +1228,34 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
             obj.fields[lists.Warehouse_Physical_Inventory_Journal[i].fields[j].name] = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
          
+
+            switch(lists.Warehouse_Physical_Inventory_Journal[i].fields[j].name){
+
+                case 'Qty(Calculated)':
+                    obj.fields.QtyCalculated = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
+                    break;
+                case 'Qty(PhysInventory)':
+                    obj.fields.QtyPhysInventory = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
+                    break;
+                
+                case 'Qty(Base)':
+                    obj.fields.QtyBase = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
+                    break;
+
+                case 'Qty(Absolute)':
+                    obj.fields.QtyAbsolute = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
+                    break;
+
+                case 'Qty(Absolute,Base)':
+                    obj.fields.QtyAbsoluteBase = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
+                    break;
+
+                case 'QtyRoundingPrecision(Base)':
+                    obj.fields.QtyRoundingPrecisionBase = lists.Warehouse_Physical_Inventory_Journal[i].fields[j].value;
+                    break;
+
+           }
+            
         }
 
         list.push(obj);
