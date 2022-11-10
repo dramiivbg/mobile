@@ -1,19 +1,21 @@
-<PlureHeader (click)="back()" type="1" title="LP Details " url="page/wms/lists" notify="0" *ngIf="boolean"></PlureHeader>
+<PlureHeader (click)="back()" type="1" title="LP Details " url="page/wms/lists" notify="0" *ngIf="boolean">
+</PlureHeader>
 
 
-    <div class="docnumber" *ngIf="boolean">
-     <p> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
-    </div>
+<div class="docnumber" *ngIf="boolean">
+  <p> Document No: {{pallet.fields[0].PLULPDocumentNo}} </p>
+</div>
 
-    
-  
+
+
 
 <ion-content *ngIf="boolean">
 
 
   <ion-row>
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event, lpNo)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event, lpNo)"
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
@@ -29,65 +31,65 @@
 
 
   <ion-list>
-   
-      <ion-grid >
 
- 
-        <ion-row class=" newColor" >
-          <ion-col>
-            <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
-        
-          </ion-col>
-        
-          <ion-col size="3">
-            <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
-          </ion-col>
-          <ion-col size="4">
-            <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
-          </ion-col>
-          <ion-col size="4">
-            <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
-          </ion-col>
-        </ion-row>
-      
-      
-      
-      
-        <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index">
-          
-         
-          <ion-col *ngIf="testListL.length > 0">
-        
+    <ion-grid>
 
 
-              
-                <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]=" testListL[i].checked"></ion-checkbox>
-           
-         
-  
-          </ion-col>
+      <ion-row class=" newColor">
+        <ion-col>
+          <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
+
+        </ion-col>
+
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
+        </ion-col>
+        <ion-col size="4">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
+        </ion-col>
+        <ion-col size="4">
+          <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
+        </ion-col>
+      </ion-row>
 
 
-       
-          <ion-col size="3">
-            <div>{{item.PLUNo
+
+
+      <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index">
+
+
+        <ion-col *ngIf="testListL.length > 0">
+
+
+
+
+          <ion-checkbox (ionChange)="selectl(item,$event)" [(ngModel)]=" testListL[i].checked"></ion-checkbox>
+
+
+
+        </ion-col>
+
+
+
+        <ion-col size="3">
+          <div>{{item.PLUNo
             }}</div>
-          </ion-col>
-          <ion-col size="4">
-            <div>{{item.PLUQuantity}}</div>
-          </ion-col>
-          <ion-col size="4">
-            <div>{{item.PLUUnitofMeasureCode
+        </ion-col>
+        <ion-col size="4">
+          <div>{{item.PLUQuantity}}</div>
+        </ion-col>
+        <ion-col size="4">
+          <div>{{item.PLUUnitofMeasureCode
             }}</div>
-          </ion-col>
-        </ion-row>
-      
-      
-      
-      </ion-grid>
-      
-      
-  
+        </ion-col>
+      </ion-row>
+
+
+
+    </ion-grid>
+
+
+
 
   </ion-list>
 
@@ -96,20 +98,22 @@
 
 
 
-<PlureHeader type="1" title="Items Details " url="page/wms/lists" notify="0" *ngIf="!boolean" (click)="exit()"></PlureHeader>
+<PlureHeader type="1" title="Items Details " url="page/wms/lists" notify="0" *ngIf="!boolean" (click)="exit()">
+</PlureHeader>
 
 
-    <div class="docnumber" *ngIf="!boolean">
-     <p> Document No: {{pallet.fields[0].PLULPDocumentNo}}    </p>
-    </div>
+<div class="docnumber" *ngIf="!boolean">
+  <p> Document No: {{pallet.fields[0].PLULPDocumentNo}} </p>
+</div>
 
 
 
-<ion-content  *ngIf="!boolean">
+<ion-content *ngIf="!boolean">
 
   <ion-row *ngIf="!boolean">
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="itemNo" (ionInput)="onChangeI($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="itemNo" (ionInput)="onChangeI($event)" show-clear-button="always"
+        clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" *ngIf="!boolean" (click)="autoComplet()"></ion-icon>
@@ -125,72 +129,72 @@
 
 
   <ion-list>
-  
-    
-<ion-grid >
 
 
-  <ion-row class=" newColor" >
-  
+    <ion-grid>
 
-   
-      <ion-col>
 
-        <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
-      
-
-      </ion-col>
-      
-  
- 
-    <ion-col size="3">
-      <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
-    </ion-col>
-    <ion-col size="4">
-      <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
-    </ion-col>
-    <ion-col size="4">
-      <div style="font-family: Arial, Helvetica, sans-serif;">LineNo</div>
-    </ion-col>
-  </ion-row>
+      <ion-row class=" newColor">
 
 
 
+        <ion-col>
+
+          <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
 
 
-  <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index">
-
-    <ion-col *ngIf="item.PLUQuantity > 0  &&  testListI.length > 0">
-        
-
-        
-          <ion-checkbox   (ionChange)="selectl(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
-     
-     
-
-    </ion-col>
-
-  
-    <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
-      <div>{{item.PLUNo}}</div>
-    </ion-col>
-    <ion-col size="4"  *ngIf="item.PLUQuantity > 0 ">
-      <div>{{item.PLUQuantity
-      }}</div>
-    </ion-col>
-    <ion-col size="4" *ngIf="item.PLUQuantity > 0 " >
-      <div>{{item.PLUWhseLineNo
-      }}</div>
-    </ion-col>
-
-  </ion-row>
+        </ion-col>
 
 
 
-</ion-grid>
-      
-      
- 
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
+        </ion-col>
+        <ion-col size="4">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
+        </ion-col>
+        <ion-col size="4">
+          <div style="font-family: Arial, Helvetica, sans-serif;">LineNo</div>
+        </ion-col>
+      </ion-row>
+
+
+
+
+
+      <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index">
+
+        <ion-col *ngIf="item.PLUQuantity > 0  &&  testListI.length > 0">
+
+
+
+          <ion-checkbox (ionChange)="selectl(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
+
+
+
+        </ion-col>
+
+
+        <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
+          <div>{{item.PLUNo}}</div>
+        </ion-col>
+        <ion-col size="4" *ngIf="item.PLUQuantity > 0 ">
+          <div>{{item.PLUQuantity
+            }}</div>
+        </ion-col>
+        <ion-col size="4" *ngIf="item.PLUQuantity > 0 ">
+          <div>{{item.PLUWhseLineNo
+            }}</div>
+        </ion-col>
+
+      </ion-row>
+
+
+
+    </ion-grid>
+
+
+
 
   </ion-list>
 
@@ -222,11 +226,3 @@
     <ion-icon class="itemfooter" size="large" name="trash-outline"></ion-icon>
   </ion-tab-button>
 </ion-tab-bar>
-
-
-
-
-
-
-
-
