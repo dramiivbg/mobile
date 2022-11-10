@@ -170,8 +170,8 @@
   </ion-row>
 
 
-  
-  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 4">  
+
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 4">
     <ion-col size="12">
       <ion-grid>
         <ion-row>
@@ -182,7 +182,8 @@
                   <img src="../../../assets/img/modules/search.svg" />
                 </div>
                 <div class="input">
-                  <ion-input (ionInput)="onChangePutAway($event)" placeholder="Search by {{searchObj.name}}"></ion-input>
+                  <ion-input (ionInput)="onChangePutAway($event)" placeholder="Search by {{searchObj.name}}">
+                  </ion-input>
                 </div>
               </div>
             </ion-item>
@@ -193,21 +194,21 @@
     <ion-col size="12">
       <ion-list class="listOrders">
         <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
-          
-            <ion-col >
-              <ion-label class="text-id">{{item.id
+
+          <ion-col>
+            <ion-label class="text-id">{{item.id
               }}-</ion-label>
-              <ion-label class="text-value">{{item.fields.No}}</ion-label>
-            </ion-col>
-        
+            <ion-label class="text-value">{{item.fields.No}}</ion-label>
+          </ion-col>
+
         </ion-row>
       </ion-list>
-    </ion-col> 
+    </ion-col>
   </ion-row>
 
 
-  
-  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 5">  
+
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 5">
     <ion-col size="12">
       <ion-grid>
         <ion-row>
@@ -215,10 +216,11 @@
             <ion-item class="item-native-plure">
               <div class="search-all">
                 <div class="icon">
-                  <ion-icon  size="large" name="barcode-outline" (click)="onBarCode()" ></ion-icon>
+                  <ion-icon size="large" name="barcode-outline" (click)="onBarCode()"></ion-icon>
                 </div>
                 <div class="input">
-                  <ion-input (ionInput)="onChangePI($event)" [(ngModel)]="bin" [ngModelOptions]="{standalone: true}" placeholder="{{searchObj.name}}"></ion-input>
+                  <ion-input (ionInput)="onChangePI($event)" [(ngModel)]="bin" [ngModelOptions]="{standalone: true}"
+                    placeholder="{{searchObj.name}}"></ion-input>
                 </div>
               </div>
             </ion-item>
@@ -231,26 +233,26 @@
 
         <ion-row>
           <ion-col>
-            <ion-label style="padding-left: 30px;" >Zone/Bin Code</ion-label>
+            <ion-label style="padding-left: 30px;">Zone/Bin Code</ion-label>
             <ion-label class="bin" *ngIf="active"> Bin: {{bin}}</ion-label>
           </ion-col>
         </ion-row>
         <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
-          <ion-col >
-              <ion-label class="text-id">{{item.fields.ZoneCode}}-</ion-label>
-              <ion-label class="text-value">{{item.fields.BinCode}}</ion-label>
+          <ion-col>
+            <ion-label class="text-id">{{item.fields.ZoneCode}}-</ion-label>
+            <ion-label class="text-value">{{item.fields.BinCode}}</ion-label>
 
-              <ion-label class="text-value" style="padding-left: 90px;">Item: {{item.fields.ItemNo}}</ion-label>
-            </ion-col>
-        
+            <ion-label class="text-value" style="padding-left: 90px;">Item: {{item.fields.ItemNo}}</ion-label>
+          </ion-col>
+
         </ion-row>
       </ion-list>
-    </ion-col> 
+    </ion-col>
   </ion-row>
 
 
-    
-  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 6">  
+
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 6">
     <ion-col size="12">
       <ion-grid>
         <ion-row>
@@ -258,10 +260,11 @@
             <ion-item class="item-native-plure">
               <div class="search-all">
                 <div class="icon">
-                  <ion-icon  size="large" name="barcode-outline" (click)="onFilter()" ></ion-icon>
+                  <ion-icon size="large" name="barcode-outline" (click)="onFilter()"></ion-icon>
                 </div>
                 <div class="input">
-                  <ion-input (ionInput)="onChangeL($event)" [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" placeholder="{{searchObj.name}}"></ion-input>
+                  <ion-input (ionInput)="onChangeL($event)" [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}"
+                    placeholder="{{searchObj.name}}"></ion-input>
                 </div>
               </div>
             </ion-item>
@@ -274,97 +277,98 @@
 
         <ion-label>License Plate:</ion-label><br>
         <ion-row class="rowFirst">
-           <ion-col size="12">
-            <ion-label >{{item.fields.PLULPDocumentNo}}</ion-label>
+          <ion-col size="12">
+            <ion-label>{{item.fields.PLULPDocumentNo}}</ion-label>
           </ion-col>
         </ion-row>
 
         <ion-row class="rowFirst">
           <ion-col size="10">
 
-          <ion-row>
+            <ion-row>
 
-            <ion-col size="6">
-              <label> Item: {{item.fields.PLUNo}}</label>
-            </ion-col>
+              <ion-col size="6">
+                <label> Item: {{item.fields.PLUNo}}</label>
+              </ion-col>
 
-            <ion-col size="6">
+              <ion-col size="6">
 
-              <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE'" [src]="listPicture[i].fields.Picture" alt="">
-              <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
-            </ion-col>
-          </ion-row>
-          
+                <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE'" [src]="listPicture[i].fields.Picture" alt="">
+                <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
+              </ion-col>
+            </ion-row>
 
-              <ion-row>
-                  <ion-col size="7" style="overflow: hidden;"
-                      class="label-line-title blue">
-                      {{item.company}}
-                  </ion-col>
 
-              </ion-row>
-              <ion-row>
-                  <ion-col size="4" class="label-line">
-                      Item No: {{item.fields.PLUNo}}
-                  </ion-col>
-                  <ion-col size="4" class="label-line">
-                      Measure:  {{item.fields.PLUUnitofMeasureCode}}
-                  </ion-col>
-                  <ion-col size="4" class="label-line">
-                    Location: {{item.fields.PLULocationCode}}
-                  </ion-col>
-              </ion-row>
-              <ion-row>
-                  <ion-col class="label-line" size="3">
-                    Bin Code: {{item.fields.PLUBinCode}}
-                  </ion-col>
-              </ion-row>
+            <ion-row>
+              <ion-col size="7" style="overflow: hidden;" class="label-line-title blue">
+                {{item.company}}
+              </ion-col>
 
-              <ion-row>
-                <ion-col class="label-line" size="3">
-                  No Serie: {{item.fields.PLUSerialNo}}
-                </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="4" class="label-line">
+                Item No: {{item.fields.PLUNo}}
+              </ion-col>
+              <ion-col size="4" class="label-line">
+                Measure: {{item.fields.PLUUnitofMeasureCode}}
+              </ion-col>
+              <ion-col size="4" class="label-line">
+                Location: {{item.fields.PLULocationCode}}
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="label-line" size="3">
+                Bin Code: {{item.fields.PLUBinCode}}
+              </ion-col>
             </ion-row>
 
             <ion-row>
               <ion-col class="label-line" size="3">
-                Lot:  {{item.fields.PLULotNo}}
+                No Serie: {{item.fields.PLUSerialNo}}
               </ion-col>
-          </ion-row>
+            </ion-row>
 
-          <ion-row>
-            <ion-col class="label-line" size="3">
-              Exp. Date: {{item.fields.PLUExpirationDate}}
-            </ion-col>
-        </ion-row>
+            <ion-row>
+              <ion-col class="label-line" size="3">
+                Lot: {{item.fields.PLULotNo}}
+              </ion-col>
+            </ion-row>
 
-        <ion-row class="rowFirst" size="12">
+            <ion-row>
+              <ion-col class="label-line" size="3">
+                Exp. Date: {{item.fields.PLUExpirationDate}}
+              </ion-col>
+            </ion-row>
 
-          <ion-col style="overflow: hidden;"
-          class="label-line-title blue">
-          Cicle Counting
-        </ion-col>
-          
+            <ion-row class="rowFirst" size="12">
 
-          <ion-row>
-            <ion-col size="3" style="border: 1px solid black;" (click)="add(i)"><ion-icon class="btnqty" name="add-circle" ></ion-icon></ion-col>
-            <ion-col size="6" style="border: 1px solid black;">{{item.fields.PLUQuantity}}</ion-col>
-            <ion-col size="3" style="border: 1px solid black;" (click)="res(i)">  <ion-icon class="btnqty" name="remove-circle" ></ion-icon></ion-col>
-          </ion-row>
+              <ion-col style="overflow: hidden;" class="label-line-title blue">
+                Cicle Counting
+              </ion-col>
 
-          <ion-col style="text-align: right;"
-          class="label-line-title blue">
-          PSC >
-        </ion-col>
 
-        </ion-row>
+              <ion-row>
+                <ion-col size="3" style="border: 1px solid black;" (click)="add(i)">
+                  <ion-icon class="btnqty" name="add-circle"></ion-icon>
+                </ion-col>
+                <ion-col size="6" style="border: 1px solid black;">{{item.fields.PLUQuantity}}</ion-col>
+                <ion-col size="3" style="border: 1px solid black;" (click)="res(i)">
+                  <ion-icon class="btnqty" name="remove-circle"></ion-icon>
+                </ion-col>
+              </ion-row>
+
+              <ion-col style="text-align: right;" class="label-line-title blue">
+                PSC >
+              </ion-col>
+
+            </ion-row>
 
           </ion-col>
-      </ion-row>
+        </ion-row>
 
-      
+
       </ion-list>
-    </ion-col> 
+    </ion-col>
   </ion-row>
 
 
@@ -385,7 +389,7 @@
 
   <div class="logofooter2" *ngIf="searchObj.type == 5">
     <ion-row>
-     
+
       <ion-col size="12" (click)="onSubmit()">
         <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
         <div class="footertext">Save</div>
@@ -396,23 +400,19 @@
 
   <div class="logofooter2" *ngIf="searchObj.type == 6">
     <ion-row>
-     
+
       <ion-col size="6" (click)="onBarCodeLP()">
         <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
         <div class="footertext">Bar Code</div>
         <hr />
       </ion-col>
 
-      
+
       <ion-col size="6" (click)="onSubmitP()">
         <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
         <div class="itemfooter">Save</div>
         <hr />
-    </ion-col>
+      </ion-col>
     </ion-row>
   </div>
 </ion-content>
-
-
-
-
