@@ -278,16 +278,15 @@ export class WmsMainPage implements OnInit {
 
       var alert = setTimeout(() => {
 
-      let obj = this.general.structSearch(listsOr, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data) => {
+      let obj = this.general.structSearch(listsOr, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data,bin) => {
 
+        this.wmsService.set(bin);
          var alert = setTimeout(() => {
 
           console.log(data);
 
 
-          let obj = this.general.structSearch(data,  `Physical Inv Journal-Counting `, 'Scan/Type License Plate', async (data) => {
-
-          }, false, 6);
+          let obj = this.general.structSearch(data,  `Physical Inv Journal-Counting `, 'Scan/Type License Plate', async (data) => {}, false, 6);
 
           this.intServ.searchShowFunc(obj);
           clearTimeout(alert);

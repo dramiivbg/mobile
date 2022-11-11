@@ -43,6 +43,8 @@ export class SearchComponent implements OnInit {
 
   public visible: Boolean = false;
 
+  public binCode:any;
+
   private session:any;
 
   public lps:any[] = [];
@@ -63,7 +65,7 @@ export class SearchComponent implements OnInit {
     , private storage: Storage
     , private salesService: SalesService,
     private wmsService: WmsService,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
   ) {
     intServ.searchShow$.subscribe(
       async obj => {
@@ -75,8 +77,10 @@ export class SearchComponent implements OnInit {
         };
         this.intServ.appBackFunc(objFunc);
 
+        let bin = this.wmsService.get();
+
         this.searchObj = obj;
-        console.log('searchObj =>',this.searchObj.type);
+        this.binCode = (this.searchObj.type === 6 && bin !== undefined) ? bin : "all";
       //  console.log('obj =>',obj);
         this.listsFilter = obj.data;
 
@@ -339,6 +343,41 @@ export class SearchComponent implements OnInit {
 
   }
 
+  onRegister(){
+
+
+    this.intServ.alertFunc(this.js.getAlert('register',`Bin Code: ${this.binCode}`, 'Locate Complete, or Add New LP? ', async()=> {
+
+
+      this.intServ.loadingFunc(true);
+
+
+      try {
+
+
+        let res = await this.wmsService.Register_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
+
+        if(res.Error) throw new Error(res.Error.Message);
+
+        this.intServ.loadingFunc(false);
+
+        this.intServ.alertFunc(this.js.getAlert('success', '', 'The inventory was successfully recorded'));
+
+        this.router.navigate(['page/wms/wmsMain']);
+        
+        
+      } catch (error) {
+
+        this.intServ.loadingFunc(false);
+
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+        
+      }
+    }));
+
+
+  }
+
  async onSubmitP(listLp:any){
 
  
@@ -533,15 +572,12 @@ export class SearchComponent implements OnInit {
     if(res.error) throw new Error(res.error.message);
 
 
-  //  let resR = await this.wmsService.Register_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
+    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
 
-  //  if(resR.Error) throw new Error(resR.Error.Message);
+    if(resR.Error) throw new Error(resR.Error.Message);
 
 
-    
-    
-
-    console.log(res);
+    console.log(resR);
     
     
   } catch (error) {
@@ -670,13 +706,31 @@ export class SearchComponent implements OnInit {
    * Return to the another page
    */
   onBack() {
+
+   if(this.searchObj.type !== 6){
+
     this.searchObj = {};
     this.listsFilter = [];
     let appBack = {
       old: true
     }
     this.intServ.appBackFunc(appBack);
-    this.lps = [];
+   }else{
+
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', 'You are sure?, the data will be lost!!', () => {
+
+    this.searchObj = {};
+    this.listsFilter = [];
+    let appBack = {
+      old: true
+    }
+    this.intServ.appBackFunc(appBack);
+      this.lps = [];
+    }))
+
+   } 
+   
+  
   }
 
   onClick(item) {
@@ -708,9 +762,12 @@ export class SearchComponent implements OnInit {
     }
 
 
+
+
     onSubmit(){
 
 
+      this.wmsService.set(this.bin);
       
       this.searchObj.func(this.listsFilter);
       if (this.searchObj.clear) this.onBack();

@@ -39,7 +39,7 @@ export class AlertsComponent implements OnInit {
   onOk() {
     if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue' && this.alertObj.type !== 'select')
       this.alertObj.func();
-    this.alertObj = {};
+      this.alertObj = {};
   }
 
   onYes() {
@@ -57,6 +57,9 @@ export class AlertsComponent implements OnInit {
  
 
 }
+
+
+
 
 onLp(opcion:Boolean){
 
