@@ -33,14 +33,6 @@
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onNo()">No</ion-button>
       </div>
 
-      <div class="alert-btn" *ngIf="alertObj.type == 'edit'">
-        <p>{{alertObj.title}}</p>
-        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onSi()">Yes</ion-button>
-        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onNo()">No</ion-button>
-      </div>
-
-   
-
       <div class="alert-btn" *ngIf="alertObj.type == 'register'">
         <p>{{alertObj.title}}</p>
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
