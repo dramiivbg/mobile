@@ -239,27 +239,53 @@ export class WmsMainPage implements OnInit {
     let lists = await this.wmsService.listPI(listPI);
  
     console.log(lists);
+
+    let listOr = await this.wmsService.listPI(listPI);
  
  
     if (lists.length > 0 ) {
  
      this.intServ.loadingFunc(false);
+
+
+     for (const i in listOr) {
+      for (const j in listOr) {
      
-      let obj = this.general.structSearch(lists, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data) => {
- 
- 
-        var alert = setTimeout(() => {
+          if (j !== i) {
+      
+            if(listOr[i].fields.JournalBatchName === listOr[j].fields.JournalBatchName) listOr.splice(Number(j));
+          }
+
+        
+       
+      }
+     }
+     
+
+     let obj = this.general.structSearch(listOr, `Physical Inv. Journal `, 'WH Physical Inv. Journal', async (data) => {
+
+      let listsOr = [];
+
+     
+      for (const i in lists) {
+        if (lists[i].fields.JournalBatchName === data.fields.JournalBatchName) {
+          listsOr.push(lists[i]);
+          
+        }
+      }
+
+      console.log(listsOr);
+
+      var alert = setTimeout(() => {
+
+      let obj = this.general.structSearch(listsOr, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data) => {
+
+         var alert = setTimeout(() => {
 
           console.log(data);
 
 
           let obj = this.general.structSearch(data,  `Physical Inv Journal-Counting `, 'Scan/Type License Plate', async (data) => {
-
-            setTimeout(
-              () => {
-                this.intServ.searchShowFunc({});
-              }, 1000
-            )
 
           }, false, 6);
 
@@ -267,8 +293,20 @@ export class WmsMainPage implements OnInit {
           clearTimeout(alert);
         }, 100)
   
-      }, false, 5);
-      this.intServ.searchShowFunc(obj);
+    
+    }, false, 5);
+
+    this.intServ.searchShowFunc(obj);
+
+    clearTimeout(alert);
+  }, 100)
+
+  }, false, 7);
+
+  this.intServ.searchShowFunc(obj);
+
+
+  
  
      
     } else {

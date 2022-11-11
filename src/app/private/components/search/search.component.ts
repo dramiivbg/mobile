@@ -216,6 +216,22 @@ export class SearchComponent implements OnInit {
     } 
   }
 
+  onChangeBatch(e){
+
+    let val = e.target.value;
+
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.fields.JournalBatchName.toLowerCase().includes(val.toLowerCase()) || x.fields.LocationCode.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+  }
+
 
   onChangePI(e, bin:any = '') {
 
@@ -516,6 +532,15 @@ export class SearchComponent implements OnInit {
     
     if(res.error) throw new Error(res.error.message);
 
+
+  //  let resR = await this.wmsService.Register_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
+
+  //  if(resR.Error) throw new Error(resR.Error.Message);
+
+
+    
+    
+
     console.log(res);
     
     
@@ -651,6 +676,7 @@ export class SearchComponent implements OnInit {
       old: true
     }
     this.intServ.appBackFunc(appBack);
+    this.lps = [];
   }
 
   onClick(item) {
