@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { WmsService } from '@svc/wms.service';
 
@@ -18,7 +19,15 @@ export class PopoverShowInventoryComponent implements OnInit {
   public listPictureC:any[] = [];
   public listPictureN:any[] = [];
 
+  public listsC:any;
+
+  public listsN:any;
+
   public loading:Boolean = true;
+
+  public codeC:any = '';
+
+  public codeN:any = '';
 
   @Input() NoCounting:any;
 
@@ -30,7 +39,7 @@ export class PopoverShowInventoryComponent implements OnInit {
 
 
 
-  constructor(  private modalCtrl: ModalController, private wmsService: WmsService) { }
+  constructor(  private modalCtrl: ModalController, private wmsService: WmsService, private barcodeScanner: BarcodeScanner,) { }
 
  async ngOnInit() {
 
@@ -39,6 +48,10 @@ export class PopoverShowInventoryComponent implements OnInit {
     this.countingNu = this.counting.length;
 
     this.noCountingNu = this.NoCounting.length;
+
+    this.listsC = this.counting;
+
+    this.listsN = this.NoCounting;
 
 
     this.counting.filter(async(x) => {
@@ -110,4 +123,126 @@ export class PopoverShowInventoryComponent implements OnInit {
 
     
   }
+
+
+  
+  autoComplet(){
+
+
+    if(this.boolean){
+ 
+ 
+     
+     this.barcodeScanner.scan().then(
+       async  (barCodeData) => {
+           let code = barCodeData.text;
+     
+     
+   
+           this.codeC = code;
+ 
+ 
+           this.onChangeC('', this.codeC);
+           
+     
+       
+         }
+       ).catch(
+         err => {
+           console.log(err);
+         }
+       )
+    }else{
+ 
+ 
+     
+     this.barcodeScanner.scan().then(
+       async  (barCodeData) => {
+           let code = barCodeData.text;
+     
+     
+   
+           this.codeN = code;
+ 
+ 
+           this.onChangeN('', this.codeN);
+           
+     
+       
+         }
+       ).catch(
+         err => {
+           console.log(err);
+         }
+       )
+    }
+ 
+   }
+
+
+   
+  onChangeN(e, codeN:any = ''){
+
+    if(codeN === ''){
+    let val = e.target.value;
+
+    if (val === '') {
+      this.NoCounting = this.listsN;
+    } else {
+      this.NoCounting = this.listsN.filter(
+        x => {
+          return (x.fields.PLULicensePlates.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+  }else{
+
+
+    this.NoCounting = this.listsN.filter(
+      x => {
+        return (x.fields.PLULicensePlates.toLowerCase().includes(codeN.toLowerCase()));
+      }
+    )
+  }
+
+
+
+
+  }
+
+
+
+   
+  onChangeC(e, codeC:any = ''){
+
+    if(codeC === ''){
+    let val = e.target.value;
+
+    if (val === '') {
+      this.counting = this.listsC;
+    } else {
+      this.counting = this.listsC.filter(
+        x => {
+          return (x.fields.PLULicensePlates.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+  }else{
+
+
+    this.counting = this.listsC.filter(
+      x => {
+        return (x.fields.PLULicensePlates.toLowerCase().includes(codeC.toLowerCase()));
+      }
+    )
+  }
+
+
+
+
+  }
+
+
 }
