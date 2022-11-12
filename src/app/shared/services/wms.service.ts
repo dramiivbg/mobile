@@ -1116,7 +1116,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
     
         let obj: any = [{
-            Warehouse_Physical_Inventory_Journal: [list]
+            Warehouse_Physical_Inventory_Journal: list
 
 
           }];
@@ -1126,6 +1126,61 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
     
         
         let p = await this.syncErp.processRequestParams('Write_WarehouseInvPhysicalCount', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+   }
+
+
+   public async Register_WarehouseInvPhysicalCount(LocationCode:any){
+
+
+ 
+    try {
+
+    
+        let obj: any = [{
+            LocationCode
+
+
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Register_WarehouseInvPhysicalCount', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
+
+
+   public async PreRegister_WarehouseInvPhysicalCount(LocationCode:any){
+
+
+    
+    try {
+
+    
+        let obj: any = [{
+            LocationCode
+
+
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('PreRegister_WarehouseInvPhysicalCount', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
