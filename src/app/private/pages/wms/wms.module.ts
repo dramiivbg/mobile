@@ -37,6 +37,7 @@ import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items
 import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
 import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
 import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
+import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inventory/popover-show-inventory.component';
 
 
 
@@ -73,7 +74,8 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
     SplitItemComponent,
     BinToBinPage,
     CreatePhysicalInventoryComponent,
-    ListPalletComponent
+    ListPalletComponent,
+    PopoverShowInventoryComponent
    
    
     
@@ -108,7 +110,8 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
     OptionsLpsOrItemsComponent,
     SplitItemComponent,
     CreatePhysicalInventoryComponent,
-    ListPalletComponent
+    ListPalletComponent,
+    PopoverShowInventoryComponent
   
   ]
 })

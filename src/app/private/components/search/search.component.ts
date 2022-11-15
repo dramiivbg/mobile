@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Network } from '@capacitor/network';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { Platform } from '@ionic/angular';
+import { ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Module, Process } from '@mdl/module';
 import { AuthService } from '@svc/auth.service';
@@ -20,6 +20,7 @@ import { WmsService } from '@svc/wms.service';
 import { SK_OFFLINE } from '@var/consts';
 import { E_PROCESSTYPE } from '@var/enums';
 import { constants } from 'buffer';
+import { PopoverShowInventoryComponent } from '../popover-show-inventory/popover-show-inventory.component';
 
 @Component({
   selector: 'btn-search',
@@ -66,6 +67,8 @@ export class SearchComponent implements OnInit {
     , private salesService: SalesService,
     private wmsService: WmsService,
     private barcodeScanner: BarcodeScanner,
+    private modalCtrl: ModalController
+
   ) {
     intServ.searchShow$.subscribe(
       async obj => {
@@ -340,6 +343,41 @@ export class SearchComponent implements OnInit {
     let val = e.target.value;
 
     this.lps[index].fields.PLUQuantity = val;
+
+  }
+
+ async showInventory(){
+
+  try {
+
+
+    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
+
+    console.log(resR);
+
+    if(resR.Error) throw new Error(resR.Error.Message);
+
+    let counting = await this.wmsService.listPIC(resR);
+
+    let NoCounting = await this.wmsService.listPINC(resR);
+
+    const modal = await this.modalCtrl.create({
+      component: PopoverShowInventoryComponent,
+      cssClass: 'popoverShowInventoryComponent',
+      componentProps: { counting, NoCounting}
+    });
+    await modal.present();
+  
+    const { data } = await modal.onDidDismiss();
+    
+  } catch (error) {
+
+    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+    
+  }
+
+ 
+
 
   }
 

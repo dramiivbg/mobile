@@ -1,0 +1,245 @@
+<PlureHeader (click)="exit()" type="1" title="show Counting " url="page/wms/lists" notify="0" *ngIf="boolean"></PlureHeader>
+
+
+<ion-header *ngIf="loading">
+  <ion-toolbar>
+    <ion-title>Loading....</ion-title>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content *ngIf="boolean">
+
+
+  <ion-row>
+    <ion-col size="10">
+      <ion-searchbar [(ngModel)]="codeC" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeC($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
+    </ion-col>
+    <ion-col size="2" class="barcodebtn">
+      <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+
+  <ion-row class="header" style="text-align: center;">
+    <ion-col class="TitleHeader">
+      <ion-label>Counting</ion-label>
+    </ion-col>
+  </ion-row>
+
+  <ion-list class="listOrders" *ngIf="count">
+
+    <div *ngFor="let item of counting; let i=index">
+
+    <ion-row class="rowFirst">
+      <ion-col size="10">
+
+          <ion-row>
+
+              <ion-col size="12" style="overflow: hidden; padding-right: 10px;"
+                  class="label-line-title blue">
+                  {{item.fields.PLULicensePlates}}
+              </ion-col>
+
+          </ion-row>
+          <ion-row>
+              <ion-col size="4" class="label-line">
+                  Item No: {{item.fields.ItemNo}}
+              </ion-col>
+              <ion-col size="4" class="label-line">
+                  Zone Code:  {{item.fields.ZoneCode}}
+              </ion-col>
+              <ion-col size="4" class="label-line">
+                Location: {{item.fields.LocationCode}}
+              </ion-col>
+          </ion-row>
+
+          <ion-row>
+              <ion-col class="label-line" size="6">
+                Bin Code: {{item.fields.BinCode}}
+              </ion-col>
+
+              <ion-col class="label-line" size="6">
+                No Serie: {{item.fields.SerialNo}}
+              </ion-col>
+
+          </ion-row>
+
+          
+
+        <ion-row>
+          <ion-col class="label-line" size="6">
+            Lot:  {{item.fields.LotNo}}
+          </ion-col>
+
+          <ion-col class="label-line" size="6">
+            Exp. Date: {{item.fields.ExpirationDate}}
+          </ion-col>
+      </ion-row>
+
+    
+
+        <img *ngIf="listPictureC[i].fields.Picture != 'NOIMAGE'" [src]="listPictureC[i].fields.Picture" alt="">
+        <img *ngIf="listPictureC[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
+   
+
+    <ion-row class="rowFirst">
+
+      <ion-row>
+        <ion-col style="overflow: hidden;"
+        class="label-line-title blue" size="12">
+        Qty(PhyInventory)
+      </ion-col>
+        
+    </ion-row>
+      
+       
+  <ion-row>
+        <ion-col size="12" >
+        {{item.fields.QtyPhysInventory}}
+      </ion-col>
+    </ion-row>  
+     
+  
+    </ion-row>
+
+      </ion-col>
+  </ion-row>
+
+</div>
+</ion-list>
+
+
+
+</ion-content>
+
+
+
+<PlureHeader type="1" title="show not Counting " url="page/wms/lists" notify="0" *ngIf="!boolean" (click)="exit()"></PlureHeader>
+
+<ion-content  *ngIf="!boolean">
+
+  <ion-row *ngIf="!boolean">
+    <ion-col size="10">
+      <ion-searchbar [(ngModel)]="codeN" (ionInput)="onChangeN($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
+    </ion-col>
+    <ion-col size="2" class="barcodebtn">
+      <ion-icon size="large" name="barcode-outline" *ngIf="!boolean" (click)="autoComplet()"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="header" style="text-align: center;">
+    <ion-col class="TitleHeader">
+      <ion-label>Not counting</ion-label>
+    </ion-col>
+  </ion-row>
+
+
+
+  <ion-list class="listOrders" *ngIf="Nocount">
+
+    <div *ngFor="let item of NoCounting; let i=index">
+
+    <ion-row class="rowFirst">
+      <ion-col size="10">
+
+      
+        <ion-row>
+
+          <ion-col size="12" style="overflow: hidden; padding-right: 10px;"
+              class="label-line-title blue">
+              {{item.fields.PLULicensePlates}}
+          </ion-col>
+
+      </ion-row>
+      <ion-row>
+          <ion-col size="4" class="label-line">
+              Item No: {{item.fields.ItemNo}}
+          </ion-col>
+          <ion-col size="4" class="label-line">
+              Zone Code:  {{item.fields.ZoneCode}}
+          </ion-col>
+          <ion-col size="4" class="label-line">
+            Location: {{item.fields.LocationCode}}
+          </ion-col>
+      </ion-row>
+
+      <ion-row>
+          <ion-col class="label-line" size="6">
+            Bin Code: {{item.fields.BinCode}}
+          </ion-col>
+
+          <ion-col class="label-line" size="6">
+            No Serie: {{item.fields.SerialNo}}
+          </ion-col>
+
+      </ion-row>
+
+      
+
+    <ion-row>
+      <ion-col class="label-line" size="6">
+        Lot:  {{item.fields.LotNo}}
+      </ion-col>
+
+      <ion-col class="label-line" size="6">
+        Exp. Date: {{item.fields.ExpirationDate}}
+      </ion-col>
+  </ion-row>
+
+    
+
+        <img *ngIf="listPictureN[i].fields.Picture != 'NOIMAGE'" [src]="listPictureN[i].fields.Picture" alt="">
+        <img *ngIf="listPictureN[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
+   
+
+    <ion-row class="rowFirst">
+
+    <ion-row>
+      <ion-col style="overflow: hidden;"
+      class="label-line-title blue" size="12">
+      Qty(PhyInventory)
+    </ion-col>
+      
+  </ion-row>
+    
+     
+<ion-row>
+      <ion-col size="12" >
+      {{item.fields.QtyPhysInventory}}
+    </ion-col>
+  </ion-row>  
+    
+
+
+    
+
+    </ion-row>
+
+      </ion-col>
+  </ion-row>
+
+</div>
+</ion-list>
+
+
+
+</ion-content>
+
+<ion-tab-bar class="footerlistpitems" slot="bottom">
+  <ion-tab-button tab="music" (click)="enableC()">
+    <ion-label class="itemfooter">Counting</ion-label>
+    <ion-icon class="itemfooter" size="large" name="cash-outline"></ion-icon>
+    <ion-badge>{{countingNu}}</ion-badge>
+  </ion-tab-button>
+  <ion-tab-button tab="movies" (click)=" enableN()">
+    <ion-label class="itemfooter">Not Counting</ion-label>
+    <ion-icon class="itemfooter" size="large" name="cash-outline"></ion-icon>
+    <ion-badge>{{noCountingNu}}</ion-badge>
+  </ion-tab-button>
+
+</ion-tab-bar>
+
+
+
