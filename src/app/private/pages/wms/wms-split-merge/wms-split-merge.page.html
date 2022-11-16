@@ -12,9 +12,13 @@
 
 
             <ion-row class="delivery newColor2">
-                <ion-col size="11">
-                    <ion-searchbar [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
+                <ion-col size="10">
+                    <ion-searchbar [(ngModel)]="LPNo"  [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
                         show-clear-button="always" clear-icon="close-outline" placeholder="Filter LP"></ion-searchbar>
+                </ion-col>
+
+                <ion-col size="2" class="barcodebtn">
+                    <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
                 </ion-col>
             </ion-row>
 
@@ -40,7 +44,7 @@
                                 <ion-item>
                                     <div class="label-lines" part="item-width">
                                         <ion-row class="row1" *ngIf="lp !== undefined">
-                                            <ion-col size="15" *ngFor="let item of lps">
+                                            <ion-col size="15" *ngFor="let item of lps; let i=index">
                                                 <ion-row>
                                                     <ion-col size="5" style="overflow: hidden;"
                                                         class="label-line-title blue">
@@ -52,13 +56,7 @@
                                                         }}
 
                                                     </ion-col>
-
-
-
-
-
-
-                                                </ion-row>
+                                            </ion-row>
                                                 <ion-row>
                                                     <ion-col size="4" class="label-line">
                                                         Item No: {{item.fields.PLUNo
@@ -103,9 +101,10 @@
                                                     <ion-item style="width: 100%;">
                                                         <ion-row>
                                                             <ion-col size="12" class="label-line splitimage">
-
-                                                                <img src="../../../../assets/img/cable-electrico.jpg"
-                                                                    alt="">
+                                                                <label *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show" class="label">{{listPicture[i].fields.No}}</label>&nbsp;
+                                                                <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show" [src]="listPicture[i].fields.Picture" alt="">
+                                                                <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE' && show" src="../../../../assets/img/caja.jpg" alt="">
+        
                                                             </ion-col>
 
                                                         </ion-row>
@@ -197,7 +196,15 @@
                                                 <ion-row>
                                                     <ion-col size="12" class="label-line splitimage">
 
-                                                        <img src="../../../../assets/img/cable-electrico.jpg" alt="">
+                                                         
+                                                          <ion-slides>
+                                                            <ion-slide *ngFor="let img of  listImagenesP; let i=index">
+                                                                <label *ngIf="img.fields.Picture != 'NOIMAGE' && show">{{img.fields.No}}</label>&nbsp;
+                                                                <img *ngIf="img.fields.Picture != 'NOIMAGE'  && show " [src]="img.fields.Picture" width="50px" height="50px"  />
+                                                            </ion-slide>
+                                                          </ion-slides>
+
+                                                      
                                                     </ion-col>
 
                                                 </ion-row>
@@ -242,9 +249,16 @@
 
 <PlureVersion class="footerReceipt" showVersion="0">
     <ion-row>
-        <ion-col size="12" (click)="onBarCode()">
+        <ion-col size="8" (click)="onBarCode()">
             <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
             <div class="itemfooter">Bar code</div>
+        </ion-col>
+
+        <ion-col size="4" (click)="onShow()">
+            <ion-icon class="itemfooter" size="large" name="eye-outline" *ngIf="!show"></ion-icon>
+            <ion-icon class="itemfooter" size="large" name="eye-off-outline"  *ngIf="show"></ion-icon>
+            <div class="itemfooter"  *ngIf="!show">Show Images</div>
+            <div class="itemfooter"  *ngIf="show">Hide images</div>
         </ion-col>
 
     </ion-row>

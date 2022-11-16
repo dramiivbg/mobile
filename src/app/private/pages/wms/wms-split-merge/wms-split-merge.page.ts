@@ -29,7 +29,13 @@ export class WmsSplitMergePage implements OnInit {
 
   public pallets:any[] = [];
 
+  public LPNo:any = '';
+
   public palletsL:any[] = [];
+
+  public listImagenesP:any[] = [];
+
+  public show:boolean = false;
 
   public palletH:any = undefined;
   public palletL:any[] = [];
@@ -43,32 +49,83 @@ export class WmsSplitMergePage implements OnInit {
   }
 
 
-  onFilter(e){
+  onFilter(e, lPNo:any = ''){
 
-    let val = e.target.value;
+  switch(lPNo){
+    
+    case '':
+      let val = e.target.value;
 
 
-    if (val === '') {
-      this.lps = this.listLp;
-      this.pallets = this.listPallet;
-    } else {
-      this.lps = this.listLp.filter(
-        x => {
-           return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
-
-          });
-
-      this.pallets = this.listPallet.filter(
-           x => {
-            return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
-
-          });
-     
-
+      if (val === '') {
+        this.lps = this.listLp;
+        this.pallets = this.listPallet;
+      } else {
+        this.lps = this.listLp.filter(
+          x => {
+             return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
   
-  }
+            });
+  
+        this.pallets = this.listPallet.filter(
+             x => {
+              return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+  
+            });
+       
+  
+    
+    }
+  default:
+    this.lps = this.listLp.filter(
+      x => {
+         return (x.fields.PLULPDocumentNo.toLowerCase().includes(lPNo.toLowerCase()));
+
+        });
+
+    this.pallets = this.listPallet.filter(
+         x => {
+          return (x.fields.PLULPDocumentNo.toLowerCase().includes(lPNo.toLowerCase()));
+
+        });
+    
+
+  }  
+  
 
 }
+
+onShow(){
+
+
+  this.show = !this.show;
+}
+
+  
+autoComplet(){
+
+ this.barcodeScanner.scan().then(
+    async  (barCodeData) => {
+        let code = barCodeData.text;
+  
+  
+
+        this.LPNo = code;
+
+
+        this.onFilter('',  this.LPNo);
+        
+  
+    
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+   
+   }
+
 
 
   public onBarCode() {
@@ -150,6 +207,27 @@ export class WmsSplitMergePage implements OnInit {
               this.palletL = await this.wmsService.PalletL(lp);
 
               this.palletsL[this.palletH.fields.PLULPDocumentNo] = this.palletL;
+
+              this.palletsL[this.palletH.fields.PLULPDocumentNo].filter(async(lp) => {
+
+
+                lp = await this.wmsService.getLpNo(lp.PLUNo);
+
+                this.lp = await this.wmsService.ListLp(lp);
+
+                let item =  await this.wmsService.GetItem(this.lp.fields.PLUNo);
+
+                let listI = await this.wmsService.listItem(item);
+
+                listI.fields.Picture =  `data:image/jpeg;base64,${listI.fields.Picture}`;
+
+                this.listImagenesP.push(listI);
+
+                console.log(this.listImagenesP);
+
+
+
+              });
   
             }
               
