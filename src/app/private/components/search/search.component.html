@@ -266,7 +266,7 @@
                   <ion-icon size="large" name="barcode-outline" (click)="onFilter()"></ion-icon>
                 </div>
                 <div class="input">
-                  <ion-input (ionInput)="onChangeL($event)" [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}"
+                  <ion-input [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeL($event)"
                     placeholder="{{searchObj.name}}"></ion-input>
                 </div>
               </div>

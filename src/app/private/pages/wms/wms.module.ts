@@ -20,7 +20,6 @@ import { ListPItemsComponent } from '@prv/components/list-pitems/list-pitems.com
 
 import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
 import { AlertsComponent } from 'src/app/components/alerts/alerts.component';
-import { PhysicalIntentoryPage } from './physical-intentory/physical-intentory.page';
 import { WmsMovementPage } from './wms-movement/wms-movement.page';
 import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 import { WhitemReclassificationPage } from './whitem-reclassification/whitem-reclassification.page';
@@ -56,7 +55,6 @@ import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inve
     PopoverNewPalletComponent,
     ListPItemsComponent,
     OptionsLpsOrItemsComponent,
-    PhysicalIntentoryPage,
     WmsMovementPage,
     WmsItemJournalPage,
     WhitemReclassificationPage,

@@ -1522,22 +1522,30 @@ for (const key in this.pallet) {
 
   let indice:any;
 
-  this.pallet[key].fields.filter(Lp => {
+  this.pallet[key].fields.filter(async(Lp) => {
 
     let line = this.pallet[key].fields.find(lp => lp.PLUWhseLineNo != Lp.PLUWhseLineNo); 
 
     if(line === null || line === undefined){
 
       Lp.PLUBinCode =  bin.toUpperCase();
-     
-      let line2 =  this.listsFilter.find(lp => lp.fields.PLULPDocumentNo === Lp.PLUNo);
+      this.listsFilter.filter(lp => {
 
-     line2.fields.PLUBinCode = (line2 !== null || line2 !== undefined)? bin.toUpperCase(): line2.fields.PLUBinCode;
+        if(lp.fields.PLULPDocumentNo === Lp.PLUNo){
 
-      let lp  = (line2 !== null || line2 !== undefined)? line2: line2.fields.PLUBinCode;
+          lp.fields.PLUBinCode = bin.toUpperCase();
+        }
+      });
 
-      this.modify.push(lp); 
-     
+      
+      let res = await this.wmsService.getLpNo(Lp.PLUNo);
+
+      let lpL = await this.wmsService.ListLp(res);
+
+      lpL.fields.PLUBinCode = bin.toUpperCase();
+
+      this.modify.push(lpL); 
+  
     }
 
  });

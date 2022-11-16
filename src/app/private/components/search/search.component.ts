@@ -641,6 +641,36 @@ export class SearchComponent implements OnInit {
 
     const { data } = await popover.onDidDismiss();
 
+    switch(data.action){
+      case 'Found LP':
+        this.barcodeScanner.scan().then(
+          async(barCodeData) => {
+            let code = barCodeData.text.toUpperCase();
+
+            try {
+              let res = await this.wmsService.getLpNo(code);
+
+              if(res.Error) throw new Error(res.Error.Message);
+
+              if(res.message) throw new Error(res.message);
+
+              let lp = await this.wmsService.ListLp(res);
+              console.log(lp);
+              
+               } catch (error) {
+
+                this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
+              
+            }
+         }
+        ).catch(
+          err => {
+            console.log(err);
+          }
+        )
+
+    }
+
  }
 
  
