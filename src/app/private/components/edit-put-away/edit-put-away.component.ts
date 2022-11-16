@@ -143,15 +143,28 @@ export class EditPutAwayComponent implements OnInit {
         title: 'Oops...',
         text: `The Bin code ${code.toUpperCase()} does not exist`,
         footer: ''
-      })
+      });
 
     }else{
+
+  if(this.pallet != undefined && this.select != false){
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: `Please scan all license plate and pallet`,
+      footer: ''
+    });
+    return;
+  }
+
+  
      this.listsFilter.filter( lp => {
   
 
       lp.fields.PLUBinCode = code.toUpperCase();
 
-    })
+    });
 
     this.modify = [];
 
@@ -214,99 +227,9 @@ export class EditPutAwayComponent implements OnInit {
   
     if(!pallets.Error){
 
-   this.pallet = await this.wmsService.ListLPallet(pallets);
+  const  listPalletH  = await this.wmsService.ListPallets(pallets);
 
-   this.pallet2 = await this.wmsService.ListLPallet(pallets);
-
-
-   listPallet = await this.wmsService.ListLP(pallets);
-
-
-  
-
-    for (const i in this.pallet) {
-
-      for (const j in this.pallet2) {
-
-
-        if (this.pallet[i] != undefined) {
-
-          if (this.pallet[i].fields[0].PLUQuantity != null) {
-
-            if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
-
-              if (j != i) {
-
-
-
-                let con = this.pallet.splice(Number(j), 1);
-                console.log(i, j);
-                console.log(con)
-
-              }
-
-
-            }
-          } else {
-
-            this.pallet.splice(Number(i), 1);
-
-          }
-        }
-      }
-    }
-
-
-
-    console.log('despues =>', this.pallet);
-    console.log('despues =>', this.pallet2);
-
-
-
-
-
-
-    for (const i in this.pallet) {
-
-      for (const j in this.pallet2) {
-        if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
-
-
-
-
-
-          let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
-
-          if (line === null || line === undefined) {
-
-            this.pallet[i].fields.push(this.pallet2[j].fields[0]);
-
-
-
-          }
-
-        }
-      }
-    
-    }
-
-   const  listPalletH  = await this.wmsService.ListPallets(pallets);
-
-
-for (const key in this.pallet) {
-
-  this.pallet[key].fields.filter(lp => {
-
-
-    let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
-
-
-    lp.PLUBinCode = line.fields.PLUBinCode;
-    lp.PLUItemNo = line.fields.PLUItemNo;
-
-  })
-}
-
+  listPallet = await this.wmsService.ListLP(pallets);
 
      listPallet.filter(lp => {
 
@@ -372,12 +295,7 @@ for (const key in this.pallet) {
 
       }
 
-    
-
-
-
-    
-
+  
       if (line === null || line === undefined) {
 
         Swal.fire({
@@ -494,84 +412,18 @@ async onAdd(e) {
 
 
     console.log('ls =>', lps);
-    console.log('pallet =>', pallets);
+   // console.log('pallet =>', pallets);
 
    
 
     if(!pallets.Error){
 
-  
-      this.pallet = await this.wmsService.ListLPallet(pallets);
-
-      this.pallet2 = await this.wmsService.ListLPallet(pallets);
-   
-   
-      listPallet = await this.wmsService.ListLP(pallets);
-   
-   
-     
-   
-       for (const i in this.pallet) {
-   
-         for (const j in this.pallet2) {
-   
-   
-           if (this.pallet[i] != undefined) {
-   
-             if (this.pallet[i].fields[0].PLUQuantity != null) {
-   
-               if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
-   
-                 if (j != i) {
-   
-   
-   
-                   let con = this.pallet.splice(Number(j), 1);
-                   console.log(i, j);
-                   console.log(con)
-   
-                 }
-   
-   
-               }
-             } else {
-   
-               this.pallet.splice(Number(i), 1);
-   
-             }
-           }
-         }
-       }
-   
-   
-   
-       console.log('despues =>', this.pallet);
-       console.log('despues =>', this.pallet2);
-   
-   for (const i in this.pallet) {
-   
-         for (const j in this.pallet2) {
-           if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
-   
-              let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
-   
-             if (line === null || line === undefined) {
-   
-               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
-   
-   
-   
-             }
-   
-           }
-         }
-       
-       }
-
 
    const  listPalletH  = await this.wmsService.ListPallets(pallets);
 
-     listPallet.filter(lp => {
+   listPallet = await this.wmsService.ListLP(pallets);
+
+   listPallet.filter(lp => {
 
 
       let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
@@ -582,19 +434,7 @@ async onAdd(e) {
     });
 
 
-    for (const key in this.pallet) {
-
-      this.pallet[key].fields.filter(lp => {
-    
-    
-        let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
-    
-    
-        lp.PLUBinCode = line.fields.PLUBinCode;
-        lp.PLUItemNo = line.fields.PLUItemNo;
-    
-      })
-    } }
+ }
 
 
     if(!lps.Error){
@@ -654,7 +494,7 @@ if (val !== '') {
           title: 'Oops...',
           text: `The license plate '${val.toUpperCase()}' does not exist on the Put Away`,
           footer: ''
-        })
+        });
   
         this.intServ.loadingFunc(false);
       } else {
@@ -719,18 +559,6 @@ if (val !== '') {
       this.scanLP = true;
     }
 
-  
-
-
-
-
-  
-  
-  
-
- 
-
-    
   }
 
  async onSubmit(){
@@ -1223,13 +1051,114 @@ async init(){
 
     if(!pallets.Error){
 
-  
+     let  listLp = await this.wmsService.ListLP(lps);
+
+      this.pallet = await this.wmsService.ListLPallet(pallets);
+
+      this.pallet2 = await this.wmsService.ListLPallet(pallets);
+    
+       for (const i in this.pallet) {
+   
+         for (const j in this.pallet2) {
+   
+   
+           if (this.pallet[i] != undefined) {
+   
+             if (this.pallet[i].fields[0].PLUQuantity != null) {
+   
+               if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+   
+                 if (j != i) {
+   
+   
+   
+                   let con = this.pallet.splice(Number(j), 1);
+                   console.log(i, j);
+                   console.log(con)
+   
+                 }
+   
+   
+               }
+             } else {
+   
+               this.pallet.splice(Number(i), 1);
+   
+             }
+           }
+         }
+       }
+   
+   
+   
+       console.log('despues =>', this.pallet);
+       console.log('despues =>', this.pallet2);
+   
+   
+   
+   
+   
+   
+       for (const i in this.pallet) {
+   
+         for (const j in this.pallet2) {
+           if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+   
+   
+   
+   
+   
+             let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
+   
+             if (line === null || line === undefined) {
+   
+               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
+   
+   
+   
+             }
+   
+           }
+         }
+       
+       }
+   
+    for (const i in this.pallet) {
+     for (const j in this.pallet[i].fields) {
+   
+       let  line = listLp.find(lp => lp.fields.PLULPDocumentNo === this.pallet[i].fields[j].PLUNo);
+      
+       this.pallet[i].fields[j].PLUWhseLineNo  = (line != null || line != undefined)? line.fields.PLUWhseLineNo:  this.pallet[i].fields[j].PLUWhseLineNo;
+   
+    
+     }
+   
+    }
+   
+   
+   
+      const  listPalletH  = await this.wmsService.ListPallets(pallets);
+   
+   
+   for (const key in this.pallet) {
+   
+     this.pallet[key].fields.filter(lp => {
+   
+   
+       let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
+   
+   
+       lp.PLUBinCode = line.fields.PLUBinCode;
+       lp.PLUItemNo = line.fields.PLUItemNo;
+   
+     })
+   }
    
    
       listPallet = await this.wmsService.ListLP(pallets);
    
 
-   const  listPalletH  = await this.wmsService.ListPallets(pallets);
+  
 
      listPallet.filter((lp,index) => {
 
@@ -1582,20 +1511,11 @@ case 'Pallet':
 
 
 
-    for (const key in this.pallet) {
-      let line = this.pallet[key].fields.find(lp =>  lp.PLULPDocumentNo=== item.fields.PLULPDocumentNo);
+for (const key in this.pallet) {
+ 
+      let line = this.pallet[key].fields.find(lp =>  lp.PLULPDocumentNo === item.fields.PLULPDocumentNo);
 
-      if(line != undefined || line != null){
-
-
-   this.listsFilter.filter(lp =>{
-
-
-    if( lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo)
-
-      lp.fields.PLUBinCode = bin.toUpperCase();
-
-   });
+  if(line != undefined || line != null){
 
 
   let tempory:any[] = [];
@@ -1604,33 +1524,30 @@ case 'Pallet':
 
   this.pallet[key].fields.filter(Lp => {
 
-    Lp.PLUBinCode =  bin.toUpperCase();
+    let line = this.pallet[key].fields.find(lp => lp.PLUWhseLineNo != Lp.PLUWhseLineNo); 
 
-   tempory.push(Lp);
+    if(line === null || line === undefined){
 
-   this.listsFilter.filter(lp => {
+      Lp.PLUBinCode =  bin.toUpperCase();
+     
+      let line2 =  this.listsFilter.find(lp => lp.fields.PLULPDocumentNo === Lp.PLUNo);
 
-    if(Lp.PLUNo === lp.fields.PLULPDocumentNo){
+     line2.fields.PLUBinCode = (line2 !== null || line2 !== undefined)? bin.toUpperCase(): line2.fields.PLUBinCode;
 
-      lp.fields.PLUBinCode = bin.toUpperCase();
+      let lp  = (line2 !== null || line2 !== undefined)? line2: line2.fields.PLUBinCode;
 
+      this.modify.push(lp); 
+     
     }
-   })
 
-  
-  });
+ });
 
-
-  this.modifyP[this.pallet[key].fields[0].PLULPDocumentNo] = tempory;
-
-  console.log(this.modifyP);
-
-  tempory = [];
-
+  console.log(this.modify);
   
   } 
 }
     
+
   }
    
 }

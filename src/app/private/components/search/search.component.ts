@@ -20,6 +20,7 @@ import { WmsService } from '@svc/wms.service';
 import { SK_OFFLINE } from '@var/consts';
 import { E_PROCESSTYPE } from '@var/enums';
 import { constants } from 'buffer';
+import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
 import { PopoverShowInventoryComponent } from '../popover-show-inventory/popover-show-inventory.component';
 
 @Component({
@@ -67,7 +68,8 @@ export class SearchComponent implements OnInit {
     , private salesService: SalesService,
     private wmsService: WmsService,
     private barcodeScanner: BarcodeScanner,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    public popoverController: PopoverController
 
   ) {
     intServ.searchShow$.subscribe(
@@ -625,12 +627,47 @@ export class SearchComponent implements OnInit {
     
   }
 
-
-
+}
   
+  public async Options(){
+
+
+    const popover = await this.popoverController.create({
+      component: PopoverOptionsComponent,
+      cssClass: 'popoverOptions',
+      componentProps: this.listMenu()
+    });
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+
+ }
+
+ 
+  private listMenu(): any {
+    return {
+      options: {
+        name: `Options`,
+        menu: [
+          {
+            id: 1,
+            name: 'Found LP',
+            icon: 'search-outline',
+            obj: {}
+          },
+          {
+            id: 2,
+            name: 'New LP',
+            icon: 'newspaper-outline',
+            obj: {}
+          }
+        ]
+      }
+    };
 
   }
-  
+
+
   public onBarCodeLP() {
 
     

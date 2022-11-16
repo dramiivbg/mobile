@@ -216,13 +216,17 @@ export class WmsMainPage implements OnInit {
   const { data } = await popover.onDidDismiss();
 
 
-  this.intServ.loadingFunc(true);
+  if(data.data != null){
+
+    this.intServ.loadingFunc(true);
 
           
     let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locate }]);
     let rsl = await this.syncerp.setRequest(p);
   
-  await  this.mappingPhysicalI(rsl);
+    await  this.mappingPhysicalI(rsl);
+  }
+
 
   }
 
