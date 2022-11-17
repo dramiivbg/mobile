@@ -1,4 +1,5 @@
-<PlureHeader (click)="exit()" type="1" title="Show Counting " url="page/wms/lists" notify="0" *ngIf="boolean"></PlureHeader>
+<PlureHeader (click)="exit()" type="1" title="Show Counting " url="page/wms/lists" notify="0" *ngIf="boolean">
+</PlureHeader>
 
 
 <ion-header *ngIf="loading">
@@ -14,7 +15,8 @@
 
   <ion-row>
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="codeC" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeC($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="codeC" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeC($event)"
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
@@ -32,83 +34,64 @@
 
     <div *ngFor="let item of counting; let i=index">
 
-    <ion-row class="rowFirst">
-      <ion-col size="10">
+      <ion-row class="rowFirst">
+        <ion-col size="12">
 
           <ion-row>
 
-              <ion-col size="12" style="overflow: hidden;"
-                  class="label-line-title blue">
-                  {{item.fields.PLULicensePlates}}
-              </ion-col>
+            <ion-col size="12" style="overflow: hidden;" class="titleLP">
+              {{item.fields.PLULicensePlates}}
+            </ion-col>
 
           </ion-row>
           <ion-row>
-              <ion-col size="4" class="label-line">
-                  Item No: {{item.fields.ItemNo}}
-              </ion-col>
-              <ion-col size="4" class="label-line">
-                  Zone Code:  {{item.fields.ZoneCode}}
-              </ion-col>
-              <ion-col size="4" class="label-line">
-                Location: {{item.fields.LocationCode}}
-              </ion-col>
+            <ion-col size="4" class="labeltext">
+              <b>Item:</b> {{item.fields.ItemNo}}
+            </ion-col>
+            <ion-col size="4" class="labeltext">
+              <b>Zone:</b> {{item.fields.ZoneCode}}
+            </ion-col>
+            <ion-col size="4" class="labeltext">
+              <b>Location:</b> {{item.fields.LocationCode}}
+            </ion-col>
           </ion-row>
 
           <ion-row>
-              <ion-col class="label-line" size="6">
-                Bin Code: {{item.fields.BinCode}}
-              </ion-col>
+            <ion-col class="labeltext" size="4">
+              <b>Bin:</b> {{item.fields.BinCode}}
+            </ion-col>
 
-              <ion-col class="label-line" size="6">
-                No Serie: {{item.fields.SerialNo}}
-              </ion-col>
-
+            <ion-col class="labeltext" size="4">
+              <b>No Serie:</b> {{item.fields.SerialNo}}
+            </ion-col>
+            <ion-col class="labeltext" size="4">
+              <b>Lot:</b> {{item.fields.LotNo}}
+            </ion-col>
           </ion-row>
 
-          
+          <ion-row>
+            <ion-col class="labeltext" size="12">
+              <b>Exp. Date:</b> {{item.fields.ExpirationDate}}
+            </ion-col>
+          </ion-row>
 
-        <ion-row>
-          <ion-col class="label-line" size="6">
-            Lot:  {{item.fields.LotNo}}
-          </ion-col>
+          <img *ngIf="listPictureC[i].fields.Picture != 'NOIMAGE'" [src]="listPictureC[i].fields.Picture" alt="">
+          <img *ngIf="listPictureC[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
 
-          <ion-col class="label-line" size="6">
-            Exp. Date: {{item.fields.ExpirationDate}}
-          </ion-col>
+          <ion-row size="12" class="rowbottom">
+            <ion-col class="qtytext" style="overflow: hidden;" size="6">
+              Qty(PhyInventory)
+            </ion-col>
+            <ion-col class="qtytext" size="6">
+              {{item.fields.QtyPhysInventory}}
+            </ion-col>
+          </ion-row>
+
+        </ion-col>
       </ion-row>
 
-    
-
-        <img *ngIf="listPictureC[i].fields.Picture != 'NOIMAGE'" [src]="listPictureC[i].fields.Picture" alt="">
-        <img *ngIf="listPictureC[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
-   
-
-    <ion-row class="rowFirst">
-
-      <ion-row>
-        <ion-col style="overflow: hidden;"
-        class="label-line-title blue" size="12">
-        Qty(PhyInventory)
-      </ion-col>
-        
-    </ion-row>
-      
-       
-  <ion-row>
-        <ion-col size="12" >
-        {{item.fields.QtyPhysInventory}}
-      </ion-col>
-    </ion-row>  
-     
-  
-    </ion-row>
-
-      </ion-col>
-  </ion-row>
-
-</div>
-</ion-list>
+    </div>
+  </ion-list>
 
 
 
@@ -116,13 +99,15 @@
 
 
 
-<PlureHeader type="1" title="show not Counting " url="page/wms/lists" notify="0" *ngIf="!boolean" (click)="exit()"></PlureHeader>
+<PlureHeader type="1" title="show not Counting " url="page/wms/lists" notify="0" *ngIf="!boolean" (click)="exit()">
+</PlureHeader>
 
-<ion-content  *ngIf="!boolean">
+<ion-content *ngIf="!boolean">
 
   <ion-row *ngIf="!boolean">
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="codeN" (ionInput)="onChangeN($event)" show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="codeN" (ionInput)="onChangeN($event)" show-clear-button="always"
+        clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" *ngIf="!boolean" (click)="autoComplet()"></ion-icon>
@@ -141,87 +126,85 @@
 
     <div *ngFor="let item of NoCounting; let i=index">
 
-    <ion-row class="rowFirst">
-      <ion-col size="10">
+      <ion-row class="rowFirst">
+        <ion-col size="10">
 
-      
-        <ion-row>
 
-          <ion-col size="12" style="overflow: hidden; padding-right: 10px;"
-              class="label-line-title blue">
+          <ion-row>
+
+            <ion-col size="12" style="overflow: hidden; padding-right: 10px;" class="label-line-title blue">
               {{item.fields.PLULicensePlates}}
-          </ion-col>
+            </ion-col>
 
-      </ion-row>
-      <ion-row>
-          <ion-col size="4" class="label-line">
+          </ion-row>
+          <ion-row>
+            <ion-col size="4" class="label-line">
               Item No: {{item.fields.ItemNo}}
-          </ion-col>
-          <ion-col size="4" class="label-line">
-              Zone Code:  {{item.fields.ZoneCode}}
-          </ion-col>
-          <ion-col size="4" class="label-line">
-            Location: {{item.fields.LocationCode}}
-          </ion-col>
+            </ion-col>
+            <ion-col size="4" class="label-line">
+              Zone Code: {{item.fields.ZoneCode}}
+            </ion-col>
+            <ion-col size="4" class="label-line">
+              Location: {{item.fields.LocationCode}}
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col class="label-line" size="6">
+              Bin Code: {{item.fields.BinCode}}
+            </ion-col>
+
+            <ion-col class="label-line" size="6">
+              No Serie: {{item.fields.SerialNo}}
+            </ion-col>
+
+          </ion-row>
+
+
+
+          <ion-row>
+            <ion-col class="label-line" size="6">
+              Lot: {{item.fields.LotNo}}
+            </ion-col>
+
+            <ion-col class="label-line" size="6">
+              Exp. Date: {{item.fields.ExpirationDate}}
+            </ion-col>
+          </ion-row>
+
+
+
+          <img *ngIf="listPictureN[i].fields.Picture != 'NOIMAGE'" [src]="listPictureN[i].fields.Picture" alt="">
+          <img *ngIf="listPictureN[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
+
+
+          <ion-row class="rowFirst">
+
+            <ion-row>
+              <ion-col style="overflow: hidden;" class="label-line-title blue" size="12">
+                Qty(PhyInventory)
+              </ion-col>
+
+            </ion-row>
+
+
+            <ion-row>
+              <ion-col size="12">
+                {{item.fields.QtyPhysInventory}}
+              </ion-col>
+            </ion-row>
+
+
+
+
+
+          </ion-row>
+
+        </ion-col>
       </ion-row>
 
-      <ion-row>
-          <ion-col class="label-line" size="6">
-            Bin Code: {{item.fields.BinCode}}
-          </ion-col>
-
-          <ion-col class="label-line" size="6">
-            No Serie: {{item.fields.SerialNo}}
-          </ion-col>
-
-      </ion-row>
-
-      
-
-    <ion-row>
-      <ion-col class="label-line" size="6">
-        Lot:  {{item.fields.LotNo}}
-      </ion-col>
-
-      <ion-col class="label-line" size="6">
-        Exp. Date: {{item.fields.ExpirationDate}}
-      </ion-col>
-  </ion-row>
-
-    
-
-        <img *ngIf="listPictureN[i].fields.Picture != 'NOIMAGE'" [src]="listPictureN[i].fields.Picture" alt="">
-        <img *ngIf="listPictureN[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
-   
-
-    <ion-row class="rowFirst">
-
-    <ion-row>
-      <ion-col style="overflow: hidden;"
-      class="label-line-title blue" size="12">
-      Qty(PhyInventory)
-    </ion-col>
-      
-  </ion-row>
-    
-     
-<ion-row>
-      <ion-col size="12" >
-      {{item.fields.QtyPhysInventory}}
-    </ion-col>
-  </ion-row>  
-    
-
-
-    
-
-    </ion-row>
-
-      </ion-col>
-  </ion-row>
-
-</div>
-</ion-list>
+    </div>
+  </ion-list>
 
 
 
@@ -240,6 +223,3 @@
   </ion-tab-button>
 
 </ion-tab-bar>
-
-
-

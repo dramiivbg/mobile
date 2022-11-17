@@ -49,6 +49,7 @@
 
             .text-value {
                 color: rgb(170, 170, 180);
+                text-align: center;
             }
         }
     }
@@ -131,7 +132,7 @@ ion-row.search-salesOrder {
                 ion-row {
                     padding-top: 5px;
                     padding-bottom: 5px;
-                    padding-left: 5px;
+                    // padding-left: 5px;
                 }
             }
         }
@@ -164,42 +165,42 @@ div.logofooter2 {
     }
 }
 
-.footertext{
+.footertext {
     color: var(--ion-color-plureHeader);
 }
 
 
-.bin{
-
-
-    padding-left: 60px;
+.bin {
     color: #5CABF9;
-   
+    text-align: center;
+    font-weight: bold;
 }
 
 .label-line-title {
-    font-size: 14px; 
+    font-size: 14px;
     font-weight: bold;
+
     img.noImage {
         padding-top: 20px;
     }
 }
+
 .label-line-title.blue {
     color: var(--ion-color-plureBlue);
     font-size: 16px;
     font-family: SourceSansProBold;
     text-align: center;
 }
+
 .label-line {
     color: rgba(85, 85, 105, 0.5);
-    font-size: 10px; 
+    font-size: 10px;
     padding: 0 10px 0 0;
 }
 
 .btnqty {
     color: var(--ion-color-plureBlue);
     font-size: 20px;
-
     padding-top: 10px;
 }
 
@@ -208,3 +209,20 @@ div.logofooter2 {
     padding-top: 20px;
     width: 100%;
 }
+
+.binid {
+    text-align: center;
+}
+
+.text-value {
+    text-align: center;
+}
+
+.titlebin {
+    text-align: center;
+    font-weight: bold;
+}
+
+// ion-content{
+//     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+// }
