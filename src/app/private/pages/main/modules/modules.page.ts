@@ -19,6 +19,8 @@ import { SK_ENVIRONMENT } from '@var/consts';
 import { SyncerpService } from '@svc/syncerp.service';
 import { Network } from '@capacitor/network';
 
+
+
 const { App } = Plugins;
 
 export interface Module {
@@ -45,7 +47,9 @@ export class ModulesPage implements OnInit {
     , private intServ: InterceptService
     , private js: JsonService
     , private storage: Storage
-    , private syncErp: SyncerpService
+    , private syncErp: SyncerpService,
+    
+   
   )
   {
     let objBack = {

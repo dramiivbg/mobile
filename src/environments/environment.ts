@@ -3,6 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+
+  api: "https://plureapi.azurewebsites.net/api/v1/Mobile/getWarehouses?mobileUserId=",
   production: false,
   appSource: 'Mobile',
   platformCode: 'D365BC',

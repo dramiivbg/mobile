@@ -37,6 +37,7 @@ import { SplitItemComponent } from '@prv/components/split-item/split-item.compon
 import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
 import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inventory/popover-show-inventory.component';
+import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
 
 
 
@@ -73,7 +74,8 @@ import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inve
     BinToBinPage,
     CreatePhysicalInventoryComponent,
     ListPalletComponent,
-    PopoverShowInventoryComponent
+    PopoverShowInventoryComponent,
+    PopoverLocateComponent
    
    
     
@@ -97,7 +99,6 @@ import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inve
     PopoverOptionsComponent,
     LicensePlatesComponent,
     PopoverLpsComponent,
-    EditPutAwayComponent,
     PopoverLpEmptyComponent,
     PopoverMergeComponent,
     PopoverSplitComponent,
@@ -109,7 +110,8 @@ import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inve
     SplitItemComponent,
     CreatePhysicalInventoryComponent,
     ListPalletComponent,
-    PopoverShowInventoryComponent
+    PopoverShowInventoryComponent,
+    PopoverLocateComponent
   
   ]
 })

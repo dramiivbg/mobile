@@ -10,6 +10,13 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
+import { Storage } from '@ionic/storage';
+import{environment} from '../../../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { SqlitePlureService } from '@svc/sqlite-plure.service';
+
+import {PopoverLocateComponent} from '@prv/components/popover-locate/popover-locate.component';
+
 
 @Component({
   selector: 'app-wms-main',
@@ -25,6 +32,8 @@ export class WmsMainPage implements OnInit {
   public booleanM: Boolean = false;
   public booleanInQ:Boolean = false;
 
+  public listsLocate:any;
+
   public processes:any[] = [];
 
   constructor(private syncerp: SyncerpService
@@ -36,6 +45,9 @@ export class WmsMainPage implements OnInit {
     private wmsService:WmsService,
     private modalCtrl: ModalController,
     public popoverController: PopoverController
+    ,private http: HttpClient
+    ,private storage: Storage,
+    
   ) { 
     let objFunc = {
       func: () => {
@@ -52,6 +64,13 @@ export class WmsMainPage implements OnInit {
   }
 
   public async ionViewWillEnter() {
+
+    let session =  (await this.js.getSession()).login;
+   this.http.get(environment.api+session.userId).subscribe(res => {
+
+    this.listsLocate = res;
+   });
+
     try {
       this.intServ.loadingFunc(true);
       this.module = await this.moduleService.getSelectedModule();
@@ -68,7 +87,9 @@ export class WmsMainPage implements OnInit {
 
    
       this.session = (await this.js.getSession()).login;
-     // console.log('session =>',this.session)
+      console.log('session =>',this.session)
+
+
 
 
       this.intServ.loadingFunc(false);
@@ -99,13 +120,29 @@ export class WmsMainPage implements OnInit {
    // console.log('erpUserId =>', this.module.erpUserId);
 
     if (process.processId === 'P007') {
-      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
-      let rsl = await this.syncerp.setRequest(p);
+     // let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: this.session.userId}]);
 
-      let wareReceipts = rsl.WarehouseReceipts;
+     let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: " "}]);
+      try {
+
+        let rsl = await this.syncerp.setRequest(p);
+
+
+        if(rsl.Error) throw new Error(rsl.Error.Message);
+        
+   
+       let wareReceipts = rsl.WarehouseReceipts;
 
       this.intServ.loadingFunc(false);
       await this.mappingWareReceipts(wareReceipts, process);
+        
+      } catch (error) {
+
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+
+      }
+      
     }
   
     if(process.processId === 'P010'){
@@ -122,26 +159,24 @@ export class WmsMainPage implements OnInit {
     }
 
 
-    if(process.processId === 'P011'){
-
-
-      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
-      let rsl = await this.syncerp.setRequest(p);
-      console.log(rsl);
-
-      this.intServ.loadingFunc(false);
-
-    }
-
-
     if(process.processId === 'P008'){
 
-      
+    //  let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: this.session.userId }]);
       let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
-      let rsl = await this.syncerp.setRequest(p);
-  
-    
-    await  this.mappingPutAways(rsl, process);
+      try {
+        let rsl = await this.syncerp.setRequest(p);
+
+        if(rsl.Error) throw new Error(rsl.Error.Message);
+           
+      await  this.mappingPutAways(rsl, process);
+        
+      } catch (error) {
+
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));   
+      }
+      
+
     }
 
   }
@@ -219,12 +254,31 @@ export class WmsMainPage implements OnInit {
   if(data.data != null){
 
     this.intServ.loadingFunc(true);
+    try {
 
-          
-    let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locate }]);
-    let rsl = await this.syncerp.setRequest(p);
+      let res = await this.wmsService.Create_WarehouseInvPhysicalCount(data.zone,"",data.locationCode,data.fecha,data.data);
+
+      console.log(res);
+
+      if(res.Error) throw new Error(res.Error.Message);
+
+      if(res.error) throw new Error(res.error.message);
+
+      if(res.message) throw new Error(res.message);
+      
+
+      let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locationCode }]);
+      let rsl = await this.syncerp.setRequest(p);
+    
+      await  this.mappingPhysicalI(rsl);
+      
+    } catch (error) {
+      
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+    }
+
   
-    await  this.mappingPhysicalI(rsl);
   }
 
 
@@ -265,9 +319,9 @@ export class WmsMainPage implements OnInit {
       }
      }
      
-
+      this.intServ.loadingFunc(false);
      let obj = this.general.structSearch(listOr, `Physical Inv. Journal `, 'WH Physical Inv. Journal', async (data) => {
-
+      this.intServ.loadingFunc(true);
       let listsOr = [];
 
      
@@ -282,6 +336,7 @@ export class WmsMainPage implements OnInit {
 
       var alert = setTimeout(() => {
 
+        this.intServ.loadingFunc(false);
       let obj = this.general.structSearch(listsOr, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data,bin) => {
 
         this.wmsService.set(bin);
@@ -318,18 +373,29 @@ export class WmsMainPage implements OnInit {
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `list Physical Inventory  Empty`));
     }
 
-    
- 
- 
-    
- 
-    
- 
+   }
+
+
+  async popoverLocate(ev){
+
+      
+  const popover = await this.popoverController.create({
+    component: PopoverLocateComponent,
+    cssClass: 'popoverLocateComponent',
+    event:ev,
+    componentProps:{listLocale:this.listsLocate}
+  });
+  await popover.present();
+
+  const { data } = await popover.onDidDismiss();
+
+  console.log('locate =>',data);
+
    }
 
   private async mappingPutAways(putAway:any , procesos: Process){
 
-
+   
    let listPutAway = await this.wmsService.listsPutAways(putAway);
 
    console.log(listPutAway);
@@ -338,10 +404,9 @@ export class WmsMainPage implements OnInit {
    if (listPutAway.length > 0 ) {
 
     this.intServ.loadingFunc(false);
-    
      let obj = this.general.structSearch(listPutAway, `Search ${procesos.description}`, 'Put Aways', async (whsePutAwayL) => {
 
-
+      this.intServ.loadingFunc(true);
       let putAway = await this.wmsService.GetWarehousePutAway(whsePutAwayL.fields.No);
 
      let whsePutAwayH = await this.wmsService.ListPutAwayH(putAway);
@@ -352,22 +417,12 @@ export class WmsMainPage implements OnInit {
         let whsePutAway = whsePutAwayH;
         console.log(whsePutAway, putAway)
         
-      this.wmsService.setPutAway(putAway);
-       console.log('data =>', putAway);
-       const modal = await this.modalCtrl.create({
-        component: EditPutAwayComponent,
-        componentProps: {whsePutAway}
-    
-      
-      });
-      modal.present();
-  
-      const { data, role } = await modal.onWillDismiss();
-  
-  
-    
+       this.storage.set('setPutAway',putAway);
+      this.storage.set('whsePutAway', whsePutAway);
 
-       setTimeout(
+      this.router.navigate(['page/wms/wmsPutAway']);
+    
+      setTimeout(
          () => {
            this.intServ.searchShowFunc({});
          }, 1000
@@ -393,17 +448,14 @@ export class WmsMainPage implements OnInit {
     let receipts = await this.general.ReceiptsList(wareReceipts);
     if (receipts > 0 || receipts != undefined) {
       console.log(process);
+
       let obj = this.general.structSearch(receipts, `Search ${process.description}`, 'Receipts', async (wms) => {
 
-        console.log('data =>',wms);
-        let navigationExtras: NavigationExtras = {
-          state: {
-            wms: wms,
-            new: false
-          },
-          replaceUrl: true
-        };
-        this.router.navigate(['page/wms/wmsReceipt'], navigationExtras);
+       // console.log('data =>',wms);
+
+        this.storage.set('wms', wms);
+
+         this.router.navigate(['page/wms/wmsReceipt']);
         setTimeout(
           () => {
             this.intServ.searchShowFunc({});
@@ -422,8 +474,7 @@ export class WmsMainPage implements OnInit {
         return 'GetWarehouseReceipts';
       case "P008":
         return 'GetWarehousePutAways';
-      case "P011":
-        return 'Get_WarehouseInvPhysicalCount';
+      
 
     }
   }

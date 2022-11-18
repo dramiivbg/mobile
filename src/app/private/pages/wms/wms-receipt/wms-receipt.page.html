@@ -86,7 +86,8 @@
 
                                <ion-col size="5" class="label-line-title">
 
-                                     <a class="PL" href="http://" target="_blank" rel="noopener noreferrer">PL {{cantidades[i]}}</a>
+                                     <a *ngIf="cantidades.length > 0" class="PL" href="http://" target="_blank" rel="noopener noreferrer">PL {{cantidades[i]}}</a>
+                                     <a *ngIf="cantidades.length === 0" class="PL" href="http://" target="_blank" rel="noopener noreferrer">PL 0</a>
 
                                     </ion-col>
                                     

@@ -14,13 +14,15 @@ import { WmsService } from '@svc/wms.service';
 import { LicensePlatesComponent } from '../license-plates/license-plates.component';
 
 import { PopoverLpsComponent } from '../../../components/popover-lps/popover-lps.component';
-import { ELOOP } from 'constants';
+import { ELOOP, S_IFREG } from 'constants';
 import { Key } from 'protractor';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
 import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
+
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-wms-receipt',
@@ -59,7 +61,9 @@ export class WmsReceiptPage implements OnInit {
     , private jsonService: JsonService
     , private sqlitePlureService: SqlitePlureService
     , private alertController: AlertController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private storage: Storage
+
   ) {
     let objFunc = {
       func: () => {
@@ -67,23 +71,13 @@ export class WmsReceiptPage implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
-    this.route.queryParams.subscribe(async params => {
-      if (this.router.getCurrentNavigation().extras.state) {
-        this.routExtras = this.router.getCurrentNavigation().extras;
 
+      this.getReceipt();
 
-        this.getReceipt();
-      } else {
-        this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
-      }
-    });
   }
 
   public async ngOnInit() {
 
-    let lps = await this.GetLicencesPlateInWR(this.wareReceipts.No);
-
-    console.log(lps);
   }
 
   public async ionViewWillEnter() {
@@ -139,20 +133,25 @@ export class WmsReceiptPage implements OnInit {
 
 
   public async onPopoverPl(ev: any, items: any) {
+
+    this.intServ.loadingFunc(false);
     const popover = await this.popoverController.create({
       component: PopoverLpsComponent,
       cssClass: 'popoverPls',
+      backdropDismiss: true,
       componentProps: { lps: items }
+      
     });
     await popover.present();
 
     const { data } = await popover.onDidDismiss();
 
+  if(data != undefined){
     if(data.data == 'eliminado'){
-
-      this.GetLicencesPlateInWR(this.wareReceipts);
       this.getReceipt();
     }
+  }
+ 
 
 
   }
@@ -176,12 +175,8 @@ export class WmsReceiptPage implements OnInit {
       const { data } = await popover.onDidDismiss();
    
       if(data.data == 'creado'){
-
-
-        this.GetLicencesPlateInWR(this.wareReceipts);
-        this.getReceipt();
-
-      }
+       this.getReceipt();
+     }
     } else {
 
       this.interceptService.loadingFunc(false);
@@ -192,30 +187,29 @@ export class WmsReceiptPage implements OnInit {
 
   private async getReceipt() {
     this.intServ.loadingFunc(true);
-    let wms = this.routExtras.state.wms;
-    // console.log('data =>', wms);
-    let receipt = await this.wmsService.getReceiptByNo(wms.id);
+    let wms =   await this.storage.get('wms');
+     console.log('data =>', wms);
+    try {
+      let receipt = await this.wmsService.getReceiptByNo(wms.id);
 
-    if (receipt.Error !== undefined) {
-      this.intServ.alertFunc(this.js.getAlert('error', ' ', receipt.Error.Message));
-    } else {
+      if(receipt.Error) throw new Error(receipt.Error.Message);
+      
       this.mappingReceipt(receipt);
+      
+    } catch (error) {
+      this.intServ.loadingFunc(false);
+      
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
     }
-    this.intServ.loadingFunc(false);
-  }
 
+  }
   /**
    * Mapping Receipts
    * @param receipt { WarehouseReceipt: {WarehouseReceiptHeader, WarehouseReceiptLines} }
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
-
-
-    console.log(this.wareReceipts);
     this.GetLicencesPlateInWR(this.wareReceipts);
-
-
 
   }
 
@@ -245,161 +239,92 @@ export class WmsReceiptPage implements OnInit {
 
 
 
-  async GetLicencesPlateInWR(wareReceipts: any) {
+  async GetLicencesPlateInWR(wareReceipts: any = {}) {
 
+    try {
 
+      const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, false);
 
-
-    const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, false);
-
-
-  //  console.log('licence plate =>', lps);
-
-
-
-    if(!lps.Error){
-
-
+      if(lps.Error) throw new Error(lps.Error.Message);
       
-    this.list = await this.wmsService.createListLP(lps);
-
-    let contador = 0;
-
-
-
-
-
-
-    this.cantidades = [];
-
-
-    let LpS = [];
-    let LpI = [];
-
-    this.LpL = [];
-
-
-
-
-
-    for (const i in this.list) {
-
-      for (const y in this.list[i].fields) {
-
-
-
-        if (this.list[i].fields[y].name === "PLULPDocumentType" && this.list[i].fields[y].value === "Single") {
-
-          LpS.push(this.list[i]);
-
-          console.log(LpS);
-
-        }
-
-
-
-      }
-
-    }
-
-
-
-
-    LpS.filter(lp => {
-
-      for (const key in lp.fields) {
-
-        if (lp.fields[key].value === "Item" && lp.fields[key].name === "PLUType") {
-
-          LpI.push(lp);
-
-        }
-
-
-
-      }
-    });
-
-    wareReceipts.lines.forEach(async (el, index) => {
-
-      LpI.filter(lp => {
-
-        for (const key in lp.fields) {
-
-          if (lp.fields[key].value === el.LineNo && lp.fields[key].name === "PLULineNo") {
-
-
-            contador++;
-
-            this.LpL.push(lp);
-
-
-
-
+      this.list = await this.wmsService.createListLP(lps);
+      let contador = 0;
+     this.cantidades = [];
+      let LpS = [];
+      let LpI = [];
+  
+      this.LpL = [];
+  
+      for (const i in this.list) {
+  
+        for (const y in this.list[i].fields) {
+  
+          if (this.list[i].fields[y].name === "PLULPDocumentType" && this.list[i].fields[y].value === "Single") {
+  
+            LpS.push(this.list[i]);
+  
+            console.log(LpS);
+  
           }
-
-
-
         }
-
-
+      }
+  
+      LpS.filter(lp => {
+  
+        for (const key in lp.fields) {
+  
+          if (lp.fields[key].value === "Item" && lp.fields[key].name === "PLUType") {
+  
+            LpI.push(lp);
+  
+          }
+        }
       });
-
-      this.cantidades[index] = contador;
-
-      contador = 0;
-
-    });
-
+  
+      wareReceipts.lines.forEach(async (el, index) => {
+  
+        LpI.filter(lp => {
+  
+          for (const key in lp.fields) {
+  
+            if (lp.fields[key].value === el.LineNo && lp.fields[key].name === "PLULineNo") {
+  
+  
+              contador++;
+  
+              this.LpL.push(lp);
+            }
+          }
+        });
+  
+        this.cantidades[index] = contador;
+  
+        contador = 0;
+  
+      });
+      
+      this.intServ.loadingFunc(false);
+    } catch (error) {
+      this.intServ.loadingFunc(false);
     }
-
-
-    //console.log('LP line =>',this.LpL);
-
-    //console.log('cantidades =>', this.cantidades);
-
 
   }
 
 
 
   showLPs(item: any) {
-
-
-    this.sqlitePlureService.setItem('line', item);
-
+    this.intServ.loadingFunc(true);
     let list = [];
-
-
-
     this.LpL.filter(lp => {
 
       for (const key in lp.fields) {
-
-
         if (lp.fields[key].name === "PLULineNo" && item.LineNo === lp.fields[key].value) {
-
           list.push(lp);
-
-        } else {
-
-          console.log("nooo");
-        }
+        } 
       }
-
-
-
     });
 
-
-
-
-
-
-
     this.onPopoverPl('event', list);
-
-
   }
 
 

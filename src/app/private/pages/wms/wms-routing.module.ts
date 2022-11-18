@@ -17,6 +17,7 @@ import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/read-license-plate.component';
 import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
 import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
+import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 
 
 
@@ -32,6 +33,8 @@ const routes: Routes = [
       { path: 'listPallet', component: ListPalletComponent },
       { path: 'lists', component: ListPItemsComponent },
       { path: 'wmsMovement', component: WmsMovementPage },
+
+      {path: 'wmsPutAway', component: EditPutAwayComponent},
 
       { path: 'wmsItemJournal', component: WmsItemJournalPage },
 
