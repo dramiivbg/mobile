@@ -178,7 +178,10 @@ export class ListPItemsComponent implements OnInit {
 
   onChangeI(e, itemNo:any = ''){
 
-    if(itemNo === ''){
+  switch(itemNo){
+
+  case  '':
+
     let val = e.target.value;
 
     if (val === '') {
@@ -191,7 +194,7 @@ export class ListPItemsComponent implements OnInit {
       )
     }
 
-  }else{
+  default:
 
 
     this.listItem = this.listsI.filter(
@@ -209,9 +212,10 @@ export class ListPItemsComponent implements OnInit {
 
   onChangeLp(e, lpNo:any = ''){
 
-    if(lpNo === ''){
+    switch(lpNo){
 
 
+    case '':
       let val = e.target.value;
 
       if (val === '') {
@@ -224,7 +228,7 @@ export class ListPItemsComponent implements OnInit {
         )
       }
 
-    }else{
+    default:
 
 
         this.listLp = this.lists.filter(

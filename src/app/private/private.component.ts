@@ -19,6 +19,7 @@ import { AuthService } from '@svc/auth.service';
 export class PrivateComponent implements OnInit {
   private setTimeNetwork: any;
   private setTimePayments: any;
+  private setTimeWms: any;
   private setTimePaymentsAgain: any;
   private setTimeModifyUser: any;
 
@@ -91,6 +92,26 @@ export class PrivateComponent implements OnInit {
         this.getOutPayments();
       }, 6000);
     }
+  }
+
+
+private async getOutPwms() {
+if (this.router.url.indexOf('wms') !== -1) {
+this.intServ.loadingFunc(true);
+this.router.navigate(['page/main/modules'], { replaceUrl: true });
+clearTimeout(this.setTimeWms);
+this.setTimePayments = setTimeout(() => {
+this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This module is not available for the offline version.', 
+() => {
+this.intServ.loadingFunc(false);
+})
+);
+}, 1500);
+clearTimeout(this.setTimePaymentsAgain);
+this.setTimePaymentsAgain = setTimeout(() => {
+this.getOutPayments();
+}, 6000);
+}
   }
 
   private async messageToast(msg: string, duration: number = 5000): Promise<void> {

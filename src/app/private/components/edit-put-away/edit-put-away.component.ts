@@ -8,6 +8,8 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import Swal from 'sweetalert2'
+import { Storage } from '@ionic/storage';
+import { PassThrough } from 'stream';
 
 @Component({
   selector: 'app-edit-put-away',
@@ -24,9 +26,7 @@ export class EditPutAwayComponent implements OnInit {
 
   public modifyP:any[] = [];
 
-  @Input() whsePutAway:any;
-
-
+  public whsePutAway:any;
   public loading:Boolean = false;
 
   public select: Boolean = true;
@@ -60,11 +60,8 @@ export class EditPutAwayComponent implements OnInit {
 
 
   constructor(private router: Router
- ,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, private general: GeneralService , private modalController: ModalController) { 
-
-
-
-
+ ,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, 
+ private general: GeneralService , private storage: Storage) { 
 
   let objFunc = {
     func: () => {
@@ -73,14 +70,32 @@ export class EditPutAwayComponent implements OnInit {
   };
   this.intServ.appBackFunc(objFunc);
 
+  this.get();
 
         
   }
 
-  exit(){
+  async  ngOnInit() {
 
-    this.modalController.dismiss({});
-  }
+  
+
+    this.warePW = await this.storage.get('setPutAway');
+
+      this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
+      console.log(this.whsePutAway, this.listPwL);
+      this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
+    
+      this.init();
+    this.intServ.loadingFunc(false);
+
+    }
+
+ async get(){
+
+  this.whsePutAway =  await this.storage.get('whsePutAway');
+
+  console.log(this.whsePutAway);
+    }
 
 
   back(){
@@ -94,30 +109,13 @@ export class EditPutAwayComponent implements OnInit {
     
   }
 
-  async  ngOnInit() {
-
-    this.warePW = this.wmsService.getPutAway();
-
-  
-
-
-      this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
-      console.log(this.whsePutAway, this.listPwL);
-      this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
-    
-
-
-      this.init();
-
-    
-   
-  }
+ 
 
 
   public onBack(){
 
 
-    this.modalController.dismiss({});
+    this.router.navigate(['page/wms/wmsMain']);
 
  }
 
@@ -130,38 +128,25 @@ export class EditPutAwayComponent implements OnInit {
       async  (barCodeData) => {
        let code = barCodeData.text;
     
-    line =   this.listBin[0].Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
-  
-
+       this.intServ.loadingFunc(true);
+    line =   this.listBin[0].Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
     console.log(this.listBin);
 
 
     if(line === null || line === undefined){
 
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: `The Bin code ${code.toUpperCase()} does not exist`,
-        footer: ''
-      });
-
-    }else{
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', `The Bin code ${code.toUpperCase()} does not exist`));
+    
+  }else{
 
   if(this.pallet != undefined && this.select != false){
-
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: `Please scan all license plate and pallet`,
-      footer: ''
-    });
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error', ' ',`Please scan all license plate and pallet`));
     return;
   }
 
-  
      this.listsFilter.filter( lp => {
-  
-
       lp.fields.PLUBinCode = code.toUpperCase();
 
     });
@@ -169,6 +154,8 @@ export class EditPutAwayComponent implements OnInit {
     this.modify = [];
 
     this.modify = this.listsFilter;
+
+    this.intServ.loadingFunc(false);
     }
     } ).catch(
         err => {
@@ -183,9 +170,6 @@ export class EditPutAwayComponent implements OnInit {
 
     //console.log(this.wareReceipts);
 
-    this.scanLP = false;
-    this.loading = true;
-
     this.intServ.loadingFunc(true);
   let listPallet;
 
@@ -197,11 +181,6 @@ export class EditPutAwayComponent implements OnInit {
 
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
   const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
-
-
-
-
- 
 
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
@@ -250,9 +229,6 @@ export class EditPutAwayComponent implements OnInit {
 
     console.log('lps =>', listLp);
 
-    this.loading = false;
-    this.scanLP = true;
-
       let line:any = undefined;
       this.intServ.loadingFunc(false);
     this.barcodeScanner.scan().then(
@@ -298,14 +274,9 @@ export class EditPutAwayComponent implements OnInit {
   
       if (line === null || line === undefined) {
 
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: `The license plate '${code.toUpperCase()}' does not exist on the Put Away`,
-          footer: ''
-        })
-      
         this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate '${code.toUpperCase()}' does not exist on the Put Away`));
+      
       } else {
 
 
@@ -322,24 +293,8 @@ export class EditPutAwayComponent implements OnInit {
            
           }else{
    
-
-            Swal.fire({
-              title: `The license plate is already assigned`,
-              text: 'Please choose another license plate',
-              icon: 'warning',
-              showCancelButton: false,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              if (result.isConfirmed) {
-               
-               
-              }
-            })
-   
-         
-   
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
           }
          
            }else{
@@ -368,6 +323,7 @@ export class EditPutAwayComponent implements OnInit {
     }
 
     }
+    this.intServ.loadingFunc(false);
   
       }
     ).catch(
@@ -390,11 +346,6 @@ export class EditPutAwayComponent implements OnInit {
   
 
 async onAdd(e) {
-
-  this.scanBin = false;
-  this.scanLP = false;
-
-  this.loading = true;
 
   this.intServ.loadingFunc(true);
     let val = e.target.value;
@@ -489,14 +440,9 @@ if (val !== '') {
 
        if (line === null || line === undefined) {
 
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: `The license plate '${val.toUpperCase()}' does not exist on the Put Away`,
-          footer: ''
-        });
-  
         this.intServ.loadingFunc(false);
+
+        this.intServ.alertFunc(this.js.getAlert('error', ' ', `The license plate '${val.toUpperCase()}' does not exist on the Put Away`));
       } else {
 
         
@@ -512,20 +458,8 @@ if (val !== '') {
           }else{
    
 
-            Swal.fire({
-              title: `The license plate is already assigned`,
-              text: 'Please choose another license plate',
-              icon: 'warning',
-              showCancelButton: false,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              if (result.isConfirmed) {
-               
-               
-              }
-            })
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
             
      }
          
@@ -549,54 +483,200 @@ if (val !== '') {
      
   }
 
-    this.loading = false;
-    this.scanLP = true;
-    
-  
+  this.intServ.loadingFunc(false);
     }else{
-
-      this.loading = false;
-      this.scanLP = true;
+      this.intServ.loadingFunc(false);
     }
 
   }
 
  async onSubmit(){
 
+if(this.scanLP){
 
-   
-    if(this.scanLP){
-
-      this.scanLP = false;
-      this.loading = true;
+    this.intServ.loadingFunc(true);
       let bins = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
 
         this.listBin.push(bins);
 
         console.log(this.listBin);
-
+        this.scanLP = false;
         this.scanBin = true;
-        this.loading = false;
+
+        this.intServ.loadingFunc(false);
 
   
     }else{
 
 
-      console.log(this.listsFilter);
+      this.intServ.alertFunc(this.js.getAlert('confirm', ' ','Confirm Whse. PutAway?', async() => {
+        
+        let request = {
 
-      Swal.fire({
-        title: 'Confirm Whse. PutAway?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, post it!'
-      }).then(async(result) => {
-        if (result.isConfirmed) {
+          ActivityType: 1,
+          No: "",
+          ItemNo: "",
+          LineNo: "",
+          ZoneCode: "",
+          LocationCode: "",
+          BinCode: "",
+          Quantity: 0,
+          LP: ""
+        }
 
 
-          let request = {
+
+
+      if(this.modify.length !== this.initV.length){
+
+       this.intServ.loadingFunc(true);
+
+
+        this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
+
+        console.log()
+
+        this.split.WarehousePutAwayLines.filter(item => {
+    
+    
+         if(this.items.length > 0){
+    
+    
+          let line = this.items.find(Item => Item === item.ItemNo);
+    
+          if(line === null || line === undefined){
+    
+            this.items.push(item.ItemNo);
+          }
+         }else{
+    
+          this.items.push(item.ItemNo);
+    
+         }
+        
+        
+        });
+    
+    
+        let tempory:any[] = [];
+    
+        for (const key in this.items) {
+    
+    
+          this.split.WarehousePutAwayLines.filter(Item => {
+    
+            if(Item.ItemNo ===  this.items[key]){
+    
+              tempory.push(Item);
+    
+            }
+          });
+    
+    
+          this.groupItems[this.items[key]] = tempory;
+    
+          tempory = [];
+    
+    
+          
+    
+        
+        }
+    
+    
+        console.log('split put away =>',this.groupItems);
+    
+        console.log('put away =>',this.warePW);
+    
+    
+        console.log('put away line =>',this.listPwL);
+    
+    
+       
+
+
+        
+        for (const key in this.groupItems) {
+
+      
+          this.groupItems[key].filter(lp => {
+
+
+              lp.BinCode = this.groupItems[key][0].BinCode;
+
+          })
+       
+        }
+
+      
+
+
+          
+        for (const key in this.groupItems) {
+
+      
+          this.groupItems[key].filter(Lp => {
+
+
+            
+          this.split.WarehousePutAwayLines.filter(lp => {
+
+
+            if(lp.LP === Lp.LP){
+
+
+              lp = Lp;
+            }
+
+          })
+           
+
+          })
+       
+        }
+
+
+
+      let list:any[] = [];
+
+
+        this.modify.filter(Lp =>  {
+
+
+          this.split.WarehousePutAwayLines.filter(lp => {
+
+
+            if(Lp.fields.PLULPDocumentNo === lp.LP){
+
+
+              lp.BinCode = Lp.fields.PLUBinCode;
+            }
+
+          })
+        })
+
+
+
+        console.log(this.split);
+
+    
+
+
+        this.split.WarehousePutAwayLines.filter(lp => {
+
+          request.ActivityType = 1;
+          request.BinCode = lp.BinCode;
+          request.ItemNo = lp.ItemNo;
+          request.LP = lp.LP;
+          request.LineNo = lp.LineNo;
+          request.LocationCode = lp.LocationCode;
+          request.No = lp.No;
+          request.Quantity = lp.Quantity;
+          request.ZoneCode = lp.ZoneCode;
+
+          list.push(request);
+
+          request = {
 
             ActivityType: 1,
             No: "",
@@ -610,356 +690,168 @@ if (val !== '') {
           }
 
 
-
-
-        if(this.modify.length !== this.initV.length){
-
-          this.scanBin = false;
-          this.loading = true;
-
-
-          this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
-
-          console.log()
-
-          this.split.WarehousePutAwayLines.filter(item => {
-      
-      
-           if(this.items.length > 0){
-      
-      
-            let line = this.items.find(Item => Item === item.ItemNo);
-      
-            if(line === null || line === undefined){
-      
-              this.items.push(item.ItemNo);
-            }
-           }else{
-      
-            this.items.push(item.ItemNo);
-      
-           }
-          
-          
-          });
-      
-      
-          let tempory:any[] = [];
-      
-          for (const key in this.items) {
-      
-      
-            this.split.WarehousePutAwayLines.filter(Item => {
-      
-              if(Item.ItemNo ===  this.items[key]){
-      
-                tempory.push(Item);
-      
-              }
-            });
-      
-      
-            this.groupItems[this.items[key]] = tempory;
-      
-            tempory = [];
-      
-      
-            
-      
-          
-          }
-      
-      
-          console.log('split put away =>',this.groupItems);
-      
-          console.log('put away =>',this.warePW);
-      
-      
-          console.log('put away line =>',this.listPwL);
-      
-      
-         
-
-
-          
-          for (const key in this.groupItems) {
-
-        
-            this.groupItems[key].filter(lp => {
-
-
-                lp.BinCode = this.groupItems[key][0].BinCode;
-
-            })
-         
-          }
-
-        
-
-
-            
-          for (const key in this.groupItems) {
-
-        
-            this.groupItems[key].filter(Lp => {
-
-
-              
-            this.split.WarehousePutAwayLines.filter(lp => {
-
-
-              if(lp.LP === Lp.LP){
-
-
-                lp = Lp;
-              }
-
-            })
-             
-
-            })
-         
-          }
-
-
-
-        let list:any[] = [];
-
-
-          this.modify.filter(Lp =>  {
-
-
-            this.split.WarehousePutAwayLines.filter(lp => {
-
-
-              if(Lp.fields.PLULPDocumentNo === lp.LP){
-
-
-                lp.BinCode = Lp.fields.PLUBinCode;
-              }
-
-            })
-          })
-
-
-
-          console.log(this.split);
-
-      
-
-
-          this.split.WarehousePutAwayLines.filter(lp => {
-
-            request.ActivityType = 1;
-            request.BinCode = lp.BinCode;
-            request.ItemNo = lp.ItemNo;
-            request.LP = lp.LP;
-            request.LineNo = lp.LineNo;
-            request.LocationCode = lp.LocationCode;
-            request.No = lp.No;
-            request.Quantity = lp.Quantity;
-            request.ZoneCode = lp.ZoneCode;
-
-            list.push(request);
-
-            request = {
-
-              ActivityType: 1,
-              No: "",
-              ItemNo: "",
-              LineNo: "",
-              ZoneCode: "",
-              LocationCode: "",
-              BinCode: "",
-              Quantity: 0,
-              LP: ""
-            }
-
-
-          });
-
-
-
-          let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
-        
-          console.log(update);
-
-   if(!update.Error && !update.error){
-
-
-    let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
-
-
-          
-    if(!postAway.Error){
-
-
-     
-        this.modalController.dismiss({});
-
-        this.loading = false;
-      
-
-        this.router.navigate(['page/wms/wmsMain']);
-     
-        
-
-        Swal.fire(
-          'Success!',
-          `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`,
-          'success'
-        )
-      
-    }else{
-
-      this.loading = false;
-      this.scanBin = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: (postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message,
-        footer: ''
-      })
-    }
-    
-   }else{
-
-    this.loading = false;
-    this.scanBin = true;
-
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'An error occurred while serializing the json in Business Central',
-      footer: ''
-    })
-   }
-        
-
-       
-   
-        }else{
-
-
-          this.scanBin = false;
-          this.loading = true;
-
-          let list:any[] = [];
-          let listP:any[] = [];
-
-          this.listPwL.filter(lp => {
-
-
-            if(lp.fields.ActionType === 'Place'){
-
-              list.push(lp);
-
-
-            }
-          });
-
-
-          console.log(list);
-
-
-         let request2 = {
-
-            ActivityType: 1,
-            No: "",
-            ItemNo: "",
-            LineNo: "",
-            ZoneCode: "",
-            LocationCode: "",
-            BinCode: "",
-            Quantity: 0,
-           
-         }
-
-
-      
-
-
-      if(this.modify[0].fields.PLUBinCode.startsWith('REC')){
-
-        list.filter(lp => {
-
-          request2.ActivityType = 1;
-          request2.No = lp.fields.No;
-          request2.ItemNo = lp.fields.ItemNo;
-          request2.LineNo = lp.fields.LineNo;
-          request2.ZoneCode = lp.fields.ZoneCode;
-          request2.LocationCode = lp.fields.LocationCode;
-          request2.BinCode =   lp.fields.BinCode;
-          request2.Quantity = lp.fields.Quantity;
-        
-
-          listP.push(request2);
-
-          request2 = {
-
-            ActivityType: 1,
-            No: "",
-            ItemNo: "",
-            LineNo: "",
-            ZoneCode: "",
-            LocationCode: "",
-            BinCode: "",
-            Quantity: 0,
-          
-          }
-
-
         });
 
 
 
+        let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
+      
+        console.log(update);
+
+ if(!update.Error && !update.error){
 
 
+  let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
 
+
+        
+  if(!postAway.Error){
+    
+   this.intServ.loadingFunc(false);
+   
+      this.intServ.alertFunc(this.js.getAlert('success', '',`The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
+
+        
+      this.router.navigate(['page/wms/wmsMain']);
+      }));
+    
+  }else{
+
+    this.intServ.loadingFunc(false);
+    
+    this.intServ.alertFunc(this.js.getAlert('error', '',(postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message ))
+    
+ 
+  }
+  
+ }else{
+  this.intServ.loadingFunc(false);
+    
+  this.intServ.alertFunc(this.js.getAlert('error', '','An error occurred while serializing the json in Business Central'))
+  
+ }
+            
       }else{
 
-    
 
-        list.filter(lp => {
+       this.intServ.loadingFunc(true);
 
-          request2.ActivityType = 1;
-          request2.No = lp.fields.No;
-          request2.ItemNo = lp.fields.ItemNo;
-          request2.LineNo = lp.fields.LineNo;
-          request2.ZoneCode = lp.fields.ZoneCode;
-          request2.LocationCode = lp.fields.LocationCode;
-          request2.BinCode =  this.modify[0].fields.PLUBinCode;
-          request2.Quantity = lp.fields.Quantity;
-          
+        let list:any[] = [];
+        let listP:any[] = [];
 
-          listP.push(request2);
+        this.listPwL.filter(lp => {
 
-          request2 = {
 
-            ActivityType: 1,
-            No: "",
-            ItemNo: "",
-            LineNo: "",
-            ZoneCode: "",
-            LocationCode: "",
-            BinCode: "",
-            Quantity: 0,
-           
+          if(lp.fields.ActionType === 'Place'){
+
+            list.push(lp);
+
+
           }
-
-
         });
 
 
-        
-     
-        
-      }
+        console.log(list);
 
 
-      let update = await this.wmsService.Update_Wsheput_Lines_V2(listP);
+       let request2 = {
+
+          ActivityType: 1,
+          No: "",
+          ItemNo: "",
+          LineNo: "",
+          ZoneCode: "",
+          LocationCode: "",
+          BinCode: "",
+          Quantity: 0,
+         
+       }
+
+
+    
+
+
+    if(this.modify[0].fields.PLUBinCode.startsWith('REC')){
+
+      list.filter(lp => {
+
+        request2.ActivityType = 1;
+        request2.No = lp.fields.No;
+        request2.ItemNo = lp.fields.ItemNo;
+        request2.LineNo = lp.fields.LineNo;
+        request2.ZoneCode = lp.fields.ZoneCode;
+        request2.LocationCode = lp.fields.LocationCode;
+        request2.BinCode =   lp.fields.BinCode;
+        request2.Quantity = lp.fields.Quantity;
       
-      console.log(update);
+
+        listP.push(request2);
+
+        request2 = {
+
+          ActivityType: 1,
+          No: "",
+          ItemNo: "",
+          LineNo: "",
+          ZoneCode: "",
+          LocationCode: "",
+          BinCode: "",
+          Quantity: 0,
+        
+        }
+
+
+      });
+
+
+
+
+
+
+    }else{
+
+  
+
+      list.filter(lp => {
+
+        request2.ActivityType = 1;
+        request2.No = lp.fields.No;
+        request2.ItemNo = lp.fields.ItemNo;
+        request2.LineNo = lp.fields.LineNo;
+        request2.ZoneCode = lp.fields.ZoneCode;
+        request2.LocationCode = lp.fields.LocationCode;
+        request2.BinCode =  this.modify[0].fields.PLUBinCode;
+        request2.Quantity = lp.fields.Quantity;
+        
+
+        listP.push(request2);
+
+        request2 = {
+
+          ActivityType: 1,
+          No: "",
+          ItemNo: "",
+          LineNo: "",
+          ZoneCode: "",
+          LocationCode: "",
+          BinCode: "",
+          Quantity: 0,
+         
+        }
+
+
+      });
+
+
+      
+   
+      
+    }
+
+
+    let update = await this.wmsService.Update_Wsheput_Lines_V2(listP);
+    
+    console.log(update);
 
 if(!update.Error && !update.error){
 
@@ -968,64 +860,34 @@ let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.N
 
 
 console.log('post =>',  postAway);
-      
+    
 if(!postAway.Error && !postAway.error){
 
+  this.intServ.loadingFunc(false);
 
- 
-    this.modalController.dismiss({});
-
-  
-    this.loading = false;
+  this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
 
     this.router.navigate(['page/wms/wmsMain']);
- 
-
-    Swal.fire(
-      'Success!',
-      `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`,
-      'success'
-    )
-  
-}else{
-
-  
-  this.loading = false;
-  this.scanBin = true;
-
-  Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text: (postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message,
-    footer: ''
-  })
-}
+  }));
 
 }else{
 
 
-  
-  this.loading = false;
-  this.scanBin = true;
-
-
-  Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text:  'An error occurred while serializing the json in Business Central',
-    footer: ''
-  })
+this.intServ.loadingFunc(false);
+this.intServ.alertFunc(this.js.getAlert('error', '', (postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message))
 
 }
 
+}else{
 
-   
+this.intServ.loadingFunc(false);
+this.intServ.alertFunc(this.js.getAlert('error', '', 'An error occurred while serializing the json in Business Central'))
 
 
-        }  
+}
+      } 
 
-             
-    }});
+      }));
 
      }
 
@@ -1033,9 +895,6 @@ if(!postAway.Error && !postAway.error){
 
 async init(){
 
-
-  this.scanLP = false;
-  this.loading = true;
   let  listPallet;
     
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
@@ -1218,34 +1077,15 @@ async init(){
     }else{
 
 
-      this.loading = false;
-      
-      this.modalController.dismiss({});
+      this.intServ.loadingFunc(false);
+       this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Whse. Put Away this void', () => {
 
-      Swal.fire({
-        title: 'The Whse. Put Away this void',
-        text: 'Please choose another put away',
-        icon: 'warning',
-        showCancelButton: false,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ok'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['page/wms/wmsMain']);
-         
-        }
-      })
-      
-      return;
+        this.router.navigate(['page/wms/wmsMain']);
+      }))
+
     }
   
-
-
-
-
- this.scanLP = true;
- this.loading = false;
+this.intServ.loadingFunc(false);
 
 
 
@@ -1255,10 +1095,7 @@ async init(){
 
  async  onScanAll(){
 
-  this.scanLP = false;
-
-  this.loading = true;
-
+this.intServ.loadingFunc(true);
  let  listPallet;
     
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
@@ -1339,8 +1176,7 @@ async init(){
 
     }
 
-    this.loading = false;
-    this.scanLP = true;
+    this.intServ.loadingFunc(false);
   
   this.select = false;
 }
@@ -1415,30 +1251,17 @@ console.log('single.....');
 
       if(line != undefined || line != null){
 
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Unable to change bin',
-          text: `To change the bin must be done on the pallet ${this.pallet[key].fields[0].PLULPDocumentNo} `,
-          footer: ''
-        });
-
-        return;
-
-
+       this.intServ.alertFunc(this.js.getAlert('error', '', `To change the bin must be done on the pallet ${this.pallet[key].fields[0].PLULPDocumentNo} `))
+      
+       return;
 
       }
 
-
-
-      }
+    }
 
       this.listsFilter.filter(lp =>{
 
-       
-      
-      
-        if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+             if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
     
           lp.fields.PLUBinCode = bin.toUpperCase();
     
@@ -1449,41 +1272,28 @@ console.log('single.....');
 
       this.listsFilter.filter(lp =>{
 
-       
-      
-      
-        if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+              if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
     
           lp.fields.PLUBinCode = bin.toUpperCase();
     
         }
-
-
-            
+          
     let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
     if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
 
+    LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
 
-      LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
-
-      
-
-    }else if(LpExist === null || LpExist === undefined){
+       }else if(LpExist === null || LpExist === undefined){
 
       this.modify.push(lp);
 
-    
-
-
-    }
+       }
       
       });
     }
   
   
-
-    
     this.modify.filter(
 
       (lp,index) => {
@@ -1563,11 +1373,7 @@ for (const key in this.pallet) {
   
   autoComplet(){
 
-
-  
- 
-     
-     this.barcodeScanner.scan().then(
+    this.barcodeScanner.scan().then(
        async  (barCodeData) => {
            let code = barCodeData.text;
      
@@ -1620,12 +1426,6 @@ for (const key in this.pallet) {
         )
       }
     
+  }
     
-    
-    
-      }
-    
- 
- 
-
 }

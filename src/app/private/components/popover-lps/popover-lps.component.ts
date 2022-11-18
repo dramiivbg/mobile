@@ -49,42 +49,20 @@ export class PopoverLpsComponent implements OnInit {
     this.lps.filter((lp, index) =>{
   
 
-      for (const i in lp.fields) {
-
-       // console.log(i);
-
-     //   this.listLp.push(lp.fields[key]);
-
+  for (const i in lp.fields) {
 
         
      if(lp.fields[i].name === "PLULPDocumentNo"){
 
 
-   
-      this.listL.push(lp.fields[i].value);
+       this.listL.push(lp.fields[i].value);
        
-
-       // this.lp.lp = lp.fields[i].value;
-
-
-     
-
-     }
-
+      }
 
      if(lp.fields[i].name === "PLUQuantity"){
 
-
-
       this.listQ.push(lp.fields[i].value.toFixed(1));
     
-
-     // this.lp.qty = lp.fields[i].value;
-
-
-
-     
-
      }
 
 
@@ -98,33 +76,14 @@ export class PopoverLpsComponent implements OnInit {
     
     this.listD.push(fecha);
 
-
-
-     
-
      }
 
-    
+          }
 
+});
 
-      
-      }
-
-
-   
-
-
-
-    });
-
-
-  
-   
   }
 
-
-
- 
 
 
  async option(lpNo:any,qty:any,ev:any){
@@ -139,27 +98,25 @@ export class PopoverLpsComponent implements OnInit {
 
  console.log(listLp);
 
-  
+  this.intServ.loadingFunc(false);
    const popover = await this.popoverController.create({
     component: PopoverOpionsLpComponent,
     cssClass: 'popoverOptions',
     event: ev,
-    translucent: true,
     componentProps: this.listMenu(listLp)
   });
   await popover.present();
 
   const { data } = await popover.onDidDismiss();
 
-  
+    if (data.name == 'Edit') {
+
+      this.popoverController.dismiss({data: 'editado'});
+  // this.onPopLicensePlate(ev, listLp);
+
+
 
   
-  if (data.name == 'Edit') {
-   this.onPopLicensePlate(ev, listLp);
-
-  
-
- //  console.log(data);
   }else
       if(data.name == 'Delete'){
 
@@ -188,22 +145,13 @@ export class PopoverLpsComponent implements OnInit {
 
       }
 
-      
-
   }
-
-
 
 
   public async onPopLicensePlate(ev: any, lp: any) {
     this.intServ.loadingFunc(true);
 
-
-    
    let lstUoM = await this.wmsService.getUnitOfMeasure(lp.fields.PLUDescription);
-
-
-
 
       const popover = await this.popoverController.create({
         component: PopoverLpEditComponent,
@@ -218,12 +166,10 @@ export class PopoverLpsComponent implements OnInit {
       const { data } = await popover.onDidDismiss();
       console.log(data);
   
- 
-  }
+   }
 
 
-  
-  private listMenu(lp: any): any {
+   private listMenu(lp: any): any {
     return {
       options: {
         name: `LP No. ${lp.fields.PLULPDocumentNo}`,

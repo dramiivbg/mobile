@@ -7,7 +7,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { WmsService } from '@svc/wms.service';
 import { ModalController } from '@ionic/angular';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
-
+import { Storage } from '@ionic/storage';
 
 
 @Component({
@@ -23,7 +23,8 @@ export class AlertsComponent implements OnInit {
   public whsePutAway: any;
   constructor(
      private intServ: InterceptService
-    , private js: JsonService, private router: Router,private wmsService: WmsService,private modalCtrl: ModalController
+    , private js: JsonService, private router: Router,private wmsService: WmsService,private modalCtrl: ModalController,
+    private storage: Storage
   ) { 
     intServ.alert$.subscribe(
       (obj: any) => {
@@ -81,28 +82,25 @@ onItem(opcion:Boolean){
 
   async onSi(){
 
+    this.intServ.loadingFunc(true);
        let dataPw = this.wmsService.getPutAway();
 
        let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
 
        this.whsePutAway = await this.wmsService.ListPutAwayH(listWP);
    
-       this.wmsService.setPutAway(listWP);
+       this.storage.set('setPutAway',listWP);
 
 
          let whsePutAway = this.whsePutAway;
 
        this.alertObj = {};
 
-        const modal = await this.modalCtrl.create({
-          component: EditPutAwayComponent,
-          componentProps: {whsePutAway}
-      
-        
-        });
-        modal.present();
-    
-        const { data, role } = await modal.onWillDismiss();
+
+       this.storage.set('whsePutAway',whsePutAway)
+
+       this.router.navigate(['page/wms/wmsPutAway']);
+
     
     }
 

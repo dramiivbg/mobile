@@ -15,10 +15,6 @@ export class CreatePhysicalInventoryComponent implements OnInit {
 
 
   public frm: FormGroup;
-  public boolean:Boolean = true;
-
-  public loading:Boolean = false;
-
   constructor(public popoverController: PopoverController, private intServ: InterceptService,  private formBuilder: FormBuilder, 
     private jsonService: JsonService, private wmsService: WmsService) { 
 
@@ -37,9 +33,6 @@ export class CreatePhysicalInventoryComponent implements OnInit {
 
 
     if (this.frm.valid) {
-
-      this.boolean = false;
-      this.loading = true;
 
 
       let obj = await this.jsonService.formToJson(this.frm);
@@ -75,44 +68,10 @@ export class CreatePhysicalInventoryComponent implements OnInit {
 
       let fecha = date.getFullYear() +'-'+month+'-'+day;
 
-      console.log(fecha)
+      this.popoverController.dismiss({zone: obj.ZoneCode, locationCode: obj.LocationCode, fecha, data});
 
-
-      try {
-
-        let res = await this.wmsService.Create_WarehouseInvPhysicalCount(obj.ZoneCode,"",obj.LocationCode,fecha,data);
-
-        console.log(res);
-
-        if(res.Error) throw new Error(res.Error.Message);
-
-        if(res.error) throw new Error(res.error.message);
-
-
-        this.popoverController.dismiss({data: res, locate: obj.LocationCode });
-        
-        
-      } catch (error) {
-        
-        
-      this.loading = false;
-      this.boolean = true;
-
-      
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text:  error.message,
-        footer: ''
-      });
-
-      
-        
-      }
-    }
-
-
-  }
+   }
+ }
 
   public async closePopover() {
     this.popoverController.dismiss({data: null});

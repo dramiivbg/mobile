@@ -15,10 +15,6 @@ export class PopoverOpionsLpComponent implements OnInit {
    }
 
   ngOnInit() {
-
-
-    this.intServ.loadingFunc(false);
-
     
   }
 
