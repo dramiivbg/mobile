@@ -100,7 +100,7 @@
 
                                                     <ion-item style="width: 100%;">
                                                         <ion-row>
-                                                            <ion-col size="12" class="label-line splitimage">
+                                                            <ion-col size="12" class="label-line splitimage" *ngIf="listPicture.length > 0 ">
                                                                 <label *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show" class="label">{{listPicture[i].fields.No}}</label>&nbsp;
                                                                 <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show" [src]="listPicture[i].fields.Picture" alt="">
                                                                 <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE' && show" src="../../../../assets/img/caja.jpg" alt="">

@@ -32,6 +32,7 @@ export class WmsMainPage implements OnInit {
   public booleanM: Boolean = false;
   public booleanInQ:Boolean = false;
 
+  public locale: any = '';
   public listsLocate:any;
 
   public processes:any[] = [];
@@ -65,11 +66,14 @@ export class WmsMainPage implements OnInit {
 
   public async ionViewWillEnter() {
 
+    this.processes = [];
     let session =  (await this.js.getSession()).login;
    this.http.get(environment.api+session.userId).subscribe(res => {
 
     this.listsLocate = res;
    });
+
+   this.locale = (await this.storage.get('locale') != undefined || await this.storage.get('locale') != null ) ? await this.storage.get('locale'): this.locale;
 
     try {
       this.intServ.loadingFunc(true);
@@ -129,6 +133,8 @@ export class WmsMainPage implements OnInit {
 
 
         if(rsl.Error) throw new Error(rsl.Error.Message);
+       // if(rsl.error.message) throw new Error(rsl.error.message);
+        
         
    
        let wareReceipts = rsl.WarehouseReceipts;
@@ -382,16 +388,19 @@ export class WmsMainPage implements OnInit {
   const popover = await this.popoverController.create({
     component: PopoverLocateComponent,
     cssClass: 'popoverLocateComponent',
-    event:ev,
     componentProps:{listLocale:this.listsLocate}
   });
   await popover.present();
 
   const { data } = await popover.onDidDismiss();
 
-  console.log('locate =>',data);
+  if(data != undefined || data != null){
 
-   }
+   this.storage.set('locale', data.locationCode);
+
+   this.locale = await this.storage.get('locale');
+  }
+}
 
   private async mappingPutAways(putAway:any , procesos: Process){
 

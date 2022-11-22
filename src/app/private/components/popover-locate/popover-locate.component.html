@@ -1,6 +1,11 @@
 
   <ion-content>
     <ion-list *ngFor="let item of listLocale" >
-      <ion-item (click)="onClick(item.locationCode)" >{{item.locationCode}}</ion-item>
+     <ion-row class="rowtable" (click)="onClick(item.locationCode)">
+      <ion-col size="12" class="dataitem">
+
+        {{item.locationCode}}
+      </ion-col>
+    </ion-row>
     </ion-list>
   </ion-content>
