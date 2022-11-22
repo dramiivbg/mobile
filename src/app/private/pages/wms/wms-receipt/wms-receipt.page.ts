@@ -544,6 +544,7 @@ export class WmsReceiptPage implements OnInit {
 
           let postWR = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
 
+          console.log(postWR);
           if (postWR.Error) throw Error(postWR.Error.Message);
 
           this.wmsService.setPutAway(postWR);
@@ -610,20 +611,10 @@ export class WmsReceiptPage implements OnInit {
 
                 }
 
-
-
-
-
-
-
               }));
 
               clearTimeout(alert);
             }, 100)
-
-
-
-
 
 
           }));
