@@ -10,6 +10,7 @@ import { WmsService } from '@svc/wms.service';
 import Swal from 'sweetalert2'
 import { Storage } from '@ionic/storage';
 import { PassThrough } from 'stream';
+import { CssSelector } from '@angular/compiler';
 
 @Component({
   selector: 'app-edit-put-away',
@@ -57,6 +58,10 @@ export class EditPutAwayComponent implements OnInit {
 
   public warePY: any;
 
+  public QtyTake:number = 0;
+
+  public QtyTotal:number = 0;
+
 
 
   constructor(private router: Router
@@ -75,7 +80,7 @@ export class EditPutAwayComponent implements OnInit {
 
   async  ngOnInit() {
 
-    this.get();
+    this.whsePutAway =  await this.storage.get('whsePutAway');
 
     this.warePW = await this.storage.get('setPutAway');
 
@@ -84,32 +89,20 @@ export class EditPutAwayComponent implements OnInit {
       this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     
       this.init();
-    this.intServ.loadingFunc(false);
+   
 
-    }
-
- async get(){
-
-  this.whsePutAway =  await this.storage.get('whsePutAway');
-
-  console.log(this.whsePutAway);
     }
 
 
   back(){
 
 
-         
     this.scanLP = true;
     this.scanBin = false;
 
-
-    
   }
 
  
-
-
   public onBack(){
 
 
@@ -145,13 +138,10 @@ export class EditPutAwayComponent implements OnInit {
   }
 
      this.listsFilter.filter( lp => {
-      lp.fields.PLUBinCode = code.toUpperCase();
+      lp.fields.place = code.toUpperCase();
 
     });
 
-    this.modify = [];
-
-    this.modify = this.listsFilter;
 
     this.intServ.loadingFunc(false);
     }
@@ -316,7 +306,8 @@ export class EditPutAwayComponent implements OnInit {
                       line.fields.place = x.fields.BinCode;
                       this.listsFilter.push(line);
                       this.listT.push(line);
-                      break;
+                      this.QtyTake += line.fields.PLUQuantity;
+                     break;
                     } 
                 }
               }
@@ -346,22 +337,12 @@ export class EditPutAwayComponent implements OnInit {
 
     }
 
-
-    onChangeBinItem(item:any,bin:any){
-     
-      console.log(item,bin);
-
-
-    }
-
-  
-
-
  async onSubmit(){
 
-if(this.scanLP){
+switch(this.scanLP){
 
-    this.intServ.loadingFunc(true);
+  case true:
+      this.intServ.loadingFunc(true);
       let bins = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
 
         this.listBin.push(bins);
@@ -372,13 +353,16 @@ if(this.scanLP){
 
         this.intServ.loadingFunc(false);
 
-  
-    }else{
+        break;
 
+    default:
 
-      this.intServ.alertFunc(this.js.getAlert('confirm', ' ','Confirm Whse. PutAway?', async() => {
-        
-        let request = {
+  //   if(this.initV.length !== this.listsFilter.length){
+
+ //     this.intServ.alertFunc(this.js.getAlert('alert', '', ''))
+ //    } 
+       this.intServ.alertFunc(this.js.getAlert('confirm', ' ','Confirm Whse. PutAway?', async() => {
+          let request = {
 
           ActivityType: 1,
           No: "",
@@ -391,10 +375,9 @@ if(this.scanLP){
           LP: ""
         }
 
+        let line;
 
-
-
-      if(this.modify.length !== this.initV.length){
+  
 
        this.intServ.loadingFunc(true);
 
@@ -443,11 +426,7 @@ if(this.scanLP){
           this.groupItems[this.items[key]] = tempory;
     
           tempory = [];
-    
-    
           
-    
-        
         }
     
     
@@ -459,11 +438,7 @@ if(this.scanLP){
         console.log('put away line =>',this.listPwL);
     
     
-       
-
-
-        
-        for (const key in this.groupItems) {
+          for (const key in this.groupItems) {
 
       
           this.groupItems[key].filter(lp => {
@@ -471,43 +446,32 @@ if(this.scanLP){
 
               lp.BinCode = this.groupItems[key][0].BinCode;
 
-          })
-       
+          });
         }
 
-      
-
-
-          
-        for (const key in this.groupItems) {
+          for (const key in this.groupItems) {
 
       
           this.groupItems[key].filter(Lp => {
 
-
-            
-          this.split.WarehousePutAwayLines.filter(lp => {
+         this.split.WarehousePutAwayLines.filter(lp => {
 
 
             if(lp.LP === Lp.LP){
-
 
               lp = Lp;
             }
 
           })
            
-
-          })
+          });
        
         }
-
-
 
       let list:any[] = [];
 
 
-        this.modify.filter(Lp =>  {
+        this.listsFilter.filter(Lp =>  {
 
 
           this.split.WarehousePutAwayLines.filter(lp => {
@@ -516,18 +480,13 @@ if(this.scanLP){
             if(Lp.fields.PLULPDocumentNo === lp.LP){
 
 
-              lp.BinCode = Lp.fields.PLUBinCode;
+              lp.BinCode = Lp.fields.place;
             }
 
           })
-        })
-
-
+        });
 
         console.log(this.split);
-
-    
-
 
         this.split.WarehousePutAwayLines.filter(lp => {
 
@@ -597,163 +556,7 @@ if(this.scanLP){
   this.intServ.alertFunc(this.js.getAlert('error', '','An error occurred while serializing the json in Business Central'))
   
  }
-            
-      }else{
-
-
-       this.intServ.loadingFunc(true);
-
-        let list:any[] = [];
-        let listP:any[] = [];
-
-        this.listPwL.filter(lp => {
-
-
-          if(lp.fields.ActionType === 'Place'){
-
-            list.push(lp);
-
-
-          }
-        });
-
-
-        console.log(list);
-
-
-       let request2 = {
-
-          ActivityType: 1,
-          No: "",
-          ItemNo: "",
-          LineNo: "",
-          ZoneCode: "",
-          LocationCode: "",
-          BinCode: "",
-          Quantity: 0,
-         
-       }
-
-
-    
-
-
-    if(this.modify[0].fields.PLUBinCode.startsWith('REC')){
-
-      list.filter(lp => {
-
-        request2.ActivityType = 1;
-        request2.No = lp.fields.No;
-        request2.ItemNo = lp.fields.ItemNo;
-        request2.LineNo = lp.fields.LineNo;
-        request2.ZoneCode = lp.fields.ZoneCode;
-        request2.LocationCode = lp.fields.LocationCode;
-        request2.BinCode =   lp.fields.BinCode;
-        request2.Quantity = lp.fields.Quantity;
-      
-
-        listP.push(request2);
-
-        request2 = {
-
-          ActivityType: 1,
-          No: "",
-          ItemNo: "",
-          LineNo: "",
-          ZoneCode: "",
-          LocationCode: "",
-          BinCode: "",
-          Quantity: 0,
-        
-        }
-
-
-      });
-
-
-
-
-
-
-    }else{
-
-  
-
-      list.filter(lp => {
-
-        request2.ActivityType = 1;
-        request2.No = lp.fields.No;
-        request2.ItemNo = lp.fields.ItemNo;
-        request2.LineNo = lp.fields.LineNo;
-        request2.ZoneCode = lp.fields.ZoneCode;
-        request2.LocationCode = lp.fields.LocationCode;
-        request2.BinCode =  this.modify[0].fields.PLUBinCode;
-        request2.Quantity = lp.fields.Quantity;
-        
-
-        listP.push(request2);
-
-        request2 = {
-
-          ActivityType: 1,
-          No: "",
-          ItemNo: "",
-          LineNo: "",
-          ZoneCode: "",
-          LocationCode: "",
-          BinCode: "",
-          Quantity: 0,
-         
-        }
-
-
-      });
-
-
-      
-   
-      
-    }
-
-
-    let update = await this.wmsService.Update_Wsheput_Lines_V2(listP);
-    
-    console.log(update);
-
-if(!update.Error && !update.error){
-
-
-let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
-
-
-console.log('post =>',  postAway);
-    
-if(!postAway.Error && !postAway.error){
-
-  this.intServ.loadingFunc(false);
-
-  this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
-
-    this.router.navigate(['page/wms/wmsMain']);
-  }));
-
-}else{
-
-
-this.intServ.loadingFunc(false);
-this.intServ.alertFunc(this.js.getAlert('error', '', (postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message))
-
-}
-
-}else{
-
-this.intServ.loadingFunc(false);
-this.intServ.alertFunc(this.js.getAlert('error', '', 'An error occurred while serializing the json in Business Central'))
-
-
-}
-      } 
-
+     
       }));
 
      }
@@ -951,11 +754,16 @@ async init(){
       }))
 
     }
+
+    this.listPwL.filter(
+      x => {
+
+        if(x.fields.ActionType === "Place") this.QtyTotal += x.fields.Quantity;
+
+      }
+    );
   
 this.intServ.loadingFunc(false);
-
-
-
 
 }
 
@@ -1128,7 +936,7 @@ console.log('single.....');
 
              if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
     
-          lp.fields.PLUBinCode = bin.toUpperCase();
+          lp.fields.place = bin.toUpperCase();
     
         }});
 
@@ -1139,45 +947,16 @@ console.log('single.....');
 
               if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
     
-          lp.fields.PLUBinCode = bin.toUpperCase();
+          lp.fields.place = bin.toUpperCase();
     
         }
           
-    let LpExist = this.modify.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-    if((LpExist != null || LpExist != undefined) && LpExist.fields.PLUBinCode != lp.fields.PLUBinCode){
-
-    LpExist.fields.PLUBinCode = lp.fields.PLUBinCode;
-
-       }else if(LpExist === null || LpExist === undefined){
-
-      this.modify.push(lp);
-
-       }
+  
       
       });
     }
   
-  
-    this.modify.filter(
-
-      (lp,index) => {
-        if(lp.fields.PLUBinCode.startsWith('REC')){
-
-          this.modify.splice(index,1);
-
-        } 
-      }
-    )
-
-
-   
-    console.log('modify =>', this.modify);
-   // console.log('pallet =>', this.pallet);
-
-  //  console.log('filter =>',this.listsFilter);
-  
-  
+ 
     break;
 
 
@@ -1208,7 +987,7 @@ for (const key in this.pallet) {
 
         if(lp.fields.PLULPDocumentNo === Lp.PLUNo){
 
-          lp.fields.PLUBinCode = bin.toUpperCase();
+          lp.fields.place = bin.toUpperCase();
         }
       });
 
@@ -1217,15 +996,15 @@ for (const key in this.pallet) {
 
       let lpL = await this.wmsService.ListLp(res);
 
-      lpL.fields.PLUBinCode = bin.toUpperCase();
+      lpL.fields.place = bin.toUpperCase();
 
-      this.modify.push(lpL); 
+    //  this.modify.push(lpL); 
   
     }
 
  });
 
-  console.log(this.modify);
+ // console.log(this.modify);
   
   } 
 }
