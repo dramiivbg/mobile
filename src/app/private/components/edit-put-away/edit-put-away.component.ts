@@ -70,14 +70,12 @@ export class EditPutAwayComponent implements OnInit {
   };
   this.intServ.appBackFunc(objFunc);
 
-  this.get();
-
-        
+       
   }
 
   async  ngOnInit() {
 
-  
+    this.get();
 
     this.warePW = await this.storage.get('setPutAway');
 
@@ -287,9 +285,20 @@ export class EditPutAwayComponent implements OnInit {
           let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() == code.toUpperCase());
    
           if(find == null || find ==undefined){
-   
-           this.listsFilter.push(line);
-           this.listT.push(line);
+            this.listPwL.filter(
+              x => {
+               switch(x.fields.ActionType){
+                  case "Place":
+                    if(line.fields.PLUNo === x.fields.ItemNo){
+                      line.fields.place = x.fields.BinCode;
+                      this.listsFilter.push(line);
+                      this.listT.push(line);
+                      break;
+                    } 
+                }
+              }
+            )
+          
            
           }else{
    
@@ -298,16 +307,22 @@ export class EditPutAwayComponent implements OnInit {
           }
          
            }else{
-
             this.listsFilter = [];
-
-            
-
-            this.listsFilter.push(line);
-            this.listT.push(line);
-
-
-            this.scanLP  = true;
+            this.listPwL.filter(
+              x => {
+                switch(x.fields.ActionType){
+                  case "Place":
+                    if(line.fields.PLUNo === x.fields.ItemNo){
+                      line.fields.place = x.fields.BinCode;
+                      this.listsFilter.push(line);
+                      this.listT.push(line);
+                      break;
+                    } 
+                }
+              }
+            )
+          
+           this.scanLP  = true;
 
 
 
@@ -316,11 +331,7 @@ export class EditPutAwayComponent implements OnInit {
        
       }
 
-      if(this.listsFilter.length === this.initV.length){
-
-        this.select = false;
-       
-    }
+   
 
     }
     this.intServ.loadingFunc(false);
@@ -345,150 +356,6 @@ export class EditPutAwayComponent implements OnInit {
 
   
 
-async onAdd(e) {
-
-  this.intServ.loadingFunc(true);
-    let val = e.target.value;
-
-    
-    let listPallet;
-
-    let  listLp; 
-
-
-    const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
-
-
-    const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
-
-
-    console.log('ls =>', lps);
-   // console.log('pallet =>', pallets);
-
-   
-
-    if(!pallets.Error){
-
-
-   const  listPalletH  = await this.wmsService.ListPallets(pallets);
-
-   listPallet = await this.wmsService.ListLP(pallets);
-
-   listPallet.filter(lp => {
-
-
-      let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      lp.fields.PLUBinCode = line.fields.PLUBinCode;
-      lp.fields.PLUItemNo = line.fields.PLUItemNo;
-      
-    });
-
-
- }
-
-
-    if(!lps.Error){
-
-      const listLpH = await this.wmsService.ListLPH(lps)
-
-     listLp = await this.wmsService.ListLP(lps);
-
-     listLp.filter(lp => {
-  
-  
-        let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-  
-        lp.fields.PLUBinCode = line.fields.PLUBinCode;
-        lp.fields.PLUItemNo = line.fields.PLUItemNo;
-      });
-
-
-      console.log('lps =>', listLp);
-
-    }
-  
-  console.log('pallets =>', this.pallet);
-   
-   // console.log('pallets =>', listPallet);
-
-let line:any =  undefined;
-if (val !== '') {
-      let line:any = undefined;
-      if(!lps.Error){
-       
-    for (const key in listLp) {
-  
-
-      if (listLp[key].fields.PLULPDocumentNo.toUpperCase() === val.toUpperCase()) {
-        line = listLp[key];
-        this.intServ.loadingFunc(false);  
-      
-      } }
-
-      if(!pallets.Error){
-        for (const key in listPallet) {
-  
-
-          if (listPallet[key].fields.PLULPDocumentNo.toUpperCase() === val.toUpperCase()) {
-            line = listPallet[key];
-            this.intServ.loadingFunc(false);  
-          
-          } }
-
-      }
-
-       if (line === null || line === undefined) {
-
-        this.intServ.loadingFunc(false);
-
-        this.intServ.alertFunc(this.js.getAlert('error', ' ', `The license plate '${val.toUpperCase()}' does not exist on the Put Away`));
-      } else {
-
-        
-        if(this.listsFilter.length > 0){
-
-          let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() == val.toUpperCase());
-   
-          if(find == null || find ==undefined){
-   
-           this.listsFilter.push(line);
-           this.listT.push(line);
-           
-          }else{
-   
-
-            this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
-            
-     }
-         
-           }else{
-
-            this.listsFilter = []
-            this.listsFilter.push(line);
-            this.listT.push(line);
-           this.scanLP  = true;
- }
-
-       
-      }
-
-    }
-
-
-    if(this.listsFilter.length === this.initV.length){
-
-      this.select = false;
-     
-  }
-
-  this.intServ.loadingFunc(false);
-    }else{
-      this.intServ.loadingFunc(false);
-    }
-
-  }
 
  async onSubmit(){
 
@@ -1121,8 +988,7 @@ this.intServ.loadingFunc(true);
       lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
       let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-      let find2 = this.modify.find(lpM => lpM.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-      
+     
       if(find === null || find === undefined){
 
         this.listsFilter.push(lp);
@@ -1131,14 +997,6 @@ this.intServ.loadingFunc(true);
 
       }
 
-      if(find2 === null || find2 === undefined){
-
-        this.modify.push(lp);
-      }
-
-
-
-      console.log(this.modify,this.initV);
 
 });
 
@@ -1160,18 +1018,25 @@ this.intServ.loadingFunc(true);
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
         let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-        let find2 = this.modify.find(lpM => lpM.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
+      
         if(find === null || find === undefined){
+          this.listPwL.filter(
+            x => {
+              switch(x.fields.ActionType){
+                case "Place":
+                  if(lp.fields.PLUNo === x.fields.ItemNo){
+
+                    lp.fields.place = x.fields.BinCode;
+                    this.listsFilter.push(lp);
+                    this.listT.push(lp);
+                    break;
+                  } 
+              }
+            }
+          )
   
-          this.listsFilter.push(lp);
-          this.listT.push(lp);
         }
 
-        if(find2 === null || find2 === undefined){
-
-          this.modify.push(lp);
-        }
       });
 
     }
