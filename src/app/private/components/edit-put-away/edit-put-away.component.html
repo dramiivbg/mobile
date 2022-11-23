@@ -13,18 +13,7 @@
                 </ion-col>
             </ion-row>
 
-            <ion-row *ngIf="select">
-                <ion-col size="10" class="delivery newColor">
-                    <ion-input (ionBlur)="onAdd($event)" autocorrect="on" autofocus="on"
-                        style="text-align: left; width: 100%;" clearInput="true" clearOnEdit="true" inputmode="text"
-                        placeholder="Scan LP/Pallet:" required="true"></ion-input>
-                    <!-- <ion-icon name="pencil"></ion-icon> -->
-                </ion-col>
-                <ion-col size="2">
-                    <ion-icon class="newspapper" name="newspaper-outline"></ion-icon>
-                </ion-col>
-
-            </ion-row>
+         
 
         </div>
 
@@ -81,13 +70,21 @@
 
 
                                                         </ion-col>
-                                                        <ion-col size="5" class="label-line-title"
+                                                        <ion-col size="2.5" class="label-line-title"
                                                             style="text-align: right;">
-                                                            Bin Code. {{item.fields.PLUBinCode}}
+                                                            Take. {{item.fields.PLUBinCode}}
 
 
 
                                                         </ion-col>
+
+                                                        <ion-col size="2.5" class="label-line-title"
+                                                        style="text-align: right;">
+                                                        Place. {{item.fields.place}}
+
+
+
+                                                    </ion-col>
 
                                                     </ion-row>
 
@@ -114,7 +111,7 @@
 
                                             </ion-item>
 
-                                            <ion-item-options *ngIf="select">
+                                            <ion-item-options >
                                                 <ion-item-option color="danger" (click)="remove(item)">
                                                     <ion-icon slot="icon-only" name="trash"></ion-icon>
                                                 </ion-item-option>
@@ -156,7 +153,7 @@
                 </ion-col>
             </ion-row>
 
-            <ion-row class="delivery newColor2" *ngIf="select">
+            <ion-row class="delivery newColor2" >
                 <ion-col size="10">
                     <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}"
                         (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline"
@@ -207,7 +204,7 @@
 
 
 
-                                                    <ion-col size="7" *ngIf="select">
+                                                    <ion-col size="7" >
 
                                                         <ion-select interface="popover" #bin
                                                             (ionChange)="onChangeBinOne(item,bin.value)"
