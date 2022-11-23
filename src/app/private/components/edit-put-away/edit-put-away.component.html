@@ -14,7 +14,18 @@
                 </ion-col>
             </ion-row>
 
+            <ion-row size="12">
+                <ion-col size="12">
+                    <ion-label> Total quantity: {{QtyTotal}}</ion-label>
+                </ion-col>
+                <ion-col size="12">
+                    <ion-label>Quantity taken: {{QtyTake}}</ion-label>
+                </ion-col>
+            </ion-row>
 
+           
+
+         
 
         </div>
 
@@ -245,13 +256,21 @@
 
 
                                                     </ion-col>
-                                                    <ion-col size="5" class="label-line-title"
-                                                        style="text-align: right;">
-                                                        BinCode. {{item.fields.PLUBinCode}}
+                                                    <ion-col size="2.5" class="label-line-title"
+                                                    style="text-align: right;">
+                                                    Take. {{item.fields.PLUBinCode}}
 
 
 
-                                                    </ion-col>
+                                                </ion-col>
+
+                                                <ion-col size="2.5" class="label-line-title"
+                                                style="text-align: right;">
+                                                Place. {{item.fields.place}}
+
+
+
+                                            </ion-col>
 
                                                 </ion-row>
 
