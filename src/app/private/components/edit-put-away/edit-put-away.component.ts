@@ -90,9 +90,7 @@ export class EditPutAwayComponent implements OnInit {
     
       this.init();
    
-
     }
-
 
   back(){
 
@@ -357,210 +355,231 @@ switch(this.scanLP){
 
     default:
 
-  //   if(this.initV.length !== this.listsFilter.length){
+     if(this.initV.length !== this.listsFilter.length){
 
- //     this.intServ.alertFunc(this.js.getAlert('alert', '', ''))
- //    } 
-       this.intServ.alertFunc(this.js.getAlert('confirm', ' ','Confirm Whse. PutAway?', async() => {
-          let request = {
-
-          ActivityType: 1,
-          No: "",
-          ItemNo: "",
-          LineNo: "",
-          ZoneCode: "",
-          LocationCode: "",
-          BinCode: "",
-          Quantity: 0,
-          LP: ""
-        }
-
-        let line;
-
-  
-
-       this.intServ.loadingFunc(true);
-
-
-        this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
-
-        console.log()
-
-        this.split.WarehousePutAwayLines.filter(item => {
-    
-    
-         if(this.items.length > 0){
-    
-    
-          let line = this.items.find(Item => Item === item.ItemNo);
-    
-          if(line === null || line === undefined){
-    
-            this.items.push(item.ItemNo);
-          }
-         }else{
-    
-          this.items.push(item.ItemNo);
-    
-         }
-        
-        
-        });
-    
-    
-        let tempory:any[] = [];
-    
-        for (const key in this.items) {
-    
-    
-          this.split.WarehousePutAwayLines.filter(Item => {
-    
-            if(Item.ItemNo ===  this.items[key]){
-    
-              tempory.push(Item);
-    
-            }
-          });
-    
-    
-          this.groupItems[this.items[key]] = tempory;
-    
-          tempory = [];
-          
-        }
-    
-    
-        console.log('split put away =>',this.groupItems);
-    
-        console.log('put away =>',this.warePW);
-    
-    
-        console.log('put away line =>',this.listPwL);
-    
-    
-          for (const key in this.groupItems) {
+      let qtyR = this.QtyTotal - this.QtyTake;
 
       
-          this.groupItems[key].filter(lp => {
-
-
-              lp.BinCode = this.groupItems[key][0].BinCode;
-
-          });
-        }
-
-          for (const key in this.groupItems) {
-
-      
-          this.groupItems[key].filter(Lp => {
-
-         this.split.WarehousePutAwayLines.filter(lp => {
-
-
-            if(lp.LP === Lp.LP){
-
-              lp = Lp;
-            }
-
-          })
-           
-          });
-       
-        }
-
-      let list:any[] = [];
-
-
-        this.listsFilter.filter(Lp =>  {
-
-
-          this.split.WarehousePutAwayLines.filter(lp => {
-
-
-            if(Lp.fields.PLULPDocumentNo === lp.LP){
-
-
-              lp.BinCode = Lp.fields.place;
-            }
-
-          })
-        });
-
-        console.log(this.split);
-
-        this.split.WarehousePutAwayLines.filter(lp => {
-
-          request.ActivityType = 1;
-          request.BinCode = lp.BinCode;
-          request.ItemNo = lp.ItemNo;
-          request.LP = lp.LP;
-          request.LineNo = lp.LineNo;
-          request.LocationCode = lp.LocationCode;
-          request.No = lp.No;
-          request.Quantity = lp.Quantity;
-          request.ZoneCode = lp.ZoneCode;
-
-          list.push(request);
-
-          request = {
-
-            ActivityType: 1,
-            No: "",
-            ItemNo: "",
-            LineNo: "",
-            ZoneCode: "",
-            LocationCode: "",
-            BinCode: "",
-            Quantity: 0,
-            LP: ""
-          }
-
-
-        });
-
-
-
-        let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
-      
-        console.log(update);
-
- if(!update.Error && !update.error){
-
-
-  let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
-
-
+      this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The remaining amount(${qtyR}) will go to the default Bin code`, () => {
+        var alert = setTimeout(() => {  
         
-  if(!postAway.Error){
-    
-   this.intServ.loadingFunc(false);
-   
-      this.intServ.alertFunc(this.js.getAlert('success', '',`The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
+          this.submit();
 
-        
-      this.router.navigate(['page/wms/wmsMain']);
+        clearTimeout(alert);
+      }, 100)
       }));
-    
-  }else{
 
-    this.intServ.loadingFunc(false);
+     
+
+     }else{
+
+      this.submit();
+     } 
+
+   }
+
+}
+
+
+async submit(){
+
+  this.intServ.alertFunc(this.js.getAlert('confirm', '','Confirm Whse. PutAway?', async() => {
+    let request = {
+
+    ActivityType: 1,
+    No: "",
+    ItemNo: "",
+    LineNo: "",
+    ZoneCode: "",
+    LocationCode: "",
+    BinCode: "",
+    Quantity: 0,
+    LP: ""
+  }
+
+  let line;
+
+
+
+ this.intServ.loadingFunc(true);
+
+
+  this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
+
+  console.log()
+
+  this.split.WarehousePutAwayLines.filter(item => {
+
+
+   if(this.items.length > 0){
+
+
+    let line = this.items.find(Item => Item === item.ItemNo);
+
+    if(line === null || line === undefined){
+
+      this.items.push(item.ItemNo);
+    }
+   }else{
+
+    this.items.push(item.ItemNo);
+
+   }
+  
+  
+  });
+
+
+  let tempory:any[] = [];
+
+  for (const key in this.items) {
+
+
+    this.split.WarehousePutAwayLines.filter(Item => {
+
+      if(Item.ItemNo ===  this.items[key]){
+
+        tempory.push(Item);
+
+      }
+    });
+
+
+    this.groupItems[this.items[key]] = tempory;
+
+    tempory = [];
     
-    this.intServ.alertFunc(this.js.getAlert('error', '',(postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message ))
-    
+  }
+
+
+  console.log('split put away =>',this.groupItems);
+
+  console.log('put away =>',this.warePW);
+
+
+  console.log('put away line =>',this.listPwL);
+
+
+    for (const key in this.groupItems) {
+
+
+    this.groupItems[key].filter(lp => {
+
+
+        lp.BinCode = this.groupItems[key][0].BinCode;
+
+    });
+  }
+
+    for (const key in this.groupItems) {
+
+
+    this.groupItems[key].filter(Lp => {
+
+   this.split.WarehousePutAwayLines.filter(lp => {
+
+
+      if(lp.LP === Lp.LP){
+
+        lp = Lp;
+      }
+
+    })
+     
+    });
  
   }
-  
- }else{
-  this.intServ.loadingFunc(false);
-    
-  this.intServ.alertFunc(this.js.getAlert('error', '','An error occurred while serializing the json in Business Central'))
-  
- }
-     
-      }));
 
-     }
+let list:any[] = [];
 
+
+  this.listsFilter.filter(Lp =>  {
+
+
+    this.split.WarehousePutAwayLines.filter(lp => {
+
+
+      if(Lp.fields.PLULPDocumentNo === lp.LP){
+
+
+        lp.BinCode = Lp.fields.place;
+      }
+
+    })
+  });
+
+  console.log(this.split);
+
+  this.split.WarehousePutAwayLines.filter(lp => {
+
+    request.ActivityType = 1;
+    request.BinCode = lp.BinCode;
+    request.ItemNo = lp.ItemNo;
+    request.LP = lp.LP;
+    request.LineNo = lp.LineNo;
+    request.LocationCode = lp.LocationCode;
+    request.No = lp.No;
+    request.Quantity = lp.Quantity;
+    request.ZoneCode = lp.ZoneCode;
+
+    list.push(request);
+
+    request = {
+
+      ActivityType: 1,
+      No: "",
+      ItemNo: "",
+      LineNo: "",
+      ZoneCode: "",
+      LocationCode: "",
+      BinCode: "",
+      Quantity: 0,
+      LP: ""
+    }
+
+
+  });
+
+
+
+  let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
+
+  console.log(update);
+
+if(!update.Error && !update.error){
+
+
+let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+
+  
+if(!postAway.Error){
+
+this.intServ.loadingFunc(false);
+
+this.intServ.alertFunc(this.js.getAlert('success', '',`The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
+
+  
+this.router.navigate(['page/wms/wmsMain']);
+}));
+
+}else{
+
+this.intServ.loadingFunc(false);
+
+this.intServ.alertFunc(this.js.getAlert('error', '',(postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message ))
+
+
+}
+
+}else{
+this.intServ.loadingFunc(false);
+
+this.intServ.alertFunc(this.js.getAlert('error', '','An error occurred while serializing the json in Business Central'))
+
+}
+
+}));
 }
 
 async init(){
@@ -798,7 +817,6 @@ this.intServ.loadingFunc(true);
       let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
      
       if(find === null || find === undefined){
-
         this.listsFilter.push(lp);
 
         this.listT.push(lp);
@@ -835,6 +853,7 @@ this.intServ.loadingFunc(true);
                   if(lp.fields.PLUNo === x.fields.ItemNo){
 
                     lp.fields.place = x.fields.BinCode;
+                    this.QtyTake += lp.fields.PLUQuantity;
                     this.listsFilter.push(lp);
                     this.listT.push(lp);
                     break;
@@ -863,6 +882,7 @@ this.intServ.loadingFunc(true);
 
     if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
 
+        this.QtyTake -= lp.fields.PLUQuantity;
         this.listsFilter.splice(index,1);
       }
     });
@@ -895,6 +915,7 @@ this.intServ.loadingFunc(true);
     this.list = [];
 
     this.select = true;
+    this.QtyTake = 0;
 
 
 

@@ -209,19 +209,18 @@
                                             <ion-col size="12" class="item">
 
                                                 <ion-row>
-                                                    <ion-col size="12" style="overflow: hidden;"
+                                                    <ion-col size="6" style="padding-top: 20px;"
                                                         class="label-line-title blue">
                                                         {{item.fields.PLULPDocumentNo}}
                                                     </ion-col>
 
 
 
-                                                    <ion-col size="12">
+                                                    <ion-col size="6" class="select">
 
                                                         <ion-select interface="popover" #bin
                                                             (ionChange)="onChangeBinOne(item,bin.value)"
                                                             placeholder="Edit Bincode"
-                                                            style="position:absolute;right: 7%;width: 100%;"
                                                             class="label-line-title">
                                                             <ion-select-option *ngFor="let item of listBin[0].Bins"
                                                                 [value]="item.BinCode">{{item.BinCode}}
@@ -231,16 +230,6 @@
                                                         </ion-select>
 
                                                     </ion-col>
-
-
-                                                    <ion-col size="">
-
-                                                    </ion-col>
-
-
-
-
-
 
                                                 </ion-row>
 
