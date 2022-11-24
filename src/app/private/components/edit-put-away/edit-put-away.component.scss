@@ -46,8 +46,8 @@ ion-item ion-input {
 }
 
 .label-lines {
-    width: 85%;
-    padding: 5px 0 5px 15px;
+    width: 100%;
+    padding: 0px 0px 10px 20px;
 
     ion-col {
         padding: 2px 10px 2px 0;
@@ -299,16 +299,35 @@ ion-content {
 
 ion-list {
     background: transparent;
+    padding-top: 0;
 
 }
 
-ion-item{
+ion-item {
     --border-color: transparent !important;
+    padding: 0px 0 10px 0;
 }
 
-.select{
+.select {
 
-    padding-top: 30px;
-    padding-left: 30px;
+    // padding-top: 30px;
+    // padding-left: 30px;
     width: 100%;
+}
+
+.titleslist {
+    padding: 0 0 5px 0;
+    justify-content: center;
+}
+
+.subtitlelist {
+    padding: 0 0 10px 0;
+}
+
+.titleblue{
+    color: var(--ion-color-plureBlue);
+    font-size: 16px;
+    font-family: SourceSansProBold;
+    display: flex;
+    align-items: center;
 }

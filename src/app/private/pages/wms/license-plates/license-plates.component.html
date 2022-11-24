@@ -32,7 +32,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          No of Pack(LP)
+          Qty x Pack
         </ion-col>
         <ion-col size="6">
           <ion-input type="number" formControlName="TotalToReceive" value="0"></ion-input>
@@ -40,7 +40,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          Qty x Pack
+          No of Pack(LP)
         </ion-col>
         <ion-col size="6">
           <ion-input type="number" formControlName="NoofPackLP" value="0"></ion-input>
@@ -57,14 +57,14 @@
         </ion-col>
       </ion-row>
       <ion-row class="footer">
-       
+
         <ion-col size="6">
-            <ion-button  expand="block" type="submit">Send</ion-button>
-          </ion-col>
-          <ion-col size="6">
-            <ion-button  expand="block" type="button" (click)="closePopover()">Cancel</ion-button>
-          </ion-col>
-        
+          <ion-button expand="block" type="submit">Send</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button expand="block" type="button" (click)="closePopover()">Cancel</ion-button>
+        </ion-col>
+
       </ion-row>
     </form>
   </ion-content>

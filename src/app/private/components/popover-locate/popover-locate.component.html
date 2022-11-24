@@ -1,11 +1,17 @@
+<ion-content>
 
-  <ion-content>
-    <ion-list *ngFor="let item of listLocale" >
-     <ion-row class="rowtable" (click)="onClick(item.locationCode)">
+  <ion-row class="header">
+    <ion-col>
+      <ion-label>Select Location</ion-label>
+    </ion-col>
+  </ion-row>
+
+  <ion-list *ngFor="let item of listLocale">
+    <ion-row class="rowtable" (click)="onClick(item.locationCode)">
       <ion-col size="12" class="dataitem">
 
         {{item.locationCode}}
       </ion-col>
     </ion-row>
-    </ion-list>
-  </ion-content>
+  </ion-list>
+</ion-content>

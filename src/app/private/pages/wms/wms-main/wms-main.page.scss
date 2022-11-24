@@ -68,18 +68,25 @@ ion-content{
 .footerMain{
     height: 60px;
     // background: linear-gradient(to bottom, #5CABF9, #1A518E);
-    border-radius: 7% 7% 0% 0%;
-    box-shadow: 0px -5px 18px #00000029;
+    // border-radius: 7% 7% 0% 0%;
+    // box-shadow: 0px -5px 18px #00000029;
 
 }
 
 .itemfooter{
-    color: var(--ion-color-plureMain)!important;
+    color: var(--ion-color-plureBlue)!important;
     // font-weight: bold;
+    // font-size: 28px;
+}
+
+.location{
+    color: var(--ion-color-plureBlue)!important;
+    font-weight: bold;
+    font-size: 28px;
 }
 
 
 .locale{
 
-    padding-top: 30px;
+    padding-top: 25px;
 }
