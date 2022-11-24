@@ -325,10 +325,24 @@ export class EditPutAwayComponent implements OnInit {
   
    if(this.initV.length !== this.listsFilter.length){
 
+    let res:any[] = [];
       let qtyR = this.QtyTotal - this.QtyTake;
 
+      this.initV.filter(Lp => {
+
+        let line = this.listsFilter.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
+        let line2 = res.find(bin => bin === Lp.fields.place);
+
+        if((line === null || line === undefined) && (line2 === null || line2 === undefined)){
+
+          res.push(Lp.fields.place);
+        }
+
+      });
+
+      console.log(res);
       
-      this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The remaining amount(${qtyR}) will go to the default Bin code`, () => {
+      this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The LP remaining amount(${qtyR}) will go to the ${res.join(" ")} `, () => {
         var alert = setTimeout(() => {  
         
           this.submit();
@@ -724,9 +738,21 @@ async init(){
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
+        this.listPwL.filter(
+          x => {
+           switch(x.fields.ActionType){
+              case "Place":
+                if(lp.fields.PLUNo === x.fields.ItemNo){
+                  lp.fields.place = x.fields.BinCode;
+                  this.initV.push(lp);
+                  this.QtyTotal ++;
+                  break;
+                } 
+            }
+          }
+        )
        
-        this.initV.push(lp);
-        this.QtyTotal ++;
+       
       
       
     });
