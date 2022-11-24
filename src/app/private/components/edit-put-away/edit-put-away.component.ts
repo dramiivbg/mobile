@@ -23,14 +23,10 @@ export class EditPutAwayComponent implements OnInit {
   public listT: any[] = [] 
 
   public initV:any[] = [];
-  public modify:any[] = [];
 
-  public modifyP:any[] = [];
 
   public whsePutAway:any;
-  public loading:Boolean = false;
 
-  public select: Boolean = true;
   public listPwL: any[] = [];
   public contador:number = 0;
    public lpsP: any = {}
@@ -41,6 +37,7 @@ export class EditPutAwayComponent implements OnInit {
 
   public split: any; 
 
+  public bins:any[] = [];
   public pallet:any;
 
   public pallet2:any;
@@ -91,15 +88,6 @@ export class EditPutAwayComponent implements OnInit {
       this.init();
    
     }
-
-  back(){
-
-
-    this.scanLP = true;
-    this.scanBin = false;
-
-  }
-
  
   public onBack(){
 
@@ -118,8 +106,7 @@ export class EditPutAwayComponent implements OnInit {
        let code = barCodeData.text;
     
        this.intServ.loadingFunc(true);
-    line =   this.listBin[0].Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
-    console.log(this.listBin);
+    line =   this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
 
 
     if(line === null || line === undefined){
@@ -129,7 +116,7 @@ export class EditPutAwayComponent implements OnInit {
     
   }else{
 
-  if(this.pallet != undefined && this.select != false){
+  if(this.pallet != undefined && this.listsFilter.length != this.initV.length){
     this.intServ.loadingFunc(false);
     this.intServ.alertFunc(this.js.getAlert('error', ' ',`Please scan all license plate and pallet`));
     return;
@@ -281,6 +268,7 @@ export class EditPutAwayComponent implements OnInit {
                       line.fields.place = x.fields.BinCode;
                       this.listsFilter.push(line);
                       this.listT.push(line);
+                      this.QtyTake ++;
                       break;
                     } 
                 }
@@ -304,25 +292,23 @@ export class EditPutAwayComponent implements OnInit {
                       line.fields.place = x.fields.BinCode;
                       this.listsFilter.push(line);
                       this.listT.push(line);
-                      this.QtyTake += line.fields.PLUQuantity;
+                      this.QtyTake ++;
                      break;
                     } 
                 }
               }
             )
           
-           this.scanLP  = true;
+                }
 
 
+           let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
 
-           }
-
+           this.bins = bin.Bins;
        
       }
 
-   
-
-    }
+       }
     this.intServ.loadingFunc(false);
   
       }
@@ -336,26 +322,8 @@ export class EditPutAwayComponent implements OnInit {
     }
 
  async onSubmit(){
-
-switch(this.scanLP){
-
-  case true:
-      this.intServ.loadingFunc(true);
-      let bins = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
-
-        this.listBin.push(bins);
-
-        console.log(this.listBin);
-        this.scanLP = false;
-        this.scanBin = true;
-
-        this.intServ.loadingFunc(false);
-
-        break;
-
-    default:
-
-     if(this.initV.length !== this.listsFilter.length){
+  
+   if(this.initV.length !== this.listsFilter.length){
 
       let qtyR = this.QtyTotal - this.QtyTake;
 
@@ -376,7 +344,7 @@ switch(this.scanLP){
       this.submit();
      } 
 
-   }
+   
 
 }
 
@@ -725,6 +693,7 @@ async init(){
         if(find === null || find === undefined){
   
           this.initV.push(lp);
+          this.QtyTotal ++;
   
         }
   
@@ -757,6 +726,7 @@ async init(){
 
        
         this.initV.push(lp);
+        this.QtyTotal ++;
       
       
     });
@@ -774,13 +744,6 @@ async init(){
 
     }
 
-    this.listPwL.filter(
-      x => {
-
-        if(x.fields.ActionType === "Place") this.QtyTotal += x.fields.Quantity;
-
-      }
-    );
   
 this.intServ.loadingFunc(false);
 
@@ -818,8 +781,8 @@ this.intServ.loadingFunc(true);
      
       if(find === null || find === undefined){
         this.listsFilter.push(lp);
-
-        this.listT.push(lp);
+       this.listT.push(lp);
+       this.QtyTake ++;
 
       }
 
@@ -851,9 +814,8 @@ this.intServ.loadingFunc(true);
               switch(x.fields.ActionType){
                 case "Place":
                   if(lp.fields.PLUNo === x.fields.ItemNo){
-
                     lp.fields.place = x.fields.BinCode;
-                    this.QtyTake += lp.fields.PLUQuantity;
+                    this.QtyTake ++;
                     this.listsFilter.push(lp);
                     this.listT.push(lp);
                     break;
@@ -868,9 +830,13 @@ this.intServ.loadingFunc(true);
 
     }
 
+    let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
+
+    this.bins = bin.Bins;
+
+    console.log(this.bins);
     this.intServ.loadingFunc(false);
-  
-  this.select = false;
+
 }
 
 
@@ -882,26 +848,11 @@ this.intServ.loadingFunc(true);
 
     if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
 
-        this.QtyTake -= lp.fields.PLUQuantity;
+        this.QtyTake -= 1;
         this.listsFilter.splice(index,1);
+        this.listT.splice(index,1);
       }
     });
-
-
-   this.modify.filter((lp, index) => {
-
-
-      if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
-
-        this.modify.splice(index,1);
-      }
-    });
-
-    if(this.listsFilter.length === 0){
-
-      this.select = true;
-    
-    }
 
 
   }
@@ -911,14 +862,9 @@ this.intServ.loadingFunc(true);
 
 
     this.listsFilter = [];
-    this.modify = [];
     this.list = [];
-
-    this.select = true;
+    this.listT = [];
     this.QtyTake = 0;
-
-
-
 
   }
 
@@ -926,11 +872,8 @@ this.intServ.loadingFunc(true);
 
 
 
-  onChangeBinOne(item:any,bin:any){
+onChangeBinOne(item:any,bin:any){
 
-
-   
-  
 switch(item.fields.PLULPDocumentType){
 
 case 'Single': 
@@ -1061,12 +1004,10 @@ for (const key in this.pallet) {
       }
 
 
-      onFilter(e, binCode:any = ''){
+  onFilter(e, binCode:any = ''){
 
-
-        console.log(binCode);
-
-        if(binCode === ''){
+   switch(binCode){
+    case '':
         let val = e.target.value;
 
         console.log(val);
@@ -1081,7 +1022,7 @@ for (const key in this.pallet) {
           )
         }
     
-      }else{
+     default:
     
     
         this.listsFilter = this.listT.filter(
