@@ -2008,7 +2008,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
          let obj= {
 
-            image: '',
+            image: "",
             company: "",
             fieldCount: 0,
             fields: {  PLULPDocumentNo: "",
@@ -2088,7 +2088,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
       obj= {
 
         company: "",
-        image: '',
+        image: " ",
         fieldCount: 0,
         fields: {  PLULPDocumentNo: "",
         PLULineNo: 0,
