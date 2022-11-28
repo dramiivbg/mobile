@@ -21,8 +21,7 @@
   
     </ion-fab-list>
   </ion-fab>
-
-
+  
 <ion-content *ngIf="whsePutAway != undefined">
      <form>
        <div class="designform-header">
@@ -159,6 +158,11 @@
             </div>
         </div>
     </form>
+
+
+<video #video [hidden]="!scanActive" width="100%"></video>
+
+<ion-button expand="full" *ngIf="scanActive"></ion-button>
 
 </ion-content>
 

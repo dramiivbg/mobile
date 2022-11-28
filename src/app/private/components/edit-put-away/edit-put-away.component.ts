@@ -1,5 +1,5 @@
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
 import { ModalController } from '@ionic/angular';
@@ -9,9 +9,10 @@ import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import Swal from 'sweetalert2'
 import { Storage } from '@ionic/storage';
-import { PassThrough } from 'stream';
+import { PassThrough, Stream } from 'stream';
 import { CssSelector } from '@angular/compiler';
 import { ModalShowLpsComponent } from '../modal-show-lps/modal-show-lps.component';
+import { empty } from 'rxjs';
 
 @Component({
   selector: 'app-edit-put-away',
@@ -22,6 +23,9 @@ export class EditPutAwayComponent implements OnInit {
   public lpsS: any = {}
   public list: any[] = [] 
   public listT: any[] = [] 
+
+  public boolean:boolean = true;
+
 
   public initV:any[] = [];
 
@@ -61,7 +65,7 @@ export class EditPutAwayComponent implements OnInit {
 
   public QtyTotal:number = 0;
 
-
+  
 
   constructor(private router: Router
  ,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, 
@@ -74,9 +78,17 @@ export class EditPutAwayComponent implements OnInit {
   };
   this.intServ.appBackFunc(objFunc);
 
-       
+  this.barcodeScannerOptions = {
+    showTorchButton: true,
+    showFlipCameraButton: true
+  };
+      
   }
 
+  ngAfterViewInit(){
+
+  
+  }
   async  ngOnInit() {
 
     this.whsePutAway =  await this.storage.get('whsePutAway');
@@ -104,7 +116,8 @@ export class EditPutAwayComponent implements OnInit {
   public async onBarCodeChange(){
 
     let line = undefined;
-     
+
+
     this.barcodeScanner.scan().then(
       async  (barCodeData) => {
        let code = barCodeData.text;
@@ -144,101 +157,98 @@ export class EditPutAwayComponent implements OnInit {
 
 
   public async  onBarCode() {
-
-    this.intServ.loadingFunc(true);
        let line:any = undefined;
-      this.intServ.loadingFunc(false);
-    this.barcodeScanner.scan().then(
-    async  (barCodeData) => {
-        let code = barCodeData.text;
-
-        this.intServ.loadingFunc(true);
-
-       
-    for (const key in this.initV) {
-  
-
-      if (this.initV[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
-        line = this.initV[key];
-        this.intServ.loadingFunc(false);  
-      
-      }
-
-      }
-
-       for (const key in this.pallet) {
-         let p = this.pallet[key].fields.find(lp => lp.PLUNo.toUpperCase() === code.toUpperCase());
-        if (p !== undefined || p !== null) {
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.js.getAlert('error', ' ',` The scanned license plate  ${code.toUpperCase()} 
-          is on the pallet ${this.pallet[key].fields[0].PLULPDocumentNo}, please scan it.`));
-          return;
-           
-        }
-       }
-
-      switch(line) {
-
-        case null || undefined: 
-
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate '${code.toUpperCase()}' does not exist on the Put Away`));
-      
-         break;
-
-       default:
-
-        if(this.listsFilter.length > 0){
-
-          let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
-   
-          switch(find){
-         
-               case null || undefined:
-                      this.listsFilter.push(line);
-                      this.listT.push(line);
-                      this.QtyTake ++;
-                      break;
-                      
-                                 
-                default:
+        this.barcodeScanner.scan().then(
+        async  (barCodeData) => {
         
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
-                  break;
+            let code = barCodeData.text;
+
+        this.boolean = ( code === null || code === " ")? false: this.boolean;
+           console.log(code);
+        for (const key in this.initV) {
+      
+    
+          if (this.initV[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
+            line = this.initV[key];
+            this.intServ.loadingFunc(false);  
+          
           }
-         
-           }else{
-            this.listsFilter = [];
-           
-                      this.listsFilter.push(line);
-                      this.listT.push(line);
-                      this.QtyTake ++;
-                     
-                
+    
+          }
+        
+    
+          switch(line) {
+    
+            case null || undefined:   
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate ${code.toUpperCase()} does not exist on the Put Away`));
+          
+             break;
+    
+           default:
+    
+            if(this.listsFilter.length > 0){
+    
+              let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
+       
+              switch(find){
+             
+                   case null || undefined:
+                          this.listsFilter.push(line);
+                          this.listT.push(line);
+                          this.QtyTake ++;
+                          break;
+                          
+                                     
+                    default:
+            
+                      this.intServ.loadingFunc(false);
+                      this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
+                      break;
               }
+             
+               }else{
+                this.listsFilter = [];
+               
+                          this.listsFilter.push(line);
+                          this.listT.push(line);
+                          this.QtyTake ++;
+                         
+                    
+                  }
+               
+    
+    
+                    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+    
+               let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
+    
+               this.bins = bin.Bins;
            
+               break;
+          }
+          
+         if(this.boolean){
 
+            this.onBarCode();
+          }
+      
+        }
 
-                this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-
-           let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
-
-           this.bins = bin.Bins;
        
-           break;
-      }
+            
+        ).catch(
+          err => {
+            console.log(err);
+          }
+        )
 
        
-    this.intServ.loadingFunc(false);
-  
-      }
-    ).catch(
-      err => {
-        console.log(err);
-      }
-    )
-  
+      
+       
+
+
+      
     }
 
  async onSubmit(){
@@ -872,15 +882,11 @@ for (const key in this.pallet) {
 
   
   autoComplet(){
-
-    this.barcodeScannerOptions = {
-      showTorchButton: true,
-      showFlipCameraButton: true
-    };
   
     this.barcodeScanner.scan().then(
        async  (barCodeData) => {
 
+       
           let code = barCodeData.text;
      
            this.binCode = code;

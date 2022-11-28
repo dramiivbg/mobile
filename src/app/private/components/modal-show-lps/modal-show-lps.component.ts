@@ -70,7 +70,9 @@ export class ModalShowLpsComponent implements OnInit {
 
   }
 
-  
+  back(){
+    this.modalCtrl.dismiss({});
+  }
 
   onFilter(e, lPNo:any = ''){
 
