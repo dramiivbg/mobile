@@ -228,10 +228,10 @@ export class EditPutAwayComponent implements OnInit {
                break;
           }
           
-         if(this.boolean){
+      //   if(this.boolean){
 
-            this.onBarCode();
-          }
+      //      this.onBarCode();
+       //   }
       
         }
 
