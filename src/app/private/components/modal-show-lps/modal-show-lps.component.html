@@ -1,20 +1,21 @@
-<PlureHeader (click)="back()" type="1" title="Pallet" url="page/wms/wmsMain" notify="0"></PlureHeader>
+<PlureHeader (click)="back()" type="1" title="Pallet Content" url="page/wms/wmsMain/Put-Away" notify="0"></PlureHeader>
 
 <ion-content>
     <form>
         <div class="designform-header">
-             <ion-row>
-                <ion-col>
-                  <h2> Pallet: {{No}}</h2>
+            <ion-row>
+                <ion-col class="title">
+                    Pallet: {{No}}
                 </ion-col>
-               
+
             </ion-row>
 
 
             <ion-row class="delivery newColor2">
                 <ion-col size="10">
-                    <ion-searchbar [(ngModel)]="LPNo"  [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
-                        show-clear-button="always" clear-icon="close-outline" placeholder="Filter LP"></ion-searchbar>
+                    <ion-searchbar [(ngModel)]="LPNo" [ngModelOptions]="{standalone: true}"
+                        (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline"
+                        placeholder="Filter LP"></ion-searchbar>
                 </ion-col>
 
                 <ion-col size="2" class="barcodebtn">
@@ -43,54 +44,51 @@
 
                                 <ion-item>
                                     <div class="label-lines" part="item-width">
-                                        <ion-row  *ngIf="boolean">
+                                        <ion-row *ngIf="boolean">
                                             <ion-col size="15" *ngFor="let item of lps; let i=index">
-                                              <ion-row>
+                                                <ion-row>
 
-                                                <ion-col size="6" class="label-line-title blue">
-                                                  {{item.fields.PLULPDocumentNo}}
-                                              </ion-col>
-                                              </ion-row>
+                                                    <ion-col class="label-line-title blue">
+                                                        {{item.fields.PLULPDocumentNo}}
+                                                    </ion-col>
+                                                </ion-row>
 
                                                 <ion-row>
-                                                    <ion-col size="5" style="overflow: hidden;"
+                                                    <ion-col size="8" style="overflow: hidden;"
                                                         class="label-line-title blue">
                                                         {{item.company}}
                                                     </ion-col>
-                                                    <ion-col size="3" class="label-line-title"
-                                                        style="text-align: right;">
+                                                    <ion-col size="4" class="label-line-title">
                                                         Qty. {{item.fields.PLUQuantity}}
 
                                                     </ion-col>
-                                            </ion-row>
+                                                </ion-row>
                                                 <ion-row>
                                                     <ion-col size="4" class="label-line">
-                                                        Item No: {{item.fields.PLUNo}}
+                                                        Item No: <b>{{item.fields.PLUNo}}</b>
                                                     </ion-col>
-                                                    <ion-col style="padding-right: 30px;" size="4" class="label-line">
-                                                        Measure: {{item.fields.PLUUnitofMeasureCode}}
+                                                    <ion-col size="4" class="label-line">
+                                                        Measure: <b>{{item.fields.PLUUnitofMeasureCode}}</b>
                                                     </ion-col>
 
                                                 </ion-row>
 
 
                                                 <ion-row>
-                                                    <ion-col size="3" class="label-line">
-                                                        Take: {{item.fields.PLUBinCode}}
+                                                    <ion-col size="4" class="label-line">
+                                                        Take: <b>{{item.fields.PLUBinCode}}</b>
                                                     </ion-col>
 
 
-                                                    <ion-col size="3" class="label-line">
-                                                        Document Type:
+                                                    <ion-col size="4" class="label-line">
+                                                        Doc. Type: <b>{{item.fields.PLULPDocumentType}}</b>
                                                     </ion-col>
-                                                    <ion-col size="2" style="padding-bottom: 10px;" class="negrilla">
+                                                    <!-- <ion-col size="2" style="padding-bottom: 10px;" class="negrilla">
                                                         {{item.fields.PLULPDocumentType}}
-                                                    </ion-col>
+                                                    </ion-col> -->
 
-                                                    <ion-col size="3" class="label-line-ligth"
-                                                        style="text-align: right;">
-                                                        Place: {{item.fields.place}}
-
+                                                    <ion-col size="4" class="label-line">
+                                                        Place: <b>{{item.fields.place}}</b>
                                                     </ion-col>
 
                                                 </ion-row>
@@ -100,10 +98,13 @@
                                                     <ion-item style="width: 100%;">
                                                         <ion-row>
                                                             <ion-col size="12" class="label-line splitimage">
-                                                                <label *ngIf="item.fields.image != 'NOIMAGE' && show" class="label">{{item.fields.PLUNo}}</label>&nbsp;
-                                                                <img *ngIf="item.fields.image != 'NOIMAGE' && show" [src]="item.fields.image" alt="">
-                                                                <img *ngIf="item.fields.image === 'NOIMAGE' && show" src="../../../../assets/img/caja.jpg" alt="">
-        
+                                                                <label *ngIf="item.fields.image != 'NOIMAGE' && show"
+                                                                    class="label">{{item.fields.PLUNo}}</label>&nbsp;
+                                                                <img *ngIf="item.fields.image != 'NOIMAGE' && show"
+                                                                    [src]="item.fields.image" alt="">
+                                                                <img *ngIf="item.fields.image === 'NOIMAGE' && show"
+                                                                    src="../../../../assets/img/caja.jpg" alt="">
+
                                                             </ion-col>
 
                                                         </ion-row>
@@ -138,13 +139,13 @@
 
 <PlureVersion class="footerReceipt" showVersion="0">
     <ion-row>
-      
+
 
         <ion-col size="12" (click)="onShow()">
             <ion-icon class="itemfooter" size="large" name="eye-outline" *ngIf="!show"></ion-icon>
-            <ion-icon class="itemfooter" size="large" name="eye-off-outline"  *ngIf="show"></ion-icon>
-            <div class="itemfooter"  *ngIf="!show">Show Images</div>
-            <div class="itemfooter"  *ngIf="show">Hide images</div>
+            <ion-icon class="itemfooter" size="large" name="eye-off-outline" *ngIf="show"></ion-icon>
+            <div class="itemfooter" *ngIf="!show">Show Images</div>
+            <div class="itemfooter" *ngIf="show">Hide images</div>
         </ion-col>
 
     </ion-row>

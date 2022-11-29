@@ -181,7 +181,7 @@ export class EditPutAwayComponent implements OnInit {
     
             case null || undefined:   
             this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate ${code.toUpperCase()} does not exist on the Put Away`));
+            this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate ${code.toUpperCase()} Already incorporated in on the Put Away`));
           
              break;
     

@@ -2,7 +2,7 @@
 
 
 <ion-fab horizontal="end" vertical="bottom" slot="fixed">
-    <ion-fab-button color="secondary">
+    <ion-fab-button color="secondary" size="small">
         <ion-icon md="eye-outline" ios="eye-outline"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
@@ -18,7 +18,7 @@
 </ion-fab>
 
 <ion-fab horizontal="start" vertical="bottom" slot="fixed">
-    <ion-fab-button color="secondary">
+    <ion-fab-button color="secondary" size="small">
         <ion-icon md="barcode-outline" ios="add"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
@@ -54,10 +54,10 @@
 
             <ion-row size="12">
                 <ion-col size="8">
-                    <ion-label> Total LP: {{QtyTotal}}</ion-label>
+                    <ion-label> Total LP/PL: {{QtyTotal}}</ion-label>
                 </ion-col>
                 <ion-col size="4">
-                    <ion-label>LP taken: {{QtyTake}}</ion-label>
+                    <ion-label>LP/PL taken: {{QtyTake}}</ion-label>
                 </ion-col>
             </ion-row>
 
@@ -94,30 +94,30 @@
                                         <ion-item-sliding>
 
                                             <ion-item style="width: 100%;">
-                                                <ion-col size="12" class="item" (click)="show(item)">
+                                                <ion-col class="item">
 
-                                                    <ion-row class="titleslist">
-                                                        <ion-col size="6" class="titleblue">
+                                                    <ion-row size="12" class="titleslist">
+                                                        <ion-col size="4" class="titleblue">
                                                             {{item.fields.PLULPDocumentNo}}
                                                         </ion-col>
-                                                        <ion-col size="6" class="select">
+                                                        <ion-col size="4" class="LPtype" (click)="show(item)">
+                                                            LP Type:&nbsp;<b>{{item.fields.PLULPDocumentType}}</b>
+                                                        </ion-col>
+                                                        <ion-col size="4" class="select">
                                                             <ion-select interface="popover" #bin
                                                                 (ionChange)="onChangeBinOne(item,bin.value)"
-                                                                placeholder="Edit Bincode" class="thebinselect">
+                                                                placeholder="Edit Bin" class="thebinselect">
                                                                 <ion-select-option *ngFor="let b of bins"
                                                                     [value]="b.BinCode">{{b.BinCode}}
                                                                 </ion-select-option>
                                                             </ion-select>
                                                         </ion-col>
+                                                        <!-- <ion-col size="2" style="padding-top: 7px;" class="negrilla">
+                                                            
+                                                        </ion-col> -->
                                                     </ion-row>
-                                                    <ion-row size="12">
-                                                        <ion-col size="3" style="padding-top: 7px;" class="label-line">
-                                                            LP Type:
-                                                        </ion-col>
-                                                        <ion-col size="2" style="padding-top: 7px;" class="negrilla">
-                                                            {{item.fields.PLULPDocumentType}}
-                                                        </ion-col>
-                                                    </ion-row>
+                                                    <!-- <ion-row size="12">
+                                                    </ion-row> -->
                                                     <ion-row size="12" class="subtitlelist">
                                                         <ion-col size="2" class="label-line-title">
                                                             Qty: {{item.fields.PLUQuantity}}
@@ -137,13 +137,13 @@
 
                                                     <ion-row>
                                                         <ion-col size="4" class="label-line">
-                                                            Item No: {{item.fields.PLUItemNo}}
+                                                            Item No: <b>{{item.fields.PLUItemNo}}</b>
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            Measure: {{item.fields.PLUUnitofMeasureCode}}
+                                                            Measure: <b>{{item.fields.PLUUnitofMeasureCode}}</b>
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            LineNo: {{item.fields.PLUWhseLineNo}}
+                                                            LineNo: <b>{{item.fields.PLUWhseLineNo}}</b>
                                                         </ion-col>
                                                     </ion-row>
                                                     <ion-row>
