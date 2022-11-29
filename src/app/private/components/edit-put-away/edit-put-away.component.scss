@@ -107,7 +107,7 @@ ion-button.add-lines::part(native) {
     background: linear-gradient(to top, #5CABF9, #1A518E) !important;
     // margin-top: 5px;
     padding-top: 5px;
-    padding-bottom: 1rem;
+    padding-bottom: 0.3rem;
     position: relative;
     color: #ffffff;
     border-radius: 0 0 70% 0;
@@ -156,7 +156,7 @@ ion-button.add-lines::part(native) {
     }
 
     ion-row {
-        padding: 5px 20px 0 20px;
+        padding: 1px 20px 0 20px;
     }
 
     .newColor {
@@ -169,7 +169,7 @@ ion-button.add-lines::part(native) {
 
     .newColor2 {
         width: 92%;
-        margin: 5px 0 10px -5px;
+        margin: 0px 0 10px -5px;
         --ion-color-base: var(--ion-color-plureHeader)
     }
 
@@ -330,4 +330,38 @@ ion-item {
     font-family: SourceSansProBold;
     display: flex;
     align-items: center;
+}
+
+ion-fab-button[data-desc] {
+    position: relative;
+}
+
+ion-fab-button[data-desc]::after {
+    position: absolute;
+    content: attr(data-desc);
+    z-index: 1;
+    left: 50px;
+    bottom: 7px;
+    color: var(--ion-color-contrast, #fff);
+    background-color: var(--ion-color-base, #fff);
+    padding: 5px 10px;
+    border-radius: 10px;
+    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+}
+
+ion-fab-button[data-desc2] {
+    position: relative;
+}
+
+ion-fab-button[data-desc2]::after {
+    position: absolute;
+    content: attr(data-desc2);
+    z-index: 1;
+    right: 50px;
+    bottom: 7px;
+    color: var(--ion-color-contrast, #fff);
+    background-color: var(--ion-color-base, #fff);
+    padding: 5px 10px;
+    border-radius: 10px;
+    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 }

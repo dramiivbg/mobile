@@ -3,14 +3,14 @@
 
 <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="boolean">
   <ion-fab-button color="secondary">
-    <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
+    <ion-icon md="add" ios="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
-    <ion-fab-button color="secondary" (click)="listLpOrItem(pallet)">
+    <ion-fab-button color="secondary" (click)="listLpOrItem(pallet)" data-desc2="Add new Pallet">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
 
-    <ion-fab-button color="danger" (click)="delete()">
+    <ion-fab-button color="danger" (click)="delete()" data-desc2="Delete all">
       <ion-icon name="close-outline"></ion-icon>
     </ion-fab-button>
 
@@ -211,8 +211,8 @@
 
 
 
-<PlureHeader type="1" title="Potential candidates" url="page/wms/newPallet" notify="0" *ngIf="!boolean"
-  (click)="exit()"></PlureHeader>
+<PlureHeader type="1" title="New Pallet" url="page/wms/newPallet" notify="0" *ngIf="!boolean" (click)="exit()">
+</PlureHeader>
 
 
 
@@ -220,8 +220,9 @@
 
   <ion-row>
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event)" show-clear-button="always"
-        clear-icon="close-outline" placeholder="Search Pallet" *ngIf="booleanL"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event)"
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="booleanL">
+      </ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" *ngIf="booleanL" (click)="autoComplet()"></ion-icon>
@@ -245,14 +246,14 @@
 
         <ion-col>
 
-     
-          <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
-        
-       
+
+          <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
+
+
         </ion-col>
-     
-    
-        
+
+
+
         <ion-col size="3">
           <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
         </ion-col>
@@ -265,21 +266,21 @@
       </ion-row>
 
       <ion-row class=" delivery ContentTable" *ngFor="let item of lps; let i= index" id="radioL">
- 
 
-     
-          
+
+
+
         <ion-col *ngIf="testListL.length > 0">
-        
 
-            
-              <ion-checkbox   (ionChange)="applyLP(item,$event)" [(ngModel)]="testListL[i].checked"></ion-checkbox>
-         
+
+
+          <ion-checkbox (ionChange)="applyLP(item,$event)" [(ngModel)]="testListL[i].checked"></ion-checkbox>
+
 
         </ion-col>
 
-      
-  
+
+
 
         <ion-col size="3">
           <div>{{item.fields.PLULPDocumentNo}}</div>
@@ -297,8 +298,9 @@
 
   <ion-row *ngIf="!booleanL">
     <ion-col size="10">
-      <ion-searchbar [(ngModel)]="itemNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeI($event)" show-clear-button="always"
-        clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!booleanL"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="itemNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeI($event)"
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!booleanL">
+      </ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
       <ion-icon size="large" name="barcode-outline" *ngIf="!booleanL" (click)="autoComplet()"></ion-icon>
@@ -312,7 +314,7 @@
     </ion-col>
   </ion-row>
 
-<ion-list>
+  <ion-list>
 
 
     <ion-grid *ngIf="!booleanL">
@@ -320,8 +322,8 @@
       <ion-row class=" newColor">
         <ion-col>
 
-          <ion-checkbox  (ionChange)="checkAll($event)"></ion-checkbox>
-        
+          <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
+
 
         </ion-col>
 
@@ -338,14 +340,14 @@
 
       <ion-row class=" delivery ContentTable" *ngFor="let item of items; let i=index">
 
-       
+
 
         <ion-col *ngIf="item.Qty > 0  &&  testListI.length > 0">
-        
-            
-              <ion-checkbox   (ionChange)="applyItem(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
-         
-          
+
+
+          <ion-checkbox (ionChange)="applyItem(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
+
+
 
         </ion-col>
 
@@ -382,8 +384,8 @@
     <ion-badge>{{QtyItem}}</ion-badge>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)="disable()">
-    <ion-label class="itemfooter">Save</ion-label>
-    <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+    <ion-label class="itemfooter">Add</ion-label>
+    <ion-icon class="itemfooter" size="large" name="checkmark-done-circle-outline"></ion-icon>
   </ion-tab-button>
 
 </ion-tab-bar>
