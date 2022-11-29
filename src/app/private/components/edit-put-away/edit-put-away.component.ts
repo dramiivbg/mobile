@@ -242,12 +242,6 @@ export class EditPutAwayComponent implements OnInit {
             console.log(err);
           }
         )
-
-       
-      
-       
-
-
       
     }
 
@@ -270,7 +264,7 @@ export class EditPutAwayComponent implements OnInit {
 
       });
 
-      console.log(res);
+    //  console.log(res);
       
       this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The LP remaining amount(${qtyR}) will go to the ${res.join(" ")} `, () => {
         var alert = setTimeout(() => {  
@@ -815,11 +809,8 @@ console.log('single.....');
     
           lp.fields.place = bin.toUpperCase();
     
-        }
-          
-  
-      
-      });
+              }
+        });
     }
   
  
@@ -919,7 +910,7 @@ for (const key in this.pallet) {
         } else {
           this.listsFilter = this.listT.filter(
             x => {
-              return (x.fields.PLUBinCode.toLowerCase().includes(val.toLowerCase()));
+              return (x.fields.place.toLowerCase().includes(val.toLowerCase()));
             }
           )
         }
@@ -929,7 +920,7 @@ for (const key in this.pallet) {
     
         this.listsFilter = this.listT.filter(
           x => {
-            return (x.fields.PLUBinCode.toLowerCase().includes(binCode.toLowerCase()));
+            return (x.fields.place.toLowerCase().includes(binCode.toLowerCase()));
           }
         )
       }
