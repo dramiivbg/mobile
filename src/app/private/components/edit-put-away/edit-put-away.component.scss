@@ -107,7 +107,7 @@ ion-button.add-lines::part(native) {
     background: linear-gradient(to top, #5CABF9, #1A518E) !important;
     // margin-top: 5px;
     padding-top: 5px;
-    padding-bottom: 1rem;
+    padding-bottom: 0.3rem;
     position: relative;
     color: #ffffff;
     border-radius: 0 0 70% 0;
@@ -156,7 +156,7 @@ ion-button.add-lines::part(native) {
     }
 
     ion-row {
-        padding: 5px 20px 0 20px;
+        padding: 1px 20px 0 20px;
     }
 
     .newColor {
@@ -169,7 +169,7 @@ ion-button.add-lines::part(native) {
 
     .newColor2 {
         width: 92%;
-        margin: 5px 0 10px -5px;
+        margin: 0px 0 10px -5px;
         --ion-color-base: var(--ion-color-plureHeader)
     }
 
