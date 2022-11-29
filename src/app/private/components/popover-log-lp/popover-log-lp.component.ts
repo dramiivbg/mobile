@@ -16,31 +16,19 @@ export class PopoverLogLpComponent implements OnInit {
 
   public listLogsFilter:any[] = [];
  
-  constructor( private intServ: InterceptService, private modalCtrl: ModalController) { }
+  constructor( private intServ: InterceptService, private modalCtrl: ModalController) { 
+
+
+  }
 
   ngOnInit() {
-
-
-    this.logs.LicensePlateEntries.filter(log => {
-
-      let f  = new  Date(log.PostingDate);
-
-      let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
-
-      log.PostingDate = fecha;
-
-
-    });
 
 
     this.listLogsFilter = this.logs.LicensePlateEntries;
 
     this.listLogs = this.logs.LicensePlateEntries;
 
-
-
-   
-  }
+}
 
   exit(){
 

@@ -1,7 +1,7 @@
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
 import { ModalController } from '@ionic/angular';
 import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
@@ -9,8 +9,10 @@ import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import Swal from 'sweetalert2'
 import { Storage } from '@ionic/storage';
-import { PassThrough } from 'stream';
+import { PassThrough, Stream } from 'stream';
 import { CssSelector } from '@angular/compiler';
+import { ModalShowLpsComponent } from '../modal-show-lps/modal-show-lps.component';
+import { empty } from 'rxjs';
 
 @Component({
   selector: 'app-edit-put-away',
@@ -21,6 +23,9 @@ export class EditPutAwayComponent implements OnInit {
   public lpsS: any = {}
   public list: any[] = [] 
   public listT: any[] = [] 
+
+  public boolean:boolean = true;
+
 
   public initV:any[] = [];
 
@@ -53,17 +58,18 @@ export class EditPutAwayComponent implements OnInit {
   public lists: any = [];
   public warePW: any = {};
 
+  public barcodeScannerOptions: BarcodeScannerOptions
   public warePY: any;
 
   public QtyTake:number = 0;
 
   public QtyTotal:number = 0;
 
-
+  
 
   constructor(private router: Router
  ,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, 
- private general: GeneralService , private storage: Storage) { 
+ private general: GeneralService , private storage: Storage, private modalCtrl: ModalController) { 
 
   let objFunc = {
     func: () => {
@@ -72,9 +78,17 @@ export class EditPutAwayComponent implements OnInit {
   };
   this.intServ.appBackFunc(objFunc);
 
-       
+  this.barcodeScannerOptions = {
+    showTorchButton: true,
+    showFlipCameraButton: true
+  };
+      
   }
 
+  ngAfterViewInit(){
+
+  
+  }
   async  ngOnInit() {
 
     this.whsePutAway =  await this.storage.get('whsePutAway');
@@ -86,6 +100,8 @@ export class EditPutAwayComponent implements OnInit {
       this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     
       this.init();
+
+      this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): this.listsFilter;
    
     }
  
@@ -100,7 +116,8 @@ export class EditPutAwayComponent implements OnInit {
   public async onBarCodeChange(){
 
     let line = undefined;
-     
+
+
     this.barcodeScanner.scan().then(
       async  (barCodeData) => {
        let code = barCodeData.text;
@@ -140,185 +157,98 @@ export class EditPutAwayComponent implements OnInit {
 
 
   public async  onBarCode() {
-
-    //console.log(this.wareReceipts);
-
-    this.intServ.loadingFunc(true);
-  let listPallet;
-
-
-  let listLp;
-
-  let  listLpH;
-
-
-    const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
-  const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
-
-    console.log('ls =>', lps);
-    console.log('pallet =>', pallets);
-
-    if(!lps.Error){
-
-
-       listLp = await this.wmsService.ListLP(lps);
-
-       listLpH = await this.wmsService.ListLPH(lps);
-
+       let line:any = undefined;
+        this.barcodeScanner.scan().then(
+        async  (barCodeData) => {
         
-    listLp.filter(lp => {
+            let code = barCodeData.text;
 
-
-      let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      lp.fields.PLUBinCode = line.fields.PLUBinCode;
-      lp.fields.PLUItemNo = line.fields.PLUItemNo;
-    });
-    }
-
-  
-    if(!pallets.Error){
-
-  const  listPalletH  = await this.wmsService.ListPallets(pallets);
-
-  listPallet = await this.wmsService.ListLP(pallets);
-
-     listPallet.filter(lp => {
-
-
-      let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      lp.fields.PLUBinCode = line.fields.PLUBinCode;
-      lp.fields.PLUItemNo = line.fields.PLUItemNo;
+        this.boolean = ( code === null || code === " ")? false: this.boolean;
+           console.log(code);
+        for (const key in this.initV) {
       
-    });
-
-    }
-   
-
-    console.log('palletsM =>', this.pallet);
-   
-   // console.log('pallets =>', listPallet);
-
-    console.log('lps =>', listLp);
-
-      let line:any = undefined;
-      this.intServ.loadingFunc(false);
-    this.barcodeScanner.scan().then(
-    async  (barCodeData) => {
-        let code = barCodeData.text;
-
-        this.intServ.loadingFunc(true);
-
- if(!lps.Error){
-       
-    for (const key in listLp) {
-  
-
-      if (listLp[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
-        line = listLp[key];
-        this.intServ.loadingFunc(false);  
-      
-      }
-
-        
-      }
-
     
-
-
-      if(!pallets.Error){
-
-
-        for (const key in listPallet) {
-  
-
-          if (listPallet[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
-            line = listPallet[key];
+          if (this.initV[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
+            line = this.initV[key];
             this.intServ.loadingFunc(false);  
           
           }
     
-            
           }
-
-      }
-
-  
-      if (line === null || line === undefined) {
-
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate '${code.toUpperCase()}' does not exist on the Put Away`));
-      
-      } else {
-
-
-        console.log('length =>',this.listsFilter.length);
         
-        if(this.listsFilter.length > 0){
-
-          let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() == code.toUpperCase());
-   
-          if(find == null || find ==undefined){
-            this.listPwL.filter(
-              x => {
-               switch(x.fields.ActionType){
-                  case "Place":
-                    if(line.fields.PLUNo === x.fields.ItemNo){
-                      line.fields.place = x.fields.BinCode;
-                      this.listsFilter.push(line);
-                      this.listT.push(line);
-                      this.QtyTake ++;
-                      break;
-                    } 
-                }
-              }
-            )
-          
-           
-          }else{
-   
+    
+          switch(line) {
+    
+            case null || undefined:   
             this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
-          }
-         
-           }else{
-            this.listsFilter = [];
-            this.listPwL.filter(
-              x => {
-                switch(x.fields.ActionType){
-                  case "Place":
-                    if(line.fields.PLUNo === x.fields.ItemNo){
-                      line.fields.place = x.fields.BinCode;
-                      this.listsFilter.push(line);
-                      this.listT.push(line);
-                      this.QtyTake ++;
-                     break;
-                    } 
-                }
-              }
-            )
+            this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate ${code.toUpperCase()} does not exist on the Put Away`));
           
-                }
-
-
-           let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
-
-           this.bins = bin.Bins;
+             break;
+    
+           default:
+    
+            if(this.listsFilter.length > 0){
+    
+              let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
        
-      }
+              switch(find){
+             
+                   case null || undefined:
+                          this.listsFilter.push(line);
+                          this.listT.push(line);
+                          this.QtyTake ++;
+                          break;
+                          
+                                     
+                    default:
+            
+                      this.intServ.loadingFunc(false);
+                      this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
+                      break;
+              }
+             
+               }else{
+                this.listsFilter = [];
+               
+                          this.listsFilter.push(line);
+                          this.listT.push(line);
+                          this.QtyTake ++;
+                         
+                    
+                  }
+               
+    
+    
+                    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+    
+               let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
+    
+               this.bins = bin.Bins;
+           
+               break;
+          }
+          
+         if(this.boolean){
 
-       }
-    this.intServ.loadingFunc(false);
-  
-      }
-    ).catch(
-      err => {
-        console.log(err);
-      }
-    )
-  
+            this.onBarCode();
+          }
+      
+        }
 
+       
+            
+        ).catch(
+          err => {
+            console.log(err);
+          }
+        )
+
+       
+      
+       
+
+
+      
     }
 
  async onSubmit(){
@@ -581,7 +511,7 @@ async init(){
 
     if(!pallets.Error){
 
-     let  listLp = await this.wmsService.ListLP(lps);
+     const  listLp = await this.wmsService.ListLP(lps);
 
       this.pallet = await this.wmsService.ListLPallet(pallets);
 
@@ -619,34 +549,19 @@ async init(){
          }
        }
    
-   
-   
-       console.log('despues =>', this.pallet);
-       console.log('despues =>', this.pallet2);
-   
-   
-   
-   
-   
-   
+     
        for (const i in this.pallet) {
    
          for (const j in this.pallet2) {
            if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
    
-   
-   
-   
-   
-             let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
+               let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
    
              if (line === null || line === undefined) {
    
                this.pallet[i].fields.push(this.pallet2[j].fields[0]);
    
-   
-   
-             }
+               }
    
            }
          }
@@ -665,20 +580,14 @@ async init(){
    
     }
    
+  const  listPalletH  = await this.wmsService.ListPallets(pallets);
    
-   
-      const  listPalletH  = await this.wmsService.ListPallets(pallets);
-   
-   
-   for (const key in this.pallet) {
+     for (const key in this.pallet) {
    
      this.pallet[key].fields.filter(lp => {
    
-   
        let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
-   
-   
-       lp.PLUBinCode = line.fields.PLUBinCode;
+         lp.PLUBinCode = line.fields.PLUBinCode;
        lp.PLUItemNo = line.fields.PLUItemNo;
    
      })
@@ -688,15 +597,9 @@ async init(){
       listPallet = await this.wmsService.ListLP(pallets);
    
 
-  
+      listPallet.filter((lp,index) => {
 
-     listPallet.filter((lp,index) => {
-
-    
-
-     let  line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      
+        let  line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);   
 
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
@@ -714,25 +617,30 @@ async init(){
       
     });
 
-
-
-
     }
 
     if(!lps.Error){
 
 
-      const listLp = await this.wmsService.ListLP(lps);
+      let  listLp = await this.wmsService.ListLP(lps);
 
-      const listLpH = await this.wmsService.ListLPH(lps)
+      let listLpH = await this.wmsService.ListLPH(lps);
 
-   
+     
 
-    
-      listLp.filter(lp => {
+        listLp.filter(lp => {
   
-        
-  
+        let find2:any = undefined;
+        for (const key in this.pallet) {
+
+          find2 = this.pallet[key].fields.find(lpI => lpI.PLUNo === lp.fields.PLULPDocumentNo);
+        }
+
+        console.log(lp,this.pallet);
+
+
+       if(find2 === undefined || find2 === null){
+
         let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
@@ -751,13 +659,11 @@ async init(){
             }
           }
         )
-       
-       
-      
-      
-    });
+       }
+   
+      });
 
-      console.log(this.initV);
+     console.log(this.initV);
 
     }else{
 
@@ -778,83 +684,21 @@ this.intServ.loadingFunc(false);
 
  async  onScanAll(){
 
-this.intServ.loadingFunc(true);
- let  listPallet;
-    
-    const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
-
-
-    const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
-    console.log('ls =>', lps);
-   console.log('pallet =>', pallets);
-
-  if(!pallets.Error){
-
-  listPallet = await this.wmsService.ListLP(pallets);
-   
-
-   const  listPalletH  = await this.wmsService.ListPallets(pallets);
-
-     listPallet.filter(lp => {
-
-
-      let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      lp.fields.PLUBinCode = line.fields.PLUBinCode;
-      lp.fields.PLUItemNo = line.fields.PLUItemNo;
-
-      let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-     
-      if(find === null || find === undefined){
-        this.listsFilter.push(lp);
-       this.listT.push(lp);
-       this.QtyTake ++;
-
-      }
-
-
-});
-
-   }
-
-    if(!lps.Error){
-
-
-      const listLp = await this.wmsService.ListLP(lps);
-
-      const listLpH = await this.wmsService.ListLPH(lps)
-
-       listLp.filter(lp => {
-  
-  
-        let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-  
-        lp.fields.PLUBinCode = line.fields.PLUBinCode;
-        lp.fields.PLUItemNo = line.fields.PLUItemNo;
-
+  this.intServ.loadingFunc(true);
+       this.initV.filter(lp => {
         let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
       
         if(find === null || find === undefined){
-          this.listPwL.filter(
-            x => {
-              switch(x.fields.ActionType){
-                case "Place":
-                  if(lp.fields.PLUNo === x.fields.ItemNo){
-                    lp.fields.place = x.fields.BinCode;
+        
                     this.QtyTake ++;
                     this.listsFilter.push(lp);
-                    this.listT.push(lp);
-                    break;
-                  } 
-              }
-            }
-          )
+                    this.listT.push(lp);          
   
         }
 
       });
 
-    }
+    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
 
     let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
 
@@ -865,6 +709,27 @@ this.intServ.loadingFunc(true);
 
 }
 
+
+async show(lp:any){
+
+
+    switch(lp.fields.PLULPDocumentType){
+
+      case "Pallet":
+
+         let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+         const modal = await this.modalCtrl.create({
+          component: ModalShowLpsComponent,
+          componentProps: {pallet, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo}
+        });
+        modal.present();
+    
+        const { data, role } = await modal.onWillDismiss();
+         
+    }
+
+
+}
 
   remove(item:any){
 
@@ -879,8 +744,18 @@ this.intServ.loadingFunc(true);
         this.listT.splice(index,1);
       }
     });
+   
 
+    if(this.listsFilter.length === 0) {
 
+      this.storage.remove(this.whsePutAway.fields.No);
+
+    }else{
+
+      this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+    }
+
+ 
   }
 
 
@@ -891,6 +766,7 @@ this.intServ.loadingFunc(true);
     this.list = [];
     this.listT = [];
     this.QtyTake = 0;
+    this.storage.remove(this.whsePutAway.fields.No);
 
   }
 
@@ -1006,13 +882,13 @@ for (const key in this.pallet) {
 
   
   autoComplet(){
-
+  
     this.barcodeScanner.scan().then(
        async  (barCodeData) => {
-           let code = barCodeData.text;
+
+       
+          let code = barCodeData.text;
      
-     
-   
            this.binCode = code;
  
  

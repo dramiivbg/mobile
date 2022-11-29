@@ -38,6 +38,7 @@ import { CreatePhysicalInventoryComponent } from '@prv/components/create-physica
 import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inventory/popover-show-inventory.component';
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
+import { ModalShowLpsComponent } from '@prv/components/modal-show-lps/modal-show-lps.component';
 
 
 
@@ -75,7 +76,8 @@ import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-l
     CreatePhysicalInventoryComponent,
     ListPalletComponent,
     PopoverShowInventoryComponent,
-    PopoverLocateComponent
+    PopoverLocateComponent,
+    ModalShowLpsComponent
    
    
     
@@ -111,7 +113,8 @@ import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-l
     CreatePhysicalInventoryComponent,
     ListPalletComponent,
     PopoverShowInventoryComponent,
-    PopoverLocateComponent
+    PopoverLocateComponent,
+    ModalShowLpsComponent
   
   ]
 })
