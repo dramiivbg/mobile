@@ -43,7 +43,7 @@
 
                             <ion-item-sliding>
 
-                        
+
                                 <ion-item>
                                     <div class="label-lines" part="item-width" (click)="onPopoverMenu($event,item)">
                                         <ion-row>
@@ -57,8 +57,10 @@
                                                         style="text-align: right;">
                                                         Qty. {{item.Quantity}}
 
-                                                        
-                                                        /<label *ngIf="item.PLUNewQtyOutstanding !== null">{{item.PLUNewQtyOutstanding}}</label> <label *ngIf="item.PLUNewQtyOutstanding == null">0</label>   
+
+                                                        /<label
+                                                            *ngIf="item.PLUNewQtyOutstanding !== null">{{item.PLUNewQtyOutstanding}}</label>
+                                                        <label *ngIf="item.PLUNewQtyOutstanding == null">0</label>
                                                     </ion-col>
 
                                                 </ion-row>
@@ -81,24 +83,26 @@
                                             </ion-col>
                                         </ion-row>
                                     </div>
-                           
-                         <div style="text-align: right ;" (click)="showLPs(item)">
 
-                               <ion-col size="5" class="label-line-title">
+                                    <div style="text-align: right ;" (click)="showLPs(item)">
 
-                                     <a *ngIf="cantidades.length > 0" class="PL" href="http://" target="_blank" rel="noopener noreferrer">PL {{cantidades[i]}}</a>
-                                     <a *ngIf="cantidades.length === 0" class="PL" href="http://" target="_blank" rel="noopener noreferrer">PL 0</a>
+                                        <ion-col size="5" class="label-line-title">
 
-                                    </ion-col>
-                                    
-                         </div>
+                                            <a *ngIf="cantidades.length > 0" class="PL" href="http://" target="_blank"
+                                                rel="noopener noreferrer">LP {{cantidades[i]}}</a>
+                                            <a *ngIf="cantidades.length === 0" class="PL" href="http://" target="_blank"
+                                                rel="noopener noreferrer">LP 0</a>
 
-                                
+                                        </ion-col>
 
-                                 
-                                </ion-item>    
-                                
-                          
+                                    </div>
+
+
+
+
+                                </ion-item>
+
+
                             </ion-item-sliding>
                         </div>
                     </ion-list>
