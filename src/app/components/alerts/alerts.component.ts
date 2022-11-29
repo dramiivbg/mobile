@@ -8,6 +8,7 @@ import { WmsService } from '@svc/wms.service';
 import { ModalController } from '@ionic/angular';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { Storage } from '@ionic/storage';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class AlertsComponent implements OnInit {
   constructor(
      private intServ: InterceptService
     , private js: JsonService, private router: Router,private wmsService: WmsService,private modalCtrl: ModalController,
-    private storage: Storage
+    private storage: Storage, private barcodeScanner: BarcodeScanner
   ) { 
     intServ.alert$.subscribe(
       (obj: any) => {
@@ -38,9 +39,12 @@ export class AlertsComponent implements OnInit {
 
   // Ok - hide alert
   onOk() {
-    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue' && this.alertObj.type !== 'select' && this.alertObj.type !== 'register' &&  this.alertObj.type !== 'alert2')
+    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue' && this.alertObj.type !== 'select' && this.alertObj.type !== 'register' &&  this.alertObj.type !== 'alert2' && this.alertObj.type !== 'confirmEdit')
+
       this.alertObj.func();
       this.alertObj = {};
+    
+   
   }
 
   onYes() {
@@ -57,6 +61,41 @@ export class AlertsComponent implements OnInit {
 
  
 
+}
+
+No(){
+
+       
+  this.barcodeScanner.scan().then(
+    async  (barCodeData) => {
+       let code = barCodeData.text;
+
+      let binCode =  this.wmsService.getBin();
+  
+      console.log(binCode);
+
+        if(binCode.toUpperCase() === code.toUpperCase()){
+
+          this.intServ.alertFunc(this.js.getAlert('success', ' ', `The filtered liecense plates if they belong to the bin code ${code.toUpperCase()}`, () => {
+
+            this.wmsService.set('edit');
+          }));
+      
+        }else{
+
+          this.wmsService.set('edit');
+          this.intServ.alertFunc(this.js.getAlert('error',' ',  `The filtered liecense plates do not belong to bin code  ${code.toUpperCase()}`));
+           
+         
+        }
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+    this.alertObj = {};
 }
 
 
@@ -92,6 +131,8 @@ cancel(){
 
     this.intServ.loadingFunc(true);
        let dataPw = this.wmsService.getPutAway();
+
+       console.log('put away',dataPw);
 
        let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
 

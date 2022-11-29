@@ -136,6 +136,17 @@ export class WmsService {
 
  }
 
+
+ public setBin(bin:any){
+
+    this.data = bin;
+
+ }
+
+ public getBin(){
+
+    return this.data;
+ }
  
  public getLPS(){
 

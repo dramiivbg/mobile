@@ -10,12 +10,11 @@ import { WmsService } from '@svc/wms.service';
 })
 export class ModalShowLpsComponent implements OnInit {
 
-  @Input() pallet:any;
+  @Input() lps:any;
 
   @Input() listPwL:any;
   public show:boolean = false;
 
-  public lps:any[] = [];
   public lpsT:any[] = [];
   @Input() No:any;
 
@@ -28,38 +27,7 @@ export class ModalShowLpsComponent implements OnInit {
 
   ngOnInit() {
 
-    
-    this.pallet.fields.filter(async (lp, index) => {
-
-      let res = await this.wmsService.getLpNo(lp.PLUNo);
-
-      let p = await this.wmsService.ListLp(res);
-
-      let pH = await this.wmsService.ListLpH(res);
-
-      let resI = await this.wmsService.GetItem(p.fields.PLUNo);
-
-      let img = await this.wmsService.listItem(resI);
-
-      p.fields['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
-      p.fields.PLUBinCode =  pH.fields.PLUBinCode;
-      p.fields.PLULocationCode = pH.fields.PLULocationCode;
-
-      this.listPwL.filter(
-       x => {
-        switch(x.fields.ActionType){
-           case "Place":
-             if(p.fields.PLUNo === x.fields.ItemNo){
-               p.fields.place = x.fields.BinCode;
-               break;
-             } 
-         }
-       }
-     )
-      this.lps.push(p);
-      this.lpsT.push(p);
-    });
-
+   this.lpsT = this.lps; 
   this.boolean = true;
   }
 
@@ -92,6 +60,7 @@ export class ModalShowLpsComponent implements OnInit {
     
               });      
       }
+      break;
 
     default:
       this.lps = this.lpsT.filter(
@@ -99,6 +68,7 @@ export class ModalShowLpsComponent implements OnInit {
            return (x.fields.PLULPDocumentNo.toLowerCase().includes(lPNo.toLowerCase()));
   
           });
+          break;
     }  
     
   

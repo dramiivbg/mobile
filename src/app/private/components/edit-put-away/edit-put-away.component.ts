@@ -102,7 +102,16 @@ export class EditPutAwayComponent implements OnInit {
       this.init();
 
       this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
+      console.log(await this.storage.get(this.whsePutAway.fields.No));
+      this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
    
+      console.log(this.listT);
+          
+    let bin = (this.listsFilter.length > 0)? await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo): null;
+
+    this.bins = bin.Bins;
+      
+
     }
  
   public onBack(){
@@ -144,6 +153,8 @@ export class EditPutAwayComponent implements OnInit {
 
     });
 
+    this.listT = this.listsFilter;
+    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
 
     this.intServ.loadingFunc(false);
     }
@@ -399,7 +410,7 @@ async submit(){
 let list:any[] = [];
 
 
-  this.listsFilter.filter(Lp =>  {
+  this.listT.filter(Lp =>  {
 
 
     this.split.WarehousePutAwayLines.filter(lp => {
@@ -657,6 +668,10 @@ async init(){
    
       });
 
+      let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.initV[0].fields.PLULPDocumentNo);
+    
+      this.bins = bin.Bins;
+
      console.log(this.initV);
 
     }else{
@@ -691,14 +706,6 @@ this.intServ.loadingFunc(false);
         }
 
       });
-
-    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-
-    let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
-
-    this.bins = bin.Bins;
-
-    console.log(this.bins);
     this.intServ.loadingFunc(false);
 
 }
@@ -707,14 +714,49 @@ this.intServ.loadingFunc(false);
 async show(lp:any){
 
 
+ 
+
     switch(lp.fields.PLULPDocumentType){
 
       case "Pallet":
 
+         this.intServ.loadingFunc(true);
          let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+         let lps:any[] = [];
+         pallet.fields.filter(async (lp, index) => {
+
+          let res = await this.wmsService.getLpNo(lp.PLUNo);
+    
+          let p = await this.wmsService.ListLp(res);
+    
+          let pH = await this.wmsService.ListLpH(res);
+    
+          let resI = await this.wmsService.GetItem(p.fields.PLUNo);
+    
+          let img = await this.wmsService.listItem(resI);
+    
+          p.fields['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
+          p.fields.PLUBinCode =  pH.fields.PLUBinCode;
+          p.fields.PLULocationCode = pH.fields.PLULocationCode;
+    
+          this.listPwL.filter(
+           x => {
+            switch(x.fields.ActionType){
+               case "Place":
+                 if(p.fields.PLUNo === x.fields.ItemNo){
+                   p.fields.place = x.fields.BinCode;
+                   break;
+                 } 
+             }
+           }
+         )
+          lps.push(p);
+          
+        });
+        this.intServ.loadingFunc(false);
          const modal = await this.modalCtrl.create({
           component: ModalShowLpsComponent,
-          componentProps: {pallet, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo}
+          componentProps: {lps, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo}
         });
         modal.present();
     
@@ -765,7 +807,260 @@ async show(lp:any){
   }
 
 
+  onBarCodeConfirm(){
 
+    let line:any = undefined;
+    this.listsFilter.filter(Lp => {
+      line = this.listsFilter.find(lp => lp.fields.place !== Lp.fields.place);
+    });
+
+    console.log(line);
+
+    if(line !== undefined){
+
+      this.intServ.alertFunc(this.js.getAlert('alert', '', 'Please filter by the bin to be confirmed', () =>{
+
+        this.autoComplet();
+
+        var alert = setTimeout(() => {  
+        
+          this.intServ.alertFunc(this.js.getAlert('alert', '', 'Confirm the Bin Code Place', () => {
+
+            
+       this.barcodeScanner.scan().then(
+      async  (barCodeData) => {
+
+      
+         let code = barCodeData.text;
+
+         this.wmsService.setBin(this.binCode.toUpperCase());
+    
+          if(this.binCode.toUpperCase() === code.toUpperCase()){
+
+            this.intServ.alertFunc(this.js.getAlert('success', ' ', `The filtered liecense plates if they belong to the bin code ${code.toUpperCase()}`, () => {
+
+              this.binCode = '';
+
+              let e = {
+ 
+                target:{
+                  value: ''
+                }
+              }
+ 
+              this.onFilter(e,'')
+            }));
+          }else{
+
+            this.intServ.alertFunc(this.js.getAlert('confirmEdit', 'You want to change them?',`The filtered liecense plates do not belong to bin code  ${code.toUpperCase()}`, () =>{
+
+                
+           this.barcodeScanner.scan().then(
+            async  (barCodeData) => {
+
+    
+          let code = barCodeData.text;
+
+          line =   this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
+
+          try {
+
+            if(line === undefined || line === null) throw new Error(`The Bin ${code.toUpperCase()}  does not exist`);
+         
+            this.listsFilter.filter(lp => {
+             lp.fields.place = code.toUpperCase();
+           });     
+           
+   
+             this.intServ.alertFunc(this.js.getAlert('success', ' ', `The license plates have been successfully edited and confirmed in Bin Place ${code.toUpperCase()}`, () => {
+
+              this.binCode = '';
+
+              
+              let e = {
+   
+                target:{
+                  value: ''
+                }
+              }
+   
+              this.onFilter(e,'');
+             }));
+             
+             
+            
+              
+            
+          } catch (error) {
+          
+            this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+          }
+        
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+           }));
+
+           let aption = this.wmsService.get();
+
+           if(aption === 'edit'){
+  
+            this.binCode = '';
+  
+            let e = {
+  
+              target:{
+                value: ''
+              }
+            }
+  
+            this.onFilter(e,'')
+
+            this.wmsService.set('');
+  
+           }
+
+          }
+        }
+      ).catch(
+        err => {
+          console.log(err);
+        }
+      )
+          }))
+
+        clearTimeout(alert);
+      }, 100)
+        
+
+
+      }));
+    }else{
+
+     let bin = this.listsFilter[0].fields.place;
+                 
+      this.barcodeScanner.scan().then(
+        async  (barCodeData) => {
+      let code = barCodeData.text;
+
+      line =   this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
+
+      try {
+
+        if(line === undefined || line === null) throw new Error(`The Bin ${code.toUpperCase()}  does not exist`);
+     
+      let confirm = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
+          
+        if(confirm !== undefined){
+
+          this.intServ.alertFunc(this.js.getAlert('success', ' ', `The filtered liecense plates if they belong to the bin code ${code.toUpperCase()}`, () => {
+
+            this.binCode = '';
+
+              
+            let e = {
+ 
+              target:{
+                value: ''
+              }
+            }
+ 
+            this.onFilter(e,'');
+          }));
+          
+        }else{
+
+          this.wmsService.setBin(bin.toUpperCase());
+
+          this.intServ.alertFunc(this.js.getAlert('confirmEdit', 'You want to change them?' ,`The filtered liecense plates do not belong to bin code  ${code.toUpperCase()}`, () =>{
+
+                
+            this.barcodeScanner.scan().then(
+             async  (barCodeData) => {
+ 
+     
+           let code = barCodeData.text;
+ 
+           line = this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
+ 
+           try {
+ 
+             if(line === undefined || line === null) throw new Error(`The Bin ${code.toUpperCase()}  does not exist`);
+          
+             this.listsFilter.filter(lp => {
+              lp.fields.place = code.toUpperCase();
+             });
+               
+    
+              this.intServ.alertFunc(this.js.getAlert('success', ' ', `The license plates have been successfully edited and confirmed in Bin Place ${code.toUpperCase()}`, () => {
+
+                this.binCode = '';
+
+                let e = {
+   
+                  target:{
+                    value: ''
+                  }
+                }
+   
+                this.onFilter(e,'')
+              }));
+                       
+           } catch (error) {
+             this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+           }
+         
+       }
+     ).catch(
+       err => {
+         console.log(err);
+       }
+     )
+ 
+            }));
+
+         let aption = this.wmsService.get();
+
+         if(aption === 'edit'){
+
+          this.binCode = '';
+
+          let e = {
+
+            target:{
+              value: ''
+            }
+          }
+
+          this.onFilter(e,'');
+          this.wmsService.set('');
+
+         }
+        }
+
+       
+        
+      } catch (error) {
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+      }
+    
+  }
+).catch(
+  err => {
+    console.log(err);
+  }
+)
+
+    }
+
+
+  
+
+  }
 
 
 onChangeBinOne(item:any,bin:any){
@@ -813,6 +1108,9 @@ console.log('single.....');
         });
     }
   
+    this.listT = this.listsFilter;
+
+    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
  
     break;
 
@@ -914,6 +1212,7 @@ for (const key in this.pallet) {
             }
           )
         }
+        break;
     
      default:
     
@@ -923,6 +1222,9 @@ for (const key in this.pallet) {
             return (x.fields.place.toLowerCase().includes(binCode.toLowerCase()));
           }
         )
+        console.log(this.listsFilter,binCode);
+
+     break;
       }
     
   }
