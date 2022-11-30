@@ -14,6 +14,10 @@
             <ion-icon name="close-outline"></ion-icon>
         </ion-fab-button>
 
+        <ion-fab-button color="secondary" (click)="onModalConfirm()" data-desc2="Confirmed LP/PL">
+            <ion-icon name="checkmark-done-outline"></ion-icon>
+        </ion-fab-button>
+
     </ion-fab-list>
 </ion-fab>
 
@@ -110,14 +114,7 @@
                                                             </ion-select>
                                                         </ion-col>
                                                     </ion-row>
-                                                    <ion-row size="12">
-                                                        <ion-col size="3" style="padding-top: 7px;" class="label-line">
-                                                            LP Type:
-                                                        </ion-col>
-                                                        <ion-col size="2" style="padding-top: 7px;" class="negrilla">
-                                                            {{item.fields.PLULPDocumentType}}
-                                                        </ion-col>
-                                                    </ion-row>
+                                                    
                                                     <ion-row size="12" class="subtitlelist">
                                                         <ion-col size="2" class="label-line-title">
                                                             Qty: {{item.fields.PLUQuantity}}
@@ -135,22 +132,27 @@
                                                     </ion-row>
 
 
-                                                    <ion-row>
-                                                        <ion-col size="4" class="label-line">
+                                                    <ion-row *ngIf="item.fields.PLULPDocumentType === 'Single'">
+                                                        <ion-col size="4" class="label-line" >
                                                             Item No: {{item.fields.PLUItemNo}}
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            Measure: {{item.fields.PLUUnitofMeasureCode}}
+                                                            UoM: {{item.fields.PLUUnitofMeasureCode}}
                                                         </ion-col>
-                                                        <ion-col size="4" class="label-line">
-                                                            LineNo: {{item.fields.PLUWhseLineNo}}
-                                                        </ion-col>
+                                                        <ion-col size="4"  class="label-line">
+                                                          LP Type:  {{item.fields.PLULPDocumentType}}
+                                                      </ion-col>
+                                                      
                                                     </ion-row>
-                                                    <ion-row>
-                                                        <ion-col class="label-line" size="3">
 
-                                                        </ion-col>
+                                                    <ion-row *ngIf="item.fields.PLULPDocumentType === 'Pallet'">
+                                                        
+                                                        <ion-col size="12"  class="label-line">
+                                                          LP Type:  {{item.fields.PLULPDocumentType}}
+                                                      </ion-col>
+                                                      
                                                     </ion-row>
+                                                    
                                                 </ion-col>
 
                                             </ion-item>
@@ -174,11 +176,6 @@
         </div>
     </form>
 
-
-    <video #video [hidden]="!scanActive" width="100%"></video>
-
-    <ion-button expand="full" *ngIf="scanActive"></ion-button>
-
 </ion-content>
 
 <PlureVersion class="footerputaway" showVersion="0">
@@ -191,11 +188,11 @@
 
         <ion-col size="4"></ion-col>
 
-        <ion-col size="4" (click)="onSubmit()">
+     <!--  <ion-col size="4" (click)="onSubmit()">
             <ion-icon class="itemfooter" size="large" name="checkmark-done-outline"></ion-icon>
             <div class="itemfooter">Register</div>
         </ion-col>
-
+--> 
         <ion-col size="4"></ion-col>
     </ion-row>
 </PlureVersion>

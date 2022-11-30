@@ -39,6 +39,7 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
 import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inventory/popover-show-inventory.component';
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
 import { ModalShowLpsComponent } from '@prv/components/modal-show-lps/modal-show-lps.component';
+import { ModalLpsConfirmComponent } from '@prv/components/modal-lps-confirm/modal-lps-confirm.component';
 
 
 
@@ -77,7 +78,8 @@ import { ModalShowLpsComponent } from '@prv/components/modal-show-lps/modal-show
     ListPalletComponent,
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
-    ModalShowLpsComponent
+    ModalShowLpsComponent,
+    ModalLpsConfirmComponent
    
    
     
@@ -114,7 +116,8 @@ import { ModalShowLpsComponent } from '@prv/components/modal-show-lps/modal-show
     ListPalletComponent,
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
-    ModalShowLpsComponent
+    ModalShowLpsComponent,
+    ModalLpsConfirmComponent
   
   ]
 })

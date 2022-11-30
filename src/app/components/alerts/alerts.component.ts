@@ -39,7 +39,7 @@ export class AlertsComponent implements OnInit {
 
   // Ok - hide alert
   onOk() {
-    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue' && this.alertObj.type !== 'select' && this.alertObj.type !== 'register' &&  this.alertObj.type !== 'alert2' && this.alertObj.type !== 'confirmEdit')
+    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue')
 
       this.alertObj.func();
       this.alertObj = {};
@@ -63,40 +63,6 @@ export class AlertsComponent implements OnInit {
 
 }
 
-No(){
-
-       
-  this.barcodeScanner.scan().then(
-    async  (barCodeData) => {
-       let code = barCodeData.text;
-
-      let binCode =  this.wmsService.getBin();
-  
-      console.log(binCode);
-
-        if(binCode.toUpperCase() === code.toUpperCase()){
-
-          this.intServ.alertFunc(this.js.getAlert('success', ' ', `The filtered liecense plates if they belong to the bin code ${code.toUpperCase()}`, () => {
-
-            this.wmsService.set('edit');
-          }));
-      
-        }else{
-
-          this.wmsService.set('edit');
-          this.intServ.alertFunc(this.js.getAlert('error',' ',  `The filtered liecense plates do not belong to bin code  ${code.toUpperCase()}`));
-           
-         
-        }
-      }
-    ).catch(
-      err => {
-        console.log(err);
-      }
-    )
-
-    this.alertObj = {};
-}
 
 
 

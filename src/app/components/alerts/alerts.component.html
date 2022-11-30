@@ -4,7 +4,6 @@
       <img src="../../../assets/icon/success.svg" *ngIf="alertObj.type == 'success'" />
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'confirm'" />
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'register'" />
-      <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'confirmEdit'" />
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'continue'" />
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'edit'" />
       <img src="../../../assets/icon/error.svg" *ngIf="alertObj.type == 'error'" />
@@ -47,11 +46,7 @@
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">No</ion-button>
       </div>
 
-      <div class="alert-btn" *ngIf="alertObj.type == 'confirmEdit'">
-        <p>{{alertObj.title}}</p>
-        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
-        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="No()">No</ion-button>
-      </div>
+    
 
     </div>
   </div>

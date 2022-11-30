@@ -13,6 +13,7 @@ import { PassThrough, Stream } from 'stream';
 import { CssSelector } from '@angular/compiler';
 import { ModalShowLpsComponent } from '../modal-show-lps/modal-show-lps.component';
 import { empty } from 'rxjs';
+import { ModalLpsConfirmComponent } from '../modal-lps-confirm/modal-lps-confirm.component';
 
 @Component({
   selector: 'app-edit-put-away',
@@ -24,9 +25,10 @@ export class EditPutAwayComponent implements OnInit {
   public list: any[] = [] 
   public listT: any[] = [] 
 
+  public lps:any[] = [];
   public boolean:boolean = true;
 
-
+  public bins:any[] = [];
   public initV:any[] = [];
 
 
@@ -42,7 +44,7 @@ export class EditPutAwayComponent implements OnInit {
 
   public split: any; 
 
-  public bins:any[] = [];
+  public listBins:any[] = [];
   public pallet:any;
 
   public pallet2:any;
@@ -104,8 +106,13 @@ export class EditPutAwayComponent implements OnInit {
       this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
       console.log(await this.storage.get(this.whsePutAway.fields.No));
       this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
-   
-      console.log(this.listT);
+      this.lps =  (await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != undefined ||
+                  await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`confirm ${this.whsePutAway.fields.No}`): [];
+    
+      this.listBins =  (await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != undefined ||
+      await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`bins ${this.whsePutAway.fields.No}`): [];
+
+    console.log(this.lps);
           
     let bin = (this.listsFilter.length > 0)? await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo): null;
 
@@ -201,14 +208,18 @@ export class EditPutAwayComponent implements OnInit {
             if(this.listsFilter.length > 0){
     
               let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
-       
+              let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
               switch(find){
              
                    case null || undefined:
+                        if(find2 === null || find2 === undefined){
+
                           this.listsFilter.push(line);
                           this.listT.push(line);
                           this.QtyTake ++;
                           break;
+                        }
+                          
                           
                                      
                     default:
@@ -220,10 +231,17 @@ export class EditPutAwayComponent implements OnInit {
              
                }else{
                 this.listsFilter = [];
+
+                let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
                
-                          this.listsFilter.push(line);
-                          this.listT.push(line);
-                          this.QtyTake ++;
+                     if(find2 === null || find2 === undefined){
+
+                      this.listsFilter.push(line);
+                      this.listT.push(line);
+                      this.QtyTake ++;
+
+                     }
+                        
                          
                     
                   }
@@ -697,7 +715,9 @@ this.intServ.loadingFunc(false);
        this.initV.filter(lp => {
         let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
       
-        if(find === null || find === undefined){
+        let find2 = this.lps.find(lpF => lpF.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+        if((find === null || find === undefined) && (find2 === null || find2 === undefined)){
         
                     this.QtyTake ++;
                     this.listsFilter.push(lp);
@@ -803,260 +823,66 @@ async show(lp:any){
     this.listT = [];
     this.QtyTake = 0;
     this.storage.remove(this.whsePutAway.fields.No);
+   // this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
 
   }
 
 
   onBarCodeConfirm(){
 
-    let line:any = undefined;
-    this.listsFilter.filter(Lp => {
-      line = this.listsFilter.find(lp => lp.fields.place !== Lp.fields.place);
-    });
-
-    console.log(line);
-
-    if(line !== undefined){
-
-      this.intServ.alertFunc(this.js.getAlert('alert', '', 'Please filter by the bin to be confirmed', () =>{
-
-        this.autoComplet();
-
-        var alert = setTimeout(() => {  
-        
-          this.intServ.alertFunc(this.js.getAlert('alert', '', 'Confirm the Bin Code Place', () => {
-
-            
-       this.barcodeScanner.scan().then(
+  if(this.listsFilter.length > 0){
+    this.barcodeScanner.scan().then(
       async  (barCodeData) => {
 
-      
-         let code = barCodeData.text;
-
-         this.wmsService.setBin(this.binCode.toUpperCase());
+        let code = barCodeData.text;
     
-          if(this.binCode.toUpperCase() === code.toUpperCase()){
+        this.intServ.loadingFunc(true);
+      this.listsFilter.map(lp => {
 
-            this.intServ.alertFunc(this.js.getAlert('success', ' ', `The filtered liecense plates if they belong to the bin code ${code.toUpperCase()}`, () => {
+        if(lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
 
-              this.binCode = '';
+      });
 
-              let e = {
- 
-                target:{
-                  value: ''
-                }
-              }
- 
-              this.onFilter(e,'')
-            }));
-          }else{
+      console.log(this.lps);
 
-            this.intServ.alertFunc(this.js.getAlert('confirmEdit', 'You want to change them?',`The filtered liecense plates do not belong to bin code  ${code.toUpperCase()}`, () =>{
+      if(this.lps.length > 0){
 
-                
-           this.barcodeScanner.scan().then(
-            async  (barCodeData) => {
+        this.listsFilter.map((lp,index) => {
 
-    
-          let code = barCodeData.text;
-
-          line =   this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
-
-          try {
-
-            if(line === undefined || line === null) throw new Error(`The Bin ${code.toUpperCase()}  does not exist`);
-         
-            this.listsFilter.filter(lp => {
-             lp.fields.place = code.toUpperCase();
-           });     
-           
-   
-             this.intServ.alertFunc(this.js.getAlert('success', ' ', `The license plates have been successfully edited and confirmed in Bin Place ${code.toUpperCase()}`, () => {
-
-              this.binCode = '';
-
-              
-              let e = {
-   
-                target:{
-                  value: ''
-                }
-              }
-   
-              this.onFilter(e,'');
-             }));
-             
-             
-            
-              
-            
-          } catch (error) {
-          
-            this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-          }
-        
-      }
-    ).catch(
-      err => {
-        console.log(err);
-      }
-    )
-
-           }));
-
-           let aption = this.wmsService.get();
-
-           if(aption === 'edit'){
-  
-            this.binCode = '';
-  
-            let e = {
-  
-              target:{
-                value: ''
-              }
+          for (const key in this.lps) {
+            if (lp.fields.PLULPDocumentNo === this.lps[key].fields.PLULPDocumentNo) {
+               this.listsFilter.splice(index);             
             }
-  
-            this.onFilter(e,'')
-
-            this.wmsService.set('');
-  
-           }
-
           }
+
+        });
+        this.intServ.loadingFunc(false);
+       this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
+       this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+       this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+       this.listT = await this.storage.get(this.whsePutAway.fields.No);
+
+
+      }else{
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
+      }
+          
+    
+      
+      
         }
       ).catch(
         err => {
           console.log(err);
         }
       )
-          }))
+     
 
-        clearTimeout(alert);
-      }, 100)
-        
-
-
-      }));
     }else{
 
-     let bin = this.listsFilter[0].fields.place;
-                 
-      this.barcodeScanner.scan().then(
-        async  (barCodeData) => {
-      let code = barCodeData.text;
-
-      line =   this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
-
-      try {
-
-        if(line === undefined || line === null) throw new Error(`The Bin ${code.toUpperCase()}  does not exist`);
-     
-      let confirm = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
-          
-        if(confirm !== undefined){
-
-          this.intServ.alertFunc(this.js.getAlert('success', ' ', `The filtered liecense plates if they belong to the bin code ${code.toUpperCase()}`, () => {
-
-            this.binCode = '';
-
-              
-            let e = {
- 
-              target:{
-                value: ''
-              }
-            }
- 
-            this.onFilter(e,'');
-          }));
-          
-        }else{
-
-          this.wmsService.setBin(bin.toUpperCase());
-
-          this.intServ.alertFunc(this.js.getAlert('confirmEdit', 'You want to change them?' ,`The filtered liecense plates do not belong to bin code  ${code.toUpperCase()}`, () =>{
-
-                
-            this.barcodeScanner.scan().then(
-             async  (barCodeData) => {
- 
-     
-           let code = barCodeData.text;
- 
-           line = this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
- 
-           try {
- 
-             if(line === undefined || line === null) throw new Error(`The Bin ${code.toUpperCase()}  does not exist`);
-          
-             this.listsFilter.filter(lp => {
-              lp.fields.place = code.toUpperCase();
-             });
-               
-    
-              this.intServ.alertFunc(this.js.getAlert('success', ' ', `The license plates have been successfully edited and confirmed in Bin Place ${code.toUpperCase()}`, () => {
-
-                this.binCode = '';
-
-                let e = {
-   
-                  target:{
-                    value: ''
-                  }
-                }
-   
-                this.onFilter(e,'')
-              }));
-                       
-           } catch (error) {
-             this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-           }
-         
-       }
-     ).catch(
-       err => {
-         console.log(err);
-       }
-     )
- 
-            }));
-
-         let aption = this.wmsService.get();
-
-         if(aption === 'edit'){
-
-          this.binCode = '';
-
-          let e = {
-
-            target:{
-              value: ''
-            }
-          }
-
-          this.onFilter(e,'');
-          this.wmsService.set('');
-
-         }
-        }
-
-       
-        
-      } catch (error) {
-        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-      }
-    
-  }
-).catch(
-  err => {
-    console.log(err);
-  }
-)
-
+      this.intServ.alertFunc(this.js.getAlert('alert', '', 'Please scan LP'));
     }
-
 
   
 
@@ -1167,6 +993,37 @@ for (const key in this.pallet) {
 
   }
    
+}
+
+async onModalConfirm(){
+
+ let  lps = this.lps;
+ this.lps.map(lp => {
+
+  let find = this.listBins.find(bin => bin ===  lp.fields.place);
+
+  if(find === null || find === undefined){
+
+    this.listBins.push(lp.fields.place);
+  }
+ });
+
+ this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.listBins);
+ 
+ let bins =  this.listBins;
+
+ let whsePutAway = this.whsePutAway;
+  const modal = await this.modalCtrl.create({
+    component: ModalLpsConfirmComponent,
+    componentProps: {lps,bins,whsePutAway}
+  });
+  modal.present();
+
+  const { data} = await modal.onWillDismiss();
+
+ this.lps  =  data.data; 
+ this.listBin = data.bin;
+
 }
 
   
