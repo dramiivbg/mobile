@@ -101,8 +101,12 @@ export class EditPutAwayComponent implements OnInit {
       console.log(this.whsePutAway, this.listPwL);
       this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     
-      this.init();
+      this.initV =  (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
+         || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`init ${this.whsePutAway.fields.No}`): [];
 
+         if(this.initV.length === 0)this.init();
+
+         if(this.initV.length > 0) this.QtyTotal = this.initV.length;   this.intServ.loadingFunc(false);
       this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
       console.log(await this.storage.get(this.whsePutAway.fields.No));
       this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
@@ -113,6 +117,8 @@ export class EditPutAwayComponent implements OnInit {
       await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`bins ${this.whsePutAway.fields.No}`): [];
 
     console.log(this.lps);
+
+    if(this.listsFilter.length > 0) this.QtyTake = this.lps.length + this.listsFilter.length;
           
     let bin = (this.listsFilter.length > 0)? await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo): null;
 
@@ -159,9 +165,11 @@ export class EditPutAwayComponent implements OnInit {
       lp.fields.place = code.toUpperCase();
 
     });
+ 
 
     this.listT = this.listsFilter;
     this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+   
 
     this.intServ.loadingFunc(false);
     }
@@ -284,25 +292,30 @@ export class EditPutAwayComponent implements OnInit {
    if(this.initV.length !== this.lps.length){
 
     let res:any[] = [];
-      let qtyR = this.QtyTotal - this.QtyTake;
+      let qtyR = this.QtyTotal - this.lps.length;
+
+    
+      let lpR:any[] = [];
+
+      this.initV.filter(lp => {
+
+       let find = this.lps.filter(lpC => lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+       let line = res.find(bin => bin === lp.fields.place);
+
+       if((find === null || find === undefined) && (line === null || line === undefined)){
+
+        res.push(lp.fields.place);
+       
+      }
+  
+      });
+
 
     
 
-
-
-        this.listsFilter.filter(lp => {
-
-          let line = res.find(bin => bin === lp.fields.place);
-
-          if((line === null || line === undefined)){
-
-            res.push(lp.fields.place);
-          }
-        });
-
-    
-
-    //  console.log(res);
+     console.log(res);
+     console.log(this.initV);
       
       this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The LP remaining amount(${qtyR}) will go to the ${res.join(" ")} `, () => {
         var alert = setTimeout(() => {  
@@ -437,8 +450,13 @@ async submit(){
 let list:any[] = [];
 
 
-  this.listT.filter(Lp =>  {
 
+
+  this.initV.filter(Lp =>  {
+
+   let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
+
+   if(l != undefined) Lp.fields.place = l.fields.place;
 
     this.split.WarehousePutAwayLines.filter(lp => {
 
@@ -696,6 +714,8 @@ async init(){
       });
 
       let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.initV[0].fields.PLULPDocumentNo);
+
+      this.storage.get(`init ${this.whsePutAway.fields.No}` ,this.initV);
     
       this.bins = bin.Bins;
 
@@ -856,12 +876,12 @@ async show(lp:any){
 
       if(this.lps.length > 0){
 
-        this.lps.filter((lpC,index) => {
+        this.lps.filter((lpC) => {
 
-            this.listsFilter.filter(lp => {
+            this.listsFilter.filter((lp,index) => {
 
             if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
-              this.listsFilter.splice(index);             
+              this.listsFilter.splice(index,1);             
            }
            });
          
@@ -932,6 +952,9 @@ console.log('single.....');
         }});
 
       
+   
+
+      
     }else{
 
       this.listsFilter.filter(lp =>{
@@ -942,11 +965,14 @@ console.log('single.....');
     
               }
         });
+
+     
     }
   
     this.listT = this.listsFilter;
 
     this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+
  
     break;
 
@@ -989,14 +1015,11 @@ for (const key in this.pallet) {
 
       lpL.fields.place = bin.toUpperCase();
 
-    //  this.modify.push(lpL); 
-  
+    
     }
 
  });
-
- // console.log(this.modify);
-  
+ 
   } 
 }
     
