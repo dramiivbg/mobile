@@ -217,8 +217,11 @@ export class EditPutAwayComponent implements OnInit {
                           this.listsFilter.push(line);
                           this.listT.push(line);
                           this.QtyTake ++;
-                          break;
+                        }else{
+                          this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license Plate ${code.toUpperCase()}  has already been confirmed`));
                         }
+                          break;
+                       
                           
                           
                                      
@@ -240,7 +243,9 @@ export class EditPutAwayComponent implements OnInit {
                       this.listT.push(line);
                       this.QtyTake ++;
 
-                     }
+                     }else{
+                      this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license Plate ${code.toUpperCase()}  has already been confirmed`));
+                    }
                         
                          
                     
@@ -276,22 +281,24 @@ export class EditPutAwayComponent implements OnInit {
 
  async onSubmit(){
   
-   if(this.initV.length !== this.listsFilter.length){
+   if(this.initV.length !== this.lps.length){
 
     let res:any[] = [];
-      let qtyR = this.QtyTotal - this.QtyTake;
+      let qtyR = this.QtyTotal - this.lps.length;
 
-      this.initV.filter(Lp => {
+  
 
-        let line = this.listsFilter.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
-        let line2 = res.find(bin => bin === Lp.fields.place);
+        this.listsFilter.filter(lp => {
 
-        if((line === null || line === undefined) && (line2 === null || line2 === undefined)){
+          let line = res.find(bin => bin === lp.fields.place);
 
-          res.push(Lp.fields.place);
-        }
+          if(line === null || line === undefined){
 
-      });
+            res.push(lp.fields.place);
+          }
+        });
+
+    
 
     //  console.log(res);
       
@@ -837,7 +844,7 @@ async show(lp:any){
         let code = barCodeData.text;
     
         this.intServ.loadingFunc(true);
-      this.listsFilter.map(lp => {
+      this.listsFilter.filter(lp => {
 
         if(lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
 
@@ -847,14 +854,15 @@ async show(lp:any){
 
       if(this.lps.length > 0){
 
-        this.listsFilter.map((lp,index) => {
+        this.lps.filter((lpC,index) => {
 
-          for (const key in this.lps) {
-            if (lp.fields.PLULPDocumentNo === this.lps[key].fields.PLULPDocumentNo) {
-               this.listsFilter.splice(index);             
-            }
-          }
+            this.listsFilter.filter(lp => {
 
+            if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
+              this.listsFilter.splice(index);             
+           }
+           });
+         
         });
         this.intServ.loadingFunc(false);
        this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
@@ -1020,9 +1028,16 @@ async onModalConfirm(){
   modal.present();
 
   const { data} = await modal.onWillDismiss();
+if(data.action === undefined){
 
- this.lps  =  data.data; 
- this.listBin = data.bin;
+  this.lps  =  data.data; 
+  this.listBin = data.bin;
+}else if(data.action === 'register'){
+  
+  this.onSubmit(); 
+  this.lps  =  data.data; 
+}
+
 
 }
 
