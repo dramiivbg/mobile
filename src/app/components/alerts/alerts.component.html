@@ -13,10 +13,11 @@
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'select'" />
     </div>
     <div class="alert-body">
-  <strong *ngIf="alertObj.type !== 'edit' && alertObj.type !== 'register'" >{{alertObj.title}}</strong><br>
+  <strong *ngIf="alertObj.type !== 'edit' && alertObj.type !== 'register' && alertObj.type !== 'confirmEdit'" >{{alertObj.title}}</strong><br>
 
       {{alertObj.desc}}
-      <div class="alert-btn" *ngIf="alertObj.type != 'confirm' && alertObj.type != 'continue' && alertObj.type != 'edit' && alertObj.type !== 'select' &&  alertObj.type !== 'register' && alertObj.type !== 'alert2'">
+      <div class="alert-btn" *ngIf="alertObj.type != 'confirm' && alertObj.type != 'continue' && alertObj.type != 'edit' 
+        && alertObj.type !== 'select' &&  alertObj.type !== 'register' && alertObj.type !== 'alert2' && alertObj.type !== 'confirmEdit'">
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">OK</ion-button>
       </div>
       <div class="alert-btn" *ngIf="alertObj.type == 'confirm'">
@@ -44,6 +45,8 @@
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">No</ion-button>
       </div>
+
+    
 
     </div>
   </div>

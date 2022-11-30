@@ -8,6 +8,7 @@ import { WmsService } from '@svc/wms.service';
 import { ModalController } from '@ionic/angular';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { Storage } from '@ionic/storage';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class AlertsComponent implements OnInit {
   constructor(
      private intServ: InterceptService
     , private js: JsonService, private router: Router,private wmsService: WmsService,private modalCtrl: ModalController,
-    private storage: Storage
+    private storage: Storage, private barcodeScanner: BarcodeScanner
   ) { 
     intServ.alert$.subscribe(
       (obj: any) => {
@@ -38,9 +39,12 @@ export class AlertsComponent implements OnInit {
 
   // Ok - hide alert
   onOk() {
-    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue' && this.alertObj.type !== 'select' && this.alertObj.type !== 'register' &&  this.alertObj.type !== 'alert2')
+    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue')
+
       this.alertObj.func();
       this.alertObj = {};
+    
+   
   }
 
   onYes() {
@@ -58,6 +62,7 @@ export class AlertsComponent implements OnInit {
  
 
 }
+
 
 
 
@@ -92,6 +97,8 @@ cancel(){
 
     this.intServ.loadingFunc(true);
        let dataPw = this.wmsService.getPutAway();
+
+       console.log('put away',dataPw);
 
        let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
 

@@ -17,10 +17,10 @@ export class PopoverLpEmptyComponent implements OnInit {
 
   public frm: FormGroup;
 
-  public boolean: Boolean = true;
+  public boolean:Boolean = true;
 
-  public loading: Boolean = false;
-  constructor(public popoverController: PopoverController, private intServ: InterceptService, private formBuilder: FormBuilder,
+  public loading:Boolean = false;
+  constructor(public popoverController: PopoverController, private intServ: InterceptService,  private formBuilder: FormBuilder, 
     private jsonService: JsonService, private wmsService: WmsService) {
 
 
@@ -30,47 +30,47 @@ export class PopoverLpEmptyComponent implements OnInit {
         LocationCode: [' ', Validators.required],
       }
     )
-  }
+   }
 
   ngOnInit() {
 
-
+  
   }
 
 
-  async onSubmit() {
+ async onSubmit(){
 
     if (this.frm.valid) {
 
 
-      this.boolean = false;
+      this.boolean =false;
       this.loading = true;
 
 
       this.intServ.loadingFunc(true);
 
       let obj = await this.jsonService.formToJson(this.frm);
+    
 
 
 
+     
 
-
-
-
+      
 
       try {
 
 
-        let res = await this.wmsService.GenerateEmptyLP(obj.ZoneCode, obj.LocationCode, "", 'Single');
+        let res = await this.wmsService.GenerateEmptyLP( obj.ZoneCode,obj.LocationCode, "", 'Single');
 
+     
 
+        if(res.Error) throw Error(res.Error.Message);
 
-        if (res.Error) throw Error(res.Error.Message);
-
-
-
-
-        this.loading = false;
+       
+        
+      
+      this.loading = false;
 
         Swal.fire(
           'Success!',
@@ -78,37 +78,37 @@ export class PopoverLpEmptyComponent implements OnInit {
           'success'
         )
 
+    
 
-
-        this.popoverController.dismiss({ data: res, zone: obj.ZoneCode });
+        this.popoverController.dismiss({data: res, zone:  obj.ZoneCode });
 
         console.log(res);
 
-
-
+      
+        
       } catch (error) {
+        
 
-
-        this.loading = false;
-        this.boolean = true;
-
+      this.loading = false; 
+      this.boolean = true;
+    
 
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: error.message,
+          text:  error.message,
           footer: ''
         })
 
+       
 
-
-
+        
       }
 
 
+    
 
-
-
+    
     }
 
 
@@ -116,6 +116,6 @@ export class PopoverLpEmptyComponent implements OnInit {
 
 
   public async closePopover() {
-    this.popoverController.dismiss({ data: null });
+    this.popoverController.dismiss({data: null});
   }
 }
