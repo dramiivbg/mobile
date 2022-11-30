@@ -284,15 +284,17 @@ export class EditPutAwayComponent implements OnInit {
    if(this.initV.length !== this.lps.length){
 
     let res:any[] = [];
-      let qtyR = this.QtyTotal - this.lps.length;
+      let qtyR = this.QtyTotal - this.QtyTake;
 
-  
+    
+
+
 
         this.listsFilter.filter(lp => {
 
           let line = res.find(bin => bin === lp.fields.place);
 
-          if(line === null || line === undefined){
+          if((line === null || line === undefined)){
 
             res.push(lp.fields.place);
           }
