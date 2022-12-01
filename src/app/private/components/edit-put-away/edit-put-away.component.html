@@ -14,7 +14,7 @@
             <ion-icon name="close-outline"></ion-icon>
         </ion-fab-button>
 
-        <ion-fab-button color="secondary" (click)="onModalConfirm()" data-desc2="Confirmed LP/PL">
+        <ion-fab-button color="success" (click)="onModalConfirm()" data-desc2="Confirmed LP/PL">
             <ion-icon name="checkmark-done-outline"></ion-icon>
         </ion-fab-button>
 
@@ -101,10 +101,10 @@
                                                 <ion-col size="12" class="item" (click)="show(item)">
 
                                                     <ion-row class="titleslist">
-                                                        <ion-col size="6" class="titleblue">
+                                                        <ion-col size="7" class="titleblue">
                                                             {{item.fields.PLULPDocumentNo}}
                                                         </ion-col>
-                                                        <ion-col size="6" class="select">
+                                                        <ion-col size="5" class="select">
                                                             <ion-select interface="popover" #bin
                                                                 (ionChange)="onChangeBinOne(item,bin.value)"
                                                                 placeholder="Edit Bincode" class="thebinselect">
@@ -114,7 +114,7 @@
                                                             </ion-select>
                                                         </ion-col>
                                                     </ion-row>
-                                                    
+
                                                     <ion-row size="12" class="subtitlelist">
                                                         <ion-col size="2" class="label-line-title">
                                                             Qty: {{item.fields.PLUQuantity}}
@@ -133,26 +133,26 @@
 
 
                                                     <ion-row *ngIf="item.fields.PLULPDocumentType === 'Single'">
-                                                        <ion-col size="4" class="label-line" >
-                                                            Item No: {{item.fields.PLUItemNo}}
+                                                        <ion-col size="4" class="label-line">
+                                                            Item No: <b>{{item.fields.PLUItemNo}}</b>
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            UoM: {{item.fields.PLUUnitofMeasureCode}}
+                                                            UoM: <b>{{item.fields.PLUUnitofMeasureCode}}</b>
                                                         </ion-col>
-                                                        <ion-col size="4"  class="label-line">
-                                                          LP Type:  {{item.fields.PLULPDocumentType}}
-                                                      </ion-col>
-                                                      
+                                                        <ion-col size="4" class="label-line">
+                                                            LP Type: <b>{{item.fields.PLULPDocumentType}}</b>
+                                                        </ion-col>
+
                                                     </ion-row>
 
                                                     <ion-row *ngIf="item.fields.PLULPDocumentType === 'Pallet'">
-                                                        
-                                                        <ion-col size="12"  class="label-line">
-                                                          LP Type:  {{item.fields.PLULPDocumentType}}
-                                                      </ion-col>
-                                                      
+
+                                                        <ion-col size="12" class="label-line">
+                                                            LP Type: <b>{{item.fields.PLULPDocumentType}}</b>
+                                                        </ion-col>
+
                                                     </ion-row>
-                                                    
+
                                                 </ion-col>
 
                                             </ion-item>
@@ -188,11 +188,11 @@
 
         <ion-col size="4"></ion-col>
 
-     <!--  <ion-col size="4" (click)="onSubmit()">
+        <!--  <ion-col size="4" (click)="onSubmit()">
             <ion-icon class="itemfooter" size="large" name="checkmark-done-outline"></ion-icon>
             <div class="itemfooter">Register</div>
         </ion-col>
---> 
+-->
         <ion-col size="4"></ion-col>
     </ion-row>
 </PlureVersion>

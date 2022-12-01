@@ -564,7 +564,7 @@ export class WmsReceiptPage implements OnInit {
 
               this.intServ.loadingFunc(false);
 
-              this.intServ.alertFunc(this.js.getAlert('edit', 'By Default Put Away processed to the floor!', 'Edit Default Put-Away?', async () => {
+              this.intServ.alertFunc(this.js.getAlert('edit', 'If you press "No" the Put-Away will be processed by default on the floor!', 'Will you edit the default Put-Away?', async () => {
 
                 this.intServ.loadingFunc(true);
 

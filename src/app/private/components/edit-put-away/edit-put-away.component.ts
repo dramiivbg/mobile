@@ -22,39 +22,39 @@ import { ModalLpsConfirmComponent } from '../modal-lps-confirm/modal-lps-confirm
 })
 export class EditPutAwayComponent implements OnInit {
   public lpsS: any = {}
-  public list: any[] = [] 
-  public listT: any[] = [] 
+  public list: any[] = []
+  public listT: any[] = []
 
-  public lps:any[] = [];
-  public boolean:boolean = true;
+  public lps: any[] = [];
+  public boolean: boolean = true;
 
-  public bins:any[] = [];
-  public initV:any[] = [];
+  public bins: any[] = [];
+  public initV: any[] = [];
 
 
-  public whsePutAway:any;
+  public whsePutAway: any;
 
   public listPwL: any[] = [];
-  public contador:number = 0;
-   public lpsP: any = {}
+  public contador: number = 0;
+  public lpsP: any = {}
   public scanLP: boolean = true;
   public scanBin: boolean = false;
 
-  public groupItems:any[] = [];
+  public groupItems: any[] = [];
 
-  public split: any; 
+  public split: any;
 
-  public listBins:any[] = [];
-  public pallet:any;
+  public listBins: any[] = [];
+  public pallet: any;
 
-  public pallet2:any;
+  public pallet2: any;
 
-  public items:any[] = [];
+  public items: any[] = [];
 
-  public bin:string = '';
+  public bin: string = '';
 
   public binCode: any = '';
-  public listBin:any[] = [];
+  public listBin: any[] = [];
 
   public listsFilter: any[] = [];
   public lists: any = [];
@@ -63,120 +63,119 @@ export class EditPutAwayComponent implements OnInit {
   public barcodeScannerOptions: BarcodeScannerOptions
   public warePY: any;
 
-  public QtyTake:number = 0;
+  public QtyTake: number = 0;
 
-  public QtyTotal:number = 0;
+  public QtyTotal: number = 0;
 
-  
+
 
   constructor(private router: Router
- ,private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService, 
- private general: GeneralService , private storage: Storage, private modalCtrl: ModalController) { 
+    , private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService,
+    private general: GeneralService, private storage: Storage, private modalCtrl: ModalController) {
 
-  let objFunc = {
-    func: () => {
-      this.onBack();
-    }
-  };
-  this.intServ.appBackFunc(objFunc);
+    let objFunc = {
+      func: () => {
+        this.onBack();
+      }
+    };
+    this.intServ.appBackFunc(objFunc);
 
-  this.barcodeScannerOptions = {
-    showTorchButton: true,
-    showFlipCameraButton: true
-  };
-      
+    this.barcodeScannerOptions = {
+      showTorchButton: true,
+      showFlipCameraButton: true
+    };
+
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
 
-  
+
   }
-  async  ngOnInit() {
+  async ngOnInit() {
 
-    this.whsePutAway =  await this.storage.get('whsePutAway');
+    this.whsePutAway = await this.storage.get('whsePutAway');
 
     this.warePW = await this.storage.get('setPutAway');
 
-      this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
-      console.log(this.whsePutAway, this.listPwL);
-      this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
-    
-      this.initV =  (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
-         || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`init ${this.whsePutAway.fields.No}`): [];
+    this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
+    console.log(this.whsePutAway, this.listPwL);
+    this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
 
          if(this.initV.length === 0){this.init();}
 
-         if(this.initV.length > 0){
-          this.QtyTotal = this.initV.length;   
-          this.intServ.loadingFunc(false);
-        }
-      this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
-      console.log(await this.storage.get(this.whsePutAway.fields.No));
-      this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
-      this.lps =  (await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != undefined ||
-                  await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`confirm ${this.whsePutAway.fields.No}`): [];
-    
-      this.listBins =  (await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != undefined ||
-      await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`bins ${this.whsePutAway.fields.No}`): [];
+    if (this.initV.length === 0) this.init();
+
+    if (this.initV.length > 0) {
+      this.QtyTotal = this.initV.length;
+      this.intServ.loadingFunc(false);
+    }
+    this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
+    console.log(await this.storage.get(this.whsePutAway.fields.No));
+    this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
+    this.lps = (await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != undefined ||
+      await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) : [];
+
+    this.listBins = (await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != undefined ||
+      await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bins ${this.whsePutAway.fields.No}`) : [];
 
     console.log(this.lps);
 
-    if(this.listsFilter.length > 0) this.QtyTake = this.lps.length + this.listsFilter.length;
-          
-    let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined || await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`bin ${this.whsePutAway.fields.No}`): null;
+    if (this.listsFilter.length > 0) this.QtyTake = this.lps.length + this.listsFilter.length;
+
+    let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined || await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin ${this.whsePutAway.fields.No}`) : null;
 
     this.bins = bin.Bins;
-      
 
-    }
- 
-  public onBack(){
+
+  }
+
+  public onBack() {
 
 
     this.router.navigate(['page/wms/wmsMain']);
 
- }
+  }
 
 
-  public async onBarCodeChange(){
+  public async onBarCodeChange() {
 
     let line = undefined;
 
 
     this.barcodeScanner.scan().then(
-      async  (barCodeData) => {
-       let code = barCodeData.text;
-    
-       this.intServ.loadingFunc(true);
-    line =   this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
+      async (barCodeData) => {
+        let code = barCodeData.text;
+
+        this.intServ.loadingFunc(true);
+        line = this.bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
 
 
-    if(line === null || line === undefined){
+        if (line === null || line === undefined) {
 
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('error', ' ', `The Bin code ${code.toUpperCase()} does not exist`));
-    
-  }else{
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.js.getAlert('error', ' ', `The Bin code ${code.toUpperCase()} does not exist`));
 
-  if(this.pallet != undefined && this.listsFilter.length != this.initV.length){
-    this.intServ.loadingFunc(false);
-    this.intServ.alertFunc(this.js.getAlert('error', ' ',`Please scan all license plate and pallet`));
-    return;
-  }
+        } else {
 
-     this.listsFilter.filter( lp => {
-      lp.fields.place = code.toUpperCase();
+          if (this.pallet != undefined && this.listsFilter.length != this.initV.length) {
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('error', ' ', `Please scan all license plate and pallet`));
+            return;
+          }
 
-    });
- 
+          this.listsFilter.filter(lp => {
+            lp.fields.place = code.toUpperCase();
 
-    this.listT = this.listsFilter;
-    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-   
+          });
 
-    this.intServ.loadingFunc(false);
-    }
-    } ).catch(
+
+          this.listT = this.listsFilter;
+          this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+
+
+          this.intServ.loadingFunc(false);
+        }
+      }).catch(
         err => {
           console.log(err);
         }
@@ -185,153 +184,153 @@ export class EditPutAwayComponent implements OnInit {
   }
 
 
-  public async  onBarCode() {
-       let line:any = undefined;
-        this.barcodeScanner.scan().then(
-        async  (barCodeData) => {
-        
-            let code = barCodeData.text;
+  public async onBarCode() {
+    let line: any = undefined;
+    this.barcodeScanner.scan().then(
+      async (barCodeData) => {
 
-        this.boolean = ( code === null || code === " ")? false: this.boolean;
-           console.log(code);
+        let code = barCodeData.text;
+
+        this.boolean = (code === null || code === " ") ? false : this.boolean;
+        console.log(code);
         for (const key in this.initV) {
-      
-    
+
+
           if (this.initV[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
             line = this.initV[key];
-            this.intServ.loadingFunc(false);  
-          
-          }
-    
-          }
-        
-    
-          switch(line) {
-    
-            case null || undefined:   
             this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error', ' ',`The license plate ${code.toUpperCase()} does not exist on the Put Away`));
-          
-             break;
-    
-           default:
-    
-            if(this.listsFilter.length > 0){
-    
-              let find =   this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
-              let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
-              switch(find){
-             
-                   case null || undefined:
-                        if(find2 === null || find2 === undefined){
 
-                          this.listsFilter.push(line);
-                          this.listT.push(line);
-                          this.QtyTake ++;
-                        }else{
-                          this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license Plate ${code.toUpperCase()}  has already been confirmed`));
-                        }
-                          break;
-                       
-                          
-                          
-                                     
-                    default:
-            
-                      this.intServ.loadingFunc(false);
-                      this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license plate is already assigned`));
-                      break;
-              }
-             
-               }else{
-                this.listsFilter = [];
-
-                let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
-               
-                     if(find2 === null || find2 === undefined){
-
-                      this.listsFilter.push(line);
-                      this.listT.push(line);
-                      this.QtyTake ++;
-
-                     }else{
-                      this.intServ.alertFunc(this.js.getAlert('alert', ' ',`The license Plate ${code.toUpperCase()}  has already been confirmed`));
-                    }
-                        
-                         
-                    
-                  }
-               
-    
-    
-                    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-    
-               let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
-    
-               this.bins = bin.Bins;
-           
-               break;
           }
-          
-      //   if(this.boolean){
 
-      //      this.onBarCode();
-       //   }
-      
         }
 
-       
-            
-        ).catch(
-          err => {
-            console.log(err);
-          }
-        )
-      
-    }
 
- async onSubmit(){
-  
-   if(this.initV.length !== this.lps.length){
+        switch (line) {
 
-    let res:any[] = [];
+          case null || undefined:
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('error', ' ', `The license plate ${code.toUpperCase()} does not exist on the Put Away`));
+
+            break;
+
+          default:
+
+            if (this.listsFilter.length > 0) {
+
+              let find = this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
+              let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
+              switch (find) {
+
+                case null || undefined:
+                  if (find2 === null || find2 === undefined) {
+
+                    this.listsFilter.push(line);
+                    this.listT.push(line);
+                    this.QtyTake++;
+                  } else {
+                    this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license Plate ${code.toUpperCase()}  has already been confirmed`));
+                  }
+                  break;
+
+
+
+
+                default:
+
+                  this.intServ.loadingFunc(false);
+                  this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license plate is already assigned`));
+                  break;
+              }
+
+            } else {
+              this.listsFilter = [];
+
+              let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
+
+              if (find2 === null || find2 === undefined) {
+
+                this.listsFilter.push(line);
+                this.listT.push(line);
+                this.QtyTake++;
+
+              } else {
+                this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license Plate ${code.toUpperCase()}  has already been confirmed`));
+              }
+
+
+
+            }
+
+
+
+            this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+
+            let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
+
+            this.bins = bin.Bins;
+
+            break;
+        }
+
+        //   if(this.boolean){
+
+        //      this.onBarCode();
+        //   }
+
+      }
+
+
+
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+  async onSubmit() {
+
+    if (this.initV.length !== this.lps.length) {
+
+      let res: any[] = [];
       let qtyR = this.QtyTotal - this.lps.length;
 
-    
-      let lpR:any[] = [];
+
+      let lpR: any[] = [];
 
       this.initV.filter(lp => {
 
-       let find = this.lps.filter(lpC => lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+        let find = this.lps.filter(lpC => lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
-       let line = res.find(bin => bin === lp.fields.place);
+        let line = res.find(bin => bin === lp.fields.place);
 
-       if((find === null || find === undefined) && (line === null || line === undefined)){
+        if ((find === null || find === undefined) && (line === null || line === undefined)) {
 
-        res.push(lp.fields.place);
-       
-      }
-  
+          res.push(lp.fields.place);
+
+        }
+
       });
 
 
-    
 
-     console.log(res);
-     console.log(this.initV);
-      
+
+      console.log(res);
+      console.log(this.initV);
+
       this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The LP remaining amount(${qtyR}) will go to the ${res.join(" ")} `, () => {
-        var alert = setTimeout(() => {  
-        
+        var alert = setTimeout(() => {
+
           this.submit();
 
-        clearTimeout(alert);
-      }, 100)
+          clearTimeout(alert);
+        }, 100)
       }));
 
-     
 
-     }else{
+
+    } else {
 
       this.submit();
      } 
@@ -423,7 +422,9 @@ try {
 
 if(update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
 
-let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+ let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+      
 
 if(postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message);
 
@@ -434,20 +435,24 @@ this.intServ.alertFunc(this.js.getAlert('success', '',`The Put away ${this.wareP
 this.router.navigate(['page/wms/wmsMain']);
 }));
 
-} catch (error) {
+
+} 
+catch (error) {
 
   this.intServ.loadingFunc(false);
   this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
   
-}
+}     
 
 }));
-}
 
-async init(){
 
-  let  listPallet;
-    
+  }
+
+  async init() {
+
+    let listPallet;
+
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
 
 
@@ -457,144 +462,144 @@ async init(){
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
 
-   
 
-    if(!pallets.Error){
 
-     const  listLp = await this.wmsService.ListLP(lps);
+    if (!pallets.Error) {
+
+      const listLp = await this.wmsService.ListLP(lps);
 
       this.pallet = await this.wmsService.ListLPallet(pallets);
 
       this.pallet2 = await this.wmsService.ListLPallet(pallets);
-    
-       for (const i in this.pallet) {
-   
-         for (const j in this.pallet2) {
-   
-   
-           if (this.pallet[i] != undefined) {
-   
-             if (this.pallet[i].fields[0].PLUQuantity != null) {
-   
-               if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
-   
-                 if (j != i) {
-   
-   
-   
-                   let con = this.pallet.splice(Number(j), 1);
-                   console.log(i, j);
-                   console.log(con)
-   
-                 }
-   
-   
-               }
-             } else {
-   
-               this.pallet.splice(Number(i), 1);
-   
-             }
-           }
-         }
-       }
-   
-     
-       for (const i in this.pallet) {
-   
-         for (const j in this.pallet2) {
-           if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
-   
-               let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
-   
-             if (line === null || line === undefined) {
-   
-               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
-   
-               }
-   
-           }
-         }
-       
-       }
-   
-    for (const i in this.pallet) {
-     for (const j in this.pallet[i].fields) {
-   
-       let  line = listLp.find(lp => lp.fields.PLULPDocumentNo === this.pallet[i].fields[j].PLUNo);
-      
-       this.pallet[i].fields[j].PLUWhseLineNo  = (line != null || line != undefined)? line.fields.PLUWhseLineNo:  this.pallet[i].fields[j].PLUWhseLineNo;
-   
-    
-     }
-   
-    }
-   
-  const  listPalletH  = await this.wmsService.ListPallets(pallets);
-   
-     for (const key in this.pallet) {
-   
-     this.pallet[key].fields.filter(lp => {
-   
-       let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
-         lp.PLUBinCode = line.fields.PLUBinCode;
-       lp.PLUItemNo = line.fields.PLUItemNo;
-   
-     })
-   }
-   
-   
+
+      for (const i in this.pallet) {
+
+        for (const j in this.pallet2) {
+
+
+          if (this.pallet[i] != undefined) {
+
+            if (this.pallet[i].fields[0].PLUQuantity != null) {
+
+              if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+
+                if (j != i) {
+
+
+
+                  let con = this.pallet.splice(Number(j), 1);
+                  console.log(i, j);
+                  console.log(con)
+
+                }
+
+
+              }
+            } else {
+
+              this.pallet.splice(Number(i), 1);
+
+            }
+          }
+        }
+      }
+
+
+      for (const i in this.pallet) {
+
+        for (const j in this.pallet2) {
+          if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
+
+            let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
+
+            if (line === null || line === undefined) {
+
+              this.pallet[i].fields.push(this.pallet2[j].fields[0]);
+
+            }
+
+          }
+        }
+
+      }
+
+      for (const i in this.pallet) {
+        for (const j in this.pallet[i].fields) {
+
+          let line = listLp.find(lp => lp.fields.PLULPDocumentNo === this.pallet[i].fields[j].PLUNo);
+
+          this.pallet[i].fields[j].PLUWhseLineNo = (line != null || line != undefined) ? line.fields.PLUWhseLineNo : this.pallet[i].fields[j].PLUWhseLineNo;
+
+
+        }
+
+      }
+
+      const listPalletH = await this.wmsService.ListPallets(pallets);
+
+      for (const key in this.pallet) {
+
+        this.pallet[key].fields.filter(lp => {
+
+          let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
+          lp.PLUBinCode = line.fields.PLUBinCode;
+          lp.PLUItemNo = line.fields.PLUItemNo;
+
+        })
+      }
+
+
       listPallet = await this.wmsService.ListLP(pallets);
-   
 
-      listPallet.filter((lp,index) => {
 
-        let  line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);   
+      listPallet.filter((lp, index) => {
+
+        let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
 
         let find = this.initV.find(lpI => lpI.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-      
-        if(find === null || find === undefined){
-  
+
+        if (find === null || find === undefined) {
+
           this.initV.push(lp);
-          this.QtyTotal ++;
-  
+          this.QtyTotal++;
+
         }
-  
-      
-    });
+
+
+      });
 
     }
 
-    if(!lps.Error){
+    if (!lps.Error) {
 
 
-      let  listLp = await this.wmsService.ListLP(lps);
+      let listLp = await this.wmsService.ListLP(lps);
 
       let listLpH = await this.wmsService.ListLPH(lps);
 
-     
 
-        listLp.filter(lp => {
-  
-        let find2:any = undefined;
+
+      listLp.filter(lp => {
+
+        let find2: any = undefined;
         for (const key in this.pallet) {
 
           find2 = this.pallet[key].fields.find(lpI => lpI.PLUNo === lp.fields.PLULPDocumentNo);
         }
 
-        console.log(lp,this.pallet);
+        console.log(lp, this.pallet);
 
 
-       if(find2 === undefined || find2 === null){
+        if (find2 === undefined || find2 === null) {
 
-        let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+          let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
-        lp.fields.PLUBinCode = line.fields.PLUBinCode;
-        lp.fields.PLUItemNo = line.fields.PLUItemNo;
+          lp.fields.PLUBinCode = line.fields.PLUBinCode;
+          lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
         console.log(this.listPwL);
         this.listPwL.filter(
@@ -620,61 +625,61 @@ async init(){
 
       let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.initV[0].fields.PLULPDocumentNo);
 
-      this.storage.set(`init ${this.whsePutAway.fields.No}` ,this.initV);
+      this.storage.set(`init ${this.whsePutAway.fields.No}`, this.initV);
 
       this.storage.set(`bin ${this.whsePutAway.fields.No}`, bin);
-    
+
       this.bins = bin.Bins;
 
-     console.log(this.initV);
+      console.log(this.initV);
 
-    }else{
+    } else {
 
 
       this.intServ.loadingFunc(false);
-       this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Whse. Put Away this void', () => {
+      this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Whse. Put Away this void', () => {
 
         this.router.navigate(['page/wms/wmsMain']);
       }))
 
     }
 
-  
-this.intServ.loadingFunc(false);
 
-}
-
-
- async  onScanAll(){
-
-  this.intServ.loadingFunc(true);
-       this.initV.filter(lp => {
-        let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-      
-        let find2 = this.lps.find(lpF => lpF.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-        if((find === null || find === undefined) && (find2 === null || find2 === undefined)){
-        
-                    this.QtyTake ++;
-                    this.listsFilter.push(lp);
-                    this.listT.push(lp);          
-  
-        }
-
-      });
-
-      this.storage.set(this.whsePutAway.fields.No, this.listsFilter); 
     this.intServ.loadingFunc(false);
 
-}
+  }
 
 
-async show(lp:any){
+  async onScanAll() {
+
+    this.intServ.loadingFunc(true);
+    this.initV.filter(lp => {
+      let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      let find2 = this.lps.find(lpF => lpF.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+
+      if ((find === null || find === undefined) && (find2 === null || find2 === undefined)) {
+
+        this.QtyTake++;
+        this.listsFilter.push(lp);
+        this.listT.push(lp);
+
+      }
+
+    });
+
+    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+    this.intServ.loadingFunc(false);
+
+  }
 
 
- 
+  async show(lp: any) {
 
-    switch(lp.fields.PLULPDocumentType){
+
+
+
+    switch (lp.fields.PLULPDocumentType) {
 
       case "Pallet":
 
@@ -684,76 +689,76 @@ async show(lp:any){
          pallet.fields.filter(async (lp, index) => {
 
           let res = await this.wmsService.getLpNo(lp.PLUNo);
-    
+
           let p = await this.wmsService.ListLp(res);
-    
+
           let pH = await this.wmsService.ListLpH(res);
-    
+
           let resI = await this.wmsService.GetItem(p.fields.PLUNo);
-    
+
           let img = await this.wmsService.listItem(resI);
-    
+
           p.fields['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
-          p.fields.PLUBinCode =  pH.fields.PLUBinCode;
+          p.fields.PLUBinCode = pH.fields.PLUBinCode;
           p.fields.PLULocationCode = pH.fields.PLULocationCode;
-    
+
           this.listPwL.filter(
-           x => {
-            switch(x.fields.ActionType){
-               case "Place":
-                 if(p.fields.PLUNo === x.fields.ItemNo){
-                   p.fields.place = x.fields.BinCode;
-                   break;
-                 } 
-             }
-           }
-         )
+            x => {
+              switch (x.fields.ActionType) {
+                case "Place":
+                  if (p.fields.PLUNo === x.fields.ItemNo) {
+                    p.fields.place = x.fields.BinCode;
+                    break;
+                  }
+              }
+            }
+          )
           lps.push(p);
-          
+
         });
       //  this.intServ.loadingFunc(false);
          const modal = await this.modalCtrl.create({
           component: ModalShowLpsComponent,
-          componentProps: {lps, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo}
+          componentProps: { lps, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo }
         });
         modal.present();
-    
+
         const { data, role } = await modal.onWillDismiss();
-         
+
     }
 
 
-}
+  }
 
-  remove(item:any){
+  remove(item: any) {
 
 
     this.listsFilter.filter((lp, index) => {
 
 
-    if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
+      if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) {
 
         this.QtyTake -= 1;
-        this.listsFilter.splice(index,1);
-        this.listT.splice(index,1);
+        this.listsFilter.splice(index, 1);
+        this.listT.splice(index, 1);
       }
     });
-   
 
-    if(this.listsFilter.length === 0) {
+
+    if (this.listsFilter.length === 0) {
 
       this.storage.remove(this.whsePutAway.fields.No);
 
-    }else{
+    } else {
 
       this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
     }
 
- 
+
   }
 
 
-  onRemoveAll(){
+  onRemoveAll() {
 
 
     this.listsFilter = [];
@@ -761,17 +766,17 @@ async show(lp:any){
     this.listT = [];
     this.QtyTake = 0;
     this.storage.remove(this.whsePutAway.fields.No);
-   // this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
-   this.storage.remove(`init ${this.whsePutAway.fields.No}`); 
+    // this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+    this.storage.remove(`init ${this.whsePutAway.fields.No}`);
 
   }
 
 
-  onBarCodeConfirm(){
+  onBarCodeConfirm() {
 
-  if(this.listsFilter.length > 0){
-    this.barcodeScanner.scan().then(
-      async  (barCodeData) => {
+    if (this.listsFilter.length > 0) {
+      this.barcodeScanner.scan().then(
+        async (barCodeData) => {
 
         let code = barCodeData.text;
     
@@ -779,25 +784,19 @@ async show(lp:any){
         this.intServ.loadingFunc(true);
         consulB = this.lps.find(lp => lp.fields.place === code.toUpperCase());
       this.listsFilter.filter(lp => {
-        if(lp.fields.place.toUpperCase() === code.toUpperCase()) {
-            this.lps.push(lp);
-        }
-
-      });
-
-      console.log(this.lps);
-      if(this.lps.length > 0){
-
-        this.lps.filter((lpC) => {
-
-            this.listsFilter.filter((lp,index) => {
-
-            if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
-              this.listsFilter.splice(index,1);             
-           }
-           });
-         
+        if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
         });
+
+          console.log(this.lps);
+            this.lps.filter((lpC) => {
+              this.listsFilter.filter((lp, index) => {
+               if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
+                  this.listsFilter.splice(index, 1);
+                }
+              });
+
+            });          
+             
         this.intServ.loadingFunc(false);
         if(consulB === undefined || consulB === null){
 
@@ -807,217 +806,208 @@ async show(lp:any){
           this.listT = await this.storage.get(this.whsePutAway.fields.No);
         }else{
           this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The bin ${code.toUpperCase()} has already been confirmed. `));
-        }
-      
-
-
-      }else{
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
-      }
-          
-    
-      
-      
-        }
+        }  
+     
+    }
       ).catch(
         err => {
           console.log(err);
         }
       )
-     
 
-    }else{
+
+    }else {
 
       this.intServ.alertFunc(this.js.getAlert('alert', '', 'Please scan LP'));
     }
 
-  
+
 
   }
 
 
-onChangeBinOne(item:any,bin:any){
+  onChangeBinOne(item: any, bin: any) {
 
-switch(item.fields.PLULPDocumentType){
+    switch (item.fields.PLULPDocumentType) {
 
-case 'Single': 
-
-
-console.log('single.....');
-
-  if(this.pallet != undefined){
-
-    for (const key in this.pallet) {
-      let line = this.pallet[key].fields.find(lp =>  lp.PLUNo === item.fields.PLULPDocumentNo);
-
-      if(line != undefined || line != null){
-
-       this.intServ.alertFunc(this.js.getAlert('error', '', `To change the bin must be done on the pallet ${this.pallet[key].fields[0].PLULPDocumentNo} `))
-      
-       return;
-
-      }
-
-    }
-
-      this.listsFilter.filter(lp =>{
-
-             if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
-    
-          lp.fields.place = bin.toUpperCase();
-    
-        }});
-
-      
-   
-
-      
-    }else{
-
-      this.listsFilter.filter(lp =>{
-
-              if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo){
-    
-          lp.fields.place = bin.toUpperCase();
-    
-              }
-        });
-
-     
-    }
-  
-    this.listT = this.listsFilter;
-
-    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-
- 
-    break;
+      case 'Single':
 
 
-    
-case 'Pallet': 
+        console.log('single.....');
+
+        if (this.pallet != undefined) {
+
+          for (const key in this.pallet) {
+            let line = this.pallet[key].fields.find(lp => lp.PLUNo === item.fields.PLULPDocumentNo);
+
+            if (line != undefined || line != null) {
+
+              this.intServ.alertFunc(this.js.getAlert('error', '', `To change the bin must be done on the pallet ${this.pallet[key].fields[0].PLULPDocumentNo} `))
+
+              return;
+
+            }
+
+          }
+
+          this.listsFilter.filter(lp => {
+
+            if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) {
+
+              lp.fields.place = bin.toUpperCase();
+
+            }
+          });
 
 
 
-for (const key in this.pallet) {
- 
-      let line = this.pallet[key].fields.find(lp =>  lp.PLULPDocumentNo === item.fields.PLULPDocumentNo);
-
-  if(line != undefined || line != null){
 
 
-  let tempory:any[] = [];
+        } else {
 
-  let indice:any;
+          this.listsFilter.filter(lp => {
 
-  this.pallet[key].fields.filter(async(Lp) => {
+            if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) {
 
-    let line = this.pallet[key].fields.find(lp => lp.PLUWhseLineNo != Lp.PLUWhseLineNo); 
+              lp.fields.place = bin.toUpperCase();
 
-    if(line === null || line === undefined){
+            }
+          });
 
-      Lp.PLUBinCode =  bin.toUpperCase();
-      this.listsFilter.filter(lp => {
 
-        if(lp.fields.PLULPDocumentNo === Lp.PLUNo){
-
-          lp.fields.place = bin.toUpperCase();
         }
-      });
 
-      
-      let res = await this.wmsService.getLpNo(Lp.PLUNo);
+        this.listT = this.listsFilter;
 
-      let lpL = await this.wmsService.ListLp(res);
+        this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
 
-      lpL.fields.place = bin.toUpperCase();
 
-    
+        break;
+
+
+
+      case 'Pallet':
+
+
+
+        for (const key in this.pallet) {
+
+          let line = this.pallet[key].fields.find(lp => lp.PLULPDocumentNo === item.fields.PLULPDocumentNo);
+
+          if (line != undefined || line != null) {
+
+
+            let tempory: any[] = [];
+
+            let indice: any;
+
+            this.pallet[key].fields.filter(async (Lp) => {
+
+              let line = this.pallet[key].fields.find(lp => lp.PLUWhseLineNo != Lp.PLUWhseLineNo);
+
+              if (line === null || line === undefined) {
+
+                Lp.PLUBinCode = bin.toUpperCase();
+                this.listsFilter.filter(lp => {
+
+                  if (lp.fields.PLULPDocumentNo === Lp.PLUNo) {
+
+                    lp.fields.place = bin.toUpperCase();
+                  }
+                });
+
+
+                let res = await this.wmsService.getLpNo(Lp.PLUNo);
+
+                let lpL = await this.wmsService.ListLp(res);
+
+                lpL.fields.place = bin.toUpperCase();
+
+
+              }
+
+            });
+
+          }
+        }
+
+
     }
 
- });
- 
-  } 
-}
-    
-
   }
-   
-}
 
-async onModalConfirm(){
+  async onModalConfirm() {
 
- let  lps = this.lps;
- this.lps.map(lp => {
+    let lps = this.lps;
+    this.lps.map(lp => {
 
-  let find = this.listBins.find(bin => bin ===  lp.fields.place);
+      let find = this.listBins.find(bin => bin === lp.fields.place);
 
-  if(find === null || find === undefined){
+      if (find === null || find === undefined) {
 
-    this.listBins.push(lp.fields.place);
-  }
- });
-
- this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.listBins);
- 
- let bins =  this.listBins;
-
- let whsePutAway = this.whsePutAway;
-  const modal = await this.modalCtrl.create({
-    component: ModalLpsConfirmComponent,
-    componentProps: {lps,bins,whsePutAway}
-  });
-  modal.present();
-
-  const { data} = await modal.onWillDismiss();
-if(data.action === undefined){
-
-  this.lps  =  data.data; 
-  this.listBin = data.bin;
-}else if(data.action === 'register'){
-  
-  this.onSubmit(); 
-  this.lps  =  data.data; 
-}
-
-
-}
-
-  
-  autoComplet(){
-  
-    this.barcodeScanner.scan().then(
-       async  (barCodeData) => {
-
-       
-          let code = barCodeData.text;
-     
-           this.binCode = code;
- 
- 
-           this.onFilter('', this.binCode);
-           
-     
-       
-         }
-       ).catch(
-         err => {
-           console.log(err);
-         }
-       )
-      
+        this.listBins.push(lp.fields.place);
       }
+    });
+
+    this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.listBins);
+
+    let bins = this.listBins;
+
+    let whsePutAway = this.whsePutAway;
+    const modal = await this.modalCtrl.create({
+      component: ModalLpsConfirmComponent,
+      componentProps: { lps, bins, whsePutAway }
+    });
+    modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data.action === undefined) {
+
+      this.lps = data.data;
+      this.listBin = data.bin;
+    } else if (data.action === 'register') {
+
+      this.onSubmit();
+      this.lps = data.data;
+    }
 
 
-  onFilter(e, binCode:any = ''){
+  }
 
-   switch(binCode){
-    case '':
+
+  autoComplet() {
+
+    this.barcodeScanner.scan().then(
+      async (barCodeData) => {
+
+
+        let code = barCodeData.text;
+
+        this.binCode = code;
+
+
+        this.onFilter('', this.binCode);
+
+
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+
+  onFilter(e, binCode: any = '') {
+
+    switch (binCode) {
+      case '':
         let val = e.target.value;
 
         console.log(val);
-    
+
         if (val === '') {
           this.listsFilter = this.listT;
         } else {
@@ -1028,20 +1018,20 @@ if(data.action === undefined){
           )
         }
         break;
-    
-     default:
-    
-    
+
+      default:
+
+
         this.listsFilter = this.listT.filter(
           x => {
             return (x.fields.place.toLowerCase().includes(binCode.toLowerCase()));
           }
         )
-        console.log(this.listsFilter,binCode);
+        console.log(this.listsFilter, binCode);
 
-     break;
-      }
-    
+        break;
+    }
+
   }
-    
+
 }
