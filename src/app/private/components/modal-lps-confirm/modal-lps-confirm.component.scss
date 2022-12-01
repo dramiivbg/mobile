@@ -169,7 +169,7 @@ ion-button.add-lines::part(native) {
 
     .newColor2 {
         width: 92%;
-        margin: 0px 0 10px -5px;
+        margin: 0px 0 0px -5px;
         --ion-color-base: var(--ion-color-plureHeader)
     }
 
@@ -324,7 +324,7 @@ ion-item {
     padding: 0 0 10px 0;
 }
 
-.titleblue{
+.titleblue {
     color: var(--ion-color-plureBlue);
     font-size: 16px;
     font-family: SourceSansProBold;
@@ -347,4 +347,9 @@ ion-fab-button[data-desc]::after {
     padding: 5px 10px;
     border-radius: 10px;
     box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+}
+
+.thebinselect {
+    --placeholder-opacity: 1;
+    opacity: 1;
 }
