@@ -410,44 +410,86 @@ this.initV.filter(Lp =>  {
     }
       }
 
-    });
-  });
+      console.log(this.initV);
 
-try {
+      this.intServ.loadingFunc(true);
+      this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
 
-  
-  let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
+      let list: any[] = [];
 
-  console.log(update);
+      this.initV.filter(Lp => {
 
-if(update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
+        let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
+
+        if (l !== undefined) {
+          Lp.fields.place = l.fields.place;
+        }
+
+        this.split.WarehousePutAwayLines.filter(lp => {
 
 
- let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+          if (Lp.fields.PLULPDocumentNo === lp.LP) {
+
+
+            lp.BinCode = Lp.fields.place;
+
+            request.ActivityType = 1;
+            request.BinCode = lp.BinCode;
+            request.ItemNo = lp.ItemNo;
+            request.LP = lp.LP;
+            request.LineNo = lp.LineNo;
+            request.LocationCode = lp.LocationCode;
+            request.No = lp.No;
+            request.Quantity = lp.Quantity;
+            request.ZoneCode = lp.ZoneCode;
+    
+            list.push(request);
+    
+            request = {
+    
+              ActivityType: 1,
+              No: "",
+              ItemNo: "",
+              LineNo: "",
+              ZoneCode: "",
+              LocationCode: "",
+              BinCode: "",
+              Quantity: 0,
+              LP: ""
+            }
+          }
+        });
+      });
+
+  try {
+    
+    let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
+
+    console.log(update);
+
+    if (update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
+    
+      let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+      if (postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
       
+      this.intServ.loadingFunc(false);
 
-if(postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message);
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
 
-this.intServ.loadingFunc(false);
+          this.router.navigate(['page/wms/wmsMain']);
+        }));
 
-this.intServ.alertFunc(this.js.getAlert('success', '',`The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
+  } catch (error) {
 
-this.router.navigate(['page/wms/wmsMain']);
-}));
-
-
-} 
-catch (error) {
-
-  this.intServ.loadingFunc(false);
-  this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
-  
-}     
-
-}));
-
-
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+    
   }
+    
+    }));
+  }
+
 
   async init() {
 
@@ -623,6 +665,7 @@ catch (error) {
    
       });
 
+      this.intServ.loadingFunc(false);
       let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.initV[0].fields.PLULPDocumentNo);
 
       this.storage.set(`init ${this.whsePutAway.fields.No}`, this.initV);
@@ -777,15 +820,17 @@ catch (error) {
     if (this.listsFilter.length > 0) {
       this.barcodeScanner.scan().then(
         async (barCodeData) => {
+          let code = barCodeData.text;
 
-        let code = barCodeData.text;
-    
-        let consulB:any = undefined;
-        this.intServ.loadingFunc(true);
-        consulB = this.lps.find(lp => lp.fields.place === code.toUpperCase());
-      this.listsFilter.filter(lp => {
-        if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
-        });
+        if(code != ''){      
+
+          let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
+          this.intServ.loadingFunc(true);
+          this.listsFilter.filter(lp => {
+
+            if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
+
+          });
 
           console.log(this.lps);
             this.lps.filter((lpC) => {
@@ -795,20 +840,26 @@ catch (error) {
                 }
               });
 
-            });          
-             
-        this.intServ.loadingFunc(false);
-        if(consulB === undefined || consulB === null){
+            });
+            if(confirmBin === undefined || confirmBin === null){
 
-          this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
-          this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-          this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-          this.listT = await this.storage.get(this.whsePutAway.fields.No);
-        }else{
-          this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The bin ${code.toUpperCase()} has already been confirmed. `));
-        }  
-     
-    }
+              this.intServ.loadingFunc(false);
+              this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
+              this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+              this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+              this.listT = await this.storage.get(this.whsePutAway.fields.No);
+            }else{
+              this.intServ.loadingFunc(false);
+              this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
+            }
+           
+          } else {
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
+          }
+
+        }
+        }
       ).catch(
         err => {
           console.log(err);

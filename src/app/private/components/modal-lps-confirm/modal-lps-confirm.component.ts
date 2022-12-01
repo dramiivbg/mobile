@@ -15,6 +15,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   public lpNo:any = '';
   public lpsT:any;
+  public listBin:any[] = [];
 
   public listB:any[] = [];
   @Input() whsePutAway:any;
@@ -32,9 +33,10 @@ export class ModalLpsConfirmComponent implements OnInit {
     if (bin === '') {
       this.listB = this.bins;
       this.lps = this.lpsT;
+      this.listBin = this.bins;
     } else {
-      let line = this.listB.find(bin1 => bin1 === bin.toUpperCase());
-      if(line === null || line === undefined)this.listB.push(bin.toUpperCase());
+      let line = this.listBin.find(bin1 => bin1 === bin);
+      if(line === undefined || line === null)this.listBin.push(bin);
       this.lps = this.lpsT.filter(
         x => {
           return (x.fields.place.toLowerCase().includes(bin.toLowerCase()));
@@ -100,8 +102,7 @@ export class ModalLpsConfirmComponent implements OnInit {
           return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
         }
       )
-       
-
+      
      break;
       }
     
@@ -129,51 +130,30 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   }
 
-  removeAll(){
-    
-    if(this.listB.length === 0){
+removeAll(){
+
+  if(this.listBin.length > 0){
+    this.listBin.filter(bin => {
+        this.lps.filter((lp,index) => {
+          if(lp.fields.place === bin) this.lps.splice(index,1);
+        });
+
+        this.lpsT.filter((lp,index) => {
+          if(lp.fields.place === bin) this.lpsT.splice(index,1);
+          });
+      });
+
+      this.storage.set(`confirm ${this.whsePutAway.fields.No}`,this.lps);
+      this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
+
+  }else{
       this.lps = [];
       this.lpsT = [];
       this.bins = [];
+      this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
+      this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+
     }
-    this.listB.filter(bin => {
-
-      this.lps.filter((lp,index) => {
-
-        if(lp.fields.place === bin) this.lps.splice(index,1);
-
-      });
-
-      this.lpsT.filter((lp,index) => {
-
-        if(lp.fields.place === bin) this.lps.splice(index,1);
-
-      });
-
-    });
-
-    this.listB.filter((Bin,i) => {
-      this.bins.filter((bin,index) => {
-        if(Bin == bin){
-          this.bins.splice(index,1);
-          this.listB.splice(i,1);
-        }
-      });
-    });
-
-   if(this.lps.length === 0){
-    this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
-   }else{
-    this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-   }
-
-   if(this.bins.length === 0){
-
-    this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
-  }else{
-    this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
-  }
     
-
   }
 }
