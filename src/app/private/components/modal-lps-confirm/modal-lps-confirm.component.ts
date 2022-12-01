@@ -107,13 +107,16 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   onSubmit(){
 
+    if(this.lps.length > 0) this.modalCtrl.dismiss({data: this.lps, action: 'register'});
+
+
 
   }
 
   remove(item:any){
 
-   this.lps.map((lp,index) => {
-   if(lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) this.lps.splice(index,1);
+   this.lps.filter((lp,index) => {
+   if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lps.splice(index,1);
   });
 
     this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);

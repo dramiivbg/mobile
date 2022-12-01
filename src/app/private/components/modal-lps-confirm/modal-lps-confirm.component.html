@@ -9,7 +9,7 @@
               <ion-col size="10">
                   <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}"
                       (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline"
-                      placeholder="group by bin code"></ion-searchbar>
+                      placeholder="filter LP No"></ion-searchbar>
               </ion-col>
               <ion-col size="2" class="barcodebtn">
                   <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
