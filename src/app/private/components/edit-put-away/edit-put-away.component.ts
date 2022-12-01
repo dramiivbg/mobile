@@ -101,7 +101,8 @@ export class EditPutAwayComponent implements OnInit {
     console.log(this.whsePutAway, this.listPwL);
     this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
 
-         if(this.initV.length === 0){this.init();}
+    this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
+      || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
 
     if (this.initV.length === 0) this.init();
 
@@ -333,81 +334,27 @@ export class EditPutAwayComponent implements OnInit {
     } else {
 
       this.submit();
-     } 
-
-   
-
-}
-
-
-async submit(){
-
-  this.intServ.alertFunc(this.js.getAlert('confirm', '','Confirm Whse. PutAway?', async() => {
-    let request = {
-
-    ActivityType: 1,
-    No: "",
-    ItemNo: "",
-    LineNo: "",
-    ZoneCode: "",
-    LocationCode: "",
-    BinCode: "",
-    Quantity: 0,
-    LP: ""
-  }
-  
- this.intServ.loadingFunc(true);
-
-this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
-
-  console.log('split =>',this.split);
-
-
-let list:any[] = [];
-
-console.log('initv =>', this.initV);
-console.log('confirm =>', this.lps);
-
-this.initV.filter(Lp =>  {
-
-   let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
-
-   if(l !== undefined) {
-    Lp.fields.place = l.fields.place;
-  }
-
- this.split.WarehousePutAwayLines.filter(lp => {
-
-
-  if(Lp.fields.PLULPDocumentNo === lp.LP){
-
-
-     lp.BinCode = Lp.fields.place;
-        
-    request.ActivityType = 1;
-    request.BinCode = lp.BinCode;
-    request.ItemNo = lp.ItemNo;
-    request.LP = lp.LP;
-    request.LineNo = lp.LineNo;
-    request.LocationCode = lp.LocationCode;
-    request.No = lp.No;
-    request.Quantity = lp.Quantity;
-    request.ZoneCode = lp.ZoneCode;
-
-    list.push(request);
-
-    request = {
-
-      ActivityType: 1,
-      No: "",
-      ItemNo: "",
-      LineNo: "",
-      ZoneCode: "",
-      LocationCode: "",
-      BinCode: "",
-      Quantity: 0,
-      LP: ""
     }
+
+
+
+  }
+
+
+  async submit() {
+
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', 'Confirm Whse. PutAway?', async () => {
+      let request = {
+
+        ActivityType: 1,
+        No: "",
+        ItemNo: "",
+        LineNo: "",
+        ZoneCode: "",
+        LocationCode: "",
+        BinCode: "",
+        Quantity: 0,
+        LP: ""
       }
 
       console.log(this.initV);
@@ -442,11 +389,11 @@ this.initV.filter(Lp =>  {
             request.No = lp.No;
             request.Quantity = lp.Quantity;
             request.ZoneCode = lp.ZoneCode;
-    
+
             list.push(request);
-    
+
             request = {
-    
+
               ActivityType: 1,
               No: "",
               ItemNo: "",
@@ -461,32 +408,32 @@ this.initV.filter(Lp =>  {
         });
       });
 
-  try {
-    
-    let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
+      try {
 
-    console.log(update);
+        let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
 
-    if (update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
-    
-      let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+        console.log(update);
 
-      if (postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
-      
-      this.intServ.loadingFunc(false);
+        if (update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
+
+        let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+        if (postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
+
+        this.intServ.loadingFunc(false);
 
         this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
 
           this.router.navigate(['page/wms/wmsMain']);
         }));
 
-  } catch (error) {
+      } catch (error) {
 
-    this.intServ.loadingFunc(false);
-    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-    
-  }
-    
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+
+      }
+
     }));
   }
 
@@ -643,26 +590,21 @@ this.initV.filter(Lp =>  {
           lp.fields.PLUBinCode = line.fields.PLUBinCode;
           lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
-        console.log(this.listPwL);
-        this.listPwL.filter(
-          x => {
-           switch(x.fields.ActionType){
-              case "Place":
-                if(lp.fields.PLUNo === x.fields.ItemNo){
-                  lp.fields.place = x.fields.BinCode;
-                  break;
-                } 
+          this.listPwL.filter(
+            x => {
+              switch (x.fields.ActionType) {
+                case "Place":
+                  if (lp.fields.PLUNo === x.fields.ItemNo) {
+                    lp.fields.place = x.fields.BinCode;
+                    this.initV.push(lp);
+                    this.QtyTotal++;
+                    break;
+                  }
+              }
             }
-          }
-        )
+          )
+        }
 
-        this.initV.push(lp);
-        this.QtyTotal ++;
-
-      
-
-       }
-   
       });
 
       this.intServ.loadingFunc(false);
@@ -726,10 +668,10 @@ this.initV.filter(Lp =>  {
 
       case "Pallet":
 
-        // this.intServ.loadingFunc(true);
-         let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-         let lps:any[] = [];
-         pallet.fields.filter(async (lp, index) => {
+        this.intServ.loadingFunc(true);
+        let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+        let lps: any[] = [];
+        pallet.fields.filter(async (lp, index) => {
 
           let res = await this.wmsService.getLpNo(lp.PLUNo);
 
@@ -759,8 +701,8 @@ this.initV.filter(Lp =>  {
           lps.push(p);
 
         });
-      //  this.intServ.loadingFunc(false);
-         const modal = await this.modalCtrl.create({
+        this.intServ.loadingFunc(false);
+        const modal = await this.modalCtrl.create({
           component: ModalShowLpsComponent,
           componentProps: { lps, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo }
         });
@@ -822,43 +764,48 @@ this.initV.filter(Lp =>  {
         async (barCodeData) => {
           let code = barCodeData.text;
 
-        if(code != ''){      
+          if (code != '') {
 
-          let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
-          this.intServ.loadingFunc(true);
-          this.listsFilter.filter(lp => {
+            let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
+            this.intServ.loadingFunc(true);
+            this.listsFilter.filter(lp => {
 
-            if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
-
-          });
-
-          console.log(this.lps);
-            this.lps.filter((lpC) => {
-              this.listsFilter.filter((lp, index) => {
-               if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
-                  this.listsFilter.splice(index, 1);
-                }
-              });
+              if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
 
             });
-            if(confirmBin === undefined || confirmBin === null){
 
+            console.log(this.lps);
+
+            if (this.lps.length > 0) {
+
+              this.lps.filter((lpC) => {
+
+                this.listsFilter.filter((lp, index) => {
+
+                  if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
+                    this.listsFilter.splice(index, 1);
+                  }
+                });
+
+              });
+              if (confirmBin === undefined || confirmBin === null) {
+
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
+                this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+                this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+                this.listT = await this.storage.get(this.whsePutAway.fields.No);
+              } else {
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
+              }
+
+            } else {
               this.intServ.loadingFunc(false);
-              this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
-              this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-              this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-              this.listT = await this.storage.get(this.whsePutAway.fields.No);
-            }else{
-              this.intServ.loadingFunc(false);
-              this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
+              this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
             }
-           
-          } else {
-            this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
-          }
 
-        }
+          }
         }
       ).catch(
         err => {
@@ -867,7 +814,7 @@ this.initV.filter(Lp =>  {
       )
 
 
-    }else {
+    } else {
 
       this.intServ.alertFunc(this.js.getAlert('alert', '', 'Please scan LP'));
     }
