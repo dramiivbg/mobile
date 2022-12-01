@@ -357,103 +357,12 @@ export class EditPutAwayComponent implements OnInit {
         LP: ""
       }
 
-      let line;
-
-
+      console.log(this.initV);
 
       this.intServ.loadingFunc(true);
-
-
       this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
 
-      console.log()
-
-      this.split.WarehousePutAwayLines.filter(item => {
-
-
-        if (this.items.length > 0) {
-
-
-          let line = this.items.find(Item => Item === item.ItemNo);
-
-          if (line === null || line === undefined) {
-
-            this.items.push(item.ItemNo);
-          }
-        } else {
-
-          this.items.push(item.ItemNo);
-
-        }
-
-
-      });
-
-
-      let tempory: any[] = [];
-
-      for (const key in this.items) {
-
-
-        this.split.WarehousePutAwayLines.filter(Item => {
-
-          if (Item.ItemNo === this.items[key]) {
-
-            tempory.push(Item);
-
-          }
-        });
-
-
-        this.groupItems[this.items[key]] = tempory;
-
-        tempory = [];
-
-      }
-
-
-      console.log('split put away =>', this.groupItems);
-
-      console.log('put away =>', this.warePW);
-
-
-      console.log('put away line =>', this.listPwL);
-
-
-      for (const key in this.groupItems) {
-
-
-        this.groupItems[key].filter(lp => {
-
-
-          lp.BinCode = this.groupItems[key][0].BinCode;
-
-        });
-      }
-
-      for (const key in this.groupItems) {
-
-
-        this.groupItems[key].filter(Lp => {
-
-          this.split.WarehousePutAwayLines.filter(lp => {
-
-
-            if (lp.LP === Lp.LP) {
-
-              lp = Lp;
-            }
-
-          })
-
-        });
-
-      }
-
       let list: any[] = [];
-
-
-
 
       this.initV.filter(Lp => {
 
@@ -470,84 +379,64 @@ export class EditPutAwayComponent implements OnInit {
 
 
             lp.BinCode = Lp.fields.place;
+
+            request.ActivityType = 1;
+            request.BinCode = lp.BinCode;
+            request.ItemNo = lp.ItemNo;
+            request.LP = lp.LP;
+            request.LineNo = lp.LineNo;
+            request.LocationCode = lp.LocationCode;
+            request.No = lp.No;
+            request.Quantity = lp.Quantity;
+            request.ZoneCode = lp.ZoneCode;
+    
+            list.push(request);
+    
+            request = {
+    
+              ActivityType: 1,
+              No: "",
+              ItemNo: "",
+              LineNo: "",
+              ZoneCode: "",
+              LocationCode: "",
+              BinCode: "",
+              Quantity: 0,
+              LP: ""
+            }
           }
-
-        })
+        });
       });
 
-      console.log(this.split);
+  try {
+    
+    let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
 
-      this.split.WarehousePutAwayLines.filter(lp => {
+    console.log(update);
 
-        request.ActivityType = 1;
-        request.BinCode = lp.BinCode;
-        request.ItemNo = lp.ItemNo;
-        request.LP = lp.LP;
-        request.LineNo = lp.LineNo;
-        request.LocationCode = lp.LocationCode;
-        request.No = lp.No;
-        request.Quantity = lp.Quantity;
-        request.ZoneCode = lp.ZoneCode;
+    if (update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
+    
+      let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
 
-        list.push(request);
+      if (postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
+      
+      this.intServ.loadingFunc(false);
 
-        request = {
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
 
-          ActivityType: 1,
-          No: "",
-          ItemNo: "",
-          LineNo: "",
-          ZoneCode: "",
-          LocationCode: "",
-          BinCode: "",
-          Quantity: 0,
-          LP: ""
-        }
+          this.router.navigate(['page/wms/wmsMain']);
+        }));
 
+  } catch (error) {
 
-      });
-
-
-
-      let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
-
-      console.log(update);
-
-      if (!update.Error && !update.error) {
-
-
-        let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
-
-
-
-        if (!postAway.Error) {
-
-          this.intServ.loadingFunc(false);
-
-          this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
-
-
-            this.router.navigate(['page/wms/wmsMain']);
-          }));
-
-        } else {
-
-          this.intServ.loadingFunc(false);
-
-          this.intServ.alertFunc(this.js.getAlert('error', '', (postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message))
-
-
-        }
-
-      } else {
-        this.intServ.loadingFunc(false);
-
-        this.intServ.alertFunc(this.js.getAlert('error', '', 'An error occurred while serializing the json in Business Central'))
-
-      }
-
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+    
+  }
+    
     }));
   }
+
 
   async init() {
 
@@ -718,6 +607,7 @@ export class EditPutAwayComponent implements OnInit {
 
       });
 
+      this.intServ.loadingFunc(false);
       let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.initV[0].fields.PLULPDocumentNo);
 
       this.storage.set(`init ${this.whsePutAway.fields.No}`, this.initV);
@@ -872,9 +762,11 @@ export class EditPutAwayComponent implements OnInit {
     if (this.listsFilter.length > 0) {
       this.barcodeScanner.scan().then(
         async (barCodeData) => {
-
           let code = barCodeData.text;
 
+        if(code != ''){      
+
+          let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
           this.intServ.loadingFunc(true);
           this.listsFilter.filter(lp => {
 
@@ -896,21 +788,24 @@ export class EditPutAwayComponent implements OnInit {
               });
 
             });
-            this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
-            this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-            this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-            this.listT = await this.storage.get(this.whsePutAway.fields.No);
+            if(confirmBin === undefined || confirmBin === null){
 
-
+              this.intServ.loadingFunc(false);
+              this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
+              this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+              this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+              this.listT = await this.storage.get(this.whsePutAway.fields.No);
+            }else{
+              this.intServ.loadingFunc(false);
+              this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
+            }
+           
           } else {
             this.intServ.loadingFunc(false);
             this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
           }
 
-
-
-
+        }
         }
       ).catch(
         err => {
