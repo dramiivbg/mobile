@@ -12,7 +12,7 @@ import { Storage } from '@ionic/storage';
 import { PassThrough, Stream } from 'stream';
 import { CssSelector } from '@angular/compiler';
 import { ModalShowLpsComponent } from '../modal-show-lps/modal-show-lps.component';
-import { empty } from 'rxjs';
+import { empty, UnsubscriptionError } from 'rxjs';
 import { ModalLpsConfirmComponent } from '../modal-lps-confirm/modal-lps-confirm.component';
 
 @Component({
@@ -106,7 +106,10 @@ export class EditPutAwayComponent implements OnInit {
 
          if(this.initV.length === 0)this.init();
 
-         if(this.initV.length > 0) this.QtyTotal = this.initV.length;   this.intServ.loadingFunc(false);
+         if(this.initV.length > 0){
+          this.QtyTotal = this.initV.length;   
+          this.intServ.loadingFunc(false);
+        }
       this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
       console.log(await this.storage.get(this.whsePutAway.fields.No));
       this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined ||  await this.storage.get(this.whsePutAway.fields.No) != null)?  await this.storage.get(this.whsePutAway.fields.No): [];
@@ -120,7 +123,7 @@ export class EditPutAwayComponent implements OnInit {
 
     if(this.listsFilter.length > 0) this.QtyTake = this.lps.length + this.listsFilter.length;
           
-    let bin = (this.listsFilter.length > 0)? await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo): null;
+    let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined || await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`bin ${this.whsePutAway.fields.No}`): null;
 
     this.bins = bin.Bins;
       
@@ -456,7 +459,9 @@ let list:any[] = [];
 
    let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
 
-   if(l != undefined) Lp.fields.place = l.fields.place;
+   if(l !== undefined) {
+    Lp.fields.place = l.fields.place;
+  }
 
     this.split.WarehousePutAwayLines.filter(lp => {
 
@@ -715,7 +720,9 @@ async init(){
 
       let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.initV[0].fields.PLULPDocumentNo);
 
-      this.storage.get(`init ${this.whsePutAway.fields.No}`, this.initV);
+      this.storage.set(`init ${this.whsePutAway.fields.No}` ,this.initV);
+
+      this.storage.set(`bin ${this.whsePutAway.fields.No}`, bin);
     
       this.bins = bin.Bins;
 
@@ -755,6 +762,8 @@ this.intServ.loadingFunc(false);
         }
 
       });
+
+      this.storage.set(this.whsePutAway.fields.No, this.listsFilter); 
     this.intServ.loadingFunc(false);
 
 }
@@ -853,6 +862,7 @@ async show(lp:any){
     this.QtyTake = 0;
     this.storage.remove(this.whsePutAway.fields.No);
    // this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+   this.storage.remove(`init ${this.whsePutAway.fields.No}`); 
 
   }
 

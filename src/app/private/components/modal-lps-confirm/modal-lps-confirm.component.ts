@@ -119,6 +119,10 @@ export class ModalLpsConfirmComponent implements OnInit {
    if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lps.splice(index,1);
   });
 
+  this.lpsT.filter((lp,index) => {
+    if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index,1);
+   });
+
     this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
 
   }
@@ -128,5 +132,6 @@ export class ModalLpsConfirmComponent implements OnInit {
     this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
     this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
     this.bins = [];
+    this.lpsT = [];
   }
 }
