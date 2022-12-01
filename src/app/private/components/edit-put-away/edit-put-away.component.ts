@@ -104,7 +104,7 @@ export class EditPutAwayComponent implements OnInit {
       this.initV =  (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
          || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`init ${this.whsePutAway.fields.No}`): [];
 
-         if(this.initV.length === 0)this.init();
+         if(this.initV.length === 0){this.init();}
 
          if(this.initV.length > 0){
           this.QtyTotal = this.initV.length;   
@@ -356,106 +356,20 @@ async submit(){
     Quantity: 0,
     LP: ""
   }
-
-  let line;
-
-
-
+  
  this.intServ.loadingFunc(true);
 
+this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
 
-  this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
+  console.log('split =>',this.split);
 
-  console.log()
-
-  this.split.WarehousePutAwayLines.filter(item => {
-
-
-   if(this.items.length > 0){
-
-
-    let line = this.items.find(Item => Item === item.ItemNo);
-
-    if(line === null || line === undefined){
-
-      this.items.push(item.ItemNo);
-    }
-   }else{
-
-    this.items.push(item.ItemNo);
-
-   }
-  
-  
-  });
-
-
-  let tempory:any[] = [];
-
-  for (const key in this.items) {
-
-
-    this.split.WarehousePutAwayLines.filter(Item => {
-
-      if(Item.ItemNo ===  this.items[key]){
-
-        tempory.push(Item);
-
-      }
-    });
-
-
-    this.groupItems[this.items[key]] = tempory;
-
-    tempory = [];
-    
-  }
-
-
-  console.log('split put away =>',this.groupItems);
-
-  console.log('put away =>',this.warePW);
-
-
-  console.log('put away line =>',this.listPwL);
-
-
-    for (const key in this.groupItems) {
-
-
-    this.groupItems[key].filter(lp => {
-
-
-        lp.BinCode = this.groupItems[key][0].BinCode;
-
-    });
-  }
-
-    for (const key in this.groupItems) {
-
-
-    this.groupItems[key].filter(Lp => {
-
-   this.split.WarehousePutAwayLines.filter(lp => {
-
-
-      if(lp.LP === Lp.LP){
-
-        lp = Lp;
-      }
-
-    })
-     
-    });
- 
-  }
 
 let list:any[] = [];
 
+console.log('initv =>', this.initV);
+console.log('confirm =>', this.lps);
 
-
-
-  this.initV.filter(Lp =>  {
+this.initV.filter(Lp =>  {
 
    let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
 
@@ -463,22 +377,14 @@ let list:any[] = [];
     Lp.fields.place = l.fields.place;
   }
 
-    this.split.WarehousePutAwayLines.filter(lp => {
+ this.split.WarehousePutAwayLines.filter(lp => {
 
 
-      if(Lp.fields.PLULPDocumentNo === lp.LP){
+  if(Lp.fields.PLULPDocumentNo === lp.LP){
 
 
-        lp.BinCode = Lp.fields.place;
-      }
-
-    })
-  });
-
-  console.log(this.split);
-
-  this.split.WarehousePutAwayLines.filter(lp => {
-
+     lp.BinCode = Lp.fields.place;
+        
     request.ActivityType = 1;
     request.BinCode = lp.BinCode;
     request.ItemNo = lp.ItemNo;
@@ -503,47 +409,36 @@ let list:any[] = [];
       Quantity: 0,
       LP: ""
     }
+      }
 
-
+    });
   });
 
+try {
 
-
+  
   let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
 
   console.log(update);
 
-if(!update.Error && !update.error){
-
+if(update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
 
 let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
 
-
-  
-if(!postAway.Error){
+if(postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message);
 
 this.intServ.loadingFunc(false);
 
 this.intServ.alertFunc(this.js.getAlert('success', '',`The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
 
-  
 this.router.navigate(['page/wms/wmsMain']);
 }));
 
-}else{
+} catch (error) {
 
-this.intServ.loadingFunc(false);
-
-this.intServ.alertFunc(this.js.getAlert('error', '',(postAway.Error === undefined) ? postAway.error.message: postAway.Error.Message ))
-
-
-}
-
-}else{
-this.intServ.loadingFunc(false);
-
-this.intServ.alertFunc(this.js.getAlert('error', '','An error occurred while serializing the json in Business Central'))
-
+  this.intServ.loadingFunc(false);
+  this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
+  
 }
 
 }));
@@ -701,19 +596,24 @@ async init(){
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
+        console.log(this.listPwL);
         this.listPwL.filter(
           x => {
            switch(x.fields.ActionType){
               case "Place":
                 if(lp.fields.PLUNo === x.fields.ItemNo){
                   lp.fields.place = x.fields.BinCode;
-                  this.initV.push(lp);
-                  this.QtyTotal ++;
                   break;
                 } 
             }
           }
         )
+
+        this.initV.push(lp);
+        this.QtyTotal ++;
+
+      
+
        }
    
       });
@@ -778,7 +678,7 @@ async show(lp:any){
 
       case "Pallet":
 
-         this.intServ.loadingFunc(true);
+        // this.intServ.loadingFunc(true);
          let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
          let lps:any[] = [];
          pallet.fields.filter(async (lp, index) => {
@@ -811,7 +711,7 @@ async show(lp:any){
           lps.push(p);
           
         });
-        this.intServ.loadingFunc(false);
+      //  this.intServ.loadingFunc(false);
          const modal = await this.modalCtrl.create({
           component: ModalShowLpsComponent,
           componentProps: {lps, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo}
@@ -875,15 +775,17 @@ async show(lp:any){
 
         let code = barCodeData.text;
     
+        let consulB:any = undefined;
         this.intServ.loadingFunc(true);
+        consulB = this.lps.find(lp => lp.fields.place === code.toUpperCase());
       this.listsFilter.filter(lp => {
-
-        if(lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
+        if(lp.fields.place.toUpperCase() === code.toUpperCase()) {
+            this.lps.push(lp);
+        }
 
       });
 
       console.log(this.lps);
-
       if(this.lps.length > 0){
 
         this.lps.filter((lpC) => {
@@ -897,10 +799,16 @@ async show(lp:any){
          
         });
         this.intServ.loadingFunc(false);
-       this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
-       this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-       this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-       this.listT = await this.storage.get(this.whsePutAway.fields.No);
+        if(consulB === undefined || consulB === null){
+
+          this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
+          this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+          this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+          this.listT = await this.storage.get(this.whsePutAway.fields.No);
+        }else{
+          this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The bin ${code.toUpperCase()} has already been confirmed. `));
+        }
+      
 
 
       }else{

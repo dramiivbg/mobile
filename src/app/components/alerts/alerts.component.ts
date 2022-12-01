@@ -96,6 +96,9 @@ cancel(){
   async onSi(){
 
     this.intServ.loadingFunc(true);
+    this.storage.remove('whsePutAway');
+    this.storage.remove('setPutAway');
+    
        let dataPw = this.wmsService.getPutAway();
 
        console.log('put away',dataPw);
