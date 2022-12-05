@@ -8,7 +8,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          Item No
+          <b>Item No</b>
         </ion-col>
         <ion-col size="6">
           {{item.ItemNo}}
@@ -16,15 +16,15 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          UoM
+          <b>UoM</b>
         </ion-col>
         <ion-col size="6">
           {{item.UnitofMeasureCode}}
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="6">
-          Qty
+        <ion-col class="qtytoreceive" size="6">
+          <b>Qty to Receive</b>
         </ion-col>
         <ion-col size="6">
           <ion-input type="number" formControlName="TotalToReceive" value="0"></ion-input>
