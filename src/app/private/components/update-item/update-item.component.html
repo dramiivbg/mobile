@@ -3,12 +3,12 @@
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col>
-          <ion-label>Receive ITEM</ion-label>
+          <ion-label>Receive Item</ion-label>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          Item No
+          <b>Item No</b>
         </ion-col>
         <ion-col size="6">
           {{item.ItemNo}}
@@ -16,23 +16,15 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          Unit of measure
+          <b>UoM</b>
         </ion-col>
         <ion-col size="6">
           {{item.UnitofMeasureCode}}
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="6">
-          Pending to receive
-        </ion-col>
-        <ion-col size="6">
-          {{item.Quantity}}
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="6">
-          Qty
+        <ion-col class="qtytoreceive" size="6">
+          <b>Qty to Receive</b>
         </ion-col>
         <ion-col size="6">
           <ion-input type="number" formControlName="TotalToReceive" value="0"></ion-input>
