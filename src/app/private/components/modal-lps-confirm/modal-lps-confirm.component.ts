@@ -10,12 +10,12 @@ import { Storage } from '@ionic/storage';
 })
 export class ModalLpsConfirmComponent implements OnInit {
 
-  @Input() lps:any;
-  @Input() bins:any;
+  @Input() lps:any[];
+  @Input() bins:any[];
 
   public lpNo:any = '';
   public lpsT:any;
-  public listBin:any[] = [];
+  public Bin:string = '';
 
   @Input() whsePutAway:any;
 
@@ -33,15 +33,14 @@ export class ModalLpsConfirmComponent implements OnInit {
 
     if (bin === '') {
       this.lps = this.lpsT;
-      this.listBin = this.bins;
+      this.Bin = '';
     } else {
-      let line = this.listBin.find(bin1 => bin1 === bin);
-      if(line === undefined || line === null)this.listBin.push(bin);
+     this.Bin = bin.toUpperCase();
       this.lps = this.lpsT.filter(
         x => {
           return (x.fields.place.toLowerCase().includes(bin.toLowerCase()));
         }
-      )
+      );
     }
   }
 
@@ -61,16 +60,13 @@ export class ModalLpsConfirmComponent implements OnInit {
            this.lpNo = code.toUpperCase();
  
  
-           this.onFilter('', this.lpNo);
-           
-     
-       
+           this.onFilter('', this.lpNo);       
          }
        ).catch(
          err => {
            console.log(err);
          }
-       )
+       );
       
       }
 
@@ -112,8 +108,6 @@ export class ModalLpsConfirmComponent implements OnInit {
 
     if(this.lps.length > 0) this.modalCtrl.dismiss({data: this.lps, action: 'register'});
 
-
-
   }
 
   remove(item:any){
@@ -126,34 +120,39 @@ export class ModalLpsConfirmComponent implements OnInit {
     if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index,1);
    });
 
-    this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+  this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
 
   }
 
 removeAll(){
-
-  if(this.listBin.length > 0){
-    this.listBin.filter(bin => {
-        this.lps.filter((lp,index) => {
-          if(lp.fields.place === bin) this.lps.splice(index,1);
-        });
-
-        this.lpsT.filter((lp,index) => {
-          if(lp.fields.place === bin) this.lpsT.splice(index,1);
-          });
-      });
-
-      this.storage.set(`confirm ${this.whsePutAway.fields.No}`,this.lps);
-      this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
-
+  if(this.Bin === ''){
+    this.lps = [];
+    this.lpsT = [];
+    this.bins = [];
+    this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
+    this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+    this.Bin = '';
   }else{
-      this.lps = [];
-      this.lpsT = [];
-      this.bins = [];
-      this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
-      this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
 
-    }
-    
+    let Lps:any[] = [];
+    let LpsT:any[] = [];
+
+    for (const i in  this.lps) {
+      
+       if( this.lps[Number(i)].fields.place !== this.Bin) Lps.push(this.lps[Number(i)]);
+      
+      }
+   for (const j in  this.lpsT) {
+
+        if( this.lpsT[Number(j)].fields.place !== this.Bin) LpsT.push(this.lpsT[Number(j)]);
+      }
+
+      this.lps = Lps;
+      this.lpsT = LpsT;
+      
+    this.storage.set(`confirm ${this.whsePutAway.fields.No}`,this.lps);
+    this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
   }
+     
+    }
 }

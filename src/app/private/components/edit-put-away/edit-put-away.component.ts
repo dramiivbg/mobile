@@ -89,7 +89,6 @@ export class EditPutAwayComponent implements OnInit {
 
   ngAfterViewInit() {
 
-
   }
   async ngOnInit() {
 
@@ -100,6 +99,7 @@ export class EditPutAwayComponent implements OnInit {
     this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
     console.log(this.whsePutAway, this.listPwL);
     this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
+    this.pallet = await  this.storage.get(`pallet ${this.pallet}`);
 
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
       || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
@@ -107,9 +107,9 @@ export class EditPutAwayComponent implements OnInit {
     if (this.initV.length === 0) this.init();
 
     if (this.initV.length > 0) {
-      this.QtyTotal = this.initV.length;
-      this.intServ.loadingFunc(false);
+      this.QtyTotal = this.initV.length;   
     }
+    this.intServ.loadingFunc(false);
     this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
     console.log(await this.storage.get(this.whsePutAway.fields.No));
     this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
@@ -292,6 +292,8 @@ export class EditPutAwayComponent implements OnInit {
 
   async onSubmit() {
 
+    this.initV = await this.storage.get(`init ${this.whsePutAway.fields.No}`);
+
     if (this.initV.length !== this.lps.length) {
 
       let res: any[] = [];
@@ -444,14 +446,12 @@ export class EditPutAwayComponent implements OnInit {
 
     const lps = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, false);
 
-
     const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
 
-
+    const binPallet = await this.wmsService.GetDefaultBin();
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
-
-
+    console.log('bin Default =>', binPallet);
 
     if (!pallets.Error) {
 
@@ -474,8 +474,6 @@ export class EditPutAwayComponent implements OnInit {
 
                 if (j != i) {
 
-
-
                   let con = this.pallet.splice(Number(j), 1);
                   console.log(i, j);
                   console.log(con)
@@ -492,7 +490,6 @@ export class EditPutAwayComponent implements OnInit {
           }
         }
       }
-
 
       for (const i in this.pallet) {
 
@@ -511,15 +508,12 @@ export class EditPutAwayComponent implements OnInit {
         }
 
       }
-
       for (const i in this.pallet) {
         for (const j in this.pallet[i].fields) {
 
           let line = listLp.find(lp => lp.fields.PLULPDocumentNo === this.pallet[i].fields[j].PLUNo);
 
           this.pallet[i].fields[j].PLUWhseLineNo = (line != null || line != undefined) ? line.fields.PLUWhseLineNo : this.pallet[i].fields[j].PLUWhseLineNo;
-
-
         }
 
       }
@@ -537,9 +531,7 @@ export class EditPutAwayComponent implements OnInit {
         })
       }
 
-
       listPallet = await this.wmsService.ListLP(pallets);
-
 
       listPallet.filter((lp, index) => {
 
@@ -547,46 +539,31 @@ export class EditPutAwayComponent implements OnInit {
 
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
-
-
+       // lp.fields.place = binPallet;
         let find = this.initV.find(lpI => lpI.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
         if (find === null || find === undefined) {
 
           this.initV.push(lp);
           this.QtyTotal++;
-
         }
-
 
       });
 
     }
 
     if (!lps.Error) {
-
-
       let listLp = await this.wmsService.ListLP(lps);
-
       let listLpH = await this.wmsService.ListLPH(lps);
-
-
-
       listLp.filter(lp => {
-
         let find2: any = undefined;
         for (const key in this.pallet) {
 
           find2 = this.pallet[key].fields.find(lpI => lpI.PLUNo === lp.fields.PLULPDocumentNo);
         }
-
         console.log(lp, this.pallet);
-
-
         if (find2 === undefined || find2 === null) {
-
           let line = listLpH.find(lpH => lpH.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
           lp.fields.PLUBinCode = line.fields.PLUBinCode;
           lp.fields.PLUItemNo = line.fields.PLUItemNo;
 
@@ -614,13 +591,13 @@ export class EditPutAwayComponent implements OnInit {
 
       this.storage.set(`bin ${this.whsePutAway.fields.No}`, bin);
 
+      this.storage.set(`pallet ${this.pallet}`, this.pallet);
+
       this.bins = bin.Bins;
 
       console.log(this.initV);
 
     } else {
-
-
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Whse. Put Away this void', () => {
 
@@ -629,11 +606,21 @@ export class EditPutAwayComponent implements OnInit {
 
     }
 
-
     this.intServ.loadingFunc(false);
 
   }
 
+
+  public ascendant(){
+
+    let aux;
+ 
+  }
+
+  public descendent(){
+
+
+  }
 
   async onScanAll() {
 
@@ -767,6 +754,7 @@ export class EditPutAwayComponent implements OnInit {
         if(code != ''){      
 
           let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
+          let editList = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
           this.intServ.loadingFunc(true);
           this.listsFilter.filter(lp => {
 
@@ -795,7 +783,15 @@ export class EditPutAwayComponent implements OnInit {
               this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
               this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
               this.listT = await this.storage.get(this.whsePutAway.fields.No);
-            }else{
+            }else if(editList != undefined){
+
+              this.intServ.loadingFunc(false);
+              this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
+              this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+              this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+              this.listT = await this.storage.get(this.whsePutAway.fields.No);
+            }
+              else{
               this.intServ.loadingFunc(false);
               this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
             }
