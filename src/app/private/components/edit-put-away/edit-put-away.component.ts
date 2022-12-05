@@ -753,16 +753,10 @@ export class EditPutAwayComponent implements OnInit {
 
           if (code != '') {
 
-<<<<<<< HEAD
           let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
           let editList = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
           this.intServ.loadingFunc(true);
           this.listsFilter.filter(lp => {
-=======
-            let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
-            this.intServ.loadingFunc(true);
-            this.listsFilter.filter(lp => {
->>>>>>> fdbaab39edcba41fe3948187a5a308f4dc3a7e95
 
               if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
 
@@ -789,18 +783,8 @@ export class EditPutAwayComponent implements OnInit {
                 this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
                 this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
                 this.listT = await this.storage.get(this.whsePutAway.fields.No);
-              } else {
-                this.intServ.loadingFunc(false);
-                this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
-              }
+              
 
-            } else {
-              this.intServ.loadingFunc(false);
-<<<<<<< HEAD
-              this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
-              this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-              this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-              this.listT = await this.storage.get(this.whsePutAway.fields.No);
             }else if(editList != undefined){
 
               this.intServ.loadingFunc(false);
@@ -812,12 +796,10 @@ export class EditPutAwayComponent implements OnInit {
               else{
               this.intServ.loadingFunc(false);
               this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
-=======
-              this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
->>>>>>> fdbaab39edcba41fe3948187a5a308f4dc3a7e95
             }
 
           }
+        }
         }
       ).catch(
         err => {
