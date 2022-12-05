@@ -17,9 +17,10 @@ export class ModalLpsConfirmComponent implements OnInit {
   public lpsT:any;
   public Bin:string = '';
 
-  @Input() whsePutAway:any;
+  public listB: any[] = [];
+  @Input() whsePutAway: any;
 
-  constructor( private barcodeScanner: BarcodeScanner, private modalCtrl: ModalController, private storage: Storage) { }
+  constructor(private barcodeScanner: BarcodeScanner, private modalCtrl: ModalController, private storage: Storage) { }
 
   ngOnInit() {
     this.lpsT = this.lps;
@@ -28,10 +29,9 @@ export class ModalLpsConfirmComponent implements OnInit {
   }
 
 
-  onFilterBin(bin:any){
-
-
+  onFilterBin(bin: any) {
     if (bin === '') {
+      this.listB = this.bins;
       this.lps = this.lpsT;
       this.Bin = '';
     } else {
@@ -44,23 +44,23 @@ export class ModalLpsConfirmComponent implements OnInit {
     }
   }
 
-  back(){
+  back() {
 
-    this.modalCtrl.dismiss({data: this.lps, bin:this.bins});
+    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins });
 
   }
-  autoComplet(){
-  
-    this.barcodeScanner.scan().then(
-       async  (barCodeData) => {
+  autoComplet() {
 
-       
-          let code = barCodeData.text;
-     
-           this.lpNo = code.toUpperCase();
- 
- 
-           this.onFilter('', this.lpNo);       
+    this.barcodeScanner.scan().then(
+      async (barCodeData) => {
+
+
+        let code = barCodeData.text;
+
+        this.lpNo = code.toUpperCase();
+
+
+        this.onFilter('', this.lpNo);   
          }
        ).catch(
          err => {
@@ -69,16 +69,19 @@ export class ModalLpsConfirmComponent implements OnInit {
        );
       
       }
+ 
+
+  
 
 
-  onFilter(e, lpNo:any = ''){
+  onFilter(e, lpNo: any = '') {
 
-   switch(lpNo){
-    case '':
+    switch (lpNo) {
+      case '':
         let val = e.target.value;
 
         console.log(val);
-    
+
         if (val === '') {
           this.lps = this.lpsT;
         } else {
@@ -89,36 +92,36 @@ export class ModalLpsConfirmComponent implements OnInit {
           )
         }
         break;
-    
-     default:
-    
-    
-      this.lps = this.lpsT.filter(
-        x => {
-          return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
-        }
-      )
-      
-     break;
-      }
-    
-  }
 
-  onSubmit(){
+      default:
 
-    if(this.lps.length > 0) this.modalCtrl.dismiss({data: this.lps, action: 'register'});
+
+        this.lps = this.lpsT.filter(
+          x => {
+            return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
+          }
+        )
+
+        break;
+    }
 
   }
 
-  remove(item:any){
+  onSubmit() {
 
-   this.lps.filter((lp,index) => {
-   if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lps.splice(index,1);
-  });
+    if (this.lps.length > 0) this.modalCtrl.dismiss({ data: this.lps, action: 'register' });
 
-  this.lpsT.filter((lp,index) => {
-    if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index,1);
-   });
+  }
+
+  remove(item: any) {
+
+    this.lps.filter((lp, index) => {
+      if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lps.splice(index, 1);
+    });
+
+    this.lpsT.filter((lp, index) => {
+      if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index, 1);
+    });
 
   this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
 

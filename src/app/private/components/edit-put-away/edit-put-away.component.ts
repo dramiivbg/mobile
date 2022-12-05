@@ -391,11 +391,11 @@ export class EditPutAwayComponent implements OnInit {
             request.No = lp.No;
             request.Quantity = lp.Quantity;
             request.ZoneCode = lp.ZoneCode;
-    
+
             list.push(request);
-    
+
             request = {
-    
+
               ActivityType: 1,
               No: "",
               ItemNo: "",
@@ -410,32 +410,32 @@ export class EditPutAwayComponent implements OnInit {
         });
       });
 
-  try {
-    
-    let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
+      try {
 
-    console.log(update);
+        let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
 
-    if (update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
-    
-      let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+        console.log(update);
 
-      if (postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
-      
-      this.intServ.loadingFunc(false);
+        if (update.Error || update.error) throw new Error('An error occurred while serializing the json in Business Central');
+
+        let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+        if (postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
+
+        this.intServ.loadingFunc(false);
 
         this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
 
           this.router.navigate(['page/wms/wmsMain']);
         }));
 
-  } catch (error) {
+      } catch (error) {
 
-    this.intServ.loadingFunc(false);
-    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-    
-  }
-    
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+
+      }
+
     }));
   }
 
@@ -751,34 +751,52 @@ export class EditPutAwayComponent implements OnInit {
         async (barCodeData) => {
           let code = barCodeData.text;
 
-        if(code != ''){      
+          if (code != '') {
 
+<<<<<<< HEAD
           let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
           let editList = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
           this.intServ.loadingFunc(true);
           this.listsFilter.filter(lp => {
+=======
+            let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
+            this.intServ.loadingFunc(true);
+            this.listsFilter.filter(lp => {
+>>>>>>> fdbaab39edcba41fe3948187a5a308f4dc3a7e95
 
-            if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
-
-          });
-
-          console.log(this.lps);
-
-          if (this.lps.length > 0) {
-
-            this.lps.filter((lpC) => {
-
-              this.listsFilter.filter((lp, index) => {
-
-                if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
-                  this.listsFilter.splice(index, 1);
-                }
-              });
+              if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
 
             });
-            if(confirmBin === undefined || confirmBin === null){
 
+            console.log(this.lps);
+
+            if (this.lps.length > 0) {
+
+              this.lps.filter((lpC) => {
+
+                this.listsFilter.filter((lp, index) => {
+
+                  if (lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) {
+                    this.listsFilter.splice(index, 1);
+                  }
+                });
+
+              });
+              if (confirmBin === undefined || confirmBin === null) {
+
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
+                this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+                this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+                this.listT = await this.storage.get(this.whsePutAway.fields.No);
+              } else {
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
+              }
+
+            } else {
               this.intServ.loadingFunc(false);
+<<<<<<< HEAD
               this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
               this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
               this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
@@ -794,14 +812,12 @@ export class EditPutAwayComponent implements OnInit {
               else{
               this.intServ.loadingFunc(false);
               this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
+=======
+              this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
+>>>>>>> fdbaab39edcba41fe3948187a5a308f4dc3a7e95
             }
-           
-          } else {
-            this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error', ' ', `The bin ${code.toUpperCase()} is not in the list`));
-          }
 
-        }
+          }
         }
       ).catch(
         err => {
