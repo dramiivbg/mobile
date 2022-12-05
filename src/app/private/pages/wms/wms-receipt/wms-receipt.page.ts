@@ -141,11 +141,14 @@ export class WmsReceiptPage implements OnInit {
     break;
 
     default:
+      let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
+      console.log('Bincode =>', item.BinCode);
+      let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
       this.intServ.loadingFunc(false);
       const popoverI = await this.popoverController.create({
         component: UpdateItemComponent,
         cssClass: 'UpdateItemComponent',
-        componentProps: {item}
+        componentProps: { options: { item, lp, lstUoM } },
       });
       await popoverI.present();
       console.log(plure); 
