@@ -458,6 +458,8 @@ catch (error) {
 
     const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
 
+    
+
 
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
