@@ -23,6 +23,7 @@ import { typeWithParameters } from '@angular/compiler/src/render3/util';
 import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 
 import { Storage } from '@ionic/storage';
+import { UpdateItemComponent } from '@prv/components/update-item/update-item.component';
 
 @Component({
   selector: 'app-wms-receipt',
@@ -141,6 +142,11 @@ export class WmsReceiptPage implements OnInit {
 
     default:
       this.intServ.loadingFunc(false);
+      const popoverI = await this.popoverController.create({
+        component: UpdateItemComponent,
+        cssClass: 'UpdateItemComponent',
+      });
+      await popoverI.present();
       console.log(plure); 
     
 
