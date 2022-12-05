@@ -60,6 +60,7 @@ export class EditPutAwayComponent implements OnInit {
   public lists: any = [];
   public warePW: any = {};
 
+  public listItems:any[] = [];
   public barcodeScannerOptions: BarcodeScannerOptions
   public warePY: any;
 
@@ -100,6 +101,9 @@ export class EditPutAwayComponent implements OnInit {
     console.log(this.whsePutAway, this.listPwL);
     this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     this.pallet = await  this.storage.get(`pallet ${this.pallet}`);
+
+   this.listItems =  (await this.storage.get(`items ${this.whsePutAway.fields.No}`) != undefined || 
+   await this.storage.get(`items ${this.whsePutAway.fields.No}`) != null)?  await this.storage.get(`items ${this.whsePutAway.fields.No}`): [];
 
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
       || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
@@ -596,12 +600,7 @@ export class EditPutAwayComponent implements OnInit {
 
       console.log(this.initV);
 
-    } else {
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Whse. Put Away this void', () => {
-
-        this.router.navigate(['page/wms/wmsMain']);
-      }))
+    
 
     }
 
@@ -639,6 +638,90 @@ export class EditPutAwayComponent implements OnInit {
 
     });
 
+    let item = {
+
+     
+      take: "",
+      BinTypeCode: "",
+      Description: "",
+      DueDate: "",
+      ExpirationDate: null,
+      ItemNo: "",
+      LocationCode: "",
+      LotNo: null,
+      No: " ",
+      Quantity: 0,
+      SerialNo: null,
+      SourceNo: "",
+      place: ""
+
+    }
+
+    console.log(this.listPwL);
+
+    this.listPwL.filter(async (items) =>  {
+
+      console.log(items);
+      if(items.fields.ActionType === "Take"){
+
+        item.take = items.fields.BinCode;
+        item.BinTypeCode = items.fields.BinTypeCode;
+        item.Description = items.fields.Description;
+        item.DueDate = items.fields.DueDate;
+        item.ExpirationDate = items.fields.ExpirationDate;
+        item.ItemNo = items.fields.ItemNo;
+        item.LocationCode = items.fields.LocationCode;
+        item.LotNo = items.fields.LotNo;
+        item.No = items.fields.No;
+        item.Quantity = items.fields.Quantity;
+        item.SerialNo = items.fields.SerialNo;
+        item.SourceNo = items.fields.SourceNo;
+
+        let plure = await this.wmsService.GetItemInfo(item.ItemNo);
+       // console.log(item);
+        console.log(plure);
+        if(plure.Managed_by_PlurE === false) this.listItems.push(item);
+
+      //  console.log(this.listItems);
+
+        item = {    
+          take: "",
+          BinTypeCode: "",
+          Description: "",
+          DueDate: "",
+          ExpirationDate: null,
+          ItemNo: "",
+          LocationCode: "",
+          LotNo: null,
+          No: "",
+          Quantity: 0,
+          SerialNo: null,
+          SourceNo: "",
+          place: ""
+         }
+        
+      }
+
+    });
+
+      this.listItems.filter( items => {
+
+        this.listPwL.filter(line => {
+
+          if(line.fields.ActionType === "Place"){
+
+              if(line.fields.ItemNo === items.ItemNo) items.place = line.fields.BinCode;
+  
+            console.log(this.listItems);
+          }
+        });     
+      });
+
+     
+   
+
+    this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+    //console.log(this.listItems);
     this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
     this.intServ.loadingFunc(false);
 

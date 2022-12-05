@@ -40,6 +40,7 @@ import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inve
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
 import { ModalShowLpsComponent } from '@prv/components/modal-show-lps/modal-show-lps.component';
 import { ModalLpsConfirmComponent } from '@prv/components/modal-lps-confirm/modal-lps-confirm.component';
+import { UpdateItemComponent } from '@prv/components/update-item/update-item.component';
 
 
 
@@ -79,7 +80,8 @@ import { ModalLpsConfirmComponent } from '@prv/components/modal-lps-confirm/moda
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
     ModalShowLpsComponent,
-    ModalLpsConfirmComponent
+    ModalLpsConfirmComponent,
+    UpdateItemComponent
    
    
     
@@ -117,7 +119,8 @@ import { ModalLpsConfirmComponent } from '@prv/components/modal-lps-confirm/moda
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
     ModalShowLpsComponent,
-    ModalLpsConfirmComponent
+    ModalLpsConfirmComponent,
+    UpdateItemComponent
   
   ]
 })
