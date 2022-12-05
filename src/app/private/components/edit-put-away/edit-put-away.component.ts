@@ -2,7 +2,7 @@ import { typeWithParameters } from '@angular/compiler/src/render3/util';
 import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -14,6 +14,7 @@ import { CssSelector } from '@angular/compiler';
 import { ModalShowLpsComponent } from '../modal-show-lps/modal-show-lps.component';
 import { empty, UnsubscriptionError } from 'rxjs';
 import { ModalLpsConfirmComponent } from '../modal-lps-confirm/modal-lps-confirm.component';
+import { PopoverSplitItemComponent } from '../popover-split-item/popover-split-item.component';
 
 @Component({
   selector: 'app-edit-put-away',
@@ -76,7 +77,7 @@ export class EditPutAwayComponent implements OnInit {
 
   constructor(private router: Router
     , private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService,
-    private general: GeneralService, private storage: Storage, private modalCtrl: ModalController) {
+    private general: GeneralService, private storage: Storage, private modalCtrl: ModalController, public popoverController: PopoverController) {
 
     let objFunc = {
       func: () => {
@@ -645,6 +646,7 @@ export class EditPutAwayComponent implements OnInit {
         item.Quantity = items.fields.Quantity;
         item.SerialNo = items.fields.SerialNo;
         item.SourceNo = items.fields.SourceNo;
+        item.place = 'STO-1';
 
         let plure = await this.wmsService.GetItemInfo(item.ItemNo);
        // console.log(item);
@@ -673,24 +675,26 @@ export class EditPutAwayComponent implements OnInit {
 
     });
 
-   // console.log(this.listItems);
+   
     console.log(this.listPwL);
 
-      this.listPwL.filter(items => {
+     // this.listPwL.filter(items => {
 
-        if(items.fields.ActionType === "Place"){
+       // if(items.fields.ActionType === "Place"){
           
         this.initItem.filter(line => {
 
+
+        //  line.place = 'STO-1';
         
-              if(items.fields.ItemNo === line.ItemNo) {
-                line.place = items.fields.BinCode;
-              };
+            //  if(items.fields.ItemNo === line.ItemNo) {
+            //    line.place = items.fields.BinCode;
+            //  };
         
         });  
         console.log(this.initItem);
-      }   
-      });
+    //  }   
+    //  });
 
       this.storage.set(`init item ${this.whsePutAway.fields.No}`, this.initItem);
 
@@ -843,6 +847,8 @@ export class EditPutAwayComponent implements OnInit {
     this.list = [];
     this.listT = [];
     this.QtyTake = 0;
+    this.listItems = [];
+    this.storage.remove(`items ${this.whsePutAway.fields.No}`) 
     this.storage.remove(this.whsePutAway.fields.No);
     // this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
     this.storage.remove(`init ${this.whsePutAway.fields.No}`);
@@ -852,7 +858,7 @@ export class EditPutAwayComponent implements OnInit {
 
   onBarCodeConfirm() {
 
-    if (this.listsFilter.length > 0) {
+    if (this.listsFilter.length > 0 || this.listItems.length > 0) {
       this.barcodeScanner.scan().then(
         async (barCodeData) => {
           let code = barCodeData.text;
@@ -873,9 +879,18 @@ export class EditPutAwayComponent implements OnInit {
 
             });
 
-            this.initItem.filter(item => {
+            this.initItem.filter(async item => {
 
               if (item.place.toUpperCase() === code.toUpperCase()){
+
+                this.intServ.loadingFunc(false);
+                const popoverI = await this.popoverController.create({
+                  component: PopoverSplitItemComponent,
+                  cssClass: 'popoverSplitItemComponent',
+                  componentProps: {item},
+                });
+                await popoverI.present();
+
                 this.itemsL.push(item);
                 boolean = true;
               }

@@ -36,8 +36,7 @@ export class UpdateItemComponent implements OnInit {
     this.frm = this.formBuilder.group(
       {
         TotalToReceive: ['0', Validators.required],
-        NoofPackLP: ['0', Validators.required],
-        PackUnitUoM: ['', Validators.required],
+       
       }
     )
   }
@@ -63,8 +62,60 @@ export class UpdateItemComponent implements OnInit {
 
       let obj = await this.jsonService.formToJson(this.frm);
 
+
+      let list =  [
+        {
+          WarehouseReceiptLines: [
+            {
+              No: this.item.No,
+              SourceNo:this.item.SourceNo,
+              ItemNo: this.item.ItemNo,
+              LineNo: this.item.LineNo,
+              ZoneCode: this.item.ZoneCode,
+              LocationCode: this.item.LocationCode,
+              BinCode: this.item.BinCode,
+              QtyToReceive: this.item.Quantity/obj.TotalToReceive
+            },
+            {
+              No: this.item.No,
+              SourceNo:this.item.SourceNo,
+              ItemNo: this.item.ItemNo,
+              LineNo: this.item.LineNo,
+              ZoneCode: this.item.ZoneCode,
+              LocationCode: this.item.LocationCode,
+              BinCode: this.item.BinCode,
+              QtyToReceive: this.item.Quantity/obj.TotalToReceive
+            }
+          ]
+        }
+      ]
+
+      console.log(list);
+
+      try {
+        
+        let res = await this.wmsService.Update_WsheReceiveLine(list);
+
+        console.log(res);
+
+        if(res.Error) throw new Error(res.Error.Message);
+
+        this.intServ.loadingFunc(false);
+
+        this.intServ.alertFunc(this.jsonService.getAlert('success', '', ''));
+        
+      } catch (error) {
+        this.intServ.loadingFunc(false);
+
+        this.intServ.alertFunc(this.jsonService.getAlert('success', '', error.message));
+
+      }
     }
 
   }
 
+
+  public async closePopover() {
+    this.popoverController.dismiss({});
+  }
 }
