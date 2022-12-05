@@ -49,6 +49,8 @@ export class EditPutAwayComponent implements OnInit {
 
   public pallet2: any;
 
+  public itemsL:any[] = [];
+
   public items: any[] = [];
 
   public bin: string = '';
@@ -59,6 +61,8 @@ export class EditPutAwayComponent implements OnInit {
   public listsFilter: any[] = [];
   public lists: any = [];
   public warePW: any = {};
+
+  public initItem:any[] = [];
 
   public listItems:any[] = [];
   public barcodeScannerOptions: BarcodeScannerOptions
@@ -105,6 +109,8 @@ export class EditPutAwayComponent implements OnInit {
    this.listItems =  (await this.storage.get(`items ${this.whsePutAway.fields.No}`) != undefined || 
    await this.storage.get(`items ${this.whsePutAway.fields.No}`) != null)?  await this.storage.get(`items ${this.whsePutAway.fields.No}`): [];
 
+   this.initItem = ( await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != undefined ||
+            await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`init item ${this.whsePutAway.fields.No}`):[];
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
       || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
 
@@ -129,7 +135,8 @@ export class EditPutAwayComponent implements OnInit {
 
     let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined || await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin ${this.whsePutAway.fields.No}`) : null;
 
-    this.bins = bin.Bins;
+    if(bin != undefined) this.bins = bin.Bins;
+    
 
 
   }
@@ -450,9 +457,9 @@ export class EditPutAwayComponent implements OnInit {
     const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
 
     const binPallet = await this.wmsService.GetDefaultBin1();
-    console.log('ls =>', lps);
-    console.log('pallet =>', pallets);
-    console.log('bin Default =>', binPallet);
+  //  console.log('ls =>', lps);
+   // console.log('pallet =>', pallets);
+   // console.log('bin Default =>', binPallet);
 
     if (!pallets.Error) {
 
@@ -587,7 +594,6 @@ export class EditPutAwayComponent implements OnInit {
 
       });
 
-      this.intServ.loadingFunc(false);
       let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.initV[0].fields.PLULPDocumentNo);
 
       this.storage.set(`init ${this.whsePutAway.fields.No}`, this.initV);
@@ -600,9 +606,94 @@ export class EditPutAwayComponent implements OnInit {
 
       console.log(this.initV);
 
-    
+    }
+
+    let item = {
+
+      take: "",
+      BinTypeCode: "",
+      Description: "",
+      DueDate: "",
+      ExpirationDate: null,
+      ItemNo: "",
+      LocationCode: "",
+      LotNo: null,
+      No: " ",
+      Quantity: 0,
+      SerialNo: null,
+      SourceNo: "",
+      place: ""
 
     }
+
+    console.log(this.listPwL);
+
+    this.listPwL.filter(async (items) =>  {
+
+      //console.log(items);
+      if(items.fields.ActionType === "Take"){
+
+        item.take = items.fields.BinCode;
+        item.BinTypeCode = items.fields.BinTypeCode;
+        item.Description = items.fields.Description;
+        item.DueDate = items.fields.DueDate;
+        item.ExpirationDate = items.fields.ExpirationDate;
+        item.ItemNo = items.fields.ItemNo;
+        item.LocationCode = items.fields.LocationCode;
+        item.LotNo = items.fields.LotNo;
+        item.No = items.fields.No;
+        item.Quantity = items.fields.Quantity;
+        item.SerialNo = items.fields.SerialNo;
+        item.SourceNo = items.fields.SourceNo;
+
+        let plure = await this.wmsService.GetItemInfo(item.ItemNo);
+       // console.log(item);
+        console.log(plure);
+        if(plure.Managed_by_PlurE === false) this.initItem.push(item);
+
+      //  console.log(this.listItems);
+
+        item = {    
+          take: "",
+          BinTypeCode: "",
+          Description: "",
+          DueDate: "",
+          ExpirationDate: null,
+          ItemNo: "",
+          LocationCode: "",
+          LotNo: null,
+          No: "",
+          Quantity: 0,
+          SerialNo: null,
+          SourceNo: "",
+          place: ""
+         }
+        
+      }
+
+    });
+
+   // console.log(this.listItems);
+    console.log(this.listPwL);
+
+      this.listPwL.filter(items => {
+
+        if(items.fields.ActionType === "Place"){
+          
+        this.initItem.filter(line => {
+
+        
+              if(items.fields.ItemNo === line.ItemNo) {
+                line.place = items.fields.BinCode;
+              };
+        
+        });  
+        console.log(this.initItem);
+      }   
+      });
+
+      this.storage.set(`init item ${this.whsePutAway.fields.No}`, this.initItem);
+
 
     this.intServ.loadingFunc(false);
 
@@ -638,92 +729,25 @@ export class EditPutAwayComponent implements OnInit {
 
     });
 
-    let item = {
 
-     
-      take: "",
-      BinTypeCode: "",
-      Description: "",
-      DueDate: "",
-      ExpirationDate: null,
-      ItemNo: "",
-      LocationCode: "",
-      LotNo: null,
-      No: " ",
-      Quantity: 0,
-      SerialNo: null,
-      SourceNo: "",
-      place: ""
+     this.listItems = this.initItem;
+      
+    this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+    console.log(this.listItems);
+    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+    this.intServ.loadingFunc(false);
 
-    }
+  }
 
-    console.log(this.listPwL);
 
-    this.listPwL.filter(async (items) =>  {
+  async onChangeBinI(Item:any,bin:any){
 
-      console.log(items);
-      if(items.fields.ActionType === "Take"){
+    this.initItem.filter(item => {
 
-        item.take = items.fields.BinCode;
-        item.BinTypeCode = items.fields.BinTypeCode;
-        item.Description = items.fields.Description;
-        item.DueDate = items.fields.DueDate;
-        item.ExpirationDate = items.fields.ExpirationDate;
-        item.ItemNo = items.fields.ItemNo;
-        item.LocationCode = items.fields.LocationCode;
-        item.LotNo = items.fields.LotNo;
-        item.No = items.fields.No;
-        item.Quantity = items.fields.Quantity;
-        item.SerialNo = items.fields.SerialNo;
-        item.SourceNo = items.fields.SourceNo;
-
-        let plure = await this.wmsService.GetItemInfo(item.ItemNo);
-       // console.log(item);
-        console.log(plure);
-        if(plure.Managed_by_PlurE === false) this.listItems.push(item);
-
-      //  console.log(this.listItems);
-
-        item = {    
-          take: "",
-          BinTypeCode: "",
-          Description: "",
-          DueDate: "",
-          ExpirationDate: null,
-          ItemNo: "",
-          LocationCode: "",
-          LotNo: null,
-          No: "",
-          Quantity: 0,
-          SerialNo: null,
-          SourceNo: "",
-          place: ""
-         }
-        
-      }
+      if(Item.ItemNo === item.ItemNo) item.ItemNo = bin;
 
     });
 
-      this.listItems.filter( items => {
-
-        this.listPwL.filter(line => {
-
-          if(line.fields.ActionType === "Place"){
-
-              if(line.fields.ItemNo === items.ItemNo) items.place = line.fields.BinCode;
-  
-            console.log(this.listItems);
-          }
-        });     
-      });
-
-     
-   
-
-    this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
-    //console.log(this.listItems);
-    this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
-    this.intServ.loadingFunc(false);
 
   }
 
@@ -838,6 +862,7 @@ export class EditPutAwayComponent implements OnInit {
           if (code != '') {
 
           let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
+          let confirmBinI = this.itemsL.find(item => item.place === code.toUpperCase());
           this.intServ.loadingFunc(true);
           this.listsFilter.filter(lp => {
 
@@ -848,9 +873,18 @@ export class EditPutAwayComponent implements OnInit {
 
             });
 
+            this.initItem.filter(item => {
+
+              if (item.place.toUpperCase() === code.toUpperCase()){
+                this.itemsL.push(item);
+                boolean = true;
+              }
+
+            });
+
             console.log(this.lps);
 
-            if (this.lps.length > 0) {
+            if (this.lps.length > 0 || this.itemsL.length > 0) {
 
               this.lps.filter((lpC) => {
 
@@ -862,9 +896,22 @@ export class EditPutAwayComponent implements OnInit {
                 });
 
               });
+            
+             
+
+                this.itemsL.filter((ItemC) => {
+  
+                  this.listItems.filter((Item, index) => {
+  
+                    if (ItemC.ItemNo === Item.ItemNo) {
+                      this.listItems.splice(index, 1);
+                    }
+                  });
+  
+                });
 
 
-              if ((confirmBin === undefined || confirmBin === null) && boolean ) {
+              if (((confirmBin === undefined || confirmBin === null) || (confirmBinI === undefined || confirmBinI === null)) && boolean ) {
 
                 this.intServ.loadingFunc(false);
                 this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
@@ -873,7 +920,7 @@ export class EditPutAwayComponent implements OnInit {
                 this.listT = await this.storage.get(this.whsePutAway.fields.No);
               
 
-            }else if((confirmBin != undefined) &&  boolean){
+            }else if((confirmBin != undefined ||  confirmBinI != undefined) &&  boolean){
 
               this.intServ.loadingFunc(false);
               this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
@@ -881,7 +928,7 @@ export class EditPutAwayComponent implements OnInit {
               this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
               this.listT = await this.storage.get(this.whsePutAway.fields.No);
             }
-              else if((confirmBin != undefined) && !boolean){
+              else if((confirmBin != undefined || confirmBinI != undefined ) && !boolean){
               this.intServ.loadingFunc(false);
               this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
             }else{
