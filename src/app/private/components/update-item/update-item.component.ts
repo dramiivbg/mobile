@@ -47,6 +47,24 @@ export class UpdateItemComponent implements OnInit {
     this.lp = this.options.lp === undefined ? {} : this.options.lp;
     var lstUnitofMeasure = this.options.lstUoM === undefined ? {} : this.options.lstUoM;
     this.lstUoM = lstUnitofMeasure.UnitOfMeasure === undefined ? {} : lstUnitofMeasure.UnitOfMeasure;
+
+    console.log(this.item);
+  }
+
+
+
+ async onSubmit(){
+
+    
+    if (this.frm.valid) {
+
+    
+      this.interceptService.loadingFunc(true);
+
+      let obj = await this.jsonService.formToJson(this.frm);
+
+    }
+
   }
 
 }
