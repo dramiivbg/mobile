@@ -1,0 +1,45 @@
+ion-content {
+
+    ion-row.header {
+        background: linear-gradient(to top, #1A518E, #1A518E) !important;
+        color: #ffffff;
+        font-weight: bold;
+        text-align: center !important;
+
+    }
+
+    ion-list {
+        border-bottom: 1px solid #999;
+        padding: 0;
+
+        ion-row {
+            ion-col {
+                ion-icon {
+                    font-size: 25px;
+                    color: var(--ion-color-plureBlue);
+                }
+
+                ion-label {
+                    margin-top: 4px;
+                    width: 100%;
+                    position: absolute;
+                    margin-left: 13px;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}
+
+ng-container.container {
+    background: var(--ion-color-plureBlue);
+    color: #ffffff;
+}
+
+ion-row.newColor {
+    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 0 0 10% 10%;
+}
