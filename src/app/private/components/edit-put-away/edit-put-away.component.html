@@ -17,7 +17,6 @@
         <ion-fab-button color="success" (click)="onModalConfirm()" data-desc2="Confirmed LP/PL">
             <ion-icon name="checkmark-done-outline"></ion-icon>
         </ion-fab-button>
-
     </ion-fab-list>
 </ion-fab>
 
@@ -77,6 +76,36 @@
             </ion-row>
 
         </div>
+<ion-row>
+            
+<ion-col style="padding-left: 300px;">
+               
+    <ion-fab>
+            <ion-fab-button color="secondary">
+            <ion-icon name="add"></ion-icon>
+           </ion-fab-button>   
+           <ion-fab-list side="bottom">
+           <ion-fab-button >
+            <img  src="../../../../assets/img/single.png" alt="">
+          </ion-fab-button>
+      <ion-fab-button>
+        <img  src="../../../../assets/img/palletP.jpg" alt="">
+      </ion-fab-button>
+      <ion-fab-button >
+        <ion-icon name="pricetags"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+    <ion-fab-list side="start">
+      <ion-fab-button (click)="ascendant()">
+        <ion-icon name="arrow-down"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="descendent()">
+        <ion-icon name="arrow-up"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-col>
+</ion-row>
         <div class="accorn">
             <div class="order-details">
                 <ion-row>

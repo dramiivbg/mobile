@@ -425,6 +425,10 @@ export class WmsMainPage implements OnInit {
 
         let whsePutAway = whsePutAwayH;
         console.log(whsePutAway, putAway)
+
+        this.storage.remove('whsePutAway');
+
+        this.storage.remove('setPutAway');
         
        this.storage.set('setPutAway',putAway);
       this.storage.set('whsePutAway', whsePutAway);

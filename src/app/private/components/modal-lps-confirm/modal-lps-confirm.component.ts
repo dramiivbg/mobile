@@ -10,16 +10,17 @@ import { Storage } from '@ionic/storage';
 })
 export class ModalLpsConfirmComponent implements OnInit {
 
-  @Input() lps:any;
-  @Input() bins:any;
+  @Input() lps:any[];
+  @Input() bins:any[];
 
   public lpNo:any = '';
   public lpsT:any;
+  public Bin:string = '';
 
-  public listB:any[] = [];
-  @Input() whsePutAway:any;
+  public listB: any[] = [];
+  @Input() whsePutAway: any;
 
-  constructor( private barcodeScanner: BarcodeScanner, private modalCtrl: ModalController, private storage: Storage) { }
+  constructor(private barcodeScanner: BarcodeScanner, private modalCtrl: ModalController, private storage: Storage) { }
 
   ngOnInit() {
     this.lpsT = this.lps;
@@ -28,59 +29,59 @@ export class ModalLpsConfirmComponent implements OnInit {
   }
 
 
-  onFilterBin(bin:any){
+  onFilterBin(bin: any) {
     if (bin === '') {
       this.listB = this.bins;
       this.lps = this.lpsT;
+      this.Bin = '';
     } else {
-      let line = this.listB.find(bin1 => bin1 === bin.toUpperCase());
-      if(line === null || line === undefined)this.listB.push(bin.toUpperCase());
+     this.Bin = bin.toUpperCase();
       this.lps = this.lpsT.filter(
         x => {
           return (x.fields.place.toLowerCase().includes(bin.toLowerCase()));
         }
-      )
+      );
     }
   }
 
-  back(){
+  back() {
 
-    this.modalCtrl.dismiss({data: this.lps, bin:this.bins});
+    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins });
 
   }
-  autoComplet(){
-  
-    this.barcodeScanner.scan().then(
-       async  (barCodeData) => {
+  autoComplet() {
 
-       
-          let code = barCodeData.text;
-     
-           this.lpNo = code.toUpperCase();
- 
- 
-           this.onFilter('', this.lpNo);
-           
-     
-       
+    this.barcodeScanner.scan().then(
+      async (barCodeData) => {
+
+
+        let code = barCodeData.text;
+
+        this.lpNo = code.toUpperCase();
+
+
+        this.onFilter('', this.lpNo);   
          }
        ).catch(
          err => {
            console.log(err);
          }
-       )
+       );
       
       }
+ 
+
+  
 
 
-  onFilter(e, lpNo:any = ''){
+  onFilter(e, lpNo: any = '') {
 
-   switch(lpNo){
-    case '':
+    switch (lpNo) {
+      case '':
         let val = e.target.value;
 
         console.log(val);
-    
+
         if (val === '') {
           this.lps = this.lpsT;
         } else {
@@ -91,89 +92,70 @@ export class ModalLpsConfirmComponent implements OnInit {
           )
         }
         break;
-    
-     default:
-    
-    
-      this.lps = this.lpsT.filter(
-        x => {
-          return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
-        }
-      )
-       
 
-     break;
-      }
-    
-  }
-
-  onSubmit(){
-
-    if(this.lps.length > 0) this.modalCtrl.dismiss({data: this.lps, action: 'register'});
+      default:
 
 
+        this.lps = this.lpsT.filter(
+          x => {
+            return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
+          }
+        )
 
-  }
-
-  remove(item:any){
-
-   this.lps.filter((lp,index) => {
-   if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lps.splice(index,1);
-  });
-
-  this.lpsT.filter((lp,index) => {
-    if(lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index,1);
-   });
-
-    this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-
-  }
-
-  removeAll(){
-    
-    if(this.listB.length === 0){
-      this.lps = [];
-      this.lpsT = [];
-      this.bins = [];
+        break;
     }
-    this.listB.filter(bin => {
 
-      this.lps.filter((lp,index) => {
+  }
 
-        if(lp.fields.place === bin) this.lps.splice(index,1);
+  onSubmit() {
 
-      });
+    if (this.lps.length > 0) this.modalCtrl.dismiss({ data: this.lps, action: 'register' });
 
-      this.lpsT.filter((lp,index) => {
+  }
 
-        if(lp.fields.place === bin) this.lps.splice(index,1);
+  remove(item: any) {
 
-      });
-
+    this.lps.filter((lp, index) => {
+      if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lps.splice(index, 1);
     });
 
-    this.listB.filter((Bin,i) => {
-      this.bins.filter((bin,index) => {
-        if(Bin == bin){
-          this.bins.splice(index,1);
-          this.listB.splice(i,1);
-        }
-      });
+    this.lpsT.filter((lp, index) => {
+      if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index, 1);
     });
 
-   if(this.lps.length === 0){
+  this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+
+  }
+
+removeAll(){
+  if(this.Bin === ''){
+    this.lps = [];
+    this.lpsT = [];
+    this.bins = [];
     this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
-   }else{
-    this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
-   }
-
-   if(this.bins.length === 0){
-
     this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+    this.Bin = '';
   }else{
+
+    let Lps:any[] = [];
+    let LpsT:any[] = [];
+
+    for (const i in  this.lps) {
+      
+       if( this.lps[Number(i)].fields.place !== this.Bin) Lps.push(this.lps[Number(i)]);
+      
+      }
+   for (const j in  this.lpsT) {
+
+        if( this.lpsT[Number(j)].fields.place !== this.Bin) LpsT.push(this.lpsT[Number(j)]);
+      }
+
+      this.lps = Lps;
+      this.lpsT = LpsT;
+      
+    this.storage.set(`confirm ${this.whsePutAway.fields.No}`,this.lps);
     this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
   }
-    
-
-  }
+     
+    }
 }

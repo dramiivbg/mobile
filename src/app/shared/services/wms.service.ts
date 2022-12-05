@@ -1,6 +1,7 @@
 import { identifierModuleUrl } from "@angular/compiler";
 import { typeWithParameters } from "@angular/compiler/src/render3/util";
 import { Injectable } from "@angular/core";
+import { ListPItemsComponent } from "@prv/components/list-pitems/list-pitems.component";
 
 import { Observable, Subject } from "rxjs";
 import { InterceptService } from "./intercept.service";
@@ -212,6 +213,29 @@ export class WmsService {
         } catch (error) {
             throw error;
         }
+    }
+
+    public async GetDefaultBin(){
+        try {
+            let obj: any = [];
+            let p = await this.syncErp.processRequestParams('GetDefaultBin', obj);
+            let rsl = await this.syncErp.setRequest(p);
+            return rsl;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async Update_WsheReceiveLine(list:any){
+
+        try {
+            let p = await this.syncErp.processRequestParams('Update_WsheReceiveLine', list);
+            let rsl = await this.syncErp.setRequest(p);
+            return rsl;
+        } catch (error) {
+            throw error;
+        }
+
     }
 
     public async getPendingToReceiveLP(no: string, itemNo: string, unitofMeasureCode: string, binCode: string = '') {

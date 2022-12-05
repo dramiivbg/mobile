@@ -539,7 +539,7 @@ export class EditPutAwayComponent implements OnInit {
 
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
-        lp.fields.place = binPallet;
+       // lp.fields.place = binPallet;
         let find = this.initV.find(lpI => lpI.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
         if (find === null || find === undefined) {
@@ -753,10 +753,10 @@ export class EditPutAwayComponent implements OnInit {
 
           if (code != '') {
 
-            let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
-            let editList = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
-            this.intServ.loadingFunc(true);
-            this.listsFilter.filter(lp => {
+          let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
+          let editList = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
+          this.intServ.loadingFunc(true);
+          this.listsFilter.filter(lp => {
 
               if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
 
