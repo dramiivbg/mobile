@@ -12,15 +12,15 @@ export class PopoverOpionsLpComponent implements OnInit {
   @Input() options: any = {};
   constructor(private popoverController: PopoverController, private intServ: InterceptService) {
 
-   }
+  }
 
   ngOnInit() {
-    
+
   }
 
   public closeModal(item: any) {
     console.log(item)
-    this.popoverController.dismiss({data: item.obj, name: item.name});
+    this.popoverController.dismiss({ data: item.obj, name: item.name });
   }
 
 
