@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { AlertController, ModalController, PopoverController } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
 import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { GeneralService } from '@svc/general.service';
@@ -62,7 +62,8 @@ export class WmsReceiptPage implements OnInit {
     , private sqlitePlureService: SqlitePlureService
     , private alertController: AlertController,
     private modalCtrl: ModalController,
-    private storage: Storage
+    private storage: Storage,
+   
 
   ) {
     let objFunc = {
@@ -118,18 +119,35 @@ export class WmsReceiptPage implements OnInit {
   }
 
   public async onPopoverMenu(ev: any, item: any) {
-    const popover = await this.popoverController.create({
-      component: PopoverOptionsComponent,
-      cssClass: 'popoverOptions',
-      componentProps: this.listMenu(item)
-    });
-    await popover.present();
-
-    const { data } = await popover.onDidDismiss();
-    if (data.data.No !== undefined) {
-      this.onPopLicensePlates(ev, item);
+    this.intServ.loadingFunc(true);
+    let plure = await this.wmsService.GetItemInfo(item.ItemNo);
+    switch(plure.Managed_by_PlurE){
+      case true:
+        this.intServ.loadingFunc(false);
+      const popover = await this.popoverController.create({
+        component: PopoverOptionsComponent,
+        cssClass: 'popoverOptions',
+        componentProps: this.listMenu(item)
+      });
+      await popover.present();
+  
+      const { data } = await popover.onDidDismiss();
+      if (data.data.No !== undefined) {
+        this.onPopLicensePlates(ev, item);
+      
     }
+
+    break;
+
+    default:
+      this.intServ.loadingFunc(false);
+      console.log(plure); 
+    
+
+      break;
   }
+
+}
 
 
   public async onPopoverPl(ev: any, items: any) {

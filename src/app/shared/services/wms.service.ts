@@ -183,7 +183,21 @@ export class WmsService {
  }
 
 
+public async GetItemInfo(ItemNo:any){
 
+    try {
+        let obj: any = [{
+            ItemNo
+        }]; 
+        
+        let p = await this.syncErp.processRequestParams('GetItemInfo', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+
+}
 
  public async GetLicencesPlate(No: string){
 
@@ -215,7 +229,7 @@ export class WmsService {
         }
     }
 
-    public async GetDefaultBin(){
+    public async GetDefaultBin1(){
         try {
             let obj: any = [];
             let p = await this.syncErp.processRequestParams('GetDefaultBin', obj);
@@ -1223,6 +1237,8 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
         throw error;
     }
    }
+
+  
 
  
    public async listPI(lists:any){

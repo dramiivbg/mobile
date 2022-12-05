@@ -10,7 +10,7 @@ import { Storage } from '@ionic/storage';
 })
 export class ModalLpsConfirmComponent implements OnInit {
 
-  @Input() lps:any[];
+  @Input() lps:any;
   @Input() bins:any[];
 
   public lpNo:any = '';
@@ -154,7 +154,7 @@ removeAll(){
       this.lpsT = LpsT;
       
     this.storage.set(`confirm ${this.whsePutAway.fields.No}`,this.lps);
-    this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
+   // this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
   }
      
     }

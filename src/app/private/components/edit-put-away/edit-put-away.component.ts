@@ -273,10 +273,7 @@ export class EditPutAwayComponent implements OnInit {
             break;
         }
 
-        //   if(this.boolean){
-
-        //      this.onBarCode();
-        //   }
+        
 
       }
 
@@ -322,7 +319,7 @@ export class EditPutAwayComponent implements OnInit {
       console.log(res);
       console.log(this.initV);
 
-      this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The LP remaining amount(${qtyR}) will go to the ${res.join(" ")} `, () => {
+      this.intServ.alertFunc(this.js.getAlert('alert2', 'Are you sure?', `The LP remaining (${qtyR}) will go to the FLOOR `, () => {
         var alert = setTimeout(() => {
 
           this.submit();
@@ -448,7 +445,7 @@ export class EditPutAwayComponent implements OnInit {
 
     const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
 
-    const binPallet = await this.wmsService.GetDefaultBin();
+    const binPallet = await this.wmsService.GetDefaultBin1();
     console.log('ls =>', lps);
     console.log('pallet =>', pallets);
     console.log('bin Default =>', binPallet);
@@ -527,6 +524,7 @@ export class EditPutAwayComponent implements OnInit {
           let line = listPalletH.find(lpH => lpH.fields.PLULPDocumentNo === lp.PLULPDocumentNo);
           lp.PLUBinCode = line.fields.PLUBinCode;
           lp.PLUItemNo = line.fields.PLUItemNo;
+        //  lp.fields.place = binPallet.Default_Bin;
 
         })
       }
@@ -539,7 +537,8 @@ export class EditPutAwayComponent implements OnInit {
 
         lp.fields.PLUBinCode = line.fields.PLUBinCode;
         lp.fields.PLUItemNo = line.fields.PLUItemNo;
-       // lp.fields.place = binPallet;
+        lp.fields.place = binPallet.Default_Bin;
+        console.log(binPallet.Default_Bin);
         let find = this.initV.find(lpI => lpI.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
         if (find === null || find === undefined) {
@@ -751,14 +750,18 @@ export class EditPutAwayComponent implements OnInit {
         async (barCodeData) => {
           let code = barCodeData.text;
 
+          let boolean = false;
+
           if (code != '') {
 
           let confirmBin = this.lps.find(lp => lp.fields.place === code.toUpperCase());
-          let editList = this.listsFilter.find(lp => lp.fields.place === code.toUpperCase());
           this.intServ.loadingFunc(true);
           this.listsFilter.filter(lp => {
 
-              if (lp.fields.place.toUpperCase() === code.toUpperCase()) this.lps.push(lp);
+              if (lp.fields.place.toUpperCase() === code.toUpperCase()){
+                this.lps.push(lp);
+                boolean = true;
+              }
 
             });
 
@@ -776,7 +779,9 @@ export class EditPutAwayComponent implements OnInit {
                 });
 
               });
-              if (confirmBin === undefined || confirmBin === null) {
+
+
+              if ((confirmBin === undefined || confirmBin === null) && boolean ) {
 
                 this.intServ.loadingFunc(false);
                 this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
@@ -785,7 +790,7 @@ export class EditPutAwayComponent implements OnInit {
                 this.listT = await this.storage.get(this.whsePutAway.fields.No);
               
 
-            }else if(editList != undefined){
+            }else if((confirmBin != undefined) &&  boolean){
 
               this.intServ.loadingFunc(false);
               this.intServ.alertFunc(this.js.getAlert('success', ' ', `The bin ${code.toUpperCase()} has been successfully confirmed. `));
@@ -793,9 +798,13 @@ export class EditPutAwayComponent implements OnInit {
               this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
               this.listT = await this.storage.get(this.whsePutAway.fields.No);
             }
-              else{
+              else if((confirmBin != undefined) && !boolean){
               this.intServ.loadingFunc(false);
               this.intServ.alertFunc(this.js.getAlert('alert', '', `The bin ${code.toUpperCase()} has been confirmed`));
+            }else{
+
+              this.intServ.loadingFunc(false);
+              this.intServ.alertFunc(this.js.getAlert('error', '', `The bin ${code.toUpperCase()} does not exist in the list`));
             }
 
           }
@@ -956,6 +965,7 @@ export class EditPutAwayComponent implements OnInit {
     if (data.action === undefined) {
 
       this.lps = data.data;
+     // this.QtyTake = this.listsFilter.length - this.lps.length;
       this.listBin = data.bin;
     } else if (data.action === 'register') {
 
