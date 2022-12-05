@@ -145,6 +145,7 @@ export class WmsReceiptPage implements OnInit {
       const popoverI = await this.popoverController.create({
         component: UpdateItemComponent,
         cssClass: 'UpdateItemComponent',
+        componentProps: {item}
       });
       await popoverI.present();
       console.log(plure); 
