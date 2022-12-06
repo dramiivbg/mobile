@@ -13,6 +13,8 @@ export class ModalLpsConfirmComponent implements OnInit {
   @Input() lps:any;
   @Input() bins:any[];
 
+  @Input() itemsL;
+
   public lpNo:any = '';
   public lpsT:any;
   public Bin:string = '';
@@ -25,6 +27,7 @@ export class ModalLpsConfirmComponent implements OnInit {
   ngOnInit() {
     this.lpsT = this.lps;
     console.log(this.lps);
+    console.log(this.itemsL);
 
   }
 
@@ -46,7 +49,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   back() {
 
-    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins });
+    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins ,items:this.itemsL});
 
   }
   autoComplet() {
@@ -132,13 +135,16 @@ removeAll(){
     this.lps = [];
     this.lpsT = [];
     this.bins = [];
+    this.itemsL = [];
     this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
     this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+    this.storage.remove(`itemsL ${this.whsePutAway.fields.No}`);
     this.Bin = '';
   }else{
 
     let Lps:any[] = [];
     let LpsT:any[] = [];
+    let items:any[] = [];
 
     for (const i in  this.lps) {
       
@@ -150,11 +156,19 @@ removeAll(){
         if( this.lpsT[Number(j)].fields.place !== this.Bin) LpsT.push(this.lpsT[Number(j)]);
       }
 
+      for (const j in  this.itemsL) {
+
+        if( this.itemsL[Number(j)].place !== this.Bin) items.push(this.itemsL[Number(j)]);
+      }
+
       this.lps = Lps;
       this.lpsT = LpsT;
+      this.itemsL = items;
       
     this.storage.set(`confirm ${this.whsePutAway.fields.No}`,this.lps);
    // this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
+   this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL);
+
   }
      
     }
