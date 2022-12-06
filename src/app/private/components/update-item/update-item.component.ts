@@ -21,7 +21,7 @@ export class UpdateItemComponent implements OnInit {
 
 
 
-  
+
   constructor(private intServ: InterceptService
     , private formBuilder: FormBuilder
     , private jsonService: JsonService
@@ -29,8 +29,8 @@ export class UpdateItemComponent implements OnInit {
     , private popoverController: PopoverController
     , private interceptService: InterceptService,
     private router: Router
-    
-  ) { 
+
+  ) {
 
 
     this.frm = this.formBuilder.group(
@@ -53,17 +53,23 @@ export class UpdateItemComponent implements OnInit {
 
 
 
- async onSubmit(){
+  async onSubmit() {
 
-    
+
     if (this.frm.valid) {
 
-    
+
       this.interceptService.loadingFunc(true);
 
       let obj = await this.jsonService.formToJson(this.frm);
 
     }
+
+  }
+
+  public async closePopover() {
+
+    this.popoverController.dismiss({});
 
   }
 
