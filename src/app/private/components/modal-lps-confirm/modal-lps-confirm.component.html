@@ -109,6 +109,50 @@
 
                                         </ion-item-sliding>
                                     </ion-row>
+
+                                    
+                                    <ion-row *ngFor="let item of itemsL">
+
+                                        <ion-item-sliding>
+
+                                            <ion-item style="width: 100%;">
+                                                <ion-col size="12" class="item">
+
+                                                    <ion-row class="titleslist">
+                                                        <ion-col size="12" class="titleblue">
+                                                            {{item.ItemNo}}
+                                                        </ion-col>
+                                                        
+                                                    </ion-row>
+
+                                                    <ion-row size="12" class="subtitlelist">
+                                                        <ion-col size="4" class="label-line-title">
+                                                            Qty: {{item.Quantity}}
+                                                        </ion-col>
+                                                        <ion-col size="4" class="label-line-title"
+                                                            style="text-align: right;">
+                                                            Take: {{item.take}}
+                                                        </ion-col>
+
+                                                        <ion-col size="4" class="label-line-title"
+                                                            style="text-align: right;">
+                                                            Place: {{item.place}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                                                </ion-col>
+
+                                            </ion-item>
+
+                                            <ion-item-options>
+                                                <ion-item-option color="danger" (click)="remove(item)">
+                                                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                                </ion-item-option>
+                                            </ion-item-options>
+
+                                        </ion-item-sliding>
+                                    </ion-row>
                                 </div>
 
                             </ion-item>

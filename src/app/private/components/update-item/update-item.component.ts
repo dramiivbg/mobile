@@ -84,7 +84,7 @@ export class UpdateItemComponent implements OnInit {
               ZoneCode: this.item.ZoneCode,
               LocationCode: this.item.LocationCode,
               BinCode: this.item.BinCode,
-              QtyToReceive: this.item.Quantity/obj.TotalToReceive
+              QtyToReceive: obj.TotalToReceive
             }
           ]
         }

@@ -715,7 +715,7 @@ public async GetItemInfo(ItemNo:any){
 
 
 
-   public async Update_Wsheput_Lines_V2(WarehousePutAwayLines:any){
+   public async Update_Wsheput_Lines_V2(list:any){
 
 
     
@@ -725,7 +725,7 @@ public async GetItemInfo(ItemNo:any){
     
         let obj: any = [{
     
-            WarehousePutAwayLines
+            WarehousePutAwayLines: list
             
         }];
 
@@ -1245,9 +1245,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
     try {
 
     
-        let obj: any = [{
-            list
-      }];
+        let obj: any = [list];
     
 
         console.log(JSON.stringify(obj));
@@ -1263,6 +1261,8 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
    }
   
+
+   
 
  
    public async listPI(lists:any){
