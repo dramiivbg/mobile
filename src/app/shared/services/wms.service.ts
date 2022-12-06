@@ -1238,6 +1238,30 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
     }
    }
 
+
+   public async SplitPutAwayLine(list:any){
+
+        
+    try {
+
+    
+        let obj: any = [{
+            list
+      }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('SplitPutAwayLine', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
   
 
  
