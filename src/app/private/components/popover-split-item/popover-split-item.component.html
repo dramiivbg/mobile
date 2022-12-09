@@ -6,22 +6,22 @@
                     <ion-label>Item ID: {{item.ItemNo}}</ion-label>
                 </ion-col>
 
-          <ion-col size="12">
-            <ion-label>QTY: 0/{{item.Quantity}}</ion-label>
-          </ion-col>
+                <ion-col size="12">
+                    <ion-label>QTY: 0/{{item.Quantity}}</ion-label>
+                </ion-col>
 
-          <ion-row class="delivery newColor2">
-            <ion-col size="10">
-                <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}"
-                     show-clear-button="always" clear-icon="close-outline"
-                    placeholder="group by bin code"></ion-searchbar>
-            </ion-col>
-            <ion-col size="2" class="barcodebtn">
-                <ion-icon size="large" name="barcode-outline" (click)="onConfirm()"></ion-icon>
-            </ion-col>
-        </ion-row>
+                <ion-row class="delivery newColor2">
+                    <ion-col size="10">
+                        <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}"
+                            show-clear-button="always" clear-icon="close-outline" placeholder="group by bin code">
+                        </ion-searchbar>
+                    </ion-col>
+                    <ion-col size="2" class="barcodebtn">
+                        <ion-icon size="large" name="barcode-outline" (click)="onConfirm()"></ion-icon>
+                    </ion-col>
+                </ion-row>
 
-        </ion-row>
+            </ion-row>
 
             <h2 style="text-align: center;">ENTER Quantity</h2>
 
