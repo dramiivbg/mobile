@@ -12,9 +12,11 @@ import { Storage } from '@ionic/storage';
 import { PassThrough, Stream } from 'stream';
 import { CssSelector } from '@angular/compiler';
 import { ModalShowLpsComponent } from '../modal-show-lps/modal-show-lps.component';
-import { empty, UnsubscriptionError } from 'rxjs';
+import { empty, UnsubscriptionError, zip } from 'rxjs';
 import { ModalLpsConfirmComponent } from '../modal-lps-confirm/modal-lps-confirm.component';
 import { PopoverSplitItemComponent } from '../popover-split-item/popover-split-item.component';
+import { lutimes, truncateSync } from 'fs';
+import { utf8Encode } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-edit-put-away',
@@ -35,6 +37,7 @@ export class EditPutAwayComponent implements OnInit {
 
   public whsePutAway: any;
 
+  public binDefault:any;
   public listPwL: any[] = [];
   public contador: number = 0;
   public lpsP: any = {}
@@ -54,6 +57,7 @@ export class EditPutAwayComponent implements OnInit {
 
   public items: any[] = [];
 
+  public listI:any[] = [];
   public bin: string = '';
 
   public binCode: any = '';
@@ -74,7 +78,7 @@ export class EditPutAwayComponent implements OnInit {
   public QtyTotal: number = 0;
 
 
-
+ public listPut:any[] = [];
   constructor(private router: Router
     , private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService,
     private general: GeneralService, private storage: Storage, private modalCtrl: ModalController, public popoverController: PopoverController) {
@@ -103,9 +107,12 @@ export class EditPutAwayComponent implements OnInit {
     this.warePW = await this.storage.get('setPutAway');
 
     this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
+    this.listPut  = await this.wmsService.ListPutAwayL(this.warePW);
     console.log(this.whsePutAway, this.listPwL);
     this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     this.pallet = await  this.storage.get(`pallet ${this.pallet}`);
+    this.listI = ( await this.storage.get(`listI ${this.whsePutAway.fields.No}`) != undefined || 
+    await this.storage.get(`listI ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`listI ${this.whsePutAway.fields.No}`):[]
     this.itemsL = (await this.storage.get(`itemsL ${this.whsePutAway.fields.No}`) != undefined ||
           await this.storage.get(`itemsL ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`itemsL ${this.whsePutAway.fields.No}`):[];
 
@@ -114,10 +121,15 @@ export class EditPutAwayComponent implements OnInit {
 
    this.initItem = ( await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != undefined ||
             await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`init item ${this.whsePutAway.fields.No}`):[];
-    this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
+    
+            this.initV = [];
+    
+            this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
       || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
 
     if (this.initV.length === 0) this.init();
+
+    this.initI();
 
     if (this.initV.length > 0) {
       this.QtyTotal = this.initV.length;   
@@ -201,6 +213,7 @@ export class EditPutAwayComponent implements OnInit {
 
   public async onBarCode() {
     let line: any = undefined;
+   let  lineI:any = undefined
     this.barcodeScanner.scan().then(
       async (barCodeData) => {
 
@@ -216,49 +229,57 @@ export class EditPutAwayComponent implements OnInit {
             this.intServ.loadingFunc(false);
 
           }
-
         }
 
-
-        switch (line) {
-
-          case null || undefined:
+        for (const key in this.initItem) {
+          if (this.initItem[key].ItemNo.toUpperCase() === code.toUpperCase()) {
+            lineI = this.initItem[key];
             this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error', ' ', `The license plate ${code.toUpperCase()} does not exist on the Put Away`));
 
-            break;
+          }
+        }
 
-          default:
+     if(lineI === undefined || lineI === null){
 
-            if (this.listsFilter.length > 0) {
+      
+      switch (line) {
 
-              let find = this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
-              let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
-              switch (find) {
+        case null || undefined:
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.js.getAlert('error', ' ', `The license plate ${code.toUpperCase()} does not exist on the Put Away`));
 
-                case null || undefined:
-                  if (find2 === null || find2 === undefined) {
+          break;
 
-                    this.listsFilter.push(line);
-                    this.listT.push(line);
-                    this.QtyTake++;
-                  } else {
-                    this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license Plate ${code.toUpperCase()}  has already been confirmed`));
-                  }
-                  break;
+        default:
 
+          if (this.listsFilter.length > 0 || this.listItems.length > 0) {
 
+            let find = this.listsFilter.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
+            let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
+            switch (find) {
 
+              case null || undefined:
+                if (find2 === null || find2 === undefined) {
 
-                default:
+                  this.listsFilter.push(line);
+                  this.listT.push(line);
+                  this.QtyTake++;
+                } else {
+                  this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license Plate ${code.toUpperCase()}  has already been confirmed`));
+                }
+                break;
+          
+              default:
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license plate is already assigned`));
+                
 
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license plate is already assigned`));
-                  break;
-              }
+                break;
+            }
 
-            } else {
-              this.listsFilter = [];
+          } else {
+            this.listsFilter = [];
+
 
               let find2 = this.lps.find(lp => lp.fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase());
 
@@ -271,27 +292,42 @@ export class EditPutAwayComponent implements OnInit {
               } else {
                 this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The license Plate ${code.toUpperCase()}  has already been confirmed`));
               }
+            
+          }
 
 
 
-            }
+          this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
 
+          let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
 
+          this.bins = bin.Bins;
 
-            this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
+          break;
+      }
+     }else{
 
-            let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
+      let find3 = this.listItems.find(item => item.ItemNo.toUpperCase() === code.toUpperCase());
+      if(lineI != undefined || lineI != null){
 
-            this.bins = bin.Bins;
+        let find4  =  this.itemsL.find(item => item.ItemNo.toUpperCase() === code.toUpperCase());
+    
+        if(find4 === null || find4 === undefined) {
+          this.listItems.push(lineI);
+          this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+         }else if(find4 != undefined){
+          this.intServ.alertFunc(this.js.getAlert('alert', ' ', `The Item ${code.toUpperCase()}  has already been confirmed`));
+         }else if(find3 != undefined){
+          this.intServ.alertFunc(this.js.getAlert('alert', '', 'The item is already assigned'));
+         }else if(find3 === null || find3 === undefined){
+          this.listItems.push(line);
+          this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+         }
+     }
 
-            break;
-        }
-
-        
+    }
 
       }
-
-
 
     ).catch(
       err => {
@@ -303,7 +339,11 @@ export class EditPutAwayComponent implements OnInit {
 
   async onSubmit() {
 
-    this.initV = await this.storage.get(`init ${this.whsePutAway.fields.No}`);
+    this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined || 
+    await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null )?await this.storage.get(`init ${this.whsePutAway.fields.No}`):[];
+
+    this.listI = (await this.storage.get(`listI ${this.whsePutAway.fields.No}`) != undefined ||
+                await this.storage.get(`listI ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`listI ${this.whsePutAway.fields.No}`):[]
 
     if (this.initV.length !== this.lps.length) {
 
@@ -326,6 +366,19 @@ export class EditPutAwayComponent implements OnInit {
         }
 
       });
+
+      let update = {
+
+        ActivityType: 1,
+        No:  "",
+       ItemNo: "",
+       LineNo: "",
+       ZoneCode: "",
+      LocationCode: "",
+      BinCode: "",
+      Quantity: 0
+      }
+    
 
 
 
@@ -373,7 +426,7 @@ export class EditPutAwayComponent implements OnInit {
       console.log(this.initV);
 
       this.intServ.loadingFunc(true);
-      this.split = await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No);
+      this.split = (this.initV.length > 0)? await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No): [];
 
       let list: any[] = [];
 
@@ -421,9 +474,83 @@ export class EditPutAwayComponent implements OnInit {
         });
       });
 
+      let list2 = [];
+
+     let obj = {
+      ActivityType: 1,
+      No: " ",
+      ItemNo: " ",
+      LineNo: " ",
+      ZoneCode: " ",
+      LocationCode: " ",
+      BinCode: " ",
+      Quantity: 0
+     } 
+
+      this.itemsL.filter(x => {
+        this.listI.filter(i => {
+          if(x.LineNo === x.fields.LineNo){
+
+            obj.No = x.No;
+            obj.ItemNo = x.ItemNo;
+            obj.LineNo = x.LineNo;
+            obj.ZoneCode = x.ZoneCode;
+            obj.LocationCode = x.LocationCode;
+            obj.BinCode = x.place;
+            obj.Quantity = x.Quantity;
+
+            list2.push(obj);
+
+            obj = {
+              ActivityType: 1,
+              No: " ",
+              ItemNo: " ",
+              LineNo: " ",
+              ZoneCode: " ",
+              LocationCode: " ",
+              BinCode: " ",
+              Quantity: 0
+             } 
+
+          }else if(i.fields.ActionType === "Place"){
+
+            obj.No = i.fields.No;
+            obj.ItemNo = i.fields.ItemNo;
+            obj.LineNo = i.fields.LineNo;
+            obj.ZoneCode = i.fields.ZoneCode;
+            obj.LocationCode = i.fields.LocationCode;
+            obj.BinCode = i.fields.place;
+            obj.Quantity = i.fields.Quantity;
+
+            list2.push(obj);
+
+            obj = {
+              ActivityType: 1,
+              No: " ",
+              ItemNo: " ",
+              LineNo: " ",
+              ZoneCode: " ",
+              LocationCode: " ",
+              BinCode: " ",
+              Quantity: 0
+             } 
+
+          }
+
+        });
+         
+      });
       try {
 
-        let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
+
+
+        let update = (this.initV.length > 0)?await this.wmsService.Update_Wsheput_Lines_V1(list):null;
+          
+        let updateI  = (this.itemsL.length > 0)? await this.wmsService.Update_Wsheput_Lines_V2(list2):null;
+
+        
+        if(updateI.Error) throw new Error(updateI.Error.Message);
+        
 
         console.log(update);
 
@@ -431,7 +558,7 @@ export class EditPutAwayComponent implements OnInit {
 
         let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
 
-        if (postAway.Error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
+        if (postAway.Error || postAway.error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
 
         this.intServ.loadingFunc(false);
 
@@ -512,8 +639,7 @@ export class EditPutAwayComponent implements OnInit {
             if (line === null || line === undefined) {
 
               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
-
-            }
+          }
 
           }
         }
@@ -526,7 +652,7 @@ export class EditPutAwayComponent implements OnInit {
 
           this.pallet[i].fields[j].PLUWhseLineNo = (line != null || line != undefined) ? line.fields.PLUWhseLineNo : this.pallet[i].fields[j].PLUWhseLineNo;
         }
-
+      
       }
 
       const listPalletH = await this.wmsService.ListPallets(pallets);
@@ -539,8 +665,7 @@ export class EditPutAwayComponent implements OnInit {
           lp.PLUBinCode = line.fields.PLUBinCode;
           lp.PLUItemNo = line.fields.PLUItemNo;
         //  lp.fields.place = binPallet.Default_Bin;
-
-        })
+       });
       }
 
       listPallet = await this.wmsService.ListLP(pallets);
@@ -611,6 +736,48 @@ export class EditPutAwayComponent implements OnInit {
 
     }
 
+    this.intServ.loadingFunc(false);
+
+  }
+
+
+  public initI(){
+
+    for (const i in this.listPut) {
+
+      for (const j in this.listPwL) {
+
+
+        if (this.listPut[i] != undefined) {
+
+             if (this.listPut[i].fields.ItemNo === this.listPwL[j].fields.ItemNo) {
+
+              if (j != i) {
+
+                let con = this.listPut.splice(Number(j), 1);
+                console.log(i, j);
+                console.log(con)
+
+              }
+            
+          } else {
+
+            this.listPut.splice(Number(i), 1);
+
+          }
+        }
+      }
+    }
+
+    console.log('ordenada =>',this.listPut);
+
+
+    let take;
+    let place;
+    let zoneCode;
+    let list:any[] = [];
+    console.log(this.listPwL);
+
     let item = {
 
       take: "",
@@ -627,45 +794,56 @@ export class EditPutAwayComponent implements OnInit {
       SourceNo: "",
       place: "",
       ZoneCode: "",
-      LineNo: "",
-
-
+      LineNo: "", 
     }
 
-    console.log(this.listPwL);
+    let length = this.listPwL.length;
+    this.listPut.filter((items) =>  {
+      
+      this.listPwL.filter((Item,index) => {
 
-    this.listPwL.filter(async (items,index) =>  {
+    if( Item.fields.ItemNo  === items.fields.ItemNo) {
 
-      //console.log(items);
-      if(items.fields.ActionType === "Take"){
 
-        item.take = items.fields.BinCode;
-        item.BinTypeCode = items.fields.BinTypeCode;
-        item.Description = items.fields.Description;
-        item.DueDate = items.fields.DueDate;
-        item.ExpirationDate = items.fields.ExpirationDate;
-        item.ItemNo = items.fields.ItemNo;
-        item.LocationCode = items.fields.LocationCode;
-        item.LotNo = items.fields.LotNo;
-        item.No = items.fields.No;
-        item.Quantity = items.fields.Quantity;
-        item.SerialNo = items.fields.SerialNo;
-        item.SourceNo = items.fields.SourceNo;
-        //item.place = 'STO-1';
+       if(index === 0){
+        take = Item.fields.BinCode;
+      }
 
-        item.place = this.listPwL[index+1].fields.BinCode;
-        item.ZoneCode = this.listPwL[index+1].fields.ZoneCode;
-        item.LineNo = this.listPwL[index+1].fields.LineNo;
+      if(index === 1){
+        place = Item.fields.BinCode;
+      }
 
-        let plure = await this.wmsService.GetItemInfo(item.ItemNo);
-       let qty = await this.wmsService.GetItem(item.ItemNo);
-        console.log('qty =>',qty);
-        console.log(plure);
-        if(plure.Managed_by_PlurE === false) this.initItem.push(item);
+      if(index === 1){
+        zoneCode = Item.fields.ZoneCode;
+      }
 
-      //  console.log(this.listItems);
+      if(index === 1){this.binDefault = Item.fields.BinCode;}
 
-        item = {    
+      if(Item.fields.ActionType === "Place"){
+       
+        item.take = take;
+        item.place = place;
+        item.Description = Item.fields.Description;
+        item.BinTypeCode = Item.fields.BinTypeCode;
+        item.DueDate = Item.fields.DueDate;
+        item.ItemNo = Item.fields.ItemNo;
+        item.LineNo = Item.fields.LineNo;
+        item.LocationCode = Item.fields.LocationCode;
+        item.No =  Item.fields.No;
+        item.ExpirationDate= Item.fields.ExpirationDate;
+        item.Quantity = Item.fields.Quantity;
+        item.SerialNo = Item.fields.SerialNo;
+        item.SourceNo = Item.fields.SourceNo;
+        item.ZoneCode = zoneCode;
+
+        this.listI.push(Item);
+          
+        this.list.push(item);
+  
+        this.initItem[items.fields.ItemNo] = this.list;
+
+        item = {
+
           take: "",
           BinTypeCode: "",
           Description: "",
@@ -674,26 +852,25 @@ export class EditPutAwayComponent implements OnInit {
           ItemNo: "",
           LocationCode: "",
           LotNo: null,
-          No: "",
+          No: " ",
           Quantity: 0,
           SerialNo: null,
           SourceNo: "",
           place: "",
           ZoneCode: "",
-          LineNo: "",
-         }
-        
+          LineNo: "", 
+        }
       }
+     }
+      });
 
-      
+      list = [];    
 
     });
 
-  
-      this.storage.set(`init item ${this.whsePutAway.fields.No}`, this.initItem);
-
-
-    this.intServ.loadingFunc(false);
+    console.log(this.initItem);
+    this.storage.set(`init item ${this.whsePutAway.fields.No}`, this.initItem);
+    this.storage.set(`listI ${this.whsePutAway.fields.No}`, this.listI);
 
   }
 
@@ -727,9 +904,17 @@ export class EditPutAwayComponent implements OnInit {
 
     });
 
+   
 
-     this.listItems = this.initItem;
-      
+    for (const key in this.initItem) {
+    
+      this.initItem[key].filter(item => {
+
+        this.listItems.push(item)
+      });
+
+    }
+     
     this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
     console.log(this.listItems);
     this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
@@ -806,6 +991,129 @@ export class EditPutAwayComponent implements OnInit {
 
   }
 
+ async splitItem(item:any){
+
+
+    const popoverI = await this.popoverController.create({
+      component: PopoverSplitItemComponent,
+      cssClass: 'popoverSplitItemComponent',
+      componentProps: {item},
+    });
+    await popoverI.present();
+
+    const { data} = await popoverI.onWillDismiss();
+
+    if(data.qty != null){
+
+      this.intServ.loadingFunc(true);
+      
+      let list = {
+
+        No: data.item.No,
+        LocationCode: data.item.LocationCode,
+        LineNo:data.item.LineNo,
+        ItemNo: data.item.ItemNo,
+        BinCode: data.item.place,
+        QtyToHandle: data.qty,
+
+      }
+
+      let res = await this.wmsService.SplitPutAwayLine(list);
+
+      
+      let item = {
+
+        take: "",
+        BinTypeCode: "",
+        Description: "",
+        DueDate: "",
+        ExpirationDate: null,
+        ItemNo: "",
+        LocationCode: "",
+        LotNo: null,
+        No: " ",
+        Quantity: 0,
+        SerialNo: null,
+        SourceNo: "",
+        place: "",
+        ZoneCode: "",
+        LineNo: "", 
+      }
+
+      console.log(res);
+
+      res.WarehousePutAwayLines.filter(x => {
+
+        item.take = data.item.take;
+        item.place = data.item.place;
+        item.BinTypeCode = data.item.BinTypeCode;
+        item.ExpirationDate = data.item.ExpirationDate;
+        item.DueDate = data.item.DueDate;
+        item.ItemNo = x.ItemNo;
+        item.Quantity = x.Quantity;
+        item.No = x.No;
+        item.LocationCode = data.item.LocationCode;
+        item.Description = data.item.Description;
+        item.LotNo = data.item.LotNo;
+        item.SerialNo = data.item.SerialNo;
+        item.ZoneCode = data.item.ZoneCode;
+        item.LineNo = x.LineNo;
+
+       let line =   this.listItems.find(x => x.LineNo === item.LineNo);
+
+       if(line === null || line === undefined) this.listItems.push(item);
+       
+
+        item = {
+
+          take: "",
+          BinTypeCode: "",
+          Description: "",
+          DueDate: "",
+          ExpirationDate: null,
+          ItemNo: "",
+          LocationCode: "",
+          LotNo: null,
+          No: " ",
+          Quantity: 0,
+          SerialNo: null,
+          SourceNo: "",
+          place: "",
+          ZoneCode: "",
+          LineNo: "", 
+        }
+        
+      });
+    
+
+      this.listItems.filter((x,index) => {
+
+
+        if(x.LineNo === data.item.LineNo) this.listItems.splice(index,1);
+      });
+
+      this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+      this.initItem[data.item.ItemNo].filter((x,index) => {
+
+          if(x.LineNo === data.item.LineNo) this.initItem[data.item.ItemNo].splice(index,1);
+      });
+
+
+      this.listItems.filter(x => {
+    
+      let line =  this.initItem[data.item.ItemNo].find(i => i.LineNo === x.LineNo);
+
+      if(line === null || line === undefined)this.initItem[data.item.ItemNo].push(x);
+      });
+
+      this.storage.set(`init item ${this.whsePutAway.fields.No}`, this.initItem);
+
+
+      this.intServ.loadingFunc(false);
+    }
+
+  }
+
   remove(item: any) {
 
 
@@ -873,111 +1181,21 @@ export class EditPutAwayComponent implements OnInit {
 
             });
 
-            this.initItem.filter(async item => {
+            this.listItems.filter(async (item,index) => {
 
               if (item.place.toUpperCase() === code.toUpperCase()){
 
-                this.intServ.loadingFunc(false);
-                const popoverI = await this.popoverController.create({
-                  component: PopoverSplitItemComponent,
-                  cssClass: 'popoverSplitItemComponent',
-                  componentProps: {item},
-                });
-                await popoverI.present();
-                boolean = true;
+                     this.itemsL.push(item);
 
-                const { data} = await popoverI.onWillDismiss();
-
-                if(data.qty != null){
-
-                  this.intServ.loadingFunc(true);
-                  console.log(data);
-                  try {
-
-
-                    let list = {
-
-                      No: data.item.No,
-                      LocationCode: data.item.LocationCode,
-                      LineNo:data.item.LineNo,
-                      ItemNo: data.item.ItemNo,
-                      BinCode: data.item.place,
-                      QtyToHandle: data.qty
-
-                    }
-
-                    let res = await this.wmsService.SplitPutAwayLine(list);
-
-                     list = {
-
-                      No: "",
-                      LocationCode: "",
-                      LineNo:"",
-                      ItemNo:"",
-                      BinCode: "",
-                      QtyToHandle:0
-
-                    }
-                    if(res.Error) throw new Error(res.Error.Message);
-
-                    if(res.error) throw new Error(res.error.message);
-
-                    if(res.message) throw new Error(res.message);
-
-                   console.log('res =>',res);
-
-                    let obj = [{
-
-                      ActivityType: 1,
-                      No: data.item.No,
-                      ItemNo: data.item.ItemNo,
-                      LineNo: data.item.LineNo,
-                      ZoneCode: data.item.ZoneCode,
-                      LocationCode: data.item.LocationCode,
-                      BinCode: data.item.place,
-                      Quantity: res.WarehousePutAwayLines[1].Quantity
-                    }];
-
-
-                    let update = await this.wmsService.Update_Wsheput_Lines_V2(obj);
-                    
-                    if(update.Error) throw new Error(update.Error.Message);
-                    if(update.error) throw new Error(update.error.message);
-                    if(update.message) throw new Error(update.message);
-                    
-                        this.listItems.filter((Item, index) => {
-      
-                        if (Item.ItemNo === data.item.ItemNo) {
-                          this.listItems.splice(index, 1);
-                        }
-                      });
-      
-
-                    data.item.Quantity = res.WarehousePutAwayLines[0].Quantity;
-
-                    this.itemsL.push(data.item);
-
-                    data.item.Quantity = res.WarehousePutAwayLines[1].Quantity;
-
-                    this.listItems.push(data.item);
-
-                    this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
-                    this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL); 
-
-                       console.log('update',update);
-
-
-                    
-                  } catch (error) {
-
-                    this.intServ.loadingFunc(false);
-                    this.intServ.alertFunc(this.js.getAlert('error',' ', error.message));
-                    
-                  }
-                }
+                     boolean = true;
               }
 
             });
+
+            
+            this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL);
+
+
 
             console.log(this.itemsL);
 
@@ -997,6 +1215,21 @@ export class EditPutAwayComponent implements OnInit {
                 });
 
               });
+
+                 let vector = [];
+
+                this.listItems.filter((item,index) => {
+
+                  if (item.place !==  code.toUpperCase()){
+
+                    vector.push(item);
+                   }
+                 });
+
+                 this.listItems = vector;
+              
+                 this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+              
             
 
               if (((confirmBin === undefined || confirmBin === null) || (confirmBinI === undefined || confirmBinI === null)) && boolean ) {
@@ -1040,7 +1273,17 @@ export class EditPutAwayComponent implements OnInit {
       this.intServ.alertFunc(this.js.getAlert('alert', '', 'Please scan LP'));
     }
 
+  }
 
+  removeI(item:any){
+
+    console.log(item);
+    this.listItems.filter(
+      (x,index) => {
+
+        if(x.LineNo === item.LineNo)this.listItems.splice(index,1);
+      }
+    )
 
   }
 
@@ -1158,6 +1401,16 @@ export class EditPutAwayComponent implements OnInit {
   async onModalConfirm() {
 
     let lps = this.lps;
+    this.itemsL.map(item => {
+
+      let find = this.listBins.find(bin => bin === item.place);
+
+      if (find === null || find === undefined) {
+
+        this.listBins.push(item.place);
+      }
+
+    });
     this.lps.map(lp => {
 
       let find = this.listBins.find(bin => bin === lp.fields.place);

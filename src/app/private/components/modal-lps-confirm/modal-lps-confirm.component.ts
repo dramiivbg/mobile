@@ -15,6 +15,8 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   @Input() itemsL;
 
+  public itemLT;
+
   public lpNo:any = '';
   public lpsT:any;
   public Bin:string = '';
@@ -26,6 +28,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   ngOnInit() {
     this.lpsT = this.lps;
+    this.itemLT = this.itemsL;
     console.log(this.lps);
     console.log(this.itemsL);
 
@@ -36,12 +39,19 @@ export class ModalLpsConfirmComponent implements OnInit {
     if (bin === '') {
       this.listB = this.bins;
       this.lps = this.lpsT;
+      this.itemsL = this.itemLT;
       this.Bin = '';
     } else {
      this.Bin = bin.toUpperCase();
       this.lps = this.lpsT.filter(
         x => {
           return (x.fields.place.toLowerCase().includes(bin.toLowerCase()));
+        }
+      );
+
+      this.itemsL = this.itemLT.filter(
+        x => {
+          return (x.place.toLowerCase().includes(bin.toLowerCase()));
         }
       );
     }
@@ -87,12 +97,21 @@ export class ModalLpsConfirmComponent implements OnInit {
 
         if (val === '') {
           this.lps = this.lpsT;
+          this.itemsL = this.itemLT;
         } else {
           this.lps = this.lpsT.filter(
             x => {
               return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
             }
           )
+
+          this.itemsL = this.itemLT.filter(
+            x => {
+              return (x.ItemNo.toLowerCase().includes(val.toLowerCase()));
+            }
+          )
+
+          
         }
         break;
 
@@ -105,6 +124,12 @@ export class ModalLpsConfirmComponent implements OnInit {
           }
         )
 
+        this.itemsL = this.itemLT.filter(
+          x => {
+            return (x.ItemNo.toLowerCase().includes(lpNo.toLowerCase()));
+          }
+        )
+
         break;
     }
 
@@ -112,7 +137,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   onSubmit() {
 
-    if (this.lps.length > 0) this.modalCtrl.dismiss({ data: this.lps, action: 'register' });
+    if (this.lps.length > 0 || this.itemsL.length > 0) this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: this.itemsL });
 
   }
 
@@ -130,6 +155,19 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   }
 
+  removeI(item:any){
+
+    this.itemsL.filter((Item, index) => {
+      if (item.LineNo === Item.LineNo) this.itemsL.splice(index, 1);
+    });
+
+    this.itemLT.filter((Item, index) => {
+      if (item.LineNo === Item.LineNo) this.itemLT.splice(index, 1);
+    });
+
+  this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemLT);
+
+  }
 removeAll(){
   if(this.Bin === ''){
     this.lps = [];

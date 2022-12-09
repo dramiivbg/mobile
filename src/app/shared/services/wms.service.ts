@@ -714,6 +714,27 @@ public async GetItemInfo(ItemNo:any){
 
 
 
+public async GetPossiblesBinFromPutAwayV2(No:any){
+
+    try {
+
+      let obj: any = [{
+    
+            No
+       }];
+
+        console.log(JSON.stringify(obj));
+        
+        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAwayV2', obj);
+        let rsl = await this.syncErp.setRequest(p);
+       return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
+
 
    public async Update_Wsheput_Lines_V2(list:any){
 
@@ -725,7 +746,7 @@ public async GetItemInfo(ItemNo:any){
     
         let obj: any = [{
     
-            WarehousePutAwayLines: list
+            WarehousePutAwayLines:list
             
         }];
 

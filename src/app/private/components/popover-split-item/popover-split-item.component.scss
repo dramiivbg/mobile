@@ -42,3 +42,16 @@ ion-button {
     display: flex;
     align-items: center;
 }
+
+
+.newColor2 {
+    width: 92%;
+    margin: 0px 0 10px -5px;
+    --ion-color-base: var(--ion-color-plureHeader)
+}
+
+
+.barcodebtn {
+    margin: auto;
+    text-align: left;
+}

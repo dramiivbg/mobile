@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -16,6 +17,8 @@ export class PopoverSplitItemComponent implements OnInit {
   @Input() item:any;
   public frm: FormGroup;
 
+  public binCode:any;
+
 
 
 
@@ -26,7 +29,8 @@ export class PopoverSplitItemComponent implements OnInit {
     , private wmsService: WmsService
     , private popoverController: PopoverController
     , private interceptService: InterceptService,
-    private router: Router
+    private router: Router,
+    private barcodeScanner: BarcodeScanner
     
   ) { 
 
@@ -54,4 +58,50 @@ export class PopoverSplitItemComponent implements OnInit {
     }
   }
 
+
+  
+  onConfirm() {
+
+    this.barcodeScanner.scan().then(
+      async (barCodeData) => {
+        let code = barCodeData.text;
+        
+        try {
+          let bin = await this.wmsService.GetPossiblesBinFromPutAwayV2(this.item.No);
+
+          if(bin.Error || bin.error) throw new Error((bin.Error)? bin.Error.Message: bin.error.message);
+
+          if(bin.message) throw new Error(bin.message);
+                   
+          console.log(bin);
+  
+          let line = bin.Bins.find(bin => bin.BinCode === code.toUpperCase());
+
+          if(line === undefined || line === null){
+            this.intServ.alertFunc(this.jsonService.getAlert('error', '', `The bin ${code.toUpperCase()} 
+            does not exist within the ${this.item.No} `));
+          }
+  
+          console.log(line);
+          
+        } catch (error) {
+          
+          this.intServ.alertFunc(this.jsonService.getAlert('error', '', error.message));
+        }
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+
+
+ async  closePopover(){
+
+   this.popoverController.dismiss({qty:null});
+  }
 }
