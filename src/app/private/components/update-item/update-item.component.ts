@@ -102,7 +102,7 @@ export class UpdateItemComponent implements OnInit {
 
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.jsonService.getAlert('success', '', ''));
+        this.intServ.alertFunc(this.jsonService.getAlert('success', 'The item quantities have been successfully selected.', ''));
         
       } catch (error) {
         this.intServ.loadingFunc(false);

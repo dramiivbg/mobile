@@ -562,7 +562,7 @@ export class WmsReceiptPage implements OnInit {
   async onSubmit() {
 
 
-    this.intServ.alertFunc(this.js.getAlert('confirm', '', 'Confirm Whse Receipt?', async () => {
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', 'Confirm Whse. Receipt?', async () => {
 
       this.intServ.loadingFunc(true);
 
