@@ -13,7 +13,7 @@
                 <ion-row class="delivery newColor2">
                     <ion-col size="8">
                         <ion-searchbar class="custom" [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}"
-                            show-clear-button="always" clear-icon="close-outline" placeholder="Find Bin">
+                            show-clear-button="always" clear-icon="close-outline" placeholder="Bin">
                         </ion-searchbar>
                     </ion-col>
                     <ion-col size="4" class="barcodebtn">
@@ -46,20 +46,20 @@
 
             <ion-row class="contentbody">
                 <ion-col class="qtytoreceive" size="6">
-                    Selector
+                    Confirm Bin
                 </ion-col>
-                <ion-col size="6">
-            <ion-list class="selectpopupitem">
-                <ion-item class="seclectorbg">
-                    <ion-select interface="popover" placeholder="Select">
-                        <ion-select-option value="1">Option 1</ion-select-option>
-                        <ion-select-option value="2">Option 2</ion-select-option>
-                        <ion-select-option value="3">Option 3</ion-select-option>
-                    </ion-select>
-                </ion-item>
-            </ion-list>
-        </ion-col>
-        </ion-row>
+                <ion-col class="thebinselect" size="6">
+                    <ion-list class="selectpopupitem">
+                        <ion-item class="seclectorbg">
+                            <ion-select interface="popover" #bin (ionChange)="onChangeBinOne(item,bin.value)"
+                                placeholder="Bincode">
+                                <ion-select-option *ngFor="let b of bins" [value]="b.BinCode">{{b.BinCode}}
+                                </ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+            </ion-row>
 
 
             <ion-row class="footer">
@@ -68,7 +68,8 @@
                     <ion-button color="success" shape="round" expand="block" type="submit">Register</ion-button>
                 </ion-col>
                 <ion-col size="6">
-                    <ion-button color="danger" shape="round" expand="block" type="button" (click)="closePopover()">Cancel</ion-button>
+                    <ion-button color="danger" shape="round" expand="block" type="button" (click)="closePopover()">
+                        Cancel</ion-button>
                 </ion-col>
 
             </ion-row>

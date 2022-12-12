@@ -104,6 +104,11 @@ ion-input.inputqty {
     background: transparent;
 }
 
-ion-searchbar.custom{
+ion-searchbar.custom {
     --border-radius: 23px;
+    max-width: 100%;
+}
+
+.thebinselect {
+    --background: transparent;
 }
