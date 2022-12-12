@@ -16,7 +16,7 @@
             <ion-col size="10">
                 <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}"
                      show-clear-button="always" clear-icon="close-outline"
-                    placeholder="group by bin code"></ion-searchbar>
+                    placeholder="Confirm Bin"></ion-searchbar>
             </ion-col>
             <ion-col size="2" class="barcodebtn">
                 <ion-icon size="large" name="barcode-outline" (click)="onConfirm()"></ion-icon>
@@ -27,7 +27,7 @@
 
           <h2 style="text-align: center;">ENTER Quantity</h2> 
 
-        <p>How many items do you want to put in Bin {{item.place}}</p>
+        <p>How many items do you want to put in Bin <strong>{{binCode}}</strong></p>
       
         <ion-row>
           <ion-col class="qtytoreceive" size="6">

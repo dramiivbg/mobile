@@ -21,6 +21,8 @@ export class ModalLpsConfirmComponent implements OnInit {
   public lpsT:any;
   public Bin:string = '';
 
+  public deleteI:any[] = [];
+
   public listB: any[] = [];
   @Input() whsePutAway: any;
 
@@ -59,7 +61,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   back() {
 
-    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins ,items:this.itemsL});
+    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins ,items:this.itemsL,delete:this.deleteI});
 
   }
   autoComplet() {
@@ -158,7 +160,10 @@ export class ModalLpsConfirmComponent implements OnInit {
   removeI(item:any){
 
     this.itemsL.filter((Item, index) => {
-      if (item.LineNo === Item.LineNo) this.itemsL.splice(index, 1);
+      if (item.LineNo === Item.LineNo){
+        this.deleteI.push(item);
+        this.itemsL.splice(index, 1);
+      }
     });
 
     this.itemLT.filter((Item, index) => {
@@ -170,6 +175,7 @@ export class ModalLpsConfirmComponent implements OnInit {
   }
 removeAll(){
   if(this.Bin === ''){
+    this.deleteI = this.itemsL;
     this.lps = [];
     this.lpsT = [];
     this.bins = [];
@@ -197,6 +203,7 @@ removeAll(){
       for (const j in  this.itemsL) {
 
         if( this.itemsL[Number(j)].place !== this.Bin) items.push(this.itemsL[Number(j)]);
+        if( this.itemsL[Number(j)].place === this.Bin) this.deleteI.push(this.itemsL[Number(j)]);
       }
 
       this.lps = Lps;

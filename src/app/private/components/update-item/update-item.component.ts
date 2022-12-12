@@ -98,16 +98,21 @@ export class UpdateItemComponent implements OnInit {
 
         console.log(res);
 
-        if(res.Error) throw new Error(res.Error.Message);
+        if(res.Error || res.error) throw new Error((res.Error)?res.Error.Message:res.error.message);
+
+       if(res.message) throw new Error(res.message);
+       
 
         this.intServ.loadingFunc(false);
 
         this.intServ.alertFunc(this.jsonService.getAlert('success', '', ''));
+
+        this.popoverController.dismiss({});
         
       } catch (error) {
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.jsonService.getAlert('success', '', error.message));
+        this.intServ.alertFunc(this.jsonService.getAlert('error', '', error.message));
 
       }
     }

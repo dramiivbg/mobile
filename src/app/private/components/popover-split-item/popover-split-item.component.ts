@@ -19,9 +19,6 @@ export class PopoverSplitItemComponent implements OnInit {
 
   public binCode:any;
 
-
-
-
   
   constructor(private intServ: InterceptService
     , private formBuilder: FormBuilder
@@ -45,6 +42,7 @@ export class PopoverSplitItemComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.item);
+     this.binCode = this.item.place;
   }
 
   async onSubmit(){
@@ -54,7 +52,7 @@ export class PopoverSplitItemComponent implements OnInit {
 
       let obj = await this.jsonService.formToJson(this.frm);
 
-      this.popoverController.dismiss({qty: obj.Qty, item:this.item});
+      this.popoverController.dismiss({qty: obj.Qty, item:this.item,updateBin:this.binCode});
     }
   }
 
@@ -80,7 +78,13 @@ export class PopoverSplitItemComponent implements OnInit {
           if(line === undefined || line === null){
             this.intServ.alertFunc(this.jsonService.getAlert('error', '', `The bin ${code.toUpperCase()} 
             does not exist within the ${this.item.No} `));
+          }else{
+
+            this.binCode = line.BinCode;
           }
+
+
+
   
           console.log(line);
           
