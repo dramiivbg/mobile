@@ -1,5 +1,8 @@
 ion-content {
 
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+
+
     ion-row.header {
         background: linear-gradient(to top, #5CABF9, #1A518E) !important;
         color: #ffffff;
@@ -38,7 +41,13 @@ ion-button {
     border-radius: 23px;
 }
 
-.qtytoreceive{
+.qtytoreceive {
     display: flex;
     align-items: center;
+}
+
+ion-input.inputqty {
+    --background: rgba(92, 171, 249, 0.08);
+    --color: black;
+    border-radius: 23px;
 }

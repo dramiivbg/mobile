@@ -27,7 +27,7 @@
           <b>Qty to Receive</b>
         </ion-col>
         <ion-col size="6">
-          <ion-input type="number" formControlName="TotalToReceive" value="0"></ion-input>
+          <ion-input class="inputqty" type="number" formControlName="TotalToReceive" value="0"></ion-input>
         </ion-col>
       </ion-row>
       
@@ -35,10 +35,10 @@
       <ion-row class="footer">
 
         <ion-col size="6">
-          <ion-button expand="block" type="submit">Send</ion-button>
+          <ion-button shape="round" color="success" expand="block" type="submit">Send</ion-button>
         </ion-col>
         <ion-col size="6">
-          <ion-button expand="block" type="button" (click)="closePopover()">Cancel</ion-button>
+          <ion-button shape="round" color="danger" expand="block" type="button" (click)="closePopover()">Cancel</ion-button>
         </ion-col>
 
       </ion-row>
