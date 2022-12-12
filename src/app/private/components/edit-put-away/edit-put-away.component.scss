@@ -324,12 +324,12 @@ ion-item {
     padding: 0 0 10px 0;
 }
 
-.titleblue{
+.titleblue {
     color: var(--ion-color-plureBlue);
     font-size: 16px;
     font-family: SourceSansProBold;
-   //   display: flex;
-  //  align-items: center;
+    //   display: flex;
+    //  align-items: center;
 }
 
 ion-fab-button[data-desc] {
@@ -370,4 +370,10 @@ ion-fab-button[data-desc2]::after {
     max-width: 100%;
     --placeholder-opacity: 1;
     font-size: 14px;
+}
+ion-fab-button.custom{
+    --color: #ffffff;
+    --background: #1A518E;
+    height: 53px;
+    width: 53px;
 }

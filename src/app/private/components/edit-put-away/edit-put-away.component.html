@@ -76,36 +76,36 @@
             </ion-row>
 
         </div>
-<ion-row>
-            
-<ion-col style="padding-left: 300px;">
-               
-    <ion-fab>
-            <ion-fab-button color="secondary">
-            <ion-icon name="add"></ion-icon>
-           </ion-fab-button>   
-           <ion-fab-list side="bottom">
-           <ion-fab-button >
-            <img  src="../../../../assets/img/single.png" alt="">
-          </ion-fab-button>
-      <ion-fab-button>
-        <img  src="../../../../assets/img/palletP.jpg" alt="">
-      </ion-fab-button>
-      <ion-fab-button >
-        <ion-icon name="pricetags"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-    <ion-fab-list side="start">
-      <ion-fab-button (click)="ascendant()">
-        <ion-icon name="arrow-down"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button (click)="descendent()">
-        <ion-icon name="arrow-up"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
-</ion-col>
-</ion-row>
+        <ion-row>
+
+            <ion-col style="padding-left: 300px;">
+
+                <ion-fab>
+                    <ion-fab-button class="custom">
+                        <ion-icon name="cog-outline"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-list side="bottom">
+                        <ion-fab-button color="success" data-desc2="Filter by LP">
+                            <ion-icon name="barcode-outline"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-button color="tertiary" data-desc2="Filter by PL">
+                            <ion-icon name="cube-outline"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-button color="secondary" data-desc2="Filter by Item">
+                            <ion-icon name="receipt-outline"></ion-icon>
+                        </ion-fab-button>
+                    </ion-fab-list>
+                    <ion-fab-list side="start">
+                        <ion-fab-button color="warning" (click)="ascendant()">
+                            <ion-icon name="arrow-down"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-button color="primary" (click)="descendent()">
+                            <ion-icon name="arrow-up"></ion-icon>
+                        </ion-fab-button>
+                    </ion-fab-list>
+                </ion-fab>
+            </ion-col>
+        </ion-row>
         <div class="accorn">
             <div class="order-details">
                 <ion-row>
@@ -212,7 +212,7 @@
                                                     </ion-row>
 
                                                     <ion-row size="12" class="subtitlelist">
-                                                        
+
                                                         <ion-col size="6" class="label-line-title">
                                                             Take: {{item.take}}
                                                         </ion-col>
@@ -246,7 +246,7 @@
         </div>
     </form>
 
-   
+
 
 </ion-content>
 
