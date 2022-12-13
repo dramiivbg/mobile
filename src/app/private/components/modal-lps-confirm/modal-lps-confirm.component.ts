@@ -139,7 +139,39 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   onSubmit() {
 
-    if (this.lps.length > 0 || this.itemsL.length > 0) this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: this.itemsL });
+    if (this.lps.length > 0 || this.itemsL.length > 0){ 
+      let items:any[] = [];
+      for (const key in this.itemsL) {
+
+        let line = items.find(item => item === this.itemsL[key].ItemNo);
+        if(line === null || line === undefined)items.push(this.itemsL[key].ItemNo);   
+      }
+
+      let groupItems:any[] = [];
+
+      let list:any[] = [];
+
+      for (const key in items) {
+
+        for (const j in this.itemsL) {
+
+          if(this.itemsL[j].ItemNo === items[key]){
+            list.push(this.itemsL[j]);
+          }
+        
+        }
+        console.log(list);
+
+        groupItems[items[key]] = list;
+
+        list = [];
+       
+      }
+
+      console.log(groupItems);
+
+    this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: groupItems });
+    }
 
   }
 

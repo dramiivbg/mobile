@@ -49,6 +49,7 @@ export class EditPutAwayComponent implements OnInit {
   public scanLP: boolean = true;
   public scanBin: boolean = false;
 
+  public itemsG:any[] = [];
   public groupItems: any[] = [];
 
   public binItem:any[] = [];
@@ -84,6 +85,19 @@ export class EditPutAwayComponent implements OnInit {
 
   public QtyTotal: number = 0;
 
+ public obj = {
+
+    ActivityType: 1,
+    No: "",
+    ItemNo: "",
+    LineNo: "",
+    ZoneCode: "STO",
+    LocationCode: "",
+    BinCode:  " ",
+    Quantity: 0
+
+  }
+
 
  public listPut:any[] = [];
   constructor(private router: Router
@@ -113,12 +127,12 @@ export class EditPutAwayComponent implements OnInit {
 
     this.warePW = await this.storage.get('setPutAway');
 
-    this.listPwL = await this.wmsService.ListPutAwayL(this.warePW);
+    this.listPwL = await this.wmsService.ListPutAwayL(this.warePW); 
     this.listPut  = await this.wmsService.ListPutAwayL(this.warePW);
     console.log(this.whsePutAway, this.listPwL);
     this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     this.pallet = await  this.storage.get(`pallet ${this.pallet}`);
-    this.take =  ( await this.storage.get(`take ${this.whsePutAway.fields.No}`) != undefined ||
+    this.take =  (await this.storage.get(`take ${this.whsePutAway.fields.No}`) != undefined ||
      await this.storage.get(`take ${this.whsePutAway.fields.No}`) != null)? await this.storage.get(`take ${this.whsePutAway.fields.No}`):null; 
 
      this.binItem = (await this.storage.get(`bin Item ${this.whsePutAway.fields.No}`) != undefined ||
@@ -347,6 +361,7 @@ export class EditPutAwayComponent implements OnInit {
 
   async onSubmit() {
 
+    console.log(this.itemsG);
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined || 
     await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null )?await this.storage.get(`init ${this.whsePutAway.fields.No}`):[];
 
@@ -357,7 +372,7 @@ export class EditPutAwayComponent implements OnInit {
       let cantidad = 0;
       let res: any[] = [];
       let qtyR = this.QtyTotal - this.lps.length;
-      let qtyI = this.listI.length - this.itemsL.length;
+      let qtyI =  this.itemsL.length - this.listI.length;
        cantidad = qtyR + qtyI;
 
       let lpR: any[] = [];
@@ -449,137 +464,208 @@ export class EditPutAwayComponent implements OnInit {
 
       this.intServ.loadingFunc(true);
       this.split = (this.initV.length > 0)? await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No): [];
-    this.itemsL.filter(async itemC => {
+      let contador = 0;
 
-      let listI = {
+  try {
+     
 
-        No: itemC.No,
-        LocationCode: itemC.LocationCode,
-        LineNo:itemC.LineNo,
-        ItemNo: itemC.ItemNo,
-        BinCode: this.binItem[itemC.ItemNo],
-        QtyToHandle: itemC.Quantity,    
+       console.log(this.itemsG);
+
+        for (const key in this.itemsG) {
+        
+          if(this.itemsG[key].length > 0){
+
+          for (const i in this.itemsG[key]) {
+          
+
+          let listI = {
+    
+            No: "",
+            LocationCode: "",
+            LineNo: "",
+            ItemNo: "",
+            BinCode: " ",
+            QtyToHandle: " ",    
+          }
+
+          if(Number(i) === 0){
+
+            listI.No = this.itemsG[key][i].No,
+            listI.LocationCode =  this.itemsG[key][i].LocationCode;
+            listI.LineNo =  this.itemsG[key][i].LineNo;
+            listI.ItemNo =  this.itemsG[key][i].ItemNo;
+            listI.BinCode =   this.binItem[this.itemsG[key][i].ItemNo];
+            listI.QtyToHandle =  this.itemsG[key][i].Quantity;
+            
+   
+
+          }else{
+            listI.No =  this.obj.No;
+            listI.LocationCode = this.obj.LocationCode;
+            listI.LineNo =  this.obj.LineNo;
+            listI.ItemNo =  this.obj.ItemNo;
+            listI.BinCode =  this.obj.BinCode;
+            listI.QtyToHandle =  this.itemsG[key][i].Quantity;    
+            
+          
+            this.obj = {
+
+              ActivityType: 1,
+              No: "",
+              ItemNo: "",
+              LineNo: "",
+              ZoneCode: "STO",
+              LocationCode: "",
+              BinCode:  "",
+              Quantity: 0
+
+            }
+            
+
+            
+          }
+         
+    
+          let res = await this.wmsService.SplitPutAwayLine(listI);
+    
+           console.log('res =>',res);
+           if(res.Error) throw new Error(res.Error.Message);
+
+           if(res.error) throw new Error(res.error.message);
+      
+           if(res.message) throw new Error(res.message);
+    
+          let listItem:any[] = [];
+       
+          let item = {
+            ActivityType: 1,
+             No: res.WarehousePutAwayLines[0].No,
+             ItemNo: res.WarehousePutAwayLines[0].ItemNo,
+             LineNo: res.WarehousePutAwayLines[0].LineNo,
+             ZoneCode: "STO",
+             LocationCode: res.WarehousePutAwayLines[0].LocationCode,
+             BinCode:  this.itemsG[key][i].place,
+             Quantity: res.WarehousePutAwayLines[0].Quantity
+            }
+        
+            listItem.push(item);
+        
+            item = {
+              ActivityType: 1,
+               No: "",
+               ItemNo:"",
+               LineNo: " ",
+               ZoneCode: "",
+               LocationCode:"",
+               BinCode: "",
+               Quantity: 0
+              }
+
+              
+           
+            item = {
+              ActivityType: 1,
+               No: res.WarehousePutAwayLines[1].No,
+               ItemNo: res.WarehousePutAwayLines[1].ItemNo,
+               LineNo: res.WarehousePutAwayLines[1].LineNo,
+               ZoneCode: "STO",
+               LocationCode: res.WarehousePutAwayLines[1].LocationCode,
+               BinCode:  this.binItem[this.itemsG[key][i].ItemNo],
+               Quantity: res.WarehousePutAwayLines[1].Quantity
+              }
+            listItem.push(item)
+            //console.log(listI);
+        
+            let updateI = await this.wmsService.Update_Wsheput_Lines_V2(listItem);
+    
+            console.log('update =>',updateI);
+            if(updateI.Error || updateI.error) throw new Error((updateI.Error !== undefined)? updateI.Error.Message: updateI.error.message);
+        
+            if(updateI.message) throw new Error(updateI.message);
+
+            this.obj.ActivityType =  1;
+            this.obj.No =   item.No;
+            this.obj.ItemNo =  item.ItemNo;
+            this.obj.LineNo =  item.LineNo;
+            this.obj.ZoneCode =  "STO";
+            this.obj.LocationCode =  item.LocationCode;
+            this.obj.BinCode =  item.BinCode;
+            this.obj.Quantity =  item.Quantity;
+
+            console.log('obj =>',this.obj);
+    
+            item = {
+              ActivityType: 1,
+               No: "",
+               ItemNo:"",
+               LineNo: " ",
+               ZoneCode: "",
+               LocationCode:"",
+               BinCode: "",
+               Quantity: 0
+              }
+    
+              listItem = [];
+
+           
+    
+        }
+      }
       }
 
-      let res = await this.wmsService.SplitPutAwayLine(listI);
-
-       console.log('res =>',res);
-       if(res.Error || res.error) throw new Error((res.Error != undefined)? res.Error.Message: res.error.message);
-  
-       if(res.message) throw new Error(res.message);
-
-      let listItem:any[] = [];
-   
-      let item = {
-        ActivityType: 1,
-         No: res.WarehousePutAwayLines[0].No,
-         ItemNo: res.WarehousePutAwayLines[0].ItemNo,
-         LineNo: res.WarehousePutAwayLines[0].LineNo,
-         ZoneCode: "STO",
-         LocationCode: res.WarehousePutAwayLines[0].LocationCode,
-         BinCode:  itemC.place,
-         Quantity: res.WarehousePutAwayLines[0].Quantity
-        }
-    
-        listItem.push(item);
-    
-        item = {
-          ActivityType: 1,
-           No: "",
-           ItemNo:"",
-           LineNo: " ",
-           ZoneCode: "",
-           LocationCode:"",
-           BinCode: "",
-           Quantity: 0
-          }
-    
-        item = {
-          ActivityType: 1,
-           No: res.WarehousePutAwayLines[1].No,
-           ItemNo: res.WarehousePutAwayLines[1].ItemNo,
-           LineNo: res.WarehousePutAwayLines[1].LineNo,
-           ZoneCode: "STO",
-           LocationCode: res.WarehousePutAwayLines[1].LocationCode,
-           BinCode:  this.binItem[itemC.ItemNo],
-           Quantity: res.WarehousePutAwayLines[1].Quantity
-          }
-        listItem.push(item)
-        //console.log(listI);
-    
-        let update = await this.wmsService.Update_Wsheput_Lines_V2(listI);
-
-        console.log('update =>',update);
-        if(update.Error || update.error) throw new Error((update.Error)? update.Error.Message: update.error.message);
-    
-        if(update.message) throw new Error(update.message);
-
-        item = {
-          ActivityType: 1,
-           No: "",
-           ItemNo:"",
-           LineNo: " ",
-           ZoneCode: "",
-           LocationCode:"",
-           BinCode: "",
-           Quantity: 0
-          }
-
-          listItem = [];
-
-    });
         
         let list: any[] = [];
       if(this.initV.length > 0){
 
         this.initV.filter(Lp => {
 
-          let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
+          if(Lp.fields.PLULPDocumentType !== "Pallet"){
+            
+            let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
   
-          if (l !== undefined) {
-            Lp.fields.place = l.fields.place;
-          }
-  
-          this.split.WarehousePutAwayLines.filter(lp => {
-  
-  
-            if (Lp.fields.PLULPDocumentNo === lp.LP) {
-  
-  
-              lp.BinCode = Lp.fields.place;
-  
-              request.ActivityType = 1;
-              request.BinCode = lp.BinCode;
-              request.ItemNo = lp.ItemNo;
-              request.LP = lp.LP;
-              request.LineNo = lp.LineNo;
-              request.LocationCode = lp.LocationCode;
-              request.No = lp.No;
-              request.Quantity = lp.Quantity;
-              request.ZoneCode = lp.ZoneCode;
-  
-              list.push(request);
-  
-              request = {
-  
-                ActivityType: 1,
-                No: "",
-                ItemNo: "",
-                LineNo: "",
-                ZoneCode: "",
-                LocationCode: "",
-                BinCode: "",
-                Quantity: 0,
-                LP: ""
-              }
+            if (l !== undefined) {
+              Lp.fields.place = l.fields.place;
             }
-          });
+    
+            this.split.WarehousePutAwayLines.filter(lp => {
+    
+    
+              if (Lp.fields.PLULPDocumentNo === lp.LP) {
+    
+    
+                lp.BinCode = Lp.fields.place;
+    
+                request.ActivityType = 1;
+                request.BinCode = lp.BinCode;
+                request.ItemNo = lp.ItemNo;
+                request.LP = lp.LP;
+                request.LineNo = lp.LineNo;
+                request.LocationCode = lp.LocationCode;
+                request.No = lp.No;
+                request.Quantity = lp.Quantity;
+                request.ZoneCode = lp.ZoneCode;
+    
+                list.push(request);
+    
+                request = {
+    
+                  ActivityType: 1,
+                  No: "",
+                  ItemNo: "",
+                  LineNo: "",
+                  ZoneCode: "",
+                  LocationCode: "",
+                  BinCode: "",
+                  Quantity: 0,
+                  LP: ""
+                }
+              }
+            });
+          }
+         
         });
       }
      
-      try {
-
-
         if(this.initV.length > 0){
 
           let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
@@ -591,6 +677,8 @@ export class EditPutAwayComponent implements OnInit {
         }
      
         let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+
+        console.log('post away =>', postAway);
 
         if (postAway.Error || postAway.error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
 
@@ -841,6 +929,7 @@ export class EditPutAwayComponent implements OnInit {
     
            if(Item.fields.ActionType === "Take"){
             this.take = Item.fields.BinCode;
+            
           }
     
     
@@ -950,7 +1039,7 @@ export class EditPutAwayComponent implements OnInit {
         let line = this.listItems.find(x => x.LineNo === item.LineNo);
         let line2 = this.itemsL.find(x => x.LineNo === item.LineNo);
 
-        if((line === undefined || line === null) && (line2 === undefined || line === null)){
+        if((line === undefined || line === null) && (line2 === undefined || line2 === null)){
           this.listItems.push(item);
          
         }
@@ -1054,10 +1143,11 @@ export class EditPutAwayComponent implements OnInit {
 
         if(data.qty < item.Quantity){
 
+      //  this.take = await this.storage.get(`take ${this.whsePutAway.fields.No}`); 
   
         let itemR = {
   
-          take: this.take,
+          take: data.item.take,
           BinTypeCode: "",
           Description: "",
           DueDate: "",
@@ -1087,11 +1177,11 @@ export class EditPutAwayComponent implements OnInit {
         });
   
         this.listItems.push(itemR);
-  
+
         
         let itemC = {
   
-          take: this.take,
+          take: data.item.take,
           BinTypeCode: "",
           Description: "",
           DueDate: "",
@@ -1123,7 +1213,7 @@ export class EditPutAwayComponent implements OnInit {
 
         }else if(data.qty === item.Quantity){
 
-         // let listI = [];
+         
           item = {
             ActivityType: 1,
              No: data.item.No,
@@ -1135,14 +1225,7 @@ export class EditPutAwayComponent implements OnInit {
              Quantity: data.item.Quantity
             }
 
-          //  listI.push(item)
-
-
-          //let update = await this.wmsService.Update_Wsheput_Lines_V2(listI);
-
-        //  if(update.Error || update.error) throw new Error((update.Error)? update.Error.Message: update.error.message);
-
-       //   if(update.message) throw new Error(update.message);
+    
           
           
           let itemC = {
@@ -1497,7 +1580,7 @@ export class EditPutAwayComponent implements OnInit {
         data.delete.filter(itemD => {
 
           if(itemD.ItemNo === item.ItemNo) item.Quantity+=itemD.Quantity;
-          item.take = this.take;
+          
         });
 
       });
@@ -1512,9 +1595,10 @@ export class EditPutAwayComponent implements OnInit {
       this.listBin = data.bin;
       this.itemsL = data.items;
     } else if (data.action === 'register') {
-
-      this.onSubmit();
       this.lps = data.data;
+      this.itemsG = data.items;
+      this.onSubmit();
+      
     }
 
 
