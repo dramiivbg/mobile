@@ -125,20 +125,8 @@ export class WmsReceiptPage implements OnInit {
     let plure = await this.wmsService.GetItemInfo(item.ItemNo);
     switch (plure.Managed_by_PlurE) {
       case true:
-        this.intServ.loadingFunc(false);
-        const popover = await this.popoverController.create({
-          component: PopoverOptionsComponent,
-          cssClass: 'popoverOptions',
-          componentProps: this.listMenu(item)
-        });
-        await popover.present();
-
-        const { data } = await popover.onDidDismiss();
-        if (data.data.No !== undefined) {
+        this.intServ.loadingFunc(false);    
           this.onPopLicensePlates(ev, item);
-
-        }
-
         break;
 
       default:
