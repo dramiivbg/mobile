@@ -3,13 +3,13 @@
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col size="6">
-          <b>Item No:</b> 
+          <b>Item No:</b>
         </ion-col>
         <ion-col size="6">
-          <b>UoM:</b> 
+          <b>UoM:</b>
         </ion-col>
         <ion-col size="12">
-          <b>Pending to Receive:</b> 
+          <b>Pending to Receive:</b>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -43,12 +43,14 @@
       </ion-row>
       <ion-row>
         <ion-col class="qtytoreceive" size="6">
-          <ion-icon icon="calendar-outline"  color="primary"></ion-icon>
           <b>Exp Date:</b>
         </ion-col>
-        <ion-col size="6">
-            <ion-datetime displayFormat="MM/DD/YYYY" formControlName="requestedDeliveryDate" placeholder="Select Date"></ion-datetime>
-    
+        <ion-col size="4">
+          <ion-datetime displayFormat="MM/DD/YYYY" formControlName="requestedDeliveryDate"
+            placeholder="Select Date"></ion-datetime>
+        </ion-col>
+        <ion-col size="2">
+          <ion-icon icon="calendar-outline" color="primary"></ion-icon>
         </ion-col>
       </ion-row>
       <ion-row>

@@ -58,16 +58,11 @@ ion-input.inputqty {
 }
 
 .calendaricon {
-    position: relative;
-}
-
-.calendaricon {
     font-size: 20px;
     font-weight: bold;
     color: var(--ion-color-plureBlue);
     display: flex;
     align-items: center;
-    left: 80px;
 }
 
 ion-datetime-button.inputqty {
@@ -102,4 +97,8 @@ ion-label.smallfont {
 
 ion-col.edit-header {
     padding-top: 11px;
+}
+
+.PopoverItemTrakingComponent{
+    --width: 320px;
 }
