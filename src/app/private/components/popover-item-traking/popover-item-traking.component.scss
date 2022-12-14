@@ -1,0 +1,77 @@
+ion-content {
+
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+
+    ion-row.header {
+        background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+        color: #ffffff;
+        font-size: 15px;
+        padding: 10px 15px;
+        text-align: start;
+        font-weight: bold;
+        border-radius: 0 0 70% 0;
+    }
+
+    ion-list {
+        border-bottom: 1px solid #999;
+        padding: 0;
+
+        ion-row {
+            ion-col {
+                ion-icon {
+                    font-size: 25px;
+                    color: var(--ion-color-plureBlue);
+                }
+
+                ion-label {
+                    margin-top: 4px;
+                    width: 100%;
+                    position: absolute;
+                    margin-left: 13px;
+                }
+            }
+        }
+    }
+}
+
+ion-button {
+    color: white;
+    --backround: var(--ion-color-plureBlue) !important;
+    border-radius: 23px;
+}
+
+.qtytoreceive {
+    display: flex;
+    align-items: center;
+}
+
+ion-input.inputqty {
+    --background: rgba(92, 171, 249, 0.08);
+    --color: black;
+    border-radius: 23px;
+}
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.calendaricon {
+    position: relative;
+}
+
+.calendaricon {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--ion-color-plureBlue);
+    display: flex;
+    align-items: center;
+    left: 80px;
+}
+
+ion-datetime-button.inputqty {
+    --background: rgba(92, 171, 249, 0.08);
+    --color: black;
+    border-radius: 23px;
+}
