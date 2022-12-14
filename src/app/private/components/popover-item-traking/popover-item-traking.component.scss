@@ -99,6 +99,15 @@ ion-col.edit-header {
     padding-top: 11px;
 }
 
+ion-datetime.inputqty{
+    background: rgba(92, 171, 249, 0.08);
+    color: black;
+    border-radius: 23px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
 .PopoverItemTrakingComponent{
     --width: 320px;
 }
