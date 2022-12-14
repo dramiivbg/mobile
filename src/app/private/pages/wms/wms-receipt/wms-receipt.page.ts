@@ -24,6 +24,7 @@ import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.com
 
 import { Storage } from '@ionic/storage';
 import { UpdateItemComponent } from '@prv/components/update-item/update-item.component';
+import { PopoverItemTrakingComponent } from '@prv/components/popover-item-traking/popover-item-traking.component';
 
 @Component({
   selector: 'app-wms-receipt',
@@ -181,6 +182,19 @@ export class WmsReceiptPage implements OnInit {
     }
 
 
+
+  }
+
+
+  public async popoverItemTraking(){
+
+    const popover = await this.popoverController.create({
+      component: PopoverItemTrakingComponent,
+      cssClass: 'popoverItemTrakingComponent',
+      componentProps: {},
+    });
+    await popover.present();
+    const { data } = await popover.onDidDismiss();
 
   }
   public async onPopLicensePlates(ev: any, item: any) {
