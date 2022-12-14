@@ -36,7 +36,7 @@ export class UpdateItemComponent implements OnInit {
     this.frm = this.formBuilder.group(
       {
         TotalToReceive: ['0', Validators.required],
-       
+
       }
     )
   }
@@ -63,22 +63,22 @@ export class UpdateItemComponent implements OnInit {
       let obj = await this.jsonService.formToJson(this.frm);
 
 
-      let list =  [
+      let list = [
         {
           WarehouseReceiptLines: [
             {
               No: this.item.No,
-              SourceNo:this.item.SourceNo,
+              SourceNo: this.item.SourceNo,
               ItemNo: this.item.ItemNo,
               LineNo: this.item.LineNo,
               ZoneCode: this.item.ZoneCode,
               LocationCode: this.item.LocationCode,
               BinCode: this.item.BinCode,
-              QtyToReceive: this.item.Quantity/obj.TotalToReceive
+              QtyToReceive: this.item.Quantity / obj.TotalToReceive
             },
             {
               No: this.item.No,
-              SourceNo:this.item.SourceNo,
+              SourceNo: this.item.SourceNo,
               ItemNo: this.item.ItemNo,
               LineNo: this.item.LineNo,
               ZoneCode: this.item.ZoneCode,
@@ -93,21 +93,21 @@ export class UpdateItemComponent implements OnInit {
       console.log(list);
 
       try {
-        
+
         let res = await this.wmsService.Update_WsheReceiveLine(list);
 
         console.log(res);
 
-        if(res.Error || res.error) throw new Error((res.Error)?res.Error.Message:res.error.message);
+        if (res.Error || res.error) throw new Error((res.Error) ? res.Error.Message : res.error.message);
 
-       if(res.message) throw new Error(res.message);
-       
+        if (res.message) throw new Error(res.message);
+
 
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.jsonService.getAlert('success', 'The item quantities have been successfully selected.', ''));
-        
-        
+        this.intServ.alertFunc(this.jsonService.getAlert('success', 'The item quantities have been successfully posted.', ''));
+
+
       } catch (error) {
         this.intServ.loadingFunc(false);
 
