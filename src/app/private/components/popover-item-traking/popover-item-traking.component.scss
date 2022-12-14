@@ -75,3 +75,31 @@ ion-datetime-button.inputqty {
     --color: black;
     border-radius: 23px;
 }
+
+ion-datetime {
+    border-bottom: 1px solid #fff;
+    padding: 3px 0 0 !important;
+    text-align: center;
+}
+
+div.icon-header {
+    float: left;
+    padding-right: 5px;
+    width: 35px;
+}
+
+div.text-header {
+    float: left;
+    padding-top: 3px;
+}
+
+ion-label.smallfont {
+    font-size: 15px;
+    .datetime-text {
+        font-size: 15px;
+    }
+}
+
+ion-col.edit-header {
+    padding-top: 11px;
+}
