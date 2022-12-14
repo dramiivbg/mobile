@@ -161,7 +161,6 @@ export class EditPutAwayComponent implements OnInit {
     if (this.initV.length > 0) {
       this.QtyTotal = this.initV.length;   
     }
-    this.intServ.loadingFunc(false);
     this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
     console.log(await this.storage.get(this.whsePutAway.fields.No));
     this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
@@ -179,6 +178,7 @@ export class EditPutAwayComponent implements OnInit {
 
     if(bin != undefined) this.bins = bin.Bins;
     
+    this.intServ.loadingFunc(false);
   }
 
   public onBack() {
@@ -524,6 +524,9 @@ export class EditPutAwayComponent implements OnInit {
 
             
           }
+
+          console.log('list =>', listI);
+          console.log('items =>', this.binItem)
          
     
           let res = await this.wmsService.SplitPutAwayLine(listI);
@@ -944,7 +947,7 @@ export class EditPutAwayComponent implements OnInit {
             item.LocationCode = Item.fields.LocationCode;
             item.No =  Item.fields.No;
             item.ExpirationDate= Item.fields.ExpirationDate;
-            item.Quantity = Item.fields.Quantity;
+            item.Quantity = Number(Item.fields.Quantity);
             item.SerialNo = Item.fields.SerialNo;
             item.SourceNo = Item.fields.SourceNo;
             item.ZoneCode = Item.fields.ZoneCode;
@@ -991,6 +994,7 @@ export class EditPutAwayComponent implements OnInit {
     });
 
     console.log(this.initItem);
+    console.log(this.binItem);
     
     this.storage.set(`init item ${this.whsePutAway.fields.No}`, this.initItem);
     this.storage.set(`listI ${this.whsePutAway.fields.No}`, this.listI);
@@ -1134,25 +1138,15 @@ export class EditPutAwayComponent implements OnInit {
 
     const { data} = await popoverI.onWillDismiss();
 
-    if(data.qty != null){
+  if(data.qty != null){
+
 
       this.intServ.loadingFunc(true);
       
 
-      try {
+    switch(data.qty < data.item.Quantity && data.qty > 0){
 
-        switch(data){
-
-          case (data.qty > data.item.Quantity):
-            this.intServ.loadingFunc(false);
-
-             console.log('mayor');
-        }
-
-    /*
-        if(data.qty < item.Quantity && data.qty > 0){
-
-      //  this.take = await this.storage.get(`take ${this.whsePutAway.fields.No}`); 
+      case true:
   
         let itemR = {
   
@@ -1172,13 +1166,7 @@ export class EditPutAwayComponent implements OnInit {
           ZoneCode: "STO",
           LineNo: data.item.LineNo, 
         }
-  
-   
-        let confirm = {};
-
-
-      
-      
+     
        this.listItems.filter((x,index) => {
   
   
@@ -1216,82 +1204,76 @@ export class EditPutAwayComponent implements OnInit {
         
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The bin ${data.updateBin} has been confirmed with the Quantity ${data.qty}`))
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The bin ${data.updateBin} has been confirmed with the Quantity ${data.qty}`))      
+            
+           break;
     
-          
+      default:
 
-        }else if(data.qty === item.Quantity){
+       if(data.qty === data.item.Quantity){
 
          
-          item = {
-            ActivityType: 1,
-             No: data.item.No,
-             ItemNo: data.item.ItemNo,
-             LineNo: data.item.LineNo,
-             ZoneCode: "STO",
-             LocationCode: data.item.LocationCode,
-             BinCode: data.updateBin,
-             Quantity: data.item.Quantity
-            }
-
-    
-          
-          
-          let itemC = {
-  
-            take: data.item.take,
-            BinTypeCode: item.BinTypeCode,
-            Description: item.Description,
-            DueDate: item.DueDate,
-            ExpirationDate: item.ExpirationDate,
-            ItemNo:  item.ItemNo,
-            LocationCode: item.LocationCode,
-            LotNo: item.LotNo,
-            No: item.No,
-            Quantity:  item.Quantity,
-            SerialNo: item.SerialNo,
-            SourceNo: item.SourceNo,
-            place: data.updateBin,
-            ZoneCode: item.ZoneCode,
-            LineNo:  item.LineNo, 
+        item = {
+          ActivityType: 1,
+           No: data.item.No,
+           ItemNo: data.item.ItemNo,
+           LineNo: data.item.LineNo,
+           ZoneCode: "STO",
+           LocationCode: data.item.LocationCode,
+           BinCode: data.updateBin,
+           Quantity: data.item.Quantity
           }
-       
-    
-          this.itemsL.push(itemC);
 
-          this.listItems.filter((x,index) => {
   
-              if(x.LineNo === item.LineNo) this.listItems.splice(index,1);
-          });
-
-          this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
         
-          this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL);
-          
-          this.intServ.loadingFunc(false);
+        
+        let itemC = {
 
-          this.intServ.alertFunc(this.js.getAlert('success', '', `The bin ${data.updateBin} has been confirmed with the Quantity ${data.qty}`));      
-
-        }else if(data.qty === 0){
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.js.getAlert('error', '', `The quantity must be greater than zero `));
-        }else if(data.qty > item.Quantity){
-
-          this.intServ.loadingFunc(false);
-         this.intServ.alertFunc(this.js.getAlert('error', '', `The quantity ${data.qty} is greater than the Item ${item.ItemNo}`));
+          take: data.item.take,
+          BinTypeCode: item.BinTypeCode,
+          Description: item.Description,
+          DueDate: item.DueDate,
+          ExpirationDate: item.ExpirationDate,
+          ItemNo:  item.ItemNo,
+          LocationCode: item.LocationCode,
+          LotNo: item.LotNo,
+          No: item.No,
+          Quantity:  item.Quantity,
+          SerialNo: item.SerialNo,
+          SourceNo: item.SourceNo,
+          place: data.updateBin,
+          ZoneCode: item.ZoneCode,
+          LineNo:  item.LineNo, 
         }
-
-        */
      
-      } catch (error) {
+  
+        this.itemsL.push(itemC);
 
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+        this.listItems.filter((x,index) => {
+
+            if(x.LineNo === item.LineNo) this.listItems.splice(index,1);
+        });
+
+        this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+      
+        this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL);
         
+        this.intServ.loadingFunc(false);
+
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The bin ${data.updateBin} has been confirmed with the Quantity ${data.qty}`));  
+         break;
+      }else if(data.qty === 0){
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', '', `The quantity must be greater than zero `));
+        break;
+      }else{
+        this.intServ.loadingFunc(false);
+       this.intServ.alertFunc(this.js.getAlert('error', '', `The quantity ${data.qty} is greater than the Item ${item.ItemNo}`));
+       break;
       }
 
+    }
       
-
       
     }
 
@@ -1432,6 +1414,12 @@ export class EditPutAwayComponent implements OnInit {
       (x,index) => {
 
         if(x.LineNo === item.LineNo)this.listItems.splice(index,1);
+             
+          if(this.listItems.length === 0){
+            this.storage.remove(`items ${this.whsePutAway.fields.No}`);
+          }else{
+            this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+          }
       }
     )
 

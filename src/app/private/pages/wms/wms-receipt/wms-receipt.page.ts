@@ -190,8 +190,9 @@ export class WmsReceiptPage implements OnInit {
 
     const popover = await this.popoverController.create({
       component: PopoverItemTrakingComponent,
-      cssClass: 'popoverItemTrakingComponent',
+      cssClass: 'popoverItemTrakingComponent-modal',
       componentProps: {},
+      backdropDismiss: false
     });
     await popover.present();
     const { data } = await popover.onDidDismiss();
