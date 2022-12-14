@@ -3,13 +3,13 @@
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col size="6">
-          <b>Item No:</b> {{item.ItemNo}}
+          <b>Item No:</b> 
         </ion-col>
         <ion-col size="6">
-          <b>UoM:</b> {{item.UnitofMeasureCode}}
+          <b>UoM:</b> 
         </ion-col>
         <ion-col size="12">
-          <b>Pending to Receive:</b> {{item.QtytoReceive}}
+          <b>Pending to Receive:</b> 
         </ion-col>
       </ion-row>
       <ion-row>
@@ -43,10 +43,12 @@
       </ion-row>
       <ion-row>
         <ion-col class="qtytoreceive" size="6">
-          <b>Expiration Date:</b>
+          <ion-icon icon="calendar-outline"  color="primary"></ion-icon>
+          <b>Exp Date:</b>
         </ion-col>
         <ion-col size="6">
-          <ion-datetime-button class="inputqty" datetime="datetime"></ion-datetime-button>
+            <ion-datetime displayFormat="MM/DD/YYYY" formControlName="requestedDeliveryDate" placeholder="Select Date"></ion-datetime>
+    
         </ion-col>
       </ion-row>
       <ion-row>
@@ -75,7 +77,6 @@
           <ion-button shape="round" color="danger" expand="block" type="button" (click)="closePopover()">Cancel
           </ion-button>
         </ion-col>
-
       </ion-row>
     </form>
   </ion-content>
