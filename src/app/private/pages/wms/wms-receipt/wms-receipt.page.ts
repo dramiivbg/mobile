@@ -202,7 +202,7 @@ export class WmsReceiptPage implements OnInit {
 
     // console.log(item);
     let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
-    console.log('Bincode =>', item.BinCode);
+   // console.log('Bincode =>', item.BinCode);
     let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
 
     if (lp.LP_Pending_To_Receive > 0) {

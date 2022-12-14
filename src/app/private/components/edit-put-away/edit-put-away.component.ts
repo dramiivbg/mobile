@@ -1141,24 +1141,33 @@ export class EditPutAwayComponent implements OnInit {
 
       try {
 
-        if(data.qty < item.Quantity){
+        switch(data){
+
+          case (data.qty > data.item.Quantity):
+            this.intServ.loadingFunc(false);
+
+             console.log('mayor');
+        }
+
+    /*
+        if(data.qty < item.Quantity && data.qty > 0){
 
       //  this.take = await this.storage.get(`take ${this.whsePutAway.fields.No}`); 
   
         let itemR = {
   
           take: data.item.take,
-          BinTypeCode: "",
-          Description: "",
-          DueDate: "",
-          ExpirationDate: null,
+          BinTypeCode: data.item.BinTypeCode,
+          Description: data.item.Description,
+          DueDate: data.item.DueDate,
+          ExpirationDate: data.item.ExpirationDate,
           ItemNo:  data.item.ItemNo,
           LocationCode: data.item.LocationCode,
-          LotNo: null,
+          LotNo:  data.item.LotNo,
           No: data.item.No,
           Quantity: data.item.Quantity-data.qty,
-          SerialNo: null,
-          SourceNo: "",
+          SerialNo: data.item.SerialNo,
+          SourceNo: data.item.SourceNo,
           place: data.item.place,
           ZoneCode: "STO",
           LineNo: data.item.LineNo, 
@@ -1182,17 +1191,17 @@ export class EditPutAwayComponent implements OnInit {
         let itemC = {
   
           take: data.item.take,
-          BinTypeCode: "",
-          Description: "",
-          DueDate: "",
-          ExpirationDate: null,
+          BinTypeCode: data.item.BinTypeCode,
+          Description: data.item.Description,
+          DueDate: data.item.DueDate,
+          ExpirationDate: data.item.ExpirationDate,
           ItemNo:  data.item.ItemNo,
           LocationCode: data.item.LocationCode,
-          LotNo: null,
+          LotNo: data.item.LotNo,
           No: data.item.No,
           Quantity: data.qty,
-          SerialNo: null,
-          SourceNo: "",
+          SerialNo: data.item.SerialNo,
+          SourceNo: data.item.SourceNo,
           place: data.updateBin,
           ZoneCode: "STO",
           LineNo: data.item.LineNo, 
@@ -1263,11 +1272,16 @@ export class EditPutAwayComponent implements OnInit {
 
           this.intServ.alertFunc(this.js.getAlert('success', '', `The bin ${data.updateBin} has been confirmed with the Quantity ${data.qty}`));      
 
-        }else{
+        }else if(data.qty === 0){
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.js.getAlert('error', '', `The quantity must be greater than zero `));
+        }else if(data.qty > item.Quantity){
 
           this.intServ.loadingFunc(false);
          this.intServ.alertFunc(this.js.getAlert('error', '', `The quantity ${data.qty} is greater than the Item ${item.ItemNo}`));
         }
+
+        */
      
       } catch (error) {
 

@@ -223,6 +223,30 @@
 
                                                     </ion-row>
 
+                                                    <ion-row size="12" >
+
+                                                        <ion-col size="6" class="label-line" *ngIf="item.ExpirationDate != null">
+                                                            Exp Date: {{item.ExpirationDate}}
+                                                        </ion-col>
+                                                        <ion-col size="6" class="label-line" *ngIf="item.LotNo != null">
+                                                            Lot No: {{item.LotNo}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                                                    <ion-row size="12" >
+
+                                                        <!--
+                                                        <ion-col size="6" class="label-line" *ngIf="item.ExpirationDate != null">
+                                                            Exp Date: {{item.ExpirationDate}}
+                                                        </ion-col> -->
+
+                                                        <ion-col size="6" class="label-line" *ngIf="item.SerialNo != null">
+                                                            Serial No: {{item.SerialNo}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
                                                 </ion-col>
 
                                             </ion-item>
@@ -245,7 +269,6 @@
             </div>
         </div>
     </form>
-
 
 
 </ion-content>
