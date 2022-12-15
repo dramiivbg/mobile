@@ -58,12 +58,17 @@ ion-input.inputqty {
     font-size: 20px;
 }
 
-.calendaricon {
-    font-size: 20px;
+// .codebaricon{
+//     position: relative;
+// }
+
+.codebaricon {
+    font-size: 25px;
     font-weight: bold;
     color: var(--ion-color-plureBlue);
     display: flex;
     align-items: center;
+    // left: 100px;
 }
 
 ion-datetime-button.inputqty {
