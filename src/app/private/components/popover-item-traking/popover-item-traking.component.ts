@@ -9,13 +9,13 @@ import { PopoverController } from '@ionic/angular';
 })
 export class PopoverItemTrakingComponent implements OnInit {
 
-  public serial:boolean;
-  public lot:boolean;
-  public exp:boolean;
-  public lp:any;
- @Input() options:any;
+  public serial: boolean;
+  public lot: boolean;
+  public exp: boolean;
+  public lp: any;
+  @Input() options: any;
 
- public item:any;
+  public item: any;
 
   public frm: FormGroup;
   constructor(private formBuilder: FormBuilder, public popoverController: PopoverController) {
@@ -37,20 +37,20 @@ export class PopoverItemTrakingComponent implements OnInit {
 
   ngOnInit() {
 
-  //  console.log(this.options);
+    //  console.log(this.options);
 
-    this.item = (this.options.item !== null)? this.options.item:null;
-    this.lp = (this.options.lp !== null)? this.options.lp:null;
+    this.item = (this.options.item !== null) ? this.options.item : null;
+    this.lp = (this.options.lp !== null) ? this.options.lp : null;
 
-    console.log(this.item,this.lp);
+    console.log(this.item, this.lp);
 
-    switch(this.item.trakingCode){
+    switch (this.item.trakingCode) {
       case "LOTSNSALES":
         this.lot = true;
         this.serial = true;
         this.exp = true;
         break;
-      
+
       case "LOTALL":
         this.lot = true;
         break;
@@ -59,13 +59,13 @@ export class PopoverItemTrakingComponent implements OnInit {
         this.lot = true;
         this.exp = true;
         break;
-        
-      case (["SNALL" , "SN-PROD" , "SNSALES"].indexOf(this.item.trakingCode)+1 && this.item.trakingCode):
+
+      case (["SNALL", "SN-PROD", "SNSALES"].indexOf(this.item.trakingCode) + 1 && this.item.trakingCode):
         this.serial = true;
         break;
 
     }
-    
+
 
   }
 
