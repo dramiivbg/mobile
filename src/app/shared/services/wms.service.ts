@@ -3744,6 +3744,10 @@ public async PalletH(listLp: any){
             GlobalDimension1Code: null,
             GlobalDimension2Code: null,
             GTIN: null,
+            ItemTrackingCode: null,
+            SerialNos:null,
+            LotNos:null,
+            ExpirationCalculation: '',
             SalesUnitofMeasure: '',
             ItemCategoryCode: null,
             IdentifierCode: null
