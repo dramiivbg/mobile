@@ -3,13 +3,16 @@
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col size="6">
-          <b>Item No:</b>
+          <b>Item No:</b> {{item.ItemNo}}
         </ion-col>
         <ion-col size="6">
-          <b>UoM:</b>
+          <b>UoM:</b> {{item.UnitofMeasureCode}}
         </ion-col>
         <ion-col size="12">
-          <b>Pending to Receive:</b>
+          <b>Pending to Receive:</b> {{lp.LP_Pending_To_Receive}}
+        </ion-col>
+        <ion-col size="12">
+          <b>Traking Code:</b> {{item.trakingCode}}
         </ion-col>
       </ion-row>
       <ion-row>
@@ -25,7 +28,7 @@
           <ion-input class="inputqty" type="number" formControlName="TotalToReceive" value="0"></ion-input>
         </ion-col>
       </ion-row>
-      <ion-row class="qtytoreceive">
+      <ion-row class="qtytoreceive" *ngIf="serial">
         <ion-col size="4">
           <b>Serial No:</b>
         </ion-col>
@@ -36,7 +39,7 @@
           <ion-input class="inputqty" formControlName="SerialNo" value="0"></ion-input>
         </ion-col>
       </ion-row>
-      <ion-row class="qtytoreceive">
+      <ion-row class="qtytoreceive" *ngIf="lot">
         <ion-col size="4">
           <b>Lot No:</b>
         </ion-col>
@@ -47,7 +50,7 @@
           <ion-input class="inputqty" formControlName="LotNo" value="0"></ion-input>
         </ion-col>
       </ion-row>
-      <ion-row class="qtytoreceive">
+      <ion-row class="qtytoreceive" *ngIf="exp">
         <ion-col size="6">
           <b>Exp Date:</b>
         </ion-col>

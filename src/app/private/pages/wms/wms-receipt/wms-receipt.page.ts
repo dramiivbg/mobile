@@ -122,8 +122,8 @@ export class WmsReceiptPage implements OnInit {
 
   public async onPopoverMenu(ev: any, item: any) {
     this.intServ.loadingFunc(true);
-    let plure = await this.wmsService.GetItemInfo(item.ItemNo);
-    switch (plure.Managed_by_PlurE) {
+   // let plure = await this.wmsService.GetItemInfo(item.ItemNo);
+    switch (item.plure) {
       case true:
         this.intServ.loadingFunc(false);    
           this.onPopLicensePlates(ev, item);
@@ -131,8 +131,11 @@ export class WmsReceiptPage implements OnInit {
 
       default:
         let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
-        console.log('Bincode =>', item.BinCode);
         let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
+
+      if(item.trakingCode === null){
+
+        console.log('Bincode =>', item.BinCode);
         this.intServ.loadingFunc(false);
         const popoverI = await this.popoverController.create({
           component: UpdateItemComponent,
@@ -140,10 +143,15 @@ export class WmsReceiptPage implements OnInit {
           componentProps: { options: { item, lp, lstUoM } },
         });
         await popoverI.present();
-        console.log(plure);
-
 
         break;
+      }else{
+        this.intServ.loadingFunc(false);
+        this.popoverItemTraking(item,lp);
+        break;
+      }
+      
+       
     }
 
   }
@@ -169,17 +177,15 @@ export class WmsReceiptPage implements OnInit {
       }
     }
 
-
-
   }
 
 
-  public async popoverItemTraking(){
+  public async popoverItemTraking(item:any,lp:any){
 
     const popover = await this.popoverController.create({
       component: PopoverItemTrakingComponent,
       cssClass: 'transparent-modal',
-      componentProps: {},
+      componentProps: {options: { item, lp } },
       backdropDismiss: false
     });
     await popover.present();
@@ -240,8 +246,7 @@ export class WmsReceiptPage implements OnInit {
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
-
-    console.log(this.wareReceipts);
+   console.log(this.wareReceipts);
     this.GetLicencesPlateInWR(this.wareReceipts);
 
   }

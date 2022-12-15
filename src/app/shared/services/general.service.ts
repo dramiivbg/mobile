@@ -203,10 +203,15 @@ export class GeneralService {
       if(fields[i].name === "ItemNo"){
         let plure = await this.wmsService.GetItemInfo(fields[i].value);
         obj['plure'] =  plure.Managed_by_PlurE;
-      }
 
-      
+        let res = await this.wmsService.GetItem(fields[i].value);
+        let traking = await this.wmsService.listItem(res);
+
+       obj['trakingCode'] = traking.fields.ItemTrackingCode;
+      }    
     }
+
+    
     // fields.forEach(field => {
     //   obj[field.name] = field.value
     // });
