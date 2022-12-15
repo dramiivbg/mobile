@@ -5,12 +5,13 @@ import { E_MODULETYPE, E_PROCESSTYPE } from '@var/enums';
 import { throwError } from 'rxjs';
 import {JsonService} from '../services/json.service';
 import { InterceptService } from './intercept.service';
+import { WmsService } from './wms.service';
 @Injectable({
   providedIn: 'root'
 })
 export class GeneralService {
 
-  constructor(private alerta: JsonService,private router: Router, private interceptService: InterceptService) { }
+  constructor(private alerta: JsonService,private router: Router, private interceptService: InterceptService,private wmsService: WmsService) { }
 
   // Structure for search component
   structSearch(array: any, title: string, name: string, func: any = null, clear: boolean =  true, type: Number = 0, process: any = {}) {
@@ -199,6 +200,12 @@ export class GeneralService {
     let obj = {};
     for (let i in fields) {
       obj[fields[i].name] = fields[i].value
+      if(fields[i].name === "ItemNo"){
+        let plure = await this.wmsService.GetItemInfo(fields[i].value);
+        obj['plure'] =  plure.Managed_by_PlurE;
+      }
+
+      
     }
     // fields.forEach(field => {
     //   obj[field.name] = field.value
