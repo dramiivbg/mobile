@@ -43,6 +43,7 @@ ion-button {
 .qtytoreceive {
     display: flex;
     align-items: center;
+    padding: 0 15px 0 15px;
 }
 
 ion-input.inputqty {
@@ -90,6 +91,7 @@ div.text-header {
 
 ion-label.smallfont {
     font-size: 15px;
+
     .datetime-text {
         font-size: 15px;
     }
@@ -99,11 +101,15 @@ ion-col.edit-header {
     padding-top: 11px;
 }
 
-ion-datetime.inputqty{
+ion-datetime.inputqty {
     background: rgba(92, 171, 249, 0.08);
     color: black;
     border-radius: 23px;
     height: 40px;
     display: flex;
     align-items: center;
+}
+
+.qtyhandle {
+    padding-bottom: 10px;
 }
