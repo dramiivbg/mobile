@@ -35,7 +35,7 @@
           <b>Qty x Pack:</b>
         </ion-col>
         <ion-col size="6">
-          <ion-input type="number" formControlName="TotalToReceive" value="0"></ion-input>
+          <ion-input class="inputqty" type="number" formControlName="TotalToReceive" value="0"></ion-input>
         </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive">
@@ -43,7 +43,7 @@
           <b>No of Pack(LP):</b>
         </ion-col>
         <ion-col size="6">
-          <ion-input type="number" formControlName="NoofPackLP" value="0"></ion-input>
+          <ion-input class="inputqty" type="number" formControlName="NoofPackLP" value="0"></ion-input>
         </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive">
@@ -51,7 +51,7 @@
           <b>Pack Unit:</b>
         </ion-col>
         <ion-col size="6">
-          <ion-select formControlName="PackUnitUoM">
+          <ion-select class="inputqty" formControlName="PackUnitUoM">
             <ion-select-option *ngFor="let uoM of lstUoM" [value]="uoM.Code">{{uoM.Code}}</ion-select-option>
           </ion-select>
         </ion-col>
