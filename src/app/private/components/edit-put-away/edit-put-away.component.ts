@@ -78,6 +78,7 @@ export class EditPutAwayComponent implements OnInit {
   public initItem:any[] = [];
 
   public listItems:any[] = [];
+  public listItemsT:any[] = [];
   public barcodeScannerOptions: BarcodeScannerOptions
   public warePY: any;
 
@@ -339,7 +340,10 @@ export class EditPutAwayComponent implements OnInit {
           let line = this.listItems.find(x => x.LineNo === item.LineNo);
           let line2 = this.itemsL.find(x => x.LineNo === item.LineNo);
   
-          if((line === undefined || line === null) && (line2 === undefined || line === null))this.listItems.push(item);
+          if((line === undefined || line === null) && (line2 === undefined || line === null)){
+            this.listItems.push(item);
+            this.listItemsT.push(item);
+          }
   
         });
 
@@ -1007,11 +1011,50 @@ export class EditPutAwayComponent implements OnInit {
 
   public ascendant(){
 
-    let aux;
+       
  
   }
 
+  public async filter(num:any){
+
+    let listT =   await this.storage.get(this.whsePutAway.fields.No);;
+    let listI =   await this.storage.get(`items ${this.whsePutAway.fields.No}`);;
+
+    switch(num){
+
+      case 1:
+      this.listItems = [];
+      this.listsFilter = listT.filter(
+        x => {
+          return (x.fields.PLULPDocumentType === "Single");
+        }
+      )
+
+      break;
+
+     case 2:
+      this.listItems = [];
+      this.listsFilter = listT.filter(
+        x => {
+          return (x.fields.PLULPDocumentType === "Pallet");
+        }
+      )
+      break;
+     case 3:
+      this.listsFilter = [];
+      this.listItems = listI;
+      break;
+     
+     case 4:
+      this.listItems = listI;
+      this.listsFilter = listT;
+      break;
+       
+    }
+  }
+
   public descendent(){
+
 
 
   }
@@ -1045,6 +1088,7 @@ export class EditPutAwayComponent implements OnInit {
 
         if((line === undefined || line === null) && (line2 === undefined || line2 === null)){
           this.listItems.push(item);
+          this.listItemsT.push(item);
          
         }
 
@@ -1052,7 +1096,7 @@ export class EditPutAwayComponent implements OnInit {
       });
 
     }
-     
+    
     this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
     console.log(this.listItems);
     this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
