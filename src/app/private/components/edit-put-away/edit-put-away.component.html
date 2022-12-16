@@ -84,14 +84,17 @@
                         <ion-icon name="cog-outline"></ion-icon>
                     </ion-fab-button>
                     <ion-fab-list side="bottom">
-                        <ion-fab-button color="success" data-desc2="Filter by LP">
+                        <ion-fab-button color="success" data-desc2="Filter by LP" (click)="filter(1)">
                             <ion-icon name="barcode-outline"></ion-icon>
                         </ion-fab-button>
-                        <ion-fab-button color="tertiary" data-desc2="Filter by PL">
+                        <ion-fab-button color="tertiary" data-desc2="Filter by PL" (click)="filter(2)">
                             <ion-icon name="cube-outline"></ion-icon>
                         </ion-fab-button>
-                        <ion-fab-button color="secondary" data-desc2="Filter by Item">
+                        <ion-fab-button color="secondary" data-desc2="Filter by Item" (click)="filter(3)">
                             <ion-icon name="receipt-outline"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-button color="secondary" data-desc2="All" (click)="filter(4)">
+                            <ion-icon name="refresh-outline"></ion-icon>
                         </ion-fab-button>
                     </ion-fab-list>
                     <ion-fab-list side="start">

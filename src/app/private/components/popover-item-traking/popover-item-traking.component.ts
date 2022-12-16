@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 
 @Component({
@@ -9,16 +10,17 @@ import { PopoverController } from '@ionic/angular';
 })
 export class PopoverItemTrakingComponent implements OnInit {
 
-  public serial: boolean;
-  public lot: boolean;
-  public exp: boolean;
+  public serial: boolean = false;
+  public lot: boolean = false;
+  public exp: boolean = false;
+  public boolean:boolean;
   public lp: any;
   @Input() options: any;
 
   public item: any;
 
   public frm: FormGroup;
-  constructor(private formBuilder: FormBuilder, public popoverController: PopoverController) {
+  constructor(private formBuilder: FormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner) {
     this.frm = this.formBuilder.group(
       {
         Qty: ['0', Validators.required],
@@ -64,11 +66,67 @@ export class PopoverItemTrakingComponent implements OnInit {
         this.serial = true;
         break;
 
+      case "FREEENTRY":
+        this.boolean = true;
+        break;
+
     }
 
 
   }
 
+  addField(num:any){
+ 
+    if(num === 1) this.serial = true;
+    if(num === 2) this.lot = true;
+    if(num === 3) this.exp = true;
+
+
+  }
+
+  resField(num:any){
+ 
+    if(num === 1) this.serial = false;
+    if(num === 2) this.lot = false;
+    if(num === 3) this.exp = false;
+
+  }
+
+  scanSN(){
+
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text;
+     
+        this.frm.patchValue({
+          SerialNo: code.toUpperCase()
+        });
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+  scanLOT(){
+
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text;
+      
+        this.frm.patchValue({
+          LotNo: code.toUpperCase()
+        });
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
 
   async closePopover() {
 
