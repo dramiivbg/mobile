@@ -1,6 +1,8 @@
 ion-content {
- 
-    ion-row.header{
+
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+
+    ion-row.header {
         background: linear-gradient(to top, #5CABF9, #1A518E) !important;
         color: #ffffff;
         font-size: 20px;
@@ -9,15 +11,18 @@ ion-content {
         font-weight: bold;
         border-radius: 0 0 0 70%;
     }
+
     ion-list {
         border-bottom: 1px solid #999;
         padding: 0;
+
         ion-row {
             ion-col {
                 ion-icon {
                     font-size: 25px;
                     color: var(--ion-color-plureBlue);
                 }
+
                 ion-label {
                     margin-top: 4px;
                     width: 100%;
@@ -29,7 +34,7 @@ ion-content {
     }
 }
 
-ion-button{
+ion-button {
     color: white;
     --backround: var(--ion-color-plureBlue) !important;
     border-radius: 23px;
@@ -38,5 +43,17 @@ ion-button{
 .qtytoreceive {
     display: flex;
     align-items: center;
-    padding: 0 15px 0 15px;
+    padding: 0 15px 0 15px !important;
+}
+
+ion-input.inputqty {
+    --background: rgba(92, 171, 249, 0.08);
+    --color: black;
+    border-radius: 23px;
+}
+
+ion-select.inputqty {
+    --background: rgba(92, 171, 249, 0.08);
+    --color: black;
+    border-radius: 23px;
 }

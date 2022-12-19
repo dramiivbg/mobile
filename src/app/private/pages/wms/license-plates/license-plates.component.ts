@@ -5,7 +5,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
-import {GeneralService} from '@svc/general.service';
+import { GeneralService } from '@svc/general.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -27,8 +27,8 @@ export class LicensePlatesComponent implements OnInit {
     , private popoverController: PopoverController
     , private interceptService: InterceptService,
     private router: Router
-    
-  ) { 
+
+  ) {
 
     let objFunc = {
       func: () => {
@@ -63,74 +63,74 @@ export class LicensePlatesComponent implements OnInit {
 
   public async onSubmit() {
 
-  
+
     if (this.frm.valid) {
 
-    
-        this.interceptService.loadingFunc(true);
 
-        let obj = await this.jsonService.formToJson(this.frm);
+      this.interceptService.loadingFunc(true);
 
-        
-        
-        obj['No'] = this.item.No;
-        obj['ItemNo'] = this.item.ItemNo;
-        obj['BinCode'] = this.item.BinCode;
-        obj['UnitofMeasureCode'] = this.item.UnitofMeasureCode;
-        obj['TotalToReceive'] = obj.TotalToReceive;
-        obj['NoofPackLP'] = obj.NoofPackLP;
-        obj['PackUnitUoM'] = obj.PackUnitUoM;
-        obj['LineNo']  = this.item.LineNo;
+      let obj = await this.jsonService.formToJson(this.frm);
 
 
-if(obj.TotalToReceive == 0){
-  this.interceptService.loadingFunc(false);
-  this.interceptService.alertFunc(this.jsonService.getAlert('alert',' ','Please put how many license plate you want'));
- 
-}else
 
-   if(obj.NoofPackLP == 0){
-    this.interceptService.loadingFunc(false);
-    this.interceptService.alertFunc(this.jsonService.getAlert('alert',' ',' Please put how many packs each license plate will have'));
-    
-   }else{
+      obj['No'] = this.item.No;
+      obj['ItemNo'] = this.item.ItemNo;
+      obj['BinCode'] = this.item.BinCode;
+      obj['UnitofMeasureCode'] = this.item.UnitofMeasureCode;
+      obj['TotalToReceive'] = obj.TotalToReceive;
+      obj['NoofPackLP'] = obj.NoofPackLP;
+      obj['PackUnitUoM'] = obj.PackUnitUoM;
+      obj['LineNo'] = this.item.LineNo;
 
 
-      obj['TotalToReceive'] = obj.TotalToReceive * obj.NoofPackLP;
-
-      let rsl = await this.wmsService.CreateLPFromWarehouseReceiptLine([obj]);
-
-      console.log(rsl);
-
-      console.log(rsl);
-
-      if(rsl.Created){
-
-        
-      this.interceptService.loadingFunc(false);
-
-      this.interceptService.alertFunc(this.jsonService.getAlert('success',' ','License plates have been created successfully'));
-
-       
-      this.popoverController.dismiss({data: 'creado'});
-
-      }else{
-
+      if (obj.TotalToReceive == 0) {
         this.interceptService.loadingFunc(false);
-        this.interceptService.alertFunc(this.jsonService.getAlert('alert',' ','You can not send more than you expect to receive'));
-      }
+        this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', 'Please put how many license plate you want'));
 
-    
-     }
-       
-  
-        
+      } else
 
-      
+        if (obj.NoofPackLP == 0) {
+          this.interceptService.loadingFunc(false);
+          this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', ' Please put how many packs each license plate will have'));
 
-    
+        } else {
 
-   
+
+          obj['TotalToReceive'] = obj.TotalToReceive * obj.NoofPackLP;
+
+          let rsl = await this.wmsService.CreateLPFromWarehouseReceiptLine([obj]);
+
+          console.log(rsl);
+
+          console.log(rsl);
+
+          if (rsl.Created) {
+
+
+            this.interceptService.loadingFunc(false);
+
+            this.interceptService.alertFunc(this.jsonService.getAlert('success', ' ', 'License plates have been created successfully'));
+
+
+            this.popoverController.dismiss({ data: 'creado' });
+
+          } else {
+
+            this.interceptService.loadingFunc(false);
+            this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', 'You can not send more than you expect to receive'));
+          }
+
+
+        }
+
+
+
+
+
+
+
+
+
     }
   }
 
