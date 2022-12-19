@@ -31,7 +31,7 @@
                     <ion-col size="3" class="txt">
                         <ion-label>Lines</ion-label>
                     </ion-col>
-
+                    
                     <!-- <ion-col *ngIf="new || edit">
                   <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
                 </ion-col> -->
@@ -51,8 +51,9 @@
                                             <ion-col size="12">
                                                 <ion-row>
                                                     <ion-col size="8" style="overflow: hidden;"
-                                                        class="label-line-title blue" (click)="onPopoverMenu($event,item)">
-                                                        ITEM NAME
+                                                        class="label-line-title blue"
+                                                        (click)="onPopoverMenu($event,item)">
+                                                        {{item.ItemNo}}
                                                     </ion-col>
                                                     <ion-col size="4" class="label-line-title">
                                                         Qty. {{item.Quantity}}
@@ -66,12 +67,12 @@
                                                 </ion-row>
                                                 <!-- Descripcion del item (variante), este debe tener un boolean -->
                                                 <ion-row>
-                                                    <ion-col class="itemdesc" size="8" (click)="onPopoverMenu($event,item)">
+                                                    <ion-col class="itemdesc" size="8"
+                                                        (click)="onPopoverMenu($event,item)">
                                                         {{item.Description}}
                                                     </ion-col>
 
-                                                    <div (click)="showLPs(item)"
-                                                        *ngIf="item.plure === true">
+                                                    <div (click)="showLPs(item)" *ngIf="item.plure === true">
 
                                                         <ion-col size="4" class="label-line-title">
 
@@ -87,8 +88,11 @@
 
                                                 </ion-row>
                                                 <ion-row (click)="onPopoverMenu($event,item)">
-                                                    <ion-col size="4" class="label-line">
+                                                    <!-- <ion-col size="4" class="label-line">
                                                         <b>Item No:</b> {{item.ItemNo}}
+                                                    </ion-col> -->
+                                                    <ion-col class="label-line" size="4">
+                                                        <b>Line:</b> {{item.LineNo}}
                                                     </ion-col>
                                                     <ion-col size="4" class="label-line">
                                                         <b>Measure:</b> {{item.UnitofMeasureCode}}
@@ -98,10 +102,10 @@
                                                     </ion-col>
                                                 </ion-row>
                                                 <ion-row (click)="onPopoverMenu($event,item)">
-                                                    <ion-col class="label-line" size="4">
+                                                    <!-- <ion-col class="label-line" size="4">
                                                         <b>Line:</b> {{item.LineNo}}
-                                                    </ion-col>
-                                                    <ion-col class="label-line" size="8"
+                                                    </ion-col> -->
+                                                    <ion-col class="label-line" size="12"
                                                         *ngIf="item.VariantCode !== null">
                                                         <b>Variant Code:</b> {{item.VariantCode}}
                                                     </ion-col>
