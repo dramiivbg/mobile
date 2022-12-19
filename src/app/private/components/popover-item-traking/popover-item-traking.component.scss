@@ -145,9 +145,15 @@ ion-fab-button {
 .clipboardicon {
     font-size: 25px;
     font-weight: bold;
-    color: var(--ion-color-plureBlue);
+    color: var(--ion-color-primary);
+    display: flex;
+    align-items: center;
+    // left: 100px;
+}
+
+.clipboardcol{
     display: flex;
     align-items: center;
     justify-content: center;
-    // left: 100px;
+    font-weight: bold;
 }
