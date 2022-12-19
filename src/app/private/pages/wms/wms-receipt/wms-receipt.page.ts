@@ -203,7 +203,7 @@ export class WmsReceiptPage implements OnInit {
     if (lp.LP_Pending_To_Receive > 0) {
       const popover = await this.popoverController.create({
         component: LicensePlatesComponent,
-        cssClass: 'popLicensePlate',
+        cssClass: 'popLicensePlate-modal',
         componentProps: { options: { item, lp, lstUoM } },
         backdropDismiss: false
       });
