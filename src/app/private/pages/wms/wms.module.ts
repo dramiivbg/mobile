@@ -43,6 +43,7 @@ import { ModalLpsConfirmComponent } from '@prv/components/modal-lps-confirm/moda
 import { UpdateItemComponent } from '@prv/components/update-item/update-item.component';
 import { PopoverSplitItemComponent } from '@prv/components/popover-split-item/popover-split-item.component';
 import { PopoverItemTrakingComponent } from '@prv/components/popover-item-traking/popover-item-traking.component';
+import { PopoverListSNComponent } from '@prv/components/popover-list-sn/popover-list-sn.component';
 
 
 
@@ -85,7 +86,8 @@ import { PopoverItemTrakingComponent } from '@prv/components/popover-item-trakin
     ModalLpsConfirmComponent,
     UpdateItemComponent,
     PopoverSplitItemComponent,
-    PopoverItemTrakingComponent
+    PopoverItemTrakingComponent,
+    PopoverListSNComponent
    
    
     
@@ -126,7 +128,8 @@ import { PopoverItemTrakingComponent } from '@prv/components/popover-item-trakin
     ModalLpsConfirmComponent,
     UpdateItemComponent,
     PopoverSplitItemComponent,
-    PopoverItemTrakingComponent
+    PopoverItemTrakingComponent,
+    PopoverListSNComponent
   
   ]
 })

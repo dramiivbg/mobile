@@ -12,10 +12,6 @@
 	"cordova": {},
 	"server": {
 		"cleartext": true,
-<<<<<<< HEAD
-		"url": "http://10.0.0.33:8100"
-=======
-		"url": "http://192.168.0.85:8100"
->>>>>>> sebastian.murillas
+		"url": "http://10.0.0.34:8100"
 	}
 }

@@ -2,6 +2,9 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
+import { InterceptService } from '@svc/intercept.service';
+import { JsonService } from '@svc/json.service';
+import { PopoverListSNComponent } from '../popover-list-sn/popover-list-sn.component';
 
 @Component({
   selector: 'app-popover-item-traking',
@@ -17,16 +20,20 @@ export class PopoverItemTrakingComponent implements OnInit {
   public lp: any;
   @Input() options: any;
 
+  public seriales:any[] = [];
+
+
   public item: any;
 
   public frm: FormGroup;
-  constructor(private formBuilder: FormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner) {
+  constructor(private formBuilder: FormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner, 
+    private jsonService: JsonService,  private intServ: InterceptService) {
     this.frm = this.formBuilder.group(
       {
         Qty: ['0', Validators.required],
         requestedDeliveryDate: ['', Validators.required],
         TotalToReceive: [0, Validators.required],
-        SerialNo: ['', Validators.required],
+        SerialNo: [ [], Validators.required],
         LotNo: ['', Validators.required],
         QtyBase: [0, Validators.required],
         QtyHandleBase: [0, Validators.required],
@@ -97,9 +104,12 @@ export class PopoverItemTrakingComponent implements OnInit {
     this.barcodeScanner.scan().then(
       barCodeData => {
         let code = barCodeData.text;
+
+        this.seriales.push(code.toLocaleUpperCase());
+        
      
         this.frm.patchValue({
-          SerialNo: code.toUpperCase()
+          SerialNo: this.seriales
         });
       }
     ).catch(
@@ -130,7 +140,31 @@ export class PopoverItemTrakingComponent implements OnInit {
 
   async closePopover() {
 
-    this.popoverController.dismiss({});
+    if(this.seriales.length > 0){
+
+      this.intServ.alertFunc(this.jsonService.getAlert('confirm', 'Are you sure?', 'All data will be lost', () => {
+
+        this.popoverController.dismiss({});
+      }));
+    }else{
+      this.popoverController.dismiss({});
+    }
+  
+   
+  }
+
+async  listSN(){
+
+  let seriales = this.frm.get('SerialNo').value;
+
+  const popover = await this.popoverController.create({
+    component: PopoverListSNComponent,
+    cssClass: 'popoverListSNComponent-modal',
+    componentProps: {seriales},
+    
+  });
+  await popover.present();
+  const { data } = await popover.onDidDismiss();
   }
 
 
