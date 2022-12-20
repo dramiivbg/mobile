@@ -1,0 +1,14 @@
+ion-content {
+
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+
+    ion-row.header {
+        background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+        color: #ffffff;
+        font-size: 15px;
+        padding: 10px 15px;
+        text-align: start;
+        font-weight: bold;
+        border-radius: 0 0 70% 0;
+    }
+}

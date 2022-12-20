@@ -1,3 +1,127 @@
-<p>
-  popover-configuration-code works!
-</p>
+<ng-container>
+  <ion-content>
+      <ion-row class="header">
+        <ion-col class="title" size="12">
+          Tracking Code Configuration
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="Title2">
+          General
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="itemtitle">
+          Code:
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="itemtitle">
+          Description:
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="Title2">
+          Serial No.
+        </ion-col>
+      </ion-row>
+
+      <ion-list class="GeneralList">
+        <ion-row>
+          <ion-col class="subtitle">
+            General
+          </ion-col>
+        </ion-row>
+        <ion-item>      
+          <ion-label>SN Specific Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>Create SN Info. on posting</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Whse. Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Transfer Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+
+      </ion-list>
+
+      <ion-list class="InboundList">
+        <ion-row>
+          <ion-col class="subtitle">
+            Inbound
+          </ion-col>
+        </ion-row>
+
+        <ion-item>      
+          <ion-label>SN No. Info Must Exist</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Purchase Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Sales Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Positive Adjmt. Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Assembly Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+      </ion-list>
+
+      <ion-list class="OutboundList">
+        <ion-row>
+          <ion-col class="subtitle">
+            Outbound
+          </ion-col>
+        </ion-row>
+
+        <ion-item>      
+          <ion-label>SN No. Info Must Exist</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Purchase Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Sales Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Positive Adjmt. Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item>      
+          <ion-label>SN Assembly Tracking</ion-label>
+          <ion-toggle color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+      </ion-list>
+
+    </ion-content>
+</ng-container>
