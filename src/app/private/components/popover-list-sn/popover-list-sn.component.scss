@@ -1,0 +1,18 @@
+ion-content {
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+
+    ion-list {
+        background: transparent;
+
+        ion-item{
+            --background: transparent;
+        }
+    }
+}
+
+.title {
+    color: var(--ion-color-plureBlue);
+    font-weight: bold;
+    text-align: center;
+    font-size: 15px;
+}
