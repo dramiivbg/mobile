@@ -30,7 +30,6 @@ export class PopoverItemTrakingComponent implements OnInit {
     private jsonService: JsonService,  private intServ: InterceptService) {
     this.frm = this.formBuilder.group(
       {
-        Qty: ['0', Validators.required],
         requestedDeliveryDate: ['', Validators.required],
         TotalToReceive: [0, Validators.required],
         SerialNo: [ [], Validators.required],
@@ -104,13 +103,26 @@ export class PopoverItemTrakingComponent implements OnInit {
     this.barcodeScanner.scan().then(
       barCodeData => {
         let code = barCodeData.text;
+        let line = undefined;
 
-        this.seriales.push(code.toLocaleUpperCase());
+        line = this.seriales.find(serial => serial === code.toUpperCase());
+        if(line === null || line === undefined){
+
+          this.seriales.push(code.toUpperCase());
+        }else{
+
+          this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${code.toUpperCase()} already exists`));
+        }
+     
         
      
         this.frm.patchValue({
-          SerialNo: this.seriales
+          SerialNo: this.seriales,
+          TotalToReceive: this.seriales.length
+
         });
+
+
       }
     ).catch(
       err => {
