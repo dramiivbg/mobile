@@ -81,7 +81,7 @@ export class PopoverItemTrakingComponent implements OnInit {
         break;
 
       case "FREEENTRY":
-        this.boolean = true;
+      
         break;
 
     }
