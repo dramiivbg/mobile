@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { WmsService } from '@svc/wms.service';
 
 @Component({
   selector: 'app-popover-configuration-code',
@@ -10,9 +11,9 @@ export class PopoverConfigurationCodeComponent implements OnInit {
   @Input() code:any;
   constructor() { }
 
-  ngOnInit() {
-
-    console.log(this.code);
+ async ngOnInit() {
+  console.log(this.code);
+  
   }
 
 }

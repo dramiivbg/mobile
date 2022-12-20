@@ -1307,6 +1307,30 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
    }
   
 
+   public async listCode(list:any):Promise<any>{
+
+    let obj = {};
+    
+    obj['lines'] = await this.fields(list.ItemTracking.fields);
+
+    return obj;
+       
+
+    }
+
+
+    private async fields(fields:any): Promise<any>{
+
+
+        let obj = {};
+        for (let i in fields) {
+          obj[fields[i].name] = fields[i].value
+          
+        }
+    
+        return obj;
+    }
+
    
 
  

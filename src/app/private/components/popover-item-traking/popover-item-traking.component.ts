@@ -18,10 +18,10 @@ export class PopoverItemTrakingComponent implements OnInit {
   public serial: boolean = false;
   public lot: boolean = false;
   public exp: boolean = false;
-  public boolean:boolean;
   public lp: any;
   @Input() options: any;
 
+  public code:any;
   public seriales:any[] = [];
 
 
@@ -45,16 +45,22 @@ export class PopoverItemTrakingComponent implements OnInit {
     )
   }
 
-  ngOnInit() {
+ async ngOnInit() {
 
-    //  console.log(this.options);
+    //  console.log(this.options)
 
     this.item = (this.options.item !== null) ? this.options.item : null;
     this.lp = (this.options.lp !== null) ? this.options.lp : null;
 
-    console.log(this.item, this.lp);
+    let res = await this.wmsService.configurationTraking(this.item.trakingCode);
+    this.code = await this.wmsService.listCode(res);
 
-    switch (this.item.trakingCode) {
+    console.log(this.code);
+ 
+
+   // console.log(this.item, this.lp);
+
+    switch (this.code.lines) {
       case "LOTSNSALES":
         this.lot = true;
         this.serial = true;
@@ -169,11 +175,11 @@ export class PopoverItemTrakingComponent implements OnInit {
 
 async popoverConfigCode(){
 
-  let code = await this.wmsService.configurationTraking(this.item.trakingCode);
+ 
   const popover = await this.popoverController.create({
     component: PopoverConfigurationCodeComponent,
     cssClass: 'popoverConfigurationCodeComponent-modal',
-    componentProps: {code},
+    componentProps: {code:this.code},
     
   });
   await popover.present();
