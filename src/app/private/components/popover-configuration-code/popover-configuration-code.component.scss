@@ -6,8 +6,8 @@ ion-content {
         background: linear-gradient(to top, #5CABF9, #1A518E) !important;
         color: #ffffff;
         font-size: 15px;
-        padding: 10px 15px;
-        text-align: start;
+        padding: 10px 10px;
+        text-align: center;
         font-weight: bold;
         border-radius: 0 0 70% 0;
     }
@@ -15,11 +15,32 @@ ion-content {
     .Title2{
         text-align: center;
         font-size: 15px;
-        color: var(ion-color-PlureBlue);
+        color: var(--ion-color-plureBlue);
         font-weight: bold;
     }
 
     .itemtitle{
         font-weight: bold;
+        font-size: 12px;
+    }
+
+    .subtitle{
+        font-weight: bold;
+        text-align: start;
+        font-size: 15px;
+        color: var(--ion-color-plureBlue);
+    }
+
+    .rowpadding{
+        padding-left: 10px;
+    }
+
+    ion-list{
+        background: transparent;
+
+        ion-item{
+            --background: transparent;
+            font-size: 12px;
+        }
     }
 }
