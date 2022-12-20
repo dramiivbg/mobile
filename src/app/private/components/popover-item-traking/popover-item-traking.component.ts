@@ -4,6 +4,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
+import { WmsService } from '@svc/wms.service';
+import { PopoverConfigurationCodeComponent } from '../popover-configuration-code/popover-configuration-code.component';
 import { PopoverListSNComponent } from '../popover-list-sn/popover-list-sn.component';
 
 @Component({
@@ -27,7 +29,7 @@ export class PopoverItemTrakingComponent implements OnInit {
 
   public frm: FormGroup;
   constructor(private formBuilder: FormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner, 
-    private jsonService: JsonService,  private intServ: InterceptService) {
+    private jsonService: JsonService,  private intServ: InterceptService, private wmsService: WmsService) {
     this.frm = this.formBuilder.group(
       {
         requestedDeliveryDate: ['', Validators.required],
@@ -163,6 +165,20 @@ export class PopoverItemTrakingComponent implements OnInit {
     }
   
    
+  }
+
+async popoverConfigCode(){
+
+  let code = await this.wmsService.configurationTraking(this.item.trakingCode);
+  const popover = await this.popoverController.create({
+    component: PopoverConfigurationCodeComponent,
+    cssClass: 'popoverConfigurationCodeComponent-modal',
+    componentProps: {code},
+    
+  });
+  await popover.present();
+  const { data } = await popover.onDidDismiss();
+
   }
 
 async  listSN(){

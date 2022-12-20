@@ -44,6 +44,7 @@ import { UpdateItemComponent } from '@prv/components/update-item/update-item.com
 import { PopoverSplitItemComponent } from '@prv/components/popover-split-item/popover-split-item.component';
 import { PopoverItemTrakingComponent } from '@prv/components/popover-item-traking/popover-item-traking.component';
 import { PopoverListSNComponent } from '@prv/components/popover-list-sn/popover-list-sn.component';
+import { PopoverConfigurationCodeComponent } from '@prv/components/popover-configuration-code/popover-configuration-code.component';
 
 
 
@@ -87,7 +88,8 @@ import { PopoverListSNComponent } from '@prv/components/popover-list-sn/popover-
     UpdateItemComponent,
     PopoverSplitItemComponent,
     PopoverItemTrakingComponent,
-    PopoverListSNComponent
+    PopoverListSNComponent,
+    PopoverConfigurationCodeComponent
    
    
     
@@ -129,7 +131,8 @@ import { PopoverListSNComponent } from '@prv/components/popover-list-sn/popover-
     UpdateItemComponent,
     PopoverSplitItemComponent,
     PopoverItemTrakingComponent,
-    PopoverListSNComponent
+    PopoverListSNComponent,
+    PopoverConfigurationCodeComponent
   
   ]
 })

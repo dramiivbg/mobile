@@ -1023,6 +1023,30 @@ public async SplitPallet_Item(objP:any){
 }
 
 
+public async configurationTraking(Code:any){
+
+    try {
+
+    
+        let obj: any = [{
+
+            Code
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('GetItemTracking', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
+
 public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,ItemNo:any,Qty:any,UnitofMeasureCode:any){
 
 
