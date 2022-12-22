@@ -1,6 +1,6 @@
 @import "~src/sass/variables";
 
-ion-item::part(native){
+ion-item::part(native) {
     --background: transparent;
     padding: 0;
     color: #000;
@@ -48,24 +48,29 @@ ion-item ion-input {
 .label-lines {
     width: 85%;
     padding: 5px 0 5px 15px;
+
     ion-col {
         padding: 2px 10px 2px 0;
     }
+
     .label-line-title {
-        font-size: 14px; 
+        font-size: 14px;
         font-weight: bold;
+
         img.noImage {
             padding-top: 20px;
         }
     }
+
     .label-line-title.blue {
         color: var(--ion-color-plureBlue);
         font-size: 16px;
         font-family: SourceSansProBold;
     }
+
     .label-line {
         color: rgba(85, 85, 105, 0.5);
-        font-size: 10px; 
+        font-size: 10px;
         padding: 0 10px 0 0;
     }
 }
@@ -75,7 +80,8 @@ ion-button.add-lines {
     font-size: 24px;
     width: 52px;
 }
-ion-button.add-lines::part(native){
+
+ion-button.add-lines::part(native) {
     border-radius: 10px;
 }
 
@@ -104,16 +110,20 @@ ion-button.add-lines::part(native){
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
+
     ion-label.customerName {
         font-size: 1.3rem;
         font-family: SourceSansProBold;
     }
+
     ion-label.smallfont {
         font-size: 15px;
+
         .datetime-text {
             font-size: 15px;
         }
     }
+
     ion-row.total-for-pay {
         background: var(--ion-color-plureHeader) !important;
         border-radius: 10px 0 0 10px;
@@ -122,43 +132,52 @@ ion-button.add-lines::part(native){
         position: absolute;
         padding: 0.5em 1.5em;
         right: 0;
-        
+
         ion-label {
             font-size: 1.4rem;
             color: var(--ion-color-plureBlue);
             font-family: SourceSansProBold;
         }
     }
+
     ion-row.customerNo {
         margin-top: -0.8em;
+
         ion-label.smallfont {
             font-size: 0.65rem;
         }
     }
+
     ion-row {
         padding: 5px 20px 0 20px;
     }
+
     ion-row.newColor {
         background: rgba(21, 73, 131, 1);
         margin: 5px 0 0;
     }
+
     ion-datetime {
         border-bottom: 1px solid #fff;
         padding: 3px 0 0 !important;
         text-align: center;
     }
+
     div.icon-header {
         float: left;
         padding-right: 5px;
         width: 35px;
     }
+
     div.text-header {
         float: left;
         padding-top: 3px;
     }
+
     ion-col.edit-header {
         padding-top: 11px;
     }
+
     hr {
         background: var(--ion-color-plure-contrast);
         width: 92%;
@@ -168,6 +187,7 @@ ion-button.add-lines::part(native){
 
 .accorn {
     font-size: 12px;
+
     ion-row {
         ion-col {
             ion-label {
@@ -175,12 +195,15 @@ ion-button.add-lines::part(native){
             }
         }
     }
+
     .accorn-title {
         padding: 5px;
         font-weight: bold;
     }
+
     .btn-accord {
         text-align: center;
+
         .accord-btn-add {
             display: inline-block;
         }
@@ -191,6 +214,7 @@ div.accornSubTotal {
     margin-bottom: 100px;
     margin-top: 30px;
     text-align: center;
+
     div.box-sh {
         box-shadow: 0px 0px 8px rgb(0 0 0 / 11%);
         border-radius: 10px;
@@ -203,9 +227,11 @@ div.accornSubTotal {
 .order-details {
     color: #aaaaaa;
     padding: 0 0.2em 0;
+
     ion-col.txt {
         padding-top: 14px;
         font-weight: bold;
+
         ion-label {
             font-size: 20px;
         }
@@ -216,16 +242,16 @@ div.accornSubTotal {
 
 
 
-ion-content{  
+ion-content {
 
     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
 
 
-    ion-row.header{
+    ion-row.header {
         font-size: 20px;
     }
 
-    ion-col.TitleHeader{
+    ion-col.TitleHeader {
         font-family: Arial, Helvetica, sans-serif;
         text-align: center;
         font-weight: bold;
@@ -233,64 +259,64 @@ ion-content{
         padding-top: 1rem;
     }
 
-  
-  ion-grid{
+
+    ion-grid {
 
 
 
-    text-align: center;
-    width: 100%;
-    height: 40%;
+        text-align: center;
+        width: 100%;
+        height: 40%;
 
 
-    ion-row.delivery{
+        ion-row.delivery {
 
 
-      overflow: auto;
+            overflow: auto;
+        }
+
+
+
+
+
+        // background: var(--ion-color-plure-contrast);
+
+        color: #ffffff;
+
+
+        .div {
+
+            overflow: auto;
+        }
+
+
+        ion-row.newColor {
+            background: rgba(21, 73, 131, 1);
+            margin: 5px 0 0;
+            font-weight: bold;
+        }
+
+        ion-row.ContentTable {
+            background: rgba(92, 171, 249, 0.08);
+            margin: 1px 0 0;
+            color: var(--ion-color-plureMain);
+
+        }
+
     }
-
-
-
-    
-
-    // background: var(--ion-color-plure-contrast);
-
-    color: #ffffff;
-
-
-    .div{
-
-      overflow: auto;
-    }
-
-
-    ion-row.newColor {
-      background: rgba(21, 73, 131, 1);
-      margin: 5px 0 0;
-      font-weight: bold;
-  }
-
-  ion-row.ContentTable{
-    background: rgba(21, 73, 131, 0.2);
-    margin: 1px 0 0;
-    color: var(--ion-color-plureMain);
 
 }
 
-  }
-
-}
-
-ion-radio-group{
-    ion-radio{
+ion-radio-group {
+    ion-radio {
         margin: auto;
-}
+    }
 }
 
 
 @import "~src/sass/variables";
 
-ion-item::part(native){
+ion-item::part(native) {
     --background: transparent;
     padding: 0;
     color: #000;
@@ -338,24 +364,29 @@ ion-item ion-input {
 .label-lines {
     width: 85%;
     padding: 5px 0 5px 15px;
+
     ion-col {
         padding: 2px 10px 2px 0;
     }
+
     .label-line-title {
-        font-size: 14px; 
+        font-size: 14px;
         font-weight: bold;
+
         img.noImage {
             padding-top: 20px;
         }
     }
+
     .label-line-title.blue {
         color: var(--ion-color-plureBlue);
         font-size: 16px;
         font-family: SourceSansProBold;
     }
+
     .label-line {
         color: rgba(85, 85, 105, 0.5);
-        font-size: 10px; 
+        font-size: 10px;
         padding: 0 10px 0 0;
     }
 }
@@ -365,7 +396,8 @@ ion-button.add-lines {
     font-size: 24px;
     width: 52px;
 }
-ion-button.add-lines::part(native){
+
+ion-button.add-lines::part(native) {
     border-radius: 10px;
 }
 
@@ -390,19 +422,24 @@ ion-button.add-lines::part(native){
     border-radius: 0 0 70% 0;
     font-weight: bold;
     box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
+
     ion-col.customer-margin {
         margin: 5px 0 0;
     }
+
     ion-label.customerName {
         font-size: 1.3rem;
         font-family: SourceSansProBold;
     }
+
     ion-label.smallfont {
         font-size: 15px;
+
         .datetime-text {
             font-size: 15px;
         }
     }
+
     ion-row.total-for-pay {
         background: var(--ion-color-plureHeader) !important;
         border-radius: 10px 0 0 10px;
@@ -411,43 +448,52 @@ ion-button.add-lines::part(native){
         position: absolute;
         padding: 0.5em 1.5em;
         right: 0;
-        
+
         ion-label {
             font-size: 1.4rem;
             color: var(--ion-color-plureBlue);
             font-family: SourceSansProBold;
         }
     }
+
     ion-row.customerNo {
         margin-top: -0.8em;
+
         ion-label.smallfont {
             font-size: 0.65rem;
         }
     }
+
     ion-row {
         padding: 5px 20px 0 20px;
     }
+
     ion-row.newColor {
         background: rgba(21, 73, 131, 1);
         margin: 5px 0 0;
     }
+
     ion-datetime {
         border-bottom: 1px solid #fff;
         padding: 3px 0 0 !important;
         text-align: center;
     }
+
     div.icon-header {
         float: left;
         padding-right: 5px;
         width: 35px;
     }
+
     div.text-header {
         float: left;
         padding-top: 3px;
     }
+
     ion-col.edit-header {
         padding-top: 11px;
     }
+
     hr {
         background: var(--ion-color-plure-contrast);
         width: 92%;
@@ -457,6 +503,7 @@ ion-button.add-lines::part(native){
 
 .accorn {
     font-size: 12px;
+
     ion-row {
         ion-col {
             ion-label {
@@ -464,12 +511,15 @@ ion-button.add-lines::part(native){
             }
         }
     }
+
     .accorn-title {
         padding: 5px;
         font-weight: bold;
     }
+
     .btn-accord {
         text-align: center;
+
         .accord-btn-add {
             display: inline-block;
         }
@@ -480,6 +530,7 @@ div.accornSubTotal {
     margin-bottom: 100px;
     margin-top: 30px;
     text-align: center;
+
     div.box-sh {
         box-shadow: 0px 0px 8px rgb(0 0 0 / 11%);
         border-radius: 10px;
@@ -492,8 +543,10 @@ div.accornSubTotal {
 .order-details {
     color: #aaaaaa;
     padding: 0 0.2em 0;
+
     ion-col.txt {
         padding-top: 14px;
+
         ion-label {
             font-size: 20px;
         }
@@ -501,7 +554,7 @@ div.accornSubTotal {
 }
 
 
-.border{
+.border {
 
     border-bottom: 1px solid gray;
 }
@@ -517,32 +570,33 @@ ion-row.newColor {
 //     color: var(--ion-color-plureBlue);
 // }
 
-.barcodebtn{
+.barcodebtn {
     margin: auto;
     text-align: left;
 }
 
-.footernewpallet, .footernewpallettabs{
+.footernewpallet,
+.footernewpallettabs {
     height: 60px;
     background: linear-gradient(to bottom, #5CABF9, #1A518E);
     border-radius: 7% 7% 0% 0%;
     box-shadow: 0px -5px 18px #00000029;
 }
 
-.footernewpallettabs{
+.footernewpallettabs {
     --background: linear-gradient(to bottom, #5CABF9, #1A518E) !important;
     --border: 0px !important;
 }
 
-.itemfooter{
+.itemfooter {
     color: #F2F2F2 !important;
 }
 
-ion-list{
+ion-list {
     background: transparent;
 }
 
-ion-checkbox{
+ion-checkbox {
     --border-radius: 50%;
 }
 
