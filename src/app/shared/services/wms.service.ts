@@ -1283,6 +1283,84 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
     }
    }
 
+   public async GetItemTrackingSpecificationOpen(ItemNo:any,SourceNo:any,SourceRefNo:any){
+
+    try {
+
+    
+        let obj: any = [{
+
+            ItemNo,
+            SourceNo,
+            SourceRefNo
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationOpen', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
+
+   
+   public async GetItemTrackingSpecificationClosed(ItemNo:any,SourceNo:any,SourceRefNo:any){
+
+    try {
+
+    
+        let obj: any = [{
+
+            ItemNo,
+            SourceNo,
+            SourceRefNo
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationClosed', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
+
+   
+   
+   public async GetItemIdentifier(Code:any,){
+
+    try {
+
+    
+        let obj: any = [{
+
+            Code,
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('GetItemIdentifier', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
 
    public async SplitPutAwayLine(list:any){
 
@@ -1305,6 +1383,41 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
     }
 
    }
+
+
+   public async UpdateItemTrackingSpecificationOpen(list:any){
+
+         
+    try {
+
+    
+        let obj: any = [{
+
+            WarhouseReceiptNo: list.WarhouseReceiptNo,
+            ItemNo: list.ItemNo,
+            SourceNo: list.SourceNo,
+            SourceRefNo: list.SourceRefNo,
+            Qty: list.Qty,
+            SerialNo: list.SerialNo,
+            LotNo: list.LotNo,
+            ExperationDate: list.ExperationDate
+          
+
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('UpdateItemTrackingSpecificationOpen', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
   
 
    public async listCode(list:any):Promise<any>{
@@ -1318,6 +1431,60 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
     }
 
+
+public async DeleteItemTrackingSpecificationOpen(list:any){
+
+        
+         
+    try {
+
+    
+        let obj: any = [{
+
+            WarhouseReceiptNo: list.WarhouseReceiptNo,
+            ItemNo: list.ItemNo,
+            SourceNo: list.SourceNo,
+            SourceRefNo: list.SourceRefNo,
+            Qty: list.Qty,
+            SerialNo: list.SerialNo,
+            LotNo: list.LotNo,
+            ExperationDate: list.ExperationDate
+          
+
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('DeleteItemTrackingSpecificationOpen', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+    }
+    public async listTraking(list):Promise<any>{
+
+        let obj = {}
+
+        let array = [];
+
+        for (const key in list) {
+          
+        obj = await this.fields(list[key].fields);
+
+
+        array.push(obj);
+
+        obj = {};
+
+    }
+
+    return array;
+}
 
     private async fields(fields:any): Promise<any>{
 

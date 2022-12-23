@@ -170,7 +170,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
       console.log(groupItems);
 
-    this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: groupItems });
+   this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: groupItems });
     }
 
   }

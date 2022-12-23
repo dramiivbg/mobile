@@ -12,6 +12,12 @@ ion-content {
         border-radius: 0 0 70% 0;
     }
 
+    ion-icon.save{
+
+        background: linear-gradient(to top, #5CABF9, #1A518E) !important;  
+        color: #ffffff;
+    }
+
     ion-list {
         border-bottom: 1px solid #999;
         padding: 0;

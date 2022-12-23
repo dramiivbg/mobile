@@ -117,34 +117,20 @@ export class PopoverShowInventoryComponent implements OnInit {
   }
 
   exit(){
-
-
-    this.modalCtrl.dismiss({});
-
-    
+    this.modalCtrl.dismiss({});  
   }
 
 
   
   autoComplet(){
-
-
-    if(this.boolean){
- 
- 
-     
+    if(this.boolean){    
      this.barcodeScanner.scan().then(
        async  (barCodeData) => {
            let code = barCodeData.text;
-     
-     
-   
+    
            this.codeC = code;
- 
- 
+
            this.onChangeC('', this.codeC);
-           
-     
        
          }
        ).catch(
@@ -152,23 +138,12 @@ export class PopoverShowInventoryComponent implements OnInit {
            console.log(err);
          }
        )
-    }else{
- 
- 
-     
+    }else{  
      this.barcodeScanner.scan().then(
        async  (barCodeData) => {
            let code = barCodeData.text;
-     
-     
-   
            this.codeN = code;
- 
- 
-           this.onChangeN('', this.codeN);
-           
-     
-       
+           this.onChangeN('', this.codeN);       
          }
        ).catch(
          err => {
@@ -183,7 +158,8 @@ export class PopoverShowInventoryComponent implements OnInit {
    
   onChangeN(e, codeN:any = ''){
 
-    if(codeN === ''){
+  switch(codeN){
+    case '':
     let val = e.target.value;
 
     if (val === '') {
@@ -195,19 +171,16 @@ export class PopoverShowInventoryComponent implements OnInit {
         }
       )
     }
+    break;
 
-  }else{
-
-
+   default:
     this.NoCounting = this.listsN.filter(
       x => {
         return (x.fields.PLULicensePlates.toLowerCase().includes(codeN.toLowerCase()));
       }
     )
+    break;
   }
-
-
-
 
   }
 
@@ -216,33 +189,30 @@ export class PopoverShowInventoryComponent implements OnInit {
    
   onChangeC(e, codeC:any = ''){
 
-    if(codeC === ''){
-    let val = e.target.value;
+    switch(codeC){
+      case '':
 
-    if (val === '') {
+      let val = e.target.value;
+
+     if (val === '') {
       this.counting = this.listsC;
-    } else {
-      this.counting = this.listsC.filter(
+     } else {
+       this.counting = this.listsC.filter(
         x => {
           return (x.fields.PLULicensePlates.toLowerCase().includes(val.toLowerCase()));
         }
       )
     }
+    break;
 
-  }else{
-
-
+   default:
     this.counting = this.listsC.filter(
       x => {
         return (x.fields.PLULicensePlates.toLowerCase().includes(codeC.toLowerCase()));
       }
     )
+    break;
   }
-
-
-
-
   }
-
 
 }

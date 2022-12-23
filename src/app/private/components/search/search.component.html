@@ -366,13 +366,13 @@
               </ion-col>
 
               <ion-row>
-                <ion-col size="1" (click)="add()">
+                <ion-col size="1" (click)="add(i)">
                   <ion-icon class="btnqty" name="add-circle"></ion-icon>
                 </ion-col>
                 <ion-col size="8" style="padding-left: 50px;">
                   <ion-input type="number" value={{item.fields.PLUQuantity}} (ionInput)="edit($event,i)"></ion-input>
                 </ion-col>
-                <ion-col size="1" (click)="res()">
+                <ion-col size="1" (click)="res(i)">
                   <ion-icon class="btnqty" name="remove-circle"></ion-icon>
                 </ion-col>
               </ion-row>
