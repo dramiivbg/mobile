@@ -50,8 +50,8 @@ ion-item ion-input {
     width: 100%;
     padding: 5px 0 5px 15px;
 
-    ion-col {
-        padding: 2px 10px 2px 0;
+    ion-col.contentcol {
+        padding: 10px 0px 15px 0;
     }
 
     .label-line-title {
@@ -417,11 +417,17 @@ ion-footer {
 
 ion-list {
     background: transparent;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 ion-item {
-    --background: transparent;
+    --background: transparent !important;
     --inner-border-width: 0;
+}
+
+.item-inner {
+    padding-inline-end: 0;
 }
 
 
@@ -459,19 +465,17 @@ ion-item {
 
 .row1 {
 
-    border-bottom: 2px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
 
-    border-top: 2px solid #aaaaaa;
-
+    //     border-top: 1px solid #aaaaaa;
 
 }
 
 .row2 {
 
-    border-bottom: 2px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
 
-    border-top: 2px solid #aaaaaa;
-
+    //     border-top: 1px solid #aaaaaa;
 
 
 }
@@ -511,7 +515,11 @@ ion-item {
 
 }
 
-.buttoncol{
+.buttoncol {
     padding: 0 0 0 0;
     margin: 0 0 0 0;
+}
+
+.titlerow {
+    padding-bottom: 10px;
 }
