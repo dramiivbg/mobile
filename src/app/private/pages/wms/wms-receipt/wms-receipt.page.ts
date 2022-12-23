@@ -146,7 +146,6 @@ export class WmsReceiptPage implements OnInit {
 
         break;
       }else{
-        this.intServ.loadingFunc(false);
         this.popoverItemTraking(item,lp);
         break;
       }
@@ -182,10 +181,17 @@ export class WmsReceiptPage implements OnInit {
 
   public async popoverItemTraking(item:any,lp:any){
 
+    let res = await this.wmsService.GetItemTrackingSpecificationOpen(item.ItemNo,item.SourceNo,item.SourceLineNo);
+    let res2 = await this.wmsService.GetItemTrackingSpecificationClosed(item.ItemNo,item.SourceNo,item.SourceLineNo);
+    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):null;
+   // let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):null;
+    console.log(trakingOpen);
+    console.log(res);
+    console.log(res2);
     const popover = await this.popoverController.create({
       component: PopoverItemTrakingComponent,
       cssClass: 'transparent-modal',
-      componentProps: {options: { item, lp } },
+      componentProps: {options: { item, lp, trakingOpen} },
       backdropDismiss: false
     });
     await popover.present();

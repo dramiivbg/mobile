@@ -16,35 +16,15 @@
           <b>Traking Code:</b> {{item.trakingCode}}
         </ion-col>
       </ion-row>
-      <ion-fab *ngIf="boolean">
-        <ion-fab-button class="custom">
-          <ion-icon name="add"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-list side="bottom">
-          <ion-fab-button color="success" *ngIf="serial === false" data-desc2="add field serial NO "
-            (click)="addField(1)">
-            <ion-icon name="add-outline"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button color="danger" *ngIf="serial" data-desc2="remove field serial NO " (click)="resField(1)">
-            <ion-icon name="close-outline"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button color="success" *ngIf="lot === false" data-desc2="add filed Lot No" (click)="addField(2)">
-            <ion-icon name="add-outline"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button color="danger" *ngIf="lot" data-desc2="remove field Lot NO " (click)="resField(2)">
-            <ion-icon name="close-outline"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button color="sucesss" *ngIf="exp === false" data-desc2="add field Exp Date" (click)="addField(3)">
-            <ion-icon name="add-outline"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button color="danger" *ngIf="exp" data-desc2="remove field Exp Date" (click)="resField(3)">
-            <ion-icon name="close-outline"></ion-icon>
-          </ion-fab-button>
-        </ion-fab-list>
-      </ion-fab>
       <ion-row>
-        <ion-col size="12" class="title">
+        <ion-col class="clipboardcol" size="4" (click)="view()">
+          <a>View all</a> <ion-icon class="clipboardicon" name="document-text-outline"></ion-icon>
+        </ion-col>
+        <ion-col size="5" class="title">
           Receive Item
+        </ion-col>
+        <ion-col size="3"  (click)="save()">
+          <ion-icon class="save" size="large" name="save-outline"></ion-icon>
         </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive">
@@ -62,9 +42,10 @@
         <ion-col size="2" (click)="scanSN()">
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
-        <ion-col class="clipboardcol" size="6" (click)="listSN()">
-          <a>View all</a> <ion-icon class="clipboardicon" name="document-text-outline"></ion-icon>
+        <ion-col size="6">
+          <ion-input class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001" ></ion-input>
         </ion-col>
+       
       </ion-row>
       <ion-row class="qtytoreceive" *ngIf="lot">
         <ion-col size="4">
@@ -74,7 +55,7 @@
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
+          <ion-input class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001"></ion-input>
         </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive" *ngIf="exp">
@@ -94,14 +75,7 @@
           <ion-input class="inputqty" type="number" formControlName="QtyBase" value="0"></ion-input>
         </ion-col>
       </ion-row>
-      <ion-row class="qtytoreceive qtyhandle">
-        <ion-col size="6">
-          <b>Qty to Handle:</b>
-        </ion-col>
-        <ion-col size="6">
-          <ion-input class="inputqty" type="number" formControlName="QtyHandleBase" value="0"></ion-input>
-        </ion-col>
-      </ion-row>
+ 
 
       <ion-row class="footer">
 

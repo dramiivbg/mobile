@@ -1,12 +1,33 @@
-<ion-content>
-<ion-row>
-  <ion-col Class="title">
-    Serial
-  </ion-col>
-</ion-row>
-<ion-list *ngFor="let item of seriales">
-  <ion-item>
-    <ion-label>{{item}}</ion-label>
-  </ion-item>
-</ion-list>
+
+<ion-content class="ion-margin" >
+
+    
+  <ion-grid>
+
+      <ion-row style="text-align: center;" class="row">
+        <ion-col size="3">Serial No</ion-col>
+        <ion-col size="3">Lot No</ion-col>
+        <ion-col size="3">Exp Date</ion-col>
+        <ion-col size="3">Qty</ion-col>
+    
+      </ion-row>
+
+      <div id="taula"  > 
+        <ion-row *ngFor="let item of list; let i = index" style="text-align: center;" >
+        
+          <ion-col size="3" *ngIf="item.proceded === false">{{item.SerialNo}}</ion-col>
+          <ion-col size="3" *ngIf="item.proceded === true" (click)="opcions(item)"><a>{{item.SerialNo}}</a></ion-col>
+          <ion-col size="3">{{item.LotNo}}</ion-col>
+          <ion-col size="3">{{item.ExperationDate}}</ion-col>
+          <ion-col size="3">{{item.Qty}}</ion-col>
+        
+
+        </ion-row>
+  
+
+
+   
+      </div>  
+    </ion-grid>
+
 </ion-content>

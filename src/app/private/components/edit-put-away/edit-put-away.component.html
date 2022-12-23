@@ -213,13 +213,13 @@
                                                         </ion-col>
                                                     </ion-row>
 
-                                                    <ion-row size="12" class="subtitlelist">
+                                                    <ion-row size="12" class="subtitlelist" >
 
-                                                        <ion-col size="6" class="label-line-title">
+                                                        <ion-col size="6" class="label-line-title" *ngIf="item.take !== '' ">
                                                             Take: {{item.take}}
                                                         </ion-col>
 
-                                                        <ion-col size="6" class="label-line-title">
+                                                        <ion-col size="6" class="label-line-title" *ngIf="item.place !== '' ">
                                                             Place: {{item.place}}
                                                         </ion-col>
 
@@ -238,10 +238,10 @@
 
                                                     <ion-row size="12" >
 
-                                                        <!--
-                                                        <ion-col size="6" class="label-line" *ngIf="item.ExpirationDate != null">
-                                                            Exp Date: {{item.ExpirationDate}}
-                                                        </ion-col> -->
+                                                        
+                                                        <ion-col size="6" class="label-line" *ngIf="item.VariantCode != null">
+                                                            Variant Code: {{item.VariantCode}}
+                                                        </ion-col> 
 
                                                         <ion-col size="6" class="label-line" *ngIf="item.SerialNo != null">
                                                             Serial No: {{item.SerialNo}}
@@ -277,19 +277,7 @@
 
 <PlureVersion class="footerputaway" showVersion="0">
     <ion-row>
-        <!-- 
-        <ion-col size="5" (click)="onBarCode()">
-            <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-            <div class="itemfooter">Scan</div>
-        </ion-col> -->
-
         <ion-col size="4"></ion-col>
-
-        <!--  <ion-col size="4" (click)="onSubmit()">
-            <ion-icon class="itemfooter" size="large" name="checkmark-done-outline"></ion-icon>
-            <div class="itemfooter">Register</div>
-        </ion-col>
--->
         <ion-col size="4"></ion-col>
     </ion-row>
 </PlureVersion>

@@ -238,6 +238,7 @@ export class EditPutAwayComponent implements OnInit {
 
 
   public async onBarCode() {
+    this.initItem = (this.initItem.length === 0)? await this.storage.get(`init item ${this.whsePutAway.fields.No}`): this.initItem;
     let line: any = undefined;
    let  lineI:any = undefined
     this.barcodeScanner.scan().then(
@@ -257,15 +258,49 @@ export class EditPutAwayComponent implements OnInit {
           }
         }
 
+        let identifier = await this.wmsService.GetItemIdentifier(code);
+
         for (const key in this.initItem) {
           if (key === code.toUpperCase()) {
             lineI = key;
             this.intServ.loadingFunc(false);
 
-          }
+          }         
         }
 
-     if(lineI === undefined || lineI === null){
+
+        let boolean = false;
+
+        console.log(identifier);
+
+        if(!identifier.Error){
+          boolean = true;
+          console.log(this.initItem);
+          for (const key in identifier.ItemIdentifier) {
+          
+          this.initItem[identifier.ItemIdentifier[key].ItemNo].filter(item => {
+          switch(identifier.ItemIdentifier[key].VariantCode === item.VariantCode){
+             case true:
+              let line = this.listItems.find(x => x.LineNo === item.LineNo);
+              let line2 = this.itemsL.find(x => x.LineNo === item.LineNo);
+      
+              if((line === undefined || line === null) && (line2 === undefined || line === null)){
+                this.listItems.push(item);
+                this.listItemsT.push(item);
+              }
+
+              break;
+            }  
+            });
+
+          }
+
+          this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
+        }
+
+      
+
+     if((lineI === undefined || lineI === null) && boolean === false){
 
       
       switch (line) {
@@ -333,7 +368,7 @@ export class EditPutAwayComponent implements OnInit {
       }
      }else{
 
-      if(lineI != undefined || lineI != null){
+      if(lineI != undefined || lineI != null && boolean === false){
      
         this.initItem[lineI].filter(item => {
 
@@ -347,6 +382,8 @@ export class EditPutAwayComponent implements OnInit {
   
         });
 
+
+        this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
         
        
      }
@@ -907,7 +944,7 @@ export class EditPutAwayComponent implements OnInit {
 
     let item = {
 
-      take: "",
+      take: '',
       BinTypeCode: "",
       Description: "",
       DueDate: "",
@@ -919,17 +956,25 @@ export class EditPutAwayComponent implements OnInit {
       Quantity: 0,
       SerialNo: null,
       SourceNo: "",
-      place: "",
+      place: '',
       ZoneCode: "",
       LineNo: "", 
+      VariantCode: "",
     }
+    
+    for (const key in this.listPut) {
+
+      this.initItem[this.listPut[key].fields.ItemNo] = [];
+      
+    }
+ 
 
     let length = this.listPwL.length;
     this.listPut.filter(async(items) =>  {
     let res = await this.wmsService.GetItemInfo(items.fields.ItemNo);
     switch(res.Managed_by_PlurE){
      case false:
-      this.listPwL.filter((Item,index) => {
+      this.listPwL.filter(async(Item,index) => {
 
         if( Item.fields.ItemNo  === items.fields.ItemNo) {
     
@@ -955,14 +1000,17 @@ export class EditPutAwayComponent implements OnInit {
             item.SerialNo = Item.fields.SerialNo;
             item.SourceNo = Item.fields.SourceNo;
             item.ZoneCode = Item.fields.ZoneCode;
-            
-            let line = this.listI.find(x => x.ItemNo === item.ItemNo);
-           if(line === null || line === undefined) this.listI.push(Item);
-           
-            this.list.push(item);
-      
-            this.initItem[items.fields.ItemNo] = this.list;
-            this.binItem[items.fields.ItemNo] = item.place;
+            item.VariantCode = Item.fields.VariantCode;
+            item.LotNo = Item.fields.LotNo;
+                   
+              let line = this.listI.find(x => x.ItemNo === item.ItemNo);
+              if(line === null || line === undefined) this.listI.push(Item);
+              
+               this.list.push(item);
+         
+               this.initItem[items.fields.ItemNo] = this.list;
+               this.binItem[items.fields.ItemNo] = item.place;
+          
     
             item = {
     
@@ -970,6 +1018,7 @@ export class EditPutAwayComponent implements OnInit {
               BinTypeCode: "",
               Description: "",
               DueDate: "",
+              VariantCode: "",
               ExpirationDate: null,
               ItemNo: "",
               LocationCode: "",
@@ -983,17 +1032,14 @@ export class EditPutAwayComponent implements OnInit {
               LineNo: "", 
             }
           }
-
-          this.list = [];
          }
           });
+
+          this.list = [];
 
           break;
 
     } 
-
-
-      list = [];    
 
     });
 
@@ -1061,6 +1107,8 @@ export class EditPutAwayComponent implements OnInit {
 
   async onScanAll() {
 
+    this.initItem = (this.initItem.length === 0)? await this.storage.get(`init item ${this.whsePutAway.fields.No}`): this.initItem;
+
     this.intServ.loadingFunc(true);
     this.initV.filter(lp => {
       let find = this.listsFilter.find(lpE => lpE.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
@@ -1099,6 +1147,7 @@ export class EditPutAwayComponent implements OnInit {
     
     this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
     console.log(this.listItems);
+    console.log(this.initItem);
     this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
     this.intServ.loadingFunc(false);
 
@@ -1208,7 +1257,8 @@ export class EditPutAwayComponent implements OnInit {
           SourceNo: data.item.SourceNo,
           place: data.item.place,
           ZoneCode: "STO",
-          LineNo: data.item.LineNo, 
+          LineNo: data.item.LineNo,
+          VariantCode: data.item.VariantCode
         }
      
        this.listItems.filter((x,index) => {
@@ -1237,6 +1287,8 @@ export class EditPutAwayComponent implements OnInit {
           place: data.updateBin,
           ZoneCode: "STO",
           LineNo: data.item.LineNo, 
+          VariantCode: data.item.VariantCode
+          
         }
      
   
@@ -1265,7 +1317,9 @@ export class EditPutAwayComponent implements OnInit {
            ZoneCode: "STO",
            LocationCode: data.item.LocationCode,
            BinCode: data.updateBin,
-           Quantity: data.item.Quantity
+           Quantity: data.item.Quantity,
+           LotNo: data.item.LotNo,
+           SerialNo: data.item.SerialNo
           }
 
   
@@ -1287,7 +1341,9 @@ export class EditPutAwayComponent implements OnInit {
           SourceNo: item.SourceNo,
           place: data.updateBin,
           ZoneCode: item.ZoneCode,
-          LineNo:  item.LineNo, 
+          LineNo:  item.LineNo,
+          VariantCode: data.item.VariantCode
+          
         }
      
   
@@ -1625,7 +1681,13 @@ export class EditPutAwayComponent implements OnInit {
 
         data.delete.filter(itemD => {
 
-          if(itemD.ItemNo === item.ItemNo) item.Quantity+=itemD.Quantity;
+          if(itemD.ItemNo === item.ItemNo && itemD.LineNo === item.LineNo){
+            item.Quantity+=itemD.Quantity;
+          }else{
+
+            this.listItems.push(itemD);
+          }
+
           
         });
 

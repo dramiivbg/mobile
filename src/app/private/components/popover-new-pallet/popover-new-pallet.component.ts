@@ -237,20 +237,13 @@ async onBarCode(){
   let listaL: any[] = [];
 
   let line:any = undefined;
-
-
-
   let boolean:Boolean = false;
 
   let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
     
   let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
-
-
   
   this.lpsNo = lps.Possible_LPChilds.split("|");
-
-
       
   this.lpsNo.filter(async(no) => {
 
@@ -263,52 +256,41 @@ async onBarCode(){
   });
 
   console.log(listaL);
-
   console.log(items);
-
-
-
   this.intServ.loadingFunc(false);
   this.barcodeScanner.scan().then(
   async  (barCodeData) => {
-      let code = barCodeData.text;
+  let code = barCodeData.text;
 
-
-
-      this.intServ.loadingFunc(true);
+   this.intServ.loadingFunc(true);
      
   for (const key in listaL) {
 
-
     if (listaL[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
-      line = listaL[key];
-
-   
-    
+      line = listaL[key];    
       boolean = true;
     
-    }
-
-        
+    }       
   }
-
 
       for (const key in items.Possible_ItemsChilds) {
         if (items.Possible_ItemsChilds[key].ItemNo.toUpperCase() === code.toUpperCase()) {
-        
           line = items.Possible_ItemsChilds[key];
-       
           boolean = false;
-        
-          
+             
         }
       }
 
-     
+    let identifier = await this.wmsService.GetItemIdentifier(code);
+     if(!identifier.Error){
+        boolean = true;
+      for (const key in identifier.ItemIdentifier) {
+        
+          line = items.Possible_ItemsChilds.find(x =>  x.ItemNo === identifier.ItemIdentifier[key].ItemNo && x.VariantCode === identifier.ItemIdentifier[key].VariantCode);
+        
+       }
 
-    
-
-  
+      }
 
     if (line === null || line === undefined ) {
 
@@ -350,7 +332,6 @@ async onBarCode(){
 
         }else{
 
-           
           this.lpsL.push(line);
 
           console.log(this.lpsL);
@@ -362,22 +343,15 @@ async onBarCode(){
           this.intServ.loadingFunc(false);
 
         }
-
-
         this.intServ.loadingFunc(false);
 
       }
 
       break;
       
-
-      case false:
+    case false:
 
         if(this.itemsL.length < 1){
-      
-
-          
-
           this.itemsL.push(line);
           this.itemsLT = [];
   
@@ -386,10 +360,7 @@ async onBarCode(){
         }
 
       else{
-
-        
         let  find = this.itemsL.find(item => item.ItemNo  === line.ItemNo); 
-
 
         if(find != null ||  find != undefined){
 
@@ -414,15 +385,8 @@ async onBarCode(){
     this.intServ.loadingFunc(false);
 
     break;
-    
-
      
-      
-   
-    }
-
-
-  
+    }  
     }
   }
 
@@ -435,11 +399,6 @@ async onBarCode(){
 }
 
  async  onSubmit(pallet:any){
-
-
-
-
-
 
  // console.log(this.itemsL);
 
@@ -488,56 +447,34 @@ async onBarCode(){
 
 
     this.itemsL.filter(async(item) =>{
-  
 
-  
       listItems.Item_Child_No = item.ItemNo;
-      listItems.Qty = item.Qty;
+        listItems.Qty = item.Qty;
       listItems.WarehouseReceipt_LineNo = item.LineNo;
-    
-    
-      listsI.push(listItems);
+        listsI.push(listItems);
   
-    
-      listItems =   {
+        listItems =   {
         Item_Child_No: "",
         Qty: "",
         WarehouseReceipt_LineNo: ""
       }
     
-    
       });
   }
 
-
-
   try {
 
+    if(this.itemsL.length > 0){
 
-        if(this.itemsL.length > 0){
-
-          
-         resI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(pallet.fields.PLULPDocumentNo,this.wareReceipts.No,listsI);
+       resI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(pallet.fields.PLULPDocumentNo,this.wareReceipts.No,listsI);
     
-
-        }
-
+    }
          if(this.lpsL.length > 0){
-
 
           let resL = await this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,listLP);
 
-
-         }
-      
-
-       
-
-
-
+       }
     
-     
-
 
          this.intServ.loadingFunc(false);
   
@@ -547,9 +484,7 @@ async onBarCode(){
           this.QtyItem -= this.itemsL.length;
           this.itemsL = []; this.itemsLT = undefined; this.lpsL = []; this.lpsLT = undefined}));
      
-     
-
-  
+      
   } catch (Error) {
    
 
@@ -558,15 +493,7 @@ async onBarCode(){
      
   }
  }
-  
 
-        
-
-
-  
-
-
-  
 }
 
 
@@ -596,13 +523,7 @@ this.intServ.loadingFunc(true);
  
   this.boolean = false;
 
-
-
-  
-
-
-  
-    let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.PLULPDocumentNo);
+let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.PLULPDocumentNo);
     
     let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(pallet.fields.PLULPDocumentNo);
 
@@ -611,36 +532,23 @@ this.intServ.loadingFunc(true);
 
     this.items = items.Possible_ItemsChilds;
 
-
-   
-
    let checkboxL = {testID: 0, testName: "", checked: false}
 
    let checkboxI = {testID: 0, testName: "", checked: false}
 
    console.log(this.items);
-
-  
-
   
 
     console.log('item =>',this.items);
 
-
-    
     this.lpsNo = lps.Possible_LPChilds.split("|");
 
-
-      
     this.lpsNo.filter(async(no,index) => {
 
       let lps = await this.wmsService.getLpNo(no);
 
       let lp = await this.wmsService.ListLp(lps);
 
-   
-    
-      
       let line = this.lpsL.find(Lp => Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
       if(line == undefined || line == null){
@@ -657,9 +565,7 @@ this.intServ.loadingFunc(true);
          this.testListL.push(checkboxL);
         checkboxL = {testID: 0, testName: "", checked: false};
 
-
-      }
-     
+      }     
       
     });
 
@@ -679,9 +585,7 @@ this.intServ.loadingFunc(true);
 
           this.items.splice(index,1);
 
-     
-
-      }
+           }
 
      
     })
@@ -699,29 +603,17 @@ this.intServ.loadingFunc(true);
      
     }
 
-
-  
     this.lpsT = this.lps;
 
     this.itemsT = this.items;
 
     console.log(this.itemsT, this.lpsT);
 
-   
-
-
-    console.log(this.testListI, this.testListL);
+       console.log(this.testListI, this.testListL);
 
     this.intServ.loadingFunc(false);
 
-
-   
-
-  this.QtyItem = this.items.length;
- 
-
-  
-  
+   this.QtyItem = this.items.length;
 
 
 }
@@ -736,12 +628,7 @@ this.lps = [];
 
   this.testListI = [];
 
-  this.testListL = [];
-
-
-
-
- 
+  this.testListL = []; 
 
 }
 
@@ -750,20 +637,14 @@ this.lps = [];
 
 checkAll(ev){
 
-
   console.log(ev);
 switch(ev.detail.checked){
 
 case true:
 
 if(this.booleanL){
-
   for(let i =0; i <= this.testListL.length; i++) {
-
-
     this.testListL[i].checked = true;
-
-
  
     }  
     console.log(this.testListL);
@@ -771,54 +652,36 @@ if(this.booleanL){
 
     for(let i =0; i <= this.testListI.length; i++) {
       this.testListI[i].checked = true;
-
-
       }     
   }
 
   break;
 
-  
   case false:
 
     if(this.booleanL){
 
       for(let i =0; i <= this.testListL.length; i++) {
         this.testListL[i].checked = false;
-
-
         }
         console.log(this.testListL);
       }else{
     
         for(let i =0; i <= this.testListI.length; i++) {
           this.testListI[i].checked = false;
-
-      
-
           }
           console.log(this.testListI);
       }
   
-
-      break;
-
-
+    break;
 }
 
-  
 }
-
-
-
 
 
 
 applyLP(lp:any,ev){
 
-
-
-    
 switch(ev.detail.checked){
 
   case true:  
@@ -841,13 +704,7 @@ switch(ev.detail.checked){
    
      console.log(this.lpsL);
 
-  }
-
-  
-  
-       
-
-    
+  }    
   break;
   
   case false:
@@ -867,37 +724,24 @@ switch(ev.detail.checked){
    break;
     }
 
-  
-
-  
-      
-    
-    
-    }
+ }
   
   
     
-  
-  
 applyItem(item:any,ev,){
   
-
 switch(ev.detail.checked){
 
 case true:
 
   let line:any = undefined;
 
-
-  
   line = this.itemsL.find(Item =>  Item.ItemNo ===  item.ItemNo);
 
 
   if(line == null || line === undefined){
 
-
- 
-    this.itemsLT = [];
+  this.itemsLT = [];
 
 
     this.itemsL.push(item);
@@ -907,24 +751,12 @@ case true:
   
     this.listItemsL.push(item);
   
-  
-        
-  
    console.log(this.itemsL);
 
   }
-
-  
-
-
-  
-
-
- 
   break;
 
 case false:
-
 
   this.itemsL.filter( (Item,i) => {
 
@@ -945,34 +777,22 @@ case false:
 
   break;
 }
-
-      
       
     }
 
-    delete(){
-
+  delete(){
 
       this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm',"I'm sure you want to delete everything?", () => {
 
-
-
       this.items = [];
       this.lps = [];
-
-
-
         this.itemsL = [];
         this.lpsL = [];
-
-        
         this.itemsLT = undefined;
         this.lpsLT = undefined;
 
       }
 
-
-    
       ));
   
 
@@ -981,15 +801,9 @@ case false:
 
 
     
- 
-
-
   deleteI(item:any){
 
-
     this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm',"you want to delete it", () => {
-
-
 
     this.listItemsL.filter((itemI, index) =>{
 
@@ -1001,40 +815,33 @@ case false:
 
         this.itemsL.splice(index,1);
       }
-    })
+    });
     }));
 
 
   }
 
-  deleteL(item:any){
+ deleteL(item:any){
 
-    this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm',"you want to delete it", () => {
-
+   this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm',"you want to delete it", () => {
 
     this.listLpsL.filter((lp, index) =>{
 
-
       if(item.fields.PLULPDocumentNo == lp.fields.PLULPDocumentNo){
-
 
         this.listLpsL.splice(index,1);
 
         this.lpsL.splice(index,1);
       }
-    })
+    });
 
-  }))
+  }));
 
   }
-
 
   enableLP(){
 
     this.booleanL = true;
-
-    
-
 
   }
 
@@ -1042,32 +849,21 @@ case false:
 
     this.booleanL = false;
 
-
   }
 
 
-  
-
-  autoComplet(){
-
-
+autoComplet(){
 
   if(this.booleanL){
 
-    
     this.barcodeScanner.scan().then(
       async  (barCodeData) => {
           let code = barCodeData.text;
     
-    
-  
-          this.lpNo = code;
-
+              this.lpNo = code;
 
           this.onChangeLp('', this.lpNo);
           
-    
-      
         }
       ).catch(
         err => {
@@ -1075,33 +871,22 @@ case false:
         }
       )
 
-
-
-    
   }else{
 
-    
     this.barcodeScanner.scan().then(
       async  (barCodeData) => {
           let code = barCodeData.text;
     
-    
-  
-          this.itemNo = code;
+            this.itemNo = code;
 
-
-          this.onChangeI('', this.itemNo);
+         this.onChangeI('', this.itemNo);
           
-    
-      
         }
       ).catch(
         err => {
           console.log(err);
         }
       )
-
-
 
   }
    
