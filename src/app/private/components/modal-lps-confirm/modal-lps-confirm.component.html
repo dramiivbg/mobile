@@ -61,23 +61,22 @@
                                                 <ion-col size="12" class="item" (click)="show(item)">
 
                                                     <ion-row class="titleslist">
-                                                        <ion-col size="12" class="titleblue">
+                                                        <ion-col size="6" class="titleblue">
                                                             {{item.fields.PLULPDocumentNo}}
                                                         </ion-col>
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Qty: {{item.fields.PLUQuantity}}
+                                                        </ion-col>
+
 
                                                     </ion-row>
 
                                                     <ion-row size="12" class="subtitlelist">
-                                                        <ion-col size="2" class="label-line-title">
-                                                            Qty: {{item.fields.PLUQuantity}}
-                                                        </ion-col>
-                                                        <ion-col size="5" class="label-line-title"
-                                                            style="text-align: right;">
+                                                        <ion-col size="6" class="label-line-title">
                                                             Take: {{item.fields.PLUBinCode}}
                                                         </ion-col>
 
-                                                        <ion-col size="5" class="label-line-title"
-                                                            style="text-align: right;">
+                                                        <ion-col size="6" class="label-line-title">
                                                             Place: {{item.fields.place}}
                                                         </ion-col>
 
@@ -110,7 +109,7 @@
                                         </ion-item-sliding>
                                     </ion-row>
 
-                                    
+
                                     <ion-row *ngFor="let item of itemsL">
 
                                         <ion-item-sliding>
@@ -119,31 +118,30 @@
                                                 <ion-col size="12" class="item">
 
                                                     <ion-row class="titleslist">
-                                                        <ion-col size="12" class="titleblue">
+                                                        <ion-col size="6" class="titleblue">
                                                             {{item.ItemNo}}
                                                         </ion-col>
-                                                        
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Qty: {{item.Quantity}}
+                                                        </ion-col>
+
                                                     </ion-row>
 
                                                     <ion-row size="12" class="subtitlelist">
-                                                        <ion-col size="4" class="label-line-title">
-                                                            Qty: {{item.Quantity}}
-                                                        </ion-col>
-                                                        <ion-col size="4" class="label-line-title"
-                                                            style="text-align: right;">
+                                                        <ion-col size="6" class="label-line-title">
                                                             Take: {{item.take}}
                                                         </ion-col>
 
-                                                        <ion-col size="4" class="label-line-title"
-                                                            style="text-align: right;">
+                                                        <ion-col size="6" class="label-line-title">
                                                             Place: {{item.place}}
                                                         </ion-col>
 
                                                     </ion-row>
 
-                                                    <ion-row size="12" >
+                                                    <ion-row size="12">
 
-                                                        <ion-col size="6" class="label-line" *ngIf="item.ExpirationDate != null">
+                                                        <ion-col size="6" class="label-line"
+                                                            *ngIf="item.ExpirationDate != null">
                                                             Exp Date: {{item.ExpirationDate}}
                                                         </ion-col>
                                                         <ion-col size="6" class="label-line" *ngIf="item.LotNo != null">
@@ -152,14 +150,16 @@
 
                                                     </ion-row>
 
-                                                    <ion-row size="12" >
+                                                    <ion-row size="12">
 
-                                                        
-                                                        <ion-col size="6" class="label-line" *ngIf="item.VariantCode != null">
+
+                                                        <ion-col size="6" class="label-line"
+                                                            *ngIf="item.VariantCode != null">
                                                             Variant Code: {{item.VariantCode}}
-                                                        </ion-col> 
+                                                        </ion-col>
 
-                                                        <ion-col size="6" class="label-line" *ngIf="item.SerialNo != null">
+                                                        <ion-col size="6" class="label-line"
+                                                            *ngIf="item.SerialNo != null">
                                                             Serial No: {{item.SerialNo}}
                                                         </ion-col>
 
