@@ -8,6 +8,7 @@ import { WmsService } from '@svc/wms.service';
 import { PopoverConfigurationCodeComponent } from '../popover-configuration-code/popover-configuration-code.component';
 import { PopoverListSNComponent } from '../popover-list-sn/popover-list-sn.component';
 import { Storage } from '@ionic/storage';
+import { TypeCheckCompiler } from '@angular/compiler/src/view_compiler/type_check_compiler';
 
 @Component({
   selector: 'app-popover-item-traking',
@@ -23,6 +24,7 @@ export class PopoverItemTrakingComponent implements OnInit {
   public trakingOpen:any;
   public trakingClose:any;
   @Input() options: any;
+
 
   public receive:number = 0;
   public code:any;
@@ -54,18 +56,20 @@ export class PopoverItemTrakingComponent implements OnInit {
   this.item = (this.options.item !== null) ? this.options.item : null;
   this.lp = (this.options.lp !== null) ? this.options.lp : null;
  this.trakingOpen = (this.options.trakingOpen !== null) ? this.options.trakingOpen : [];
+ this.trakingClose =  (this.options.trakingClose !== null) ? this.options.trakingClose : [];
 
   let res = await this.wmsService.configurationTraking(this.item.trakingCode);
   this.code = await this.wmsService.listCode(res);
 
-  this.serial = (this.code.lines.SNPurchaseInboundTracking === true)?true:false;
+  this.serial = (this.code.lines.SNPurchaseInboundTracking === true )?true:false;
 
-     this.lot = (this.code.lines.LotPurchaseInboundTracking == true)?true:false;
+     this.lot = (this.code.lines.LotPurchaseInboundTracking == true )?true:false;
 
-     this.exp = (this.code.lines.ManExpirDateEntryReqd == true )?true:false; 
+     this.exp = (this.code.lines.ManExpirDateEntryReqd == true)?true:false; 
 
-
-    this.receive  = (await this.storage.get(`${this.item.LineNo} receive`) != undefined || await this.storage.get(`${this.item.LineNo} receive`) != null)?await this.storage.get(`${this.item.LineNo} receive`):0;
+    this.receive  = this.item.QtytoReceive;
+  
+    this.storage.set(`${this.item.LineNo} receive`, this.item.QtytoReceive);
 
     this.frm.patchValue({
 
@@ -85,22 +89,7 @@ export class PopoverItemTrakingComponent implements OnInit {
 
   }
 
-  addField(num:any){
  
-    if(num === 1) this.serial = true;
-    if(num === 2) this.lot = true;
-    if(num === 3) this.exp = true;
-
-
-  }
-
-  resField(num:any){
- 
-    if(num === 1) this.serial = false;
-    if(num === 2) this.lot = false;
-    if(num === 3) this.exp = false;
-
-  }
 
   scanSN(){
 
@@ -109,10 +98,12 @@ export class PopoverItemTrakingComponent implements OnInit {
         let code = barCodeData.text;
         let line = undefined;
         let line2 = undefined;
+        let line3 = undefined;
 
         line = this.list.find(x => x.SerialNo === code.toUpperCase());
         line2 = this.trakingOpen.find(x => x.SerialNo === code.toUpperCase());
-        if((line === null || line === undefined) && (line2 === null || line2 === undefined)){
+        line3 = this.trakingClose.find(x => x.SerialNo === code.toUpperCase());
+        if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
 
           this.frm.patchValue({
             SerialNo: code.toUpperCase(),
@@ -155,14 +146,15 @@ export class PopoverItemTrakingComponent implements OnInit {
 
   async closePopover() {
 
-    if(this.list.length > 0){
+    let line = this.list.find(x => x.proceded === false);
+    if(line != undefined){
 
       this.intServ.alertFunc(this.jsonService.getAlert('confirm', 'Are you sure?', 'All data will be lost', () => {
 
-        this.popoverController.dismiss({});
+        this.popoverController.dismiss({receive:this.receive});
       }));
     }else{
-      this.popoverController.dismiss({});
+      this.popoverController.dismiss({receive:this.receive});
     }
   
    
@@ -212,32 +204,52 @@ async  view(){
     if(line === undefined || line === null)this.list.push(obj);
   }
 
+  console.log(this.trakingOpen);
+
   const popover = await this.popoverController.create({
     component: PopoverListSNComponent,
     cssClass: 'popoverListSNComponent-modal',
-    componentProps: {list:this.list},
+    componentProps: {list:this.list, item:this.item},
     
   });
   await popover.present();
   const { data } = await popover.onDidDismiss();
 
-   switch(data.data){
+  if(data != undefined){
 
-    case 'Delete':
-      let res = await this.wmsService.GetItemTrackingSpecificationOpen(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
-      this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
-      break;
+    switch(data.data){
 
-   }
+      case "Delete":
+        let res = await this.wmsService.GetItemTrackingSpecificationOpen(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
+        this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
+        console.log(this.trakingOpen);
+        this.receive = await this.storage.get(`${this.item.LineNo} receive`);
+        this.frm.patchValue({
+          TotalToReceive: this.receive
+        });
+
+       this.list.splice(data.index,1);
+          
+
+        break;
+  
+     }
+  }
+ 
   }
 
  async onSubmit(){
   
-  if(this.list.length > 0){
+  let line = this.list.find(x => x.proceded === false);
+  if(line !== undefined){
       this.intServ.loadingFunc(true);  
       try {
         for (const key in this.list) {
-           await this.wmsService.UpdateItemTrackingSpecificationOpen(this.list[key]);    
+          if(this.list[key].proceded === false){
+
+            await this.wmsService.UpdateItemTrackingSpecificationOpen(this.list[key]);   
+          }
+           
         }
         this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.jsonService.getAlert('success','','The operation was successfully performed',async() => {        
@@ -279,57 +291,402 @@ async  view(){
 
   save(){
 
-    if(this.frm.valid && this.frm.get('QtyBase').value > 0){
+    if(this.serial && this.exp && this.lot){
 
-      let res = new Date(this.frm.get('requestedDeliveryDate').value);
+      if(this.frm.valid && this.frm.get('QtyBase').value > 0){
 
-      let fecha = res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate();
+        let res = new Date(this.frm.get('requestedDeliveryDate').value);
   
-      this.frm.patchValue({
-        requestedDeliveryDate: fecha
-      });
-
-
-      let obj =   {
-        WarhouseReceiptNo: "",
-        ItemNo: "",
-        SourceNo: "",
-        SourceRefNo: "",
-        Qty: 0,
-        SerialNo: "",
-        LotNo: "",
-        ExperationDate: "",
-        proceded: false
+        let fecha = res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate();
+    
+        this.frm.patchValue({
+          requestedDeliveryDate: fecha
+        });
+  
+  
+        let obj =   {
+          WarhouseReceiptNo: "",
+          ItemNo: "",
+          SourceNo: "",
+          SourceRefNo: "",
+          Qty: 0,
+          SerialNo: "",
+          LotNo: "",
+          ExperationDate: "",
+          proceded: false
+        }
+  
+        obj.WarhouseReceiptNo = this.item.No;
+        obj.ItemNo = this.item.ItemNo;
+        obj.SourceNo = this.item.SourceNo;
+        obj.SourceRefNo = this.item.SourceLineNo;
+        obj.Qty = this.frm.get('QtyBase').value;
+        obj.SerialNo = this.frm.get('SerialNo').value;
+        obj.LotNo = this.frm.get('LotNo').value;
+        obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+  
+        this.receive = ((this.item.QtytoReceive === this.item.QtyOutstanding) && (this.receive === this.item.QtytoReceive))?0: this.receive;
+        this.receive += obj.Qty;
+  
+        this.list.push(obj);
+  
+        this.frm.patchValue({
+  
+          TotalToReceive: this.receive
+        });
+  
+        this.frm.patchValue({
+  
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: 0
+        });
+  
+        console.log(this.list);
       }
 
-      obj.WarhouseReceiptNo = this.item.No;
-      obj.ItemNo = this.item.ItemNo;
-      obj.SourceNo = this.item.SourceNo;
-      obj.SourceRefNo = this.item.SourceLineNo;
-      obj.Qty = this.frm.get('QtyBase').value;
-      obj.SerialNo = this.frm.get('SerialNo').value;
-      obj.LotNo = this.frm.get('LotNo').value;
-      obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+    }else if(this.serial && this.exp && this.lot === false){
 
-      this.receive += obj.Qty;
+      if(this.frm.get('SerialNo').value != '' && this.frm.get('requestedDeliveryDate').value != '' && this.frm.get('QtyBase').value > 0){
 
-      this.list.push(obj);
+        let res = new Date(this.frm.get('requestedDeliveryDate').value);
+  
+        let fecha = res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate();
+    
+        this.frm.patchValue({
+          requestedDeliveryDate: fecha
+        });
+  
+  
+        let obj =   {
+          WarhouseReceiptNo: "",
+          ItemNo: "",
+          SourceNo: "",
+          SourceRefNo: "",
+          Qty: 0,
+          SerialNo: "",
+          LotNo: "",
+          ExperationDate: "",
+          proceded: false
+        }
+  
+        obj.WarhouseReceiptNo = this.item.No;
+        obj.ItemNo = this.item.ItemNo;
+        obj.SourceNo = this.item.SourceNo;
+        obj.SourceRefNo = this.item.SourceLineNo;
+        obj.Qty = this.frm.get('QtyBase').value;
+        obj.SerialNo = this.frm.get('SerialNo').value;
+        obj.LotNo = this.frm.get('LotNo').value;
+        obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+  
+        this.receive = ((this.item.QtytoReceive === this.item.QtyOutstanding) && (this.receive === this.item.QtytoReceive))?0: this.receive;        
+        this.receive += obj.Qty;
+  
+        this.list.push(obj);
+  
+        this.frm.patchValue({
+  
+          TotalToReceive: this.receive
+        });
+  
+        this.frm.patchValue({
+  
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: 0
+        });
+  
+        console.log(this.list);
+      }
 
-      this.frm.patchValue({
 
-        TotalToReceive: this.receive
-      });
+    }else if(this.serial && this.exp == false && this.lot){
 
-      this.frm.patchValue({
+      
+      if(this.frm.get('SerialNo').value != '' && this.frm.get('LotNo').value != '' && this.frm.get('QtyBase').value > 0){
 
-        SerialNo: "",
-        LotNo: "",
-        requestedDeliveryDate: "",
-        QtyBase: 0
-      });
+        let res = new Date(this.frm.get('requestedDeliveryDate').value);
+  
+        let fecha = (this.frm.get('requestedDeliveryDate').value != '')?res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate():'';
+    
+        this.frm.patchValue({
+          requestedDeliveryDate: fecha
+        });
+  
+  
+        let obj =   {
+          WarhouseReceiptNo: "",
+          ItemNo: "",
+          SourceNo: "",
+          SourceRefNo: "",
+          Qty: 0,
+          SerialNo: "",
+          LotNo: "",
+          ExperationDate: "",
+          proceded: false
+        }
+  
+        obj.WarhouseReceiptNo = this.item.No;
+        obj.ItemNo = this.item.ItemNo;
+        obj.SourceNo = this.item.SourceNo;
+        obj.SourceRefNo = this.item.SourceLineNo;
+        obj.Qty = this.frm.get('QtyBase').value;
+        obj.SerialNo = this.frm.get('SerialNo').value;
+        obj.LotNo = this.frm.get('LotNo').value;
+        obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+  
+        this.receive = ((this.item.QtytoReceive === this.item.QtyOutstanding) && (this.receive === this.item.QtytoReceive))?0: this.receive;
+        this.receive += obj.Qty;
+  
+        this.list.push(obj);
+  
+        this.frm.patchValue({
+  
+          TotalToReceive: this.receive
+        });
+  
+        this.frm.patchValue({
+  
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: 0
+        });
+  
+        console.log(this.list);
+      }
 
-      console.log(this.list);
+    }else if(this.serial === false && this.exp && this.lot){
+
+      if(this.frm.get('requestedDeliveryDate').value != '' && this.frm.get('LotNo').value != '' && this.frm.get('QtyBase').value > 0){
+
+        let res = new Date(this.frm.get('requestedDeliveryDate').value);
+  
+        let fecha = res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate();
+    
+        this.frm.patchValue({
+          requestedDeliveryDate: fecha
+        });
+  
+  
+        let obj =   {
+          WarhouseReceiptNo: "",
+          ItemNo: "",
+          SourceNo: "",
+          SourceRefNo: "",
+          Qty: 0,
+          SerialNo: "",
+          LotNo: "",
+          ExperationDate: "",
+          proceded: false
+        }
+  
+        obj.WarhouseReceiptNo = this.item.No;
+        obj.ItemNo = this.item.ItemNo;
+        obj.SourceNo = this.item.SourceNo;
+        obj.SourceRefNo = this.item.SourceLineNo;
+        obj.Qty = this.frm.get('QtyBase').value;
+        obj.SerialNo = this.frm.get('SerialNo').value;
+        obj.LotNo = this.frm.get('LotNo').value;
+        obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+  
+        this.receive = ((this.item.QtytoReceive === this.item.QtyOutstanding) && (this.receive === this.item.QtytoReceive))?0: this.receive;        
+        this.receive += obj.Qty;
+  
+        this.list.push(obj);
+  
+        this.frm.patchValue({
+  
+          TotalToReceive: this.receive
+        });
+  
+        this.frm.patchValue({
+  
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: 0
+        });
+  
+        console.log(this.list);
+      }
+
+
+    }else if(this.serial === false && this.exp && this.lot === false){
+
+      if(this.frm.get('requestedDeliveryDate').value != ''  && this.frm.get('QtyBase').value > 0){
+
+        let res = new Date(this.frm.get('requestedDeliveryDate').value);
+  
+        let fecha = res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate();
+    
+        this.frm.patchValue({
+          requestedDeliveryDate: fecha
+        });
+  
+  
+        let obj =   {
+          WarhouseReceiptNo: "",
+          ItemNo: "",
+          SourceNo: "",
+          SourceRefNo: "",
+          Qty: 0,
+          SerialNo: "",
+          LotNo: "",
+          ExperationDate: "",
+          proceded: false
+        }
+  
+        obj.WarhouseReceiptNo = this.item.No;
+        obj.ItemNo = this.item.ItemNo;
+        obj.SourceNo = this.item.SourceNo;
+        obj.SourceRefNo = this.item.SourceLineNo;
+        obj.Qty = this.frm.get('QtyBase').value;
+        obj.SerialNo = this.frm.get('SerialNo').value;
+        obj.LotNo = this.frm.get('LotNo').value;
+        obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+  
+        this.receive = ((this.item.QtytoReceive === this.item.QtyOutstanding) && (this.receive === this.item.QtytoReceive))?0: this.receive;
+        this.receive += obj.Qty;
+  
+        this.list.push(obj);
+  
+        this.frm.patchValue({
+  
+          TotalToReceive: this.receive
+        });
+  
+        this.frm.patchValue({
+  
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: 0
+        });
+  
+        console.log(this.list);
+      }
+    }else if(this.serial  && this.exp === false && this.lot === false){
+
+
+      if(this.frm.get('SerialNo').value != '' && this.frm.get('QtyBase').value > 0){
+
+        let res = new Date(this.frm.get('requestedDeliveryDate').value);
+  
+        let fecha = (this.frm.get('requestedDeliveryDate').value != '')?res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate():'';
+    
+        this.frm.patchValue({
+          requestedDeliveryDate: fecha
+        });
+  
+  
+        let obj =   {
+          WarhouseReceiptNo: "",
+          ItemNo: "",
+          SourceNo: "",
+          SourceRefNo: "",
+          Qty: 0,
+          SerialNo: "",
+          LotNo: "",
+          ExperationDate: "",
+          proceded: false
+        }
+  
+        obj.WarhouseReceiptNo = this.item.No;
+        obj.ItemNo = this.item.ItemNo;
+        obj.SourceNo = this.item.SourceNo;
+        obj.SourceRefNo = this.item.SourceLineNo;
+        obj.Qty = this.frm.get('QtyBase').value;
+        obj.SerialNo = this.frm.get('SerialNo').value;
+        obj.LotNo = this.frm.get('LotNo').value;
+        obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+  
+        this.receive = ((this.item.QtytoReceive === this.item.QtyOutstanding) && (this.receive === this.item.QtytoReceive))?0: this.receive;
+        this.receive += obj.Qty;
+  
+        this.list.push(obj);
+  
+        this.frm.patchValue({
+  
+          TotalToReceive: this.receive
+        });
+  
+        this.frm.patchValue({
+  
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: 0
+        });
+  
+        console.log(this.list);
+      }
+    }else if(this.serial === false && this.exp === false && this.lot){
+      
+      if(this.frm.get('LotNo').value != '' && this.frm.get('QtyBase').value > 0){
+
+        let res = new Date(this.frm.get('requestedDeliveryDate').value);
+  
+        let fecha = (this.frm.get('requestedDeliveryDate').value != '')?res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate():'';
+
+      // let res = new Date();
+  
+       //let fecha = res.getFullYear()+'-'+(res.getMonth()+1)+'-'+res.getDate();
+   
+    
+        this.frm.patchValue({
+          requestedDeliveryDate: fecha
+        });
+  
+  
+        let obj =   {
+          WarhouseReceiptNo: "",
+          ItemNo: "",
+          SourceNo: "",
+          SourceRefNo: "",
+          Qty: 0,
+          SerialNo: "",
+          LotNo: "",
+          ExperationDate: "",
+          proceded: false
+        }
+  
+        obj.WarhouseReceiptNo = this.item.No;
+        obj.ItemNo = this.item.ItemNo;
+        obj.SourceNo = this.item.SourceNo;
+        obj.SourceRefNo = this.item.SourceLineNo;
+        obj.Qty = this.frm.get('QtyBase').value;
+        obj.SerialNo = this.frm.get('SerialNo').value;
+        obj.LotNo = this.frm.get('LotNo').value;
+        obj.ExperationDate = this.frm.get('requestedDeliveryDate').value;
+  
+        this.receive = ((this.item.QtytoReceive === this.item.QtyOutstanding) && (this.receive === this.item.QtytoReceive))?0: this.receive;
+        this.receive += obj.Qty;
+  
+        this.list.push(obj);
+  
+        this.frm.patchValue({
+  
+          TotalToReceive: this.receive
+        });
+  
+        this.frm.patchValue({
+  
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: 0
+        });
+  
+        console.log(this.list);
+      }
+  
+
     }
+
+   
 
   }
 

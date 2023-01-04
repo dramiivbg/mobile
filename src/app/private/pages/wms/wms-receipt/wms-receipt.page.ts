@@ -184,20 +184,32 @@ export class WmsReceiptPage implements OnInit {
     let res = await this.wmsService.GetItemTrackingSpecificationOpen(item.ItemNo,item.SourceNo,item.SourceLineNo);
     let res2 = await this.wmsService.GetItemTrackingSpecificationClosed(item.ItemNo,item.SourceNo,item.SourceLineNo);
     let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):null;
-   // let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):null;
-    console.log(trakingOpen);
-    console.log(res);
-    console.log(res2);
-    const popover = await this.popoverController.create({
-      component: PopoverItemTrakingComponent,
-      cssClass: 'transparent-modal',
-      componentProps: {options: { item, lp, trakingOpen} },
-      backdropDismiss: false
-    });
-    await popover.present();
-    const { data } = await popover.onDidDismiss();
+    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationClose):null;
 
+    console.log('item =>',item);
+
+   // console.log(trakingOpen);
+   // console.log(res);
+   // console.log(trakingClose);
+
+      if(item.Auto_Generate_LOT === false && item.Auto_Generate_SN === false){
+
+        const popover = await this.popoverController.create({
+          component: PopoverItemTrakingComponent,
+          cssClass: 'transparent-modal',
+          componentProps: {options: { item, lp, trakingOpen, trakingClose} },
+          backdropDismiss: false
+        });
+        await popover.present();
+        const { data } = await popover.onDidDismiss();
+        if(data.receive != item.QtytoReceive)this.getReceipt();
+      }else{
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('alert','','Lots/serials  will be generated automatically'));
+      }
   }
+
+
   public async onPopLicensePlates(ev: any, item: any) {
     this.intServ.loadingFunc(true);
 
@@ -289,6 +301,8 @@ export class WmsReceiptPage implements OnInit {
 
       const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, false);
 
+      console.log(lps);
+
       if (lps.Error) throw new Error(lps.Error.Message);
 
       this.list = await this.wmsService.createListLP(lps);
@@ -347,6 +361,8 @@ export class WmsReceiptPage implements OnInit {
 
       });
 
+      console.log(this.cantidades);
+
       this.intServ.loadingFunc(false);
     } catch (error) {
       this.intServ.loadingFunc(false);
@@ -387,16 +403,7 @@ export class WmsReceiptPage implements OnInit {
     console.log(palletL);
     let palletN = await this.wmsService.ListLpH(palletL);
 
-
-
-
-
-
-
-
     if (pallet.Created) {
-
-
 
       let navigationExtras: NavigationExtras = {
         state: {
@@ -416,26 +423,12 @@ export class WmsReceiptPage implements OnInit {
 
       this.intServ.alertFunc(this.js.getAlert('error', ' ', pallet.Error.Message));
 
-
-
-
-
     }
-
-
-
-
-
-
-
   }
 
 
 
   async listPallet() {
-
-
-
 
     this.intServ.loadingFunc(true);
 

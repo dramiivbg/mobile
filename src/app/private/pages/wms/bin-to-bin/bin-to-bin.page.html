@@ -1,16 +1,7 @@
-<PlureHeader  *ngIf="scanLP" type="1" title="Bin To Bin" url="page/wms/wmsMain" notify="0"></PlureHeader>
-<PlureHeader (click)="back()" *ngIf="scanBin" type="1" title="Bin To Bin" url="page/wms/binToBin" notify="0"></PlureHeader>
-
-
-<ion-header *ngIf="loading">
-    <ion-toolbar>
-      <ion-title>Loading....</ion-title>
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    </ion-toolbar>
-  </ion-header>
+<PlureHeader  type="1" title="Bin To Bin" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
 <ion-content>
-    <form *ngIf="scanLP">
+    <form >
         <div class="designform-header">
             <ion-row size="12">
                 <ion-col size="8">
@@ -56,62 +47,71 @@
                                                 
                                              <ion-item style="width: 100%;">
                                                   <ion-col size="15" class="item" >
+                                                    <ion-row >
 
-                                                    <ion-row>
-                                                       
+                                                    
 
-                                                     <ion-col size="3" style="padding-top: 7px;"
-                                                     class="label-line">
-                                                     Document Type: 
-                                                    </ion-col>
-                                                    <ion-col size="2" style="padding-top: 7px;"
-                                                     class="negrilla">
-                                                     {{lp.fields.PLULPDocumentType}}
-                                                    </ion-col>
-
-
-                                                    </ion-row>
-
-                                                    <ion-row>
-                                                        <ion-col size="3" style="overflow: hidden;"
-                                                            class="label-line-title blue">
-                                                            {{lp.company}}
-                                                        </ion-col>
-                                                        <ion-col size="2" class="label-line-title">
-                                                            Qty. {{lp.fields.PLUQuantity}}
-
-
-
-                                                        </ion-col>
-                                                        <ion-col size="5" class="label-line-title"
-                                                            style="text-align: right;">
-                                                            Bin Code. {{lpH.fields.PLUBinCode}}
-
-
-
-                                                        </ion-col>
-
-                                                    </ion-row>
-
-
-                                                    <ion-row>
-                                                        <ion-col size="4" class="label-line">
-                                                            Item No: {{lp.fields.PLUNo}}
-                                                        </ion-col>
-                                                        <ion-col size="3" class="label-line">
-                                                            Measure: {{lp.fields.PLUUnitofMeasureCode
-                                                            }}
-                                                        </ion-col>
-                                                        <ion-col size="4" class="label-line">
-                                                            LineNo: {{lp.fields.PLUWhseLineNo
-                                                            }}
-                                                        </ion-col>
-                                                    </ion-row>
-                                                    <ion-row>
-                                                        <ion-col class="label-line" size="3">
-
-                                                        </ion-col>
-                                                    </ion-row>
+                                                        <ion-col size="7"  style="overflow: hidden;">       
+                                                        
+                                                            <ion-select  interface="popover"  #bin  (ionChange)="onChangeBinOne(item,bin.value)" placeholder="Edit Bincode" style="width: 100%;" class="label-line-title" >
+                                                            <ion-select-option  *ngFor="let item of listBin.Bins" [value]="item.BinCode" >{{item.BinCode}}</ion-select-option>
+                                                                
+                                                        
+                                                        </ion-select>
+    
+                                                     </ion-col>
+                     
+    
+                                                     <ion-col size="5" >
+    
+                                                       </ion-col>
+                                                     
+    
+    
+                                                          
+    
+    
+                                                        </ion-row>
+    
+                                                        <ion-row>
+                                                            <ion-col size="3" style="overflow: hidden;"
+                                                                class="label-line-title blue">
+                                                                {{lp.company}}
+                                                            </ion-col>
+                                                            <ion-col size="3" class="label-line-title">
+                                                                Qty. {{lp.fields.PLUQuantity
+                                                                }}
+    
+    
+    
+                                                            </ion-col>
+                                                            <ion-col size="5" class="label-line-title"
+                                                                style="text-align: right;">
+                                                                BinCode. {{lpH.fields.PLUBinCode}}
+    
+    
+    
+                                                            </ion-col>
+    
+                                                        </ion-row>
+    
+    
+                                                        <ion-row>
+                                                            <ion-col size="4" class="label-line">
+                                                                Item No: {{lp.fields.PLUNo}}
+                                                            </ion-col>
+                                                            <ion-col size="4" class="label-line">
+                                                                Measure: {{lp.fields.PLUUnitofMeasureCode}}
+                                                            </ion-col>
+                                                            <ion-col size="4" class="label-line">
+                                                                LineNo: {{lp.fields.PLUWhseLineNo}}
+                                                            </ion-col>
+                                                        </ion-row>
+                                                        <ion-row>
+                                                            <ion-col class="label-line" size="3">
+    
+                                                            </ion-col>
+                                                        </ion-row>
                                                 </ion-col>
 
                                             </ion-item>
@@ -126,11 +126,6 @@
                                             </ion-row>
                                         </div>
 
-
-
-
-
-
                                     </ion-item>
 
 
@@ -142,173 +137,28 @@
         </div>
     </form>
 
-
-
-
-
-    <form *ngIf="scanBin">
-        <div class="designform-header">
-
-          <ion-row size="12">
-            <ion-col size="8">
-                <ion-label >No. {{lpH.fields.PLUReferenceNo}}</ion-label>
-            </ion-col>
-            <ion-col size="4">
-                <ion-label >Loc. {{lpH.fields.PLULocationCode}}</ion-label>
-            </ion-col>
-        </ion-row>
-
-        <ion-row size="12">
-          <ion-col size="8">
-              <ion-label >LP No. {{lpH.fields.PLULPDocumentNo}}</ion-label>
-          </ion-col>
-      </ion-row>
-
-        </div>
-        <div class="accorn">
-            <div class="order-details">
-                <ion-row>
-                    <ion-col size="3" class="txt">
-                        <ion-label>Lines</ion-label>
-                    </ion-col>
-
-                </ion-row>
-            </div>
-            <div class="accorn-body">
-                <div class="lines">
-                   
-                        <ion-list>
-                            <div>
-
-                                <ion-item-sliding>
-                                    <ion-item>
-                                        <div class="label-lines" part="item-width">
-                                            <ion-row >
-                                                <ion-col size="15" class="item">
-
-                                                <ion-row >
-
-                                                    
-
-                                                    <ion-col size="7"  style="overflow: hidden;">       
-                                                    
-                                                        <ion-select  interface="popover"  #bin  (ionChange)="onChangeBinOne(item,bin.value)" placeholder="Edit Bincode" style="width: 100%;" class="label-line-title" >
-                                                        <ion-select-option  *ngFor="let item of listBin[0].Bins" [value]="item.BinCode" >{{item.BinCode}}</ion-select-option>
-                                                            
-                                                    
-                                                    </ion-select>
-
-                                                 </ion-col>
-                 
-
-                                                 <ion-col size="5" >
-
-                                                   </ion-col>
-                                                 
-
-
-                                                      
-
-
-                                                    </ion-row>
-
-                                                    <ion-row>
-                                                        <ion-col size="3" style="overflow: hidden;"
-                                                            class="label-line-title blue">
-                                                            {{lp.company}}
-                                                        </ion-col>
-                                                        <ion-col size="3" class="label-line-title">
-                                                            Qty. {{lp.fields.PLUQuantity
-                                                            }}
-
-
-
-                                                        </ion-col>
-                                                        <ion-col size="5" class="label-line-title"
-                                                            style="text-align: right;">
-                                                            BinCode. {{lpH.fields.PLUBinCode}}
-
-
-
-                                                        </ion-col>
-
-                                                    </ion-row>
-
-
-                                                    <ion-row>
-                                                        <ion-col size="4" class="label-line">
-                                                            Item No: {{lp.fields.PLUNo}}
-                                                        </ion-col>
-                                                        <ion-col size="4" class="label-line">
-                                                            Measure: {{lp.fields.PLUUnitofMeasureCode}}
-                                                        </ion-col>
-                                                        <ion-col size="4" class="label-line">
-                                                            LineNo: {{lp.fields.PLUWhseLineNo}}
-                                                        </ion-col>
-                                                    </ion-row>
-                                                    <ion-row>
-                                                        <ion-col class="label-line" size="3">
-
-                                                        </ion-col>
-                                                    </ion-row>
-                                                </ion-col>
-                                            </ion-row>
-                                        </div>
-
-
-
-
-
-
-                                    </ion-item>
-
-
-                                </ion-item-sliding>
-                            </div>
-                        </ion-list>
-                  
-                </div>
-            </div>
-        </div>
-    </form>
-
-
-
-
-
-
-
-
    
 </ion-content>
 
-<PlureVersion class="footerputaway" showVersion="0" *ngIf="scanLP">
+<PlureVersion class="footerputaway" showVersion="0">
     <ion-row>
 
-        <ion-col size="12" (click)="onBarCode()" *ngIf="!boolean">
+        <ion-col size="4" (click)="onBarCode()" >
           <ion-icon class="itemfooter" size="large" name="barcode-outline" ></ion-icon>
           <div class="itemfooter" >Bar code</div>
       </ion-col>
      
-        <ion-col size="12" (click)="onSubmit()" *ngIf="boolean">
-            <ion-icon class="itemfooter" size="large" name="arrow-redo-outline"></ion-icon>
-            <div class="itemfooter">Take</div>
-        </ion-col>
+      <ion-col size="4" (click)="onBarCodeChange()">
+        <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+        <div class="itemfooter">Change BinCode</div>
+    </ion-col>
+
+    <ion-col size="4" (click)="onSubmit()">
+        <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+        <div class="itemfooter">Save</div>
+    </ion-col>
     </ion-row>
 </PlureVersion>
 
 
-<PlureVersion class="footerputaway" showVersion="0" *ngIf="scanBin">
-    <ion-row>
-        <!-- <ion-col size="4">
-        </ion-col> -->
-        <ion-col size="6" (click)="onBarCodeChange()">
-            <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-            <div class="itemfooter">Bar BinCode</div>
-        </ion-col>
-        <ion-col size="6" (click)="onSubmit()">
-            <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
-            <div class="itemfooter">Save</div>
-        </ion-col>
-    </ion-row>
-</PlureVersion>
+

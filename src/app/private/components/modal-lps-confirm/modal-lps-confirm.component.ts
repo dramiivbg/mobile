@@ -143,8 +143,8 @@ export class ModalLpsConfirmComponent implements OnInit {
       let items:any[] = [];
       for (const key in this.itemsL) {
 
-        let line = items.find(item => item === this.itemsL[key].ItemNo);
-        if(line === null || line === undefined)items.push(this.itemsL[key].ItemNo);   
+        let line = items.find(item => item === this.itemsL[key].LineNo);
+        if(line === null || line === undefined)items.push(this.itemsL[key].LineNo);   
       }
 
       let groupItems:any[] = [];
@@ -155,7 +155,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
         for (const j in this.itemsL) {
 
-          if(this.itemsL[j].ItemNo === items[key]){
+          if(this.itemsL[j].LineNo === items[key]){
             list.push(this.itemsL[j]);
           }
         

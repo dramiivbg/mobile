@@ -18,6 +18,10 @@ export class LicensePlatesComponent implements OnInit {
   public lp: any = {};
   public lstUoM: any = [];
   public frm: FormGroup;
+  public lot:boolean = false; 
+  public exp:boolean = false;
+  public serial:boolean = false;
+  public boolean:boolean = false;
   @Input() options: any = {};
 
   constructor(private intServ: InterceptService

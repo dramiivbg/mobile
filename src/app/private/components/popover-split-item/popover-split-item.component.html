@@ -51,7 +51,7 @@
                 <ion-col class="thebinselect" size="6">
                     <ion-list class="selectpopupitem">
                         <ion-item class="seclectorbg">
-                            <ion-select interface="popover" #bin (ionChange)="onChangeBinOne(item,bin.value)"
+                            <ion-select interface="popover" #bin (ionChange)="onChangeBinOne(bin.value)"
                                 placeholder="Bincode">
                                 <ion-select-option *ngFor="let b of bins" [value]="b.BinCode">{{b.BinCode}}
                                 </ion-select-option>

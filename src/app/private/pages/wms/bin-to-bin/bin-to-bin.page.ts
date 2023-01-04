@@ -24,29 +24,14 @@ export class BinToBinPage implements OnInit {
 
   public boolean:Boolean = false;
 
-  public listBin:any[] = [];
+  public listBin:any;
 
   constructor(private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService) { }
 
-  ngOnInit() {
-
+ async  ngOnInit() {
 
   }
-
-  
-
-  back(){
-
-
-         
-    this.scanLP = true;
-    this.scanBin = false;
-
-
-    
-  }
-
-  public onBarCode() {
+  public async onBarCode() {
     this.barcodeScanner.scan().then(
       async(barCodeData) => {
         let code = barCodeData.text;
@@ -78,6 +63,17 @@ export class BinToBinPage implements OnInit {
 
          this.intServ.loadingFunc(false);
 
+         let bins = await this.wmsService.GetBinByLocation(this.lpH.fields.PLULocationCode);
+
+         this.listBin = bins;
+
+         
+    this.intServ.alertFunc(this.js.getAlert('confirm', '','Do you want to change it to another Bin code?', () => {
+
+      this.onBarCodeChange();
+    }));
+    
+
          console.log('line =>', this.lp);
          console.log('header =>', this.lpH);
           
@@ -95,31 +91,12 @@ export class BinToBinPage implements OnInit {
         console.log(err);
       }
     )
+
+
+
   }
 
  async onSubmit(){
-
-  switch(this.scanLP){
-  
-
-    case true:
-
-      this.scanLP = false;
-      this.loading = true;
-      
-      let bins = await this.wmsService.GetBinByLocation(this.lpH.fields.PLULocationCode);
-
-      this.listBin.push(bins);
-
-      console.log(this.listBin);
-
-      this.loading = false;
-      this.scanBin = true;
-
-      break;
-
-
-   case false:
 
 
    this.intServ.loadingFunc(true);
@@ -145,10 +122,7 @@ export class BinToBinPage implements OnInit {
 
       this.lpH = undefined;
   
-      this.boolean = false;
     
-      this.back();
-
     }));
 
   
@@ -164,17 +138,14 @@ export class BinToBinPage implements OnInit {
 
 
 
-    break;
-     
-  }
+
 
   }
 
 
   onChangeBinOne(item:any,bin:any){
 
-
-
+    this.lpH.fields.PLUBinCode = bin;
   }
 
   public async onBarCodeChange(){
@@ -185,10 +156,8 @@ export class BinToBinPage implements OnInit {
 
         this.intServ.loadingFunc(true);
       
-       let line =   this.listBin[0].Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
-  
-
-
+       let line =   this.listBin.Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
+   
     this.lpH.fields.PLUBinCode = line.BinCode;
 
 

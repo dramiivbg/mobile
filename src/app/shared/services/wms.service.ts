@@ -1384,6 +1384,22 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
 
    }
 
+   public async GetPlureSetup(){
+
+    try {
+
+    
+        let obj: any = [ ];
+        
+        let p = await this.syncErp.processRequestParams('GetPlureSetup', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+   }
+
 
    public async UpdateItemTrackingSpecificationOpen(list:any){
 
@@ -1466,6 +1482,13 @@ public async DeleteItemTrackingSpecificationOpen(list:any){
     }
 
     }
+    public async listSetup(list):Promise<any>{
+
+     let obj = {}
+
+    obj = await this.fields(list.fields);
+    return obj;
+}
     public async listTraking(list):Promise<any>{
 
         let obj = {}
