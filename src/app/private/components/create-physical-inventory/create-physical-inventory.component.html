@@ -46,9 +46,11 @@
       </ion-row>
 
       <ion-row class="footer">
-        <ion-col size="12">
-          <ion-button class="buttonpoppup" type="submit">Send</ion-button>
-          <ion-button class="buttonpoppup" type="button" (click)="closePopover()">Cancel</ion-button>
+        <ion-col size="6">
+          <ion-button shape="round" color="success" class="buttonpoppup" type="submit">Send</ion-button>
+        </ion-col>
+          <ion-col size="6">
+          <ion-button shape="round" color="danger" class="buttonpoppup" type="button" (click)="closePopover()">Cancel</ion-button>
         </ion-col>
       </ion-row>
     </form>

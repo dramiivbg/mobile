@@ -11,11 +11,11 @@ import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
 import { Storage } from '@ionic/storage';
-import{environment} from '../../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 
-import {PopoverLocateComponent} from '@prv/components/popover-locate/popover-locate.component';
+import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
 
 
 @Component({
@@ -30,12 +30,12 @@ export class WmsMainPage implements OnInit {
   public boolean: Boolean = true;
 
   public booleanM: Boolean = false;
-  public booleanInQ:Boolean = false;
+  public booleanInQ: Boolean = false;
 
   public locale: any = '';
-  public listsLocate:any;
+  public listsLocate: any;
 
-  public processes:any[] = [];
+  public processes: any[] = [];
 
   constructor(private syncerp: SyncerpService
     , private general: GeneralService
@@ -43,13 +43,13 @@ export class WmsMainPage implements OnInit {
     , private js: JsonService
     , private router: Router
     , private moduleService: ModuleService,
-    private wmsService:WmsService,
+    private wmsService: WmsService,
     private modalCtrl: ModalController,
     public popoverController: PopoverController
-    ,private http: HttpClient
-    ,private storage: Storage,
-    
-  ) { 
+    , private http: HttpClient
+    , private storage: Storage,
+
+  ) {
     let objFunc = {
       func: () => {
         this.onBack();
@@ -61,19 +61,19 @@ export class WmsMainPage implements OnInit {
   public async ngOnInit() {
 
 
-    
+
   }
 
   public async ionViewWillEnter() {
 
     this.processes = [];
-    let session =  (await this.js.getSession()).login;
-   this.http.get(environment.api+session.userId).subscribe(res => {
+    let session = (await this.js.getSession()).login;
+    this.http.get(environment.api + session.userId).subscribe(res => {
 
-    this.listsLocate = res;
-   });
+      this.listsLocate = res;
+    });
 
-   this.locale = (await this.storage.get('locale') != undefined || await this.storage.get('locale') != null ) ? await this.storage.get('locale'): this.locale;
+    this.locale = (await this.storage.get('locale') != undefined || await this.storage.get('locale') != null) ? await this.storage.get('locale') : this.locale;
 
     try {
       this.intServ.loadingFunc(true);
@@ -81,17 +81,17 @@ export class WmsMainPage implements OnInit {
 
       this.module.processes.filter(mod => {
 
-        if(mod.processId != 'P011'){
-  
-  
+        if (mod.processId != 'P011') {
+
+
           this.processes.push(mod);
-  
+
         }
       });
 
-   
+
       this.session = (await this.js.getSession()).login;
-      console.log('session =>',this.session)
+      console.log('session =>', this.session)
 
 
 
@@ -111,84 +111,84 @@ export class WmsMainPage implements OnInit {
 
   public async onWMS(process: Process) {
 
-  //  console.log('procesos =>',process)
+    //  console.log('procesos =>',process)
     this.intServ.loadingFunc(true);
     const method = await this.method(process);
-   console.log('procesos =>', method);
+    console.log('procesos =>', method);
     process.salesType = await this.general.typeSalesBC(process);
-   // console.log('tipos de ventas =>',process.salesType);
+    // console.log('tipos de ventas =>',process.salesType);
     process.sysPermits = await this.general.getPermissions(process.permissions);
     // console.log('tipos de permisos =>',process.sysPermits);
     await this.moduleService.setSelectedProcess(process);
 
-   // console.log('erpUserId =>', this.module.erpUserId);
+    // console.log('erpUserId =>', this.module.erpUserId);
 
     if (process.processId === 'P007') {
-     // let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: this.session.userId}]);
+      // let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: this.session.userId}]);
 
-     let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: " "}]);
+      let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: " " }]);
       try {
 
         let rsl = await this.syncerp.setRequest(p);
 
 
-        if(rsl.Error) throw new Error(rsl.Error.Message);
-       // if(rsl.error.message) throw new Error(rsl.error.message);
-        
-        
-   
-       let wareReceipts = rsl.WarehouseReceipts;
+        if (rsl.Error) throw new Error(rsl.Error.Message);
+        // if(rsl.error.message) throw new Error(rsl.error.message);
 
-      this.intServ.loadingFunc(false);
-      await this.mappingWareReceipts(wareReceipts, process);
-        
+
+
+        let wareReceipts = rsl.WarehouseReceipts;
+
+        this.intServ.loadingFunc(false);
+        await this.mappingWareReceipts(wareReceipts, process);
+
       } catch (error) {
 
         this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
 
       }
-      
+
     }
-  
-    if(process.processId === 'P010'){
+
+    if (process.processId === 'P010') {
 
 
       this.boolean = false;
 
       this.booleanM = true;
 
-   
-    
+
+
       this.intServ.loadingFunc(false);
 
     }
 
 
-    if(process.processId === 'P008'){
+    if (process.processId === 'P008') {
 
-    //  let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: this.session.userId }]);
+      //  let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: this.session.userId }]);
       let p = await this.syncerp.processRequestParams(method, [{ assigned_user_id: "" }]);
       try {
         let rsl = await this.syncerp.setRequest(p);
 
-        if(rsl.Error) throw new Error(rsl.Error.Message);
-           
-      await  this.mappingPutAways(rsl, process);
-        
+        if (rsl.Error) throw new Error(rsl.Error.Message);
+
+        await this.mappingPutAways(rsl, process);
+
       } catch (error) {
 
         this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));   
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
       }
-      
+
 
     }
 
   }
 
 
-  menuInqueris(){
+  menuInqueris() {
 
 
     this.boolean = false;
@@ -200,7 +200,7 @@ export class WmsMainPage implements OnInit {
 
 
 
-  pageReadLicensePlate(){
+  pageReadLicensePlate() {
 
 
 
@@ -208,219 +208,219 @@ export class WmsMainPage implements OnInit {
   }
 
 
-  pageReadBinContent(){
+  pageReadBinContent() {
 
 
-    
+
     this.router.navigate(['page/wms/readBinContent']);
 
   }
 
 
-  pageBintoBin(){
+  pageBintoBin() {
 
 
     this.router.navigate(['page/wms/binToBin']);
 
   }
 
-  pageMovement(){
+  pageMovement() {
 
 
     this.router.navigate(['page/wms/wmsMovement']);
   }
 
-  pageReclassification(){
+  pageReclassification() {
 
 
     this.router.navigate(['page/wms/whItemReclassification']);
   }
 
 
-  pageItemJournal(){
+  pageItemJournal() {
 
 
     this.router.navigate(['page/wms/wmsItemJournal']);
   }
 
 
- async selectPI(ev){
+  async selectPI(ev) {
 
 
-  const popover = await this.popoverController.create({
-    component: CreatePhysicalInventoryComponent,
-    cssClass: 'createPhysicalInventoryComponent',
-    backdropDismiss: false
-  });
-  await popover.present();
+    const popover = await this.popoverController.create({
+      component: CreatePhysicalInventoryComponent,
+      cssClass: 'createPhysicalInventoryComponent',
+      backdropDismiss: false
+    });
+    await popover.present();
 
-  const { data } = await popover.onDidDismiss();
+    const { data } = await popover.onDidDismiss();
 
 
-  if(data.data != null){
+    if (data.data != null) {
 
-    this.intServ.loadingFunc(true);
-    try {
+      this.intServ.loadingFunc(true);
+      try {
 
-      let res = await this.wmsService.Create_WarehouseInvPhysicalCount(data.zone,"",data.locationCode,data.fecha,data.data);
+        let res = await this.wmsService.Create_WarehouseInvPhysicalCount(data.zone, "", data.locationCode, data.fecha, data.data);
 
-      console.log(res);
+        console.log(res);
 
-      if(res.Error) throw new Error(res.Error.Message);
+        if (res.Error) throw new Error(res.Error.Message);
 
-      if(res.error) throw new Error(res.error.message);
+        if (res.error) throw new Error(res.error.message);
 
-      if(res.message) throw new Error(res.message);
-      
+        if (res.message) throw new Error(res.message);
 
-      let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locationCode }]);
-      let rsl = await this.syncerp.setRequest(p);
-    
-      await  this.mappingPhysicalI(rsl);
-      
-    } catch (error) {
-      
-    this.intServ.loadingFunc(false);
-    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+
+        let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locationCode }]);
+        let rsl = await this.syncerp.setRequest(p);
+
+        await this.mappingPhysicalI(rsl);
+
+      } catch (error) {
+
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+      }
+
+
     }
 
-  
-  }
-
 
   }
 
-  pageSplitMerge(){
+  pageSplitMerge() {
 
 
     this.router.navigate(['page/wms/wmsSplitMerge']);
   }
 
-  
-  private async mappingPhysicalI(listPI:any){
+
+  private async mappingPhysicalI(listPI: any) {
 
 
     let lists = await this.wmsService.listPI(listPI);
- 
+
     console.log(lists);
 
     let listOr = await this.wmsService.listPI(listPI);
- 
- 
-    if (lists.length > 0 ) {
- 
-     this.intServ.loadingFunc(false);
 
 
-     for (const i in listOr) {
-      for (const j in listOr) {
-     
+    if (lists.length > 0) {
+
+      this.intServ.loadingFunc(false);
+
+
+      for (const i in listOr) {
+        for (const j in listOr) {
+
           if (j !== i) {
-      
-            if(listOr[i].fields.JournalBatchName === listOr[j].fields.JournalBatchName) listOr.splice(Number(j));
+
+            if (listOr[i].fields.JournalBatchName === listOr[j].fields.JournalBatchName) listOr.splice(Number(j));
           }
 
-        
-       
-      }
-     }
-     
-      this.intServ.loadingFunc(false);
-     let obj = this.general.structSearch(listOr, `Physical Inv. Journal `, 'WH Physical Inv. Journal', async (data) => {
-      this.intServ.loadingFunc(true);
-      let listsOr = [];
 
-     
-      for (const i in lists) {
-        if (lists[i].fields.JournalBatchName === data.fields.JournalBatchName) {
-          listsOr.push(lists[i]);
-          
+
         }
       }
 
-      console.log(listsOr);
-
-      var alert = setTimeout(() => {
-
-        this.intServ.loadingFunc(false);
-      let obj = this.general.structSearch(listsOr, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data,bin) => {
-
-        this.wmsService.set(bin);
-         var alert = setTimeout(() => {
-
-          console.log(data);
+      this.intServ.loadingFunc(false);
+      let obj = this.general.structSearch(listOr, `Physical Inv. Journal `, 'WH Physical Inv. Journal', async (data) => {
+        this.intServ.loadingFunc(true);
+        let listsOr = [];
 
 
-          let obj = this.general.structSearch(data,  `Physical Inv Journal-Counting `, 'Scan/Type License Plate', async (data) => {}, false, 6);
+        for (const i in lists) {
+          if (lists[i].fields.JournalBatchName === data.fields.JournalBatchName) {
+            listsOr.push(lists[i]);
+
+          }
+        }
+
+        console.log(listsOr);
+
+        var alert = setTimeout(() => {
+
+          this.intServ.loadingFunc(false);
+          let obj = this.general.structSearch(listsOr, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data, bin) => {
+
+            this.wmsService.set(bin);
+            var alert = setTimeout(() => {
+
+              console.log(data);
+
+
+              let obj = this.general.structSearch(data, `Physical Inv Journal-Counting `, 'Scan/Type License Plate', async (data) => { }, false, 6);
+
+              this.intServ.searchShowFunc(obj);
+              clearTimeout(alert);
+            }, 100)
+
+
+          }, false, 5);
 
           this.intServ.searchShowFunc(obj);
+
           clearTimeout(alert);
         }, 100)
-  
-    
-    }, false, 5);
 
-    this.intServ.searchShowFunc(obj);
+      }, false, 7);
 
-    clearTimeout(alert);
-  }, 100)
-
-  }, false, 7);
-
-  this.intServ.searchShowFunc(obj);
+      this.intServ.searchShowFunc(obj);
 
 
-  
- 
-     
+
+
+
     } else {
- 
-     this.intServ.loadingFunc(false);
+
+      this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `list Physical Inventory  Empty`));
     }
 
-   }
-
-
-  async popoverLocate(ev){
-
-      
-  const popover = await this.popoverController.create({
-    component: PopoverLocateComponent,
-    cssClass: 'popoverLocateComponent',
-    componentProps:{listLocale:this.listsLocate}
-  });
-  await popover.present();
-
-  const { data } = await popover.onDidDismiss();
-
-  if(data != undefined || data != null){
-
-   this.storage.set('locale', data.locationCode);
-
-   this.locale = await this.storage.get('locale');
   }
-}
-
-  private async mappingPutAways(putAway:any , procesos: Process){
-
-   
-   let listPutAway = await this.wmsService.listsPutAways(putAway);
-
-   console.log(listPutAway);
 
 
-   if (listPutAway.length > 0 ) {
+  async popoverLocate(ev) {
 
-    this.intServ.loadingFunc(false);
-     let obj = this.general.structSearch(listPutAway, `Search ${procesos.description}`, 'Put Aways', async (whsePutAwayL) => {
 
-      this.intServ.loadingFunc(true);
-      let putAway = await this.wmsService.GetWarehousePutAway(whsePutAwayL.fields.No);
+    const popover = await this.popoverController.create({
+      component: PopoverLocateComponent,
+      cssClass: 'popoverLocateComponent',
+      componentProps: { listLocale: this.listsLocate }
+    });
+    await popover.present();
 
-     let whsePutAwayH = await this.wmsService.ListPutAwayH(putAway);
-   
-      this.wmsService.setPutAway(putAway);
+    const { data } = await popover.onDidDismiss();
+
+    if (data != undefined || data != null) {
+
+      this.storage.set('locale', data.locationCode);
+
+      this.locale = await this.storage.get('locale');
+    }
+  }
+
+  private async mappingPutAways(putAway: any, procesos: Process) {
+
+
+    let listPutAway = await this.wmsService.listsPutAways(putAway);
+
+    console.log(listPutAway);
+
+
+    if (listPutAway.length > 0) {
+
+      this.intServ.loadingFunc(false);
+      let obj = this.general.structSearch(listPutAway, `Search ${procesos.description}`, 'Put Aways', async (whsePutAwayL) => {
+
+        this.intServ.loadingFunc(true);
+        let putAway = await this.wmsService.GetWarehousePutAway(whsePutAwayL.fields.No);
+
+        let whsePutAwayH = await this.wmsService.ListPutAwayH(putAway);
+
+        this.wmsService.setPutAway(putAway);
 
 
         let whsePutAway = whsePutAwayH;
@@ -429,31 +429,31 @@ export class WmsMainPage implements OnInit {
         this.storage.remove('whsePutAway');
 
         this.storage.remove('setPutAway');
-        
-       this.storage.set('setPutAway',putAway);
-      this.storage.set('whsePutAway', whsePutAway);
 
-      this.router.navigate(['page/wms/wmsPutAway']);
-    
-      setTimeout(
-         () => {
-           this.intServ.searchShowFunc({});
-         }, 1000
-       )
-     }, false, 4);
-     this.intServ.searchShowFunc(obj);
+        this.storage.set('setPutAway', putAway);
+        this.storage.set('whsePutAway', whsePutAway);
 
-    
-   } else {
+        this.router.navigate(['page/wms/wmsPutAway']);
 
-    this.intServ.loadingFunc(false);
-     this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${procesos.salesType} were found.`));
-   }
+        setTimeout(
+          () => {
+            this.intServ.searchShowFunc({});
+          }, 1000
+        )
+      }, false, 4);
+      this.intServ.searchShowFunc(obj);
 
 
-   
+    } else {
 
-   
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${procesos.salesType} were found.`));
+    }
+
+
+
+
+
 
   }
 
@@ -464,11 +464,11 @@ export class WmsMainPage implements OnInit {
 
       let obj = this.general.structSearch(receipts, `Search ${process.description}`, 'Receipts', async (wms) => {
 
-       // console.log('data =>',wms);
+        // console.log('data =>',wms);
 
         this.storage.set('wms', wms);
 
-         this.router.navigate(['page/wms/wmsReceipt']);
+        this.router.navigate(['page/wms/wmsReceipt']);
         setTimeout(
           () => {
             this.intServ.searchShowFunc({});
@@ -481,13 +481,13 @@ export class WmsMainPage implements OnInit {
     }
   }
 
-  private async method(process: Process) : Promise<string> {
-    switch(process.processId) {
+  private async method(process: Process): Promise<string> {
+    switch (process.processId) {
       case "P007":
         return 'GetWarehouseReceipts';
       case "P008":
         return 'GetWarehousePutAways';
-      
+
 
     }
   }

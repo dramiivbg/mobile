@@ -1,37 +1,31 @@
+<ion-content class="ion-margin">
 
- <ion-content class="ion-margin" >
 
-    
   <ion-grid>
 
-      <ion-row style="text-align: center;" class="row">
-        <ion-col>LP</ion-col>
-        <ion-col>QTY</ion-col>
-        <ion-col>Date REC</ion-col>
-      
-    
+    <ion-row style="text-align: center;" class="row">
+      <ion-col>LP</ion-col>
+      <ion-col>QTY</ion-col>
+      <ion-col>Date REC</ion-col>
+
+
+    </ion-row>
+
+    <div id="taula">
+      <ion-row *ngFor="let item of listL; let i = index" style="text-align: center;"
+        (click)="option(this.listL[i],this.listQ[i],'event')">
+
+        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col>{{this.listL[i]}}</ion-col></a>
+        <ion-col>{{this.listQ[i]}}</ion-col>
+        <ion-col>{{this.listD[i]}}</ion-col>&nbsp;
+
+
       </ion-row>
 
-      <div id="taula"  > 
-        <ion-row *ngFor="let item of listL; let i = index" style="text-align: center;" (click)="option(this.listL[i],this.listQ[i],'event')">
-        
-          <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col >{{this.listL[i]}}</ion-col></a>
-          <ion-col >{{this.listQ[i]}}</ion-col>
-          <ion-col >{{this.listD[i]}}</ion-col>&nbsp;
-        
-
-        </ion-row>
-  
 
 
-   
-      </div>  
-    </ion-grid>
+
+    </div>
+  </ion-grid>
 
 </ion-content>
-
-
-
-
-
-
