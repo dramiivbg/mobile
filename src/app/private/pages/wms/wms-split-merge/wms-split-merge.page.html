@@ -45,8 +45,8 @@
                                 <ion-item>
                                     <div class="label-lines" part="item-width">
                                         <ion-row class="row1" *ngIf="lp !== undefined">
-                                            <ion-col size="12" *ngFor="let item of lps; let i=index">
-                                                <ion-row>
+                                            <ion-col class="contentcol" size="12" *ngFor="let item of lps; let i=index">
+                                                <ion-row class="titlerow">
                                                     <ion-col size="5" style="overflow: hidden;"
                                                         class="label-line-title blue">
                                                         {{item.company}}
@@ -108,9 +108,8 @@
                                                 <ion-item-sliding>
 
                                                     <ion-item>
-                                                        <ion-row>
-                                                            <ion-col size="12" class="label-line splitimage"
-                                                                *ngIf="listPicture.length > 0 ">
+                                                        <ion-row *ngIf="listPicture.length > 0 ">
+                                                            <ion-col size="12" class="label-line splitimage">
                                                                 <label
                                                                     *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show"
                                                                     class="label">{{listPicture[i].fields.No}}</label>&nbsp;
@@ -134,18 +133,18 @@
                                                 </ion-item-sliding>
 
                                                 <ion-row>
-                                                    <ion-col class="buttoncol" size="12">
+                                                    <ion-col class="buttoncol" size="6">
 
                                                         <ion-button class="buttonsplitmerge" shape="round"
-                                                            expand="block" (click)="popoverSplit(item,$event)">Split
-                                                            License Plate Single</ion-button>
+                                                            expand="block" (click)="popoverSplit(item,$event)"><ion-icon
+                                                                name="cut-outline"></ion-icon>&nbsp;&nbsp;Split</ion-button>
                                                     </ion-col>
 
-                                                    <ion-col class="buttoncol" size="12">
+                                                    <ion-col class="buttoncol" size="6">
 
                                                         <ion-button class="buttonsplitmerge" shape="round"
-                                                            expand="block" (click)="popoverMerge(item,$event)">Merge
-                                                            License Plate Single</ion-button>
+                                                            expand="block" (click)="popoverMerge(item,$event)"><ion-icon
+                                                                name="shuffle-outline"></ion-icon>&nbsp;&nbsp;Merge</ion-button>
                                                     </ion-col>
 
                                                 </ion-row>
@@ -226,14 +225,14 @@
                                                 </ion-row>
 
                                                 <ion-row>
-                                                    <ion-col size="12" class="buttoncol">
+                                                    <ion-col size="6" class="buttoncol">
 
                                                         <ion-button shape="round" class="buttonsplitmerge"
                                                             expand="block" (click)="option(item,$event)">Split
                                                             Pallet</ion-button>
                                                     </ion-col>
 
-                                                    <ion-col size="12" class="buttoncol">
+                                                    <ion-col size="6" class="buttoncol">
 
                                                         <ion-button shape="round" class="buttonsplitmerge"
                                                             expand="block" (click)="popoverMergeP(item,$event)">Merge

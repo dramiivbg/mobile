@@ -353,3 +353,9 @@ ion-fab-button[data-desc]::after {
     --placeholder-opacity: 1;
     opacity: 1;
 }
+
+ion-fab-button.custom {
+    --color: #ffffff;
+    height: 53px;
+    width: 53px;
+}
