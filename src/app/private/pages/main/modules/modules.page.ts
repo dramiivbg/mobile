@@ -109,6 +109,9 @@ export class ModulesPage implements OnInit {
   public async onClick(mod: any) {
     await this.moduleService.setSelectedModule(mod);
     console.log(mod);
+
+    this.storage.set('erpUserId',mod.erpUserId);
+    
     switch(mod.moduleType)
     {
       case E_MODULETYPE.Sales:

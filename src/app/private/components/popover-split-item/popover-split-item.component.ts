@@ -19,6 +19,8 @@ export class PopoverSplitItemComponent implements OnInit {
 
   public binCode:any;
 
+  public bins:any;
+
   
   constructor(private intServ: InterceptService
     , private formBuilder: FormBuilder
@@ -40,9 +42,13 @@ export class PopoverSplitItemComponent implements OnInit {
     )
   }
 
-  ngOnInit() {
+async   ngOnInit() {
     console.log(this.item);
      this.binCode = this.item.place;
+
+     let bin =  await this.wmsService.GetPossiblesBinFromPutAwayV2(this.item.No);
+
+     this.bins = bin.Bins;
   }
 
   async onSubmit(){
@@ -62,18 +68,9 @@ export class PopoverSplitItemComponent implements OnInit {
 
     this.barcodeScanner.scan().then(
       async (barCodeData) => {
-        let code = barCodeData.text;
-        
-        try {
-          let bin = await this.wmsService.GetPossiblesBinFromPutAwayV2(this.item.No);
-
-          if(bin.Error || bin.error) throw new Error((bin.Error)? bin.Error.Message: bin.error.message);
-
-          if(bin.message) throw new Error(bin.message);
-                   
-          console.log(bin);
+        let code = barCodeData.text;   
   
-          let line = bin.Bins.find(bin => bin.BinCode === code.toUpperCase());
+          let line = this.bins.find(bin => bin.BinCode === code.toUpperCase());
 
           if(line === undefined || line === null){
             this.intServ.alertFunc(this.jsonService.getAlert('error', '', `The bin ${code.toUpperCase()} 
@@ -83,15 +80,7 @@ export class PopoverSplitItemComponent implements OnInit {
             this.binCode = line.BinCode;
           }
 
-
-
-  
-          console.log(line);
-          
-        } catch (error) {
-          
-          this.intServ.alertFunc(this.jsonService.getAlert('error', '', error.message));
-        }
+          console.log(line);    
 
       }
     ).catch(
@@ -99,6 +88,13 @@ export class PopoverSplitItemComponent implements OnInit {
         console.log(err);
       }
     )
+
+  }
+
+  onChangeBinOne(bin:any){
+
+
+    this.binCode = bin;
 
   }
 

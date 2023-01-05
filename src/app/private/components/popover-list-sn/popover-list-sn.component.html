@@ -16,7 +16,7 @@
         <ion-row *ngFor="let item of list; let i = index" style="text-align: center;" >
         
           <ion-col size="3" *ngIf="item.proceded === false">{{item.SerialNo}}</ion-col>
-          <ion-col size="3" *ngIf="item.proceded === true" (click)="opcions(item)"><a>{{item.SerialNo}}</a></ion-col>
+          <ion-col size="3" *ngIf="item.proceded === true" (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
           <ion-col size="3">{{item.LotNo}}</ion-col>
           <ion-col size="3">{{item.ExperationDate}}</ion-col>
           <ion-col size="3">{{item.Qty}}</ion-col>

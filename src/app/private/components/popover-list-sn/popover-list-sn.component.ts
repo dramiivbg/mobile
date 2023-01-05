@@ -4,6 +4,8 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
+import { Storage } from '@ionic/storage';
+import { reverse } from 'dns';
 
 @Component({
   selector: 'app-popover-list-sn',
@@ -13,14 +15,16 @@ import { PopoverOptionsComponent } from '../popover-options/popover-options.comp
 export class PopoverListSNComponent implements OnInit {
 
   @Input() list:any;
-  constructor(public popoverController: PopoverController,private wmsService: WmsService, private jsonService: JsonService,  private intServ: InterceptService) { }
+  @Input() item:any;
+  constructor(public popoverController: PopoverController,private wmsService: WmsService, 
+    private jsonService: JsonService,  private intServ: InterceptService,private storage: Storage) { }
 
   ngOnInit() {
 
     console.log(this.list);
   }
 
- async opcions(item:any){
+ async opcions(item:any,index:any){
 
     const popover = await this.popoverController.create({
       component: PopoverOptionsComponent,
@@ -50,9 +54,37 @@ export class PopoverListSNComponent implements OnInit {
 
             this.intServ.loadingFunc(false);
 
-            this.intServ.alertFunc(this.jsonService.getAlert('success','', `Serial ${item.SerialNo} has been successfully deleted`, () => {
+            this.intServ.alertFunc(this.jsonService.getAlert('success','', `Serial ${item.SerialNo} has been successfully deleted`, async() => {
 
-              this.popoverController.dismiss({data:data.action});
+            let receive =  await this.storage.get(`${this.item.LineNo} receive`);
+
+            receive -= item.Qty;
+
+            let list = [
+              {
+                WarehouseReceiptLines: [
+                  {
+                    No: this.item.No,
+                    SourceNo: this.item.SourceNo,
+                    ItemNo: this.item.ItemNo,
+                    LineNo: this.item.LineNo,
+                    ZoneCode: this.item.ZoneCode,
+                    LocationCode: this.item.LocationCode,
+                    BinCode: this.item.BinCode,
+                    QtyToReceive: receive
+                  }
+                ]
+              }
+            ]
+            
+          
+  
+             await this.wmsService.Update_WsheReceiveLine(list); 
+  
+            this.storage.set(`${this.item.LineNo} receive`,receive);
+  
+
+              this.popoverController.dismiss({data: "Delete", index});
 
             }));
             

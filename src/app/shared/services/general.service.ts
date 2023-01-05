@@ -203,6 +203,8 @@ export class GeneralService {
       if(fields[i].name === "ItemNo"){
         let plure = await this.wmsService.GetItemInfo(fields[i].value);
         obj['plure'] =  plure.Managed_by_PlurE;
+        obj['Auto_Generate_SN'] = plure.Auto_Generate_SN;
+        obj['Auto_Generate_LOT'] = plure.Auto_Generate_LOT;
 
         let res = await this.wmsService.GetItem(fields[i].value);
         let traking = await this.wmsService.listItem(res);

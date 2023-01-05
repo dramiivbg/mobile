@@ -1263,7 +1263,6 @@ export class EditPutAwayComponent implements OnInit {
 
           this.listItems.filter((x, index) => {
 
-
             if (x.LineNo === data.item.LineNo) this.listItems.splice(index, 1);
           });
 
@@ -1748,10 +1747,19 @@ export class EditPutAwayComponent implements OnInit {
 
         if (val === '') {
           this.listsFilter = this.listT;
+          this.listItems =   this.listItemsT;
         } else {
           this.listsFilter = this.listT.filter(
             x => {
-              return (x.fields.place.toLowerCase().includes(val.toLowerCase()));
+              return (x.fields.place.toLowerCase().includes(val.toLowerCase()) || x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+            }
+          )
+
+          this.listItems = this.listItemsT.filter(
+            x => {
+              return (x.place.toLowerCase().includes(val.toLowerCase()) || x.ItemNo.toLowerCase().includes(val.toLowerCase()) || 
+              x.SerialNo.toLowerCase().includes(val.toLowerCase()) || x.VariantCode.toLowerCase().includes(val.toLowerCase()) || 
+              x.LotNo.toLowerCase().includes(val.toLowerCase()));
             }
           )
         }
@@ -1762,10 +1770,18 @@ export class EditPutAwayComponent implements OnInit {
 
         this.listsFilter = this.listT.filter(
           x => {
-            return (x.fields.place.toLowerCase().includes(binCode.toLowerCase()));
+            return (x.fields.place.toLowerCase().includes(binCode.toLowerCase()) || x.fields.PLULPDocumentNo.toLowerCase().includes(binCode.toLowerCase()));
           }
         )
-        console.log(this.listsFilter, binCode);
+
+        this.listItems = this.listItemsT.filter(
+          x => {
+            return (x.place.toLowerCase().includes(binCode.toLowerCase()) || x.ItemNo.toLowerCase().includes(binCode.toLowerCase()) || 
+             x.SerialNo.toLowerCase().includes(binCode.toLowerCase()) || x.VariantCode.toLowerCase().includes(binCode.toLowerCase()) || 
+             x.LotNo.toLowerCase().includes(binCode.toLowerCase()));
+          }
+        )
+        //console.log(this.listsFilter, binCode);
 
         break;
     }
