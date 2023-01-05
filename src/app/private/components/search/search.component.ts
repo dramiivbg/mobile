@@ -44,9 +44,9 @@ export class SearchComponent implements OnInit {
   private post: boolean = false;
 
   public visible: Boolean = false;
-
+  public visibleI: Boolean = false;
+  public items:any[] = [];
   public binCode:any;
-
   private session:any;
 
   public lps:any[] = [];
@@ -234,13 +234,29 @@ export class SearchComponent implements OnInit {
     } else {
       this.listsFilter = this.lists.filter(
         x => {
-          return (x.fields.JournalBatchName.toLowerCase().includes(val.toLowerCase()) || x.fields.LocationCode.toLowerCase().includes(val.toLowerCase()));
+          return (x.Name.toLowerCase().includes(val.toLowerCase()) || x.LocationCode.toLowerCase().includes(val.toLowerCase()));
         }
       )
     }
 
   }
 
+  onChangeTemplate(e){
+
+    
+    let val = e.target.value;
+
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.Name.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+  }
 
   onChangePI(e, bin:any = '') {
 
@@ -255,7 +271,7 @@ export class SearchComponent implements OnInit {
       } else {
         this.listsFilter = this.lists.filter(
           x => {
-            return (x.fields.ZoneCode.toLowerCase().includes(val.toLowerCase()) || x.fields.BinCode.toLowerCase().includes(val.toLowerCase()) ||  x.fields.ItemNo.toLowerCase().includes(val.toLowerCase()));
+            return (x.ZoneCode.toLowerCase().includes(val.toLowerCase()) || x.BinCode.toLowerCase().includes(val.toLowerCase()) ||  x.ItemNo.toLowerCase().includes(val.toLowerCase()));
           }
         )
       }
@@ -266,7 +282,7 @@ export class SearchComponent implements OnInit {
 
     this.listsFilter = this.lists.filter(
       x => {
-        return (x.fields.BinCode.toLowerCase().includes(bin.toLowerCase()));
+        return (x.BinCode.toLowerCase().includes(bin.toLowerCase()));
       }
     )
 
@@ -330,7 +346,6 @@ export class SearchComponent implements OnInit {
 
         this.onChangePI('', code);
       
-
       }
     ).catch(
       err => {
@@ -353,7 +368,7 @@ export class SearchComponent implements OnInit {
   try {
 
 
-    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
+    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].LocationCode);
 
     console.log(resR);
 
@@ -420,7 +435,7 @@ export class SearchComponent implements OnInit {
 
  async onSubmitP(listLp:any){
 
- 
+ this.intServ.loadingFunc(true);
 
   let listI:any[] = [];
 
@@ -428,7 +443,7 @@ export class SearchComponent implements OnInit {
 
     let line = this.listsFilter.find(inv => inv.fields.PLULicensePlates === lp.fields.PLULPDocumentNo);
 
-    if(line !== undefined || line !== null){
+    if(line !== undefined){
 
       line.fields.QtyPhysInventory = lp.fields.PLUQuantity;
 
@@ -617,15 +632,21 @@ export class SearchComponent implements OnInit {
     if(resR.Error) throw new Error(resR.Error.Message);
 
 
+    this.intServ.loadingFunc(false);
     console.log(resR);
     
     
   } catch (error) {
 
-
-    this,this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error','', error.message));
     
   }
+
+  if(this.lps.length === this.listsFilter.length){
+    this.intServ.alertFunc(this.js.getAlert('success','',''))
+  }
+  
 
 }
   
@@ -699,8 +720,7 @@ export class SearchComponent implements OnInit {
 
 
   public onBarCodeLP() {
-
-    
+  
     this.barcodeScanner.scan().then(
      async (barCodeData) => {
         let code = barCodeData.text.toUpperCase();
@@ -708,57 +728,71 @@ export class SearchComponent implements OnInit {
    
         this.intServ.loadingFunc(true);
 
-        let line = this.listsFilter.find(inv => inv.fields.PLULicensePlates === code);
+       let line = this.listsFilter.find(inv => inv.fields.PLULicensePlates === code || inv.fields.ItemNo === code || inv.fields.SerialNo === code);
         
-       if(line !== null || line !== undefined){
+       if(line !== undefined){
 
-        try {
-          
-          let res = await this.wmsService.getLpNo(code);
+         switch(line.fields.PLULicensePlates){
+            case '':
 
-          
-          if(res.Error) throw new Error(res.Error.Message);
+              console.log(line);
+            
+            //  this.items.push(line);
+      
+            break;
 
-          let lp = await this.wmsService.ListLp(res);
-
-          let lpH = await this.wmsService.ListLpH(res);
-
-          lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
-          lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
-          lp.fields.PLUQuantity = line.fields.QtyPhysInventory;
-          
-          let item =  await this.wmsService.GetItem(lp.fields.PLUNo);
-
-          let listI = await this.wmsService.listItem(item);
-
-
-          listI.fields.Picture =  `data:image/jpeg;base64,${listI.fields.Picture}`;
-
-          this.listPicture.push(listI);
+            default:
+              
+             try {
+              
+                let res = await this.wmsService.getLpNo(code);
 
           
-          this.lps.push(lp);
-
-          this.lists = this.lps;
-
-          this.visible = true;
-          this.intServ.loadingFunc(false);
-
-
-          console.log(this.lps);
-
-          console.log(this.listPicture);
-
+                if(res.Error) throw new Error(res.Error.Message);
+      
+                let lp = await this.wmsService.ListLp(res);
+      
+                let lpH = await this.wmsService.ListLpH(res);
+      
+                lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
+                lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
+                lp.fields.PLUQuantity = line.fields.QtyPhysInventory;
+                
+                let item =  await this.wmsService.GetItem(lp.fields.PLUNo);
+      
+                let listI = await this.wmsService.listItem(item);
+      
+      
+                listI.fields.Picture =  `data:image/jpeg;base64,${listI.fields.Picture}`;
+      
+                this.listPicture.push(listI);
+      
+                
+                this.lps.push(lp);
+      
+                this.lists = this.lps;
+      
+                this.visible = true;
+                this.intServ.loadingFunc(false);
+      
+      
+                console.log(this.lps);
+      
+                console.log(this.listPicture);
+      
+                
+                
+              } catch (error) {
+      
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+                
+              }  
           
-          
-        } catch (error) {
+              break;
+          }
 
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-          
-        }
-
-    
+         
        }else{
 
         this.intServ.loadingFunc(false);

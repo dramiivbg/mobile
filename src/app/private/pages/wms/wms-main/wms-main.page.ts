@@ -247,47 +247,69 @@ export class WmsMainPage implements OnInit {
 
 async selectTemplate() {
 
-  this.intServ.loadingFunc(true);
-    let res = await this.wmsService.Get_WarehouseJournalTemplate(1);
+  let templates:any;
+  let batchs:any;
 
-    let templates = await this.wmsService.listTraking(res.WarehouseJournalTemplate);
+  this.intServ.loadingFunc(true);
+  try {
+    
+    let res1 = await this.wmsService.Get_WarehouseJournalTemplate(1);
+
+    if(res1.Error) throw new Error(res1.Error.Message);
+
+    if(res1.error) throw new Error(res1.error.message);
+
+    if(res1.message) throw new Error(res1.message);
+    
+   templates = await this.wmsService.listTraking(res1.WarehouseJournalTemplate);
+
+    
+    
+  } catch (error) {
+
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+    return;
+    
+  }
 
     console.log(templates);
     this.intServ.loadingFunc(false);
-    let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `, 'Journal Template', async (data) => {
+let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `, 'Journal Template', async (data) => {
 
-    
-      
-
-
+  this.intServ.loadingFunc(true);
         let erpUserId = await this.storage.get('erpUserId');
 
-        try {
+    try{
 
-          let res = await this.wmsService.Get_WarehouseJournalBatch(data.Name,erpUserId);
+          let res2 = await this.wmsService.Get_WarehouseJournalBatch(data.Name,erpUserId);
 
-          if(res.Error) throw new Error(res.Error.Message);
+          if(res2.Error) throw new Error(res2.Error.Message);
 
-          if(res.error) throw new Error(res.error.message);
+          if(res2.error) throw new Error(res2.error.message);
 
-          if(res.message) throw new Error(res.message);
+          if(res2.message) throw new Error(res2.message);
       
 
-          let batchs = await this.wmsService.listTraking(res.WarehouseJournalBatch);
+          batchs = await this.wmsService.listTraking(res2.WarehouseJournalBatch);
+
+          
+    
+  } catch (error) {
+
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+    return;
+    
+  }
 
           var alert = setTimeout(async() => {
 
-          this.mappingPhysicalI(batchs);
+          this.mappingPhysicalI(batchs,data.Name);
 
           clearTimeout(alert);
         }, 100);
           
-        } catch (error) {
-
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.js.getAlert('error','',error.message));
-          
-        }
         
     }, false, 9);
 
@@ -304,21 +326,39 @@ async selectTemplate() {
   }
 
 
-  private async mappingPhysicalI(listPI: any) {
+  private async mappingPhysicalI(listPI: any,template:any) {
 
+     let items:any;
 
       this.intServ.loadingFunc(false);
       let obj = this.general.structSearch(listPI,`Physical Inv. Journal `, 'WH Physical Inv. Journal', async (data) => {
         this.intServ.loadingFunc(true);
-        let listsOr = [];
-        console.log(listsOr);
+      try {
+        
+        let res3 = await this.wmsService.Get_WarehouseInvPhysicalCount(data.LocationCode,template,data.Name);
 
+        if(res3.Error) throw new Error(res3.Error.Message);
+        if(res3.error) throw new Error(res3.error.message);
+        if(res3.message) throw new Error(res3.message);
+        
+             
+       items = await this.wmsService.listTraking(res3.Warehouse_Physical_Inventory_Journal);
+        console.log(items);
+
+      } catch (error) {
+
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error','',error.message));
+        return;
+      }
+       
         var alert = setTimeout(() => {
 
           this.intServ.loadingFunc(false);
-          let obj = this.general.structSearch(listsOr, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data, bin) => {
+          let obj = this.general.structSearch(items, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data, bin) => {
 
             this.wmsService.set(bin);
+            this.storage.set('physical items',items);
             var alert = setTimeout(() => {
 
               console.log(data);
