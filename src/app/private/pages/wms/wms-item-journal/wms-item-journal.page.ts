@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { IonInfiniteScroll, PopoverController } from '@ionic/angular';
+import { IonInfiniteScroll, PickerController, PopoverController } from '@ionic/angular';
 import { PopoverLpEmptyComponent } from '@prv/components/popover-lp-empty/popover-lp-empty.component';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -42,7 +42,8 @@ public frm: FormGroup;
   public zone:any = '';
 
   constructor(public router: Router, public popoverController: PopoverController, private intServ: InterceptService, 
-    private barcodeScanner: BarcodeScanner, private formBuilder: FormBuilder, private wmsService:WmsService, private js: JsonService) { 
+    private barcodeScanner: BarcodeScanner, private formBuilder: FormBuilder, private wmsService:WmsService, 
+    private js: JsonService,private pickerCtrl: PickerController) { 
 
 
       this.frm = this.formBuilder.group(
@@ -133,7 +134,7 @@ public frm: FormGroup;
         ItemNo: "",
         lpNo 
 
-      })
+      });
 
     
       this.boolean = true;
@@ -144,26 +145,60 @@ public frm: FormGroup;
 
   }
 
-  add(){
+  public listNumber(){
 
-  let qty =  this.frm.get('qty').value;
+  let vector = [];
+  let qty =   this.frm.get('qty').value;
 
-    qty +=1
+  for (let index = qty; index < 1000; index++) {
+   
+    let obj = {
+       
+      text: index,
+      value: index,
+    }
 
-    this.frm.get('qty').setValue(qty);
+    vector.push(obj);
 
+    obj = {
+       
+      text: 0,
+      value: 0,
+    }
+    
+  }
+    
+  return vector;
+    
   }
 
-  res(){
+  async listQty(){
+    const picker = await this.pickerCtrl.create({
+      
+      columns: [
+        {
+          name: 'numbers',
+          options: this.listNumber(),
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          handler: (value) => {
+           // console.log(value);
+            this.frm.patchValue({
+              qty: value.numbers.value,                    
+            });
+          },
+        },
+      ],
+    });
 
-    let qty =  this.frm.get('qty').value;
-
-    
- 
-     qty -=1
-
-     this.frm.get('qty').setValue(qty);
-     
+    await picker.present();
   }
 
   newPallet(){
@@ -383,9 +418,9 @@ onScanLP(){
 
     this.frm.patchValue({
       bin,
+      qty,
       ItemNo, 
-      lpNo,
-      
+      lpNo,  
 
     });
 

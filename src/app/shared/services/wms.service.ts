@@ -736,11 +736,9 @@ public async GetPossiblesBinFromPutAwayV2(No:any){
    }
 
 
-   public async Update_Wsheput_Lines_V2(list:any){
+public async Update_Wsheput_Lines_V2(list:any){
 
-
-    
-    
+        
     try {
 
     
@@ -1200,6 +1198,35 @@ public async Create_WarehouseInvPhysicalCount(ZoneCode:any,BinCode:any,LocationC
         throw error;
     }
 
+
+   }
+
+
+
+
+public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateName:string,JournalBatchName:string){
+    
+    try {
+  
+        let obj: any = [{
+
+            LocationCode,
+            JournalTemplateName,
+            JournalBatchName
+           
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Get_WarehouseInvPhysicalCount', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
 
    }
 
