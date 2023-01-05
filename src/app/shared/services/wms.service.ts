@@ -1169,20 +1169,21 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
    }
 
 
-   public async Create_WarehouseInvPhysicalCount(ZoneCode:any,BinCode:any,LocationCode:any,RegisteringDate:any,WhseDocumentNo:any){
-
+public async Create_WarehouseInvPhysicalCount(ZoneCode:any,BinCode:any,LocationCode:any,RegisteringDate:any,
+    WhseDocumentNo:any, JournalTemplateName:any, JournalBatchName:any){
 
     
     try {
-
-    
+  
         let obj: any = [{
 
             ZoneCode,
             BinCode,
             LocationCode,
             RegisteringDate,
-            WhseDocumentNo
+            WhseDocumentNo,
+            JournalTemplateName,
+            JournalBatchName
 
 
           }];
@@ -1482,6 +1483,65 @@ public async DeleteItemTrackingSpecificationOpen(list:any){
     }
 
     }
+
+
+public async Get_WarehouseJournalTemplate(num:number){
+
+        
+    try {
+
+    
+        let obj: any = [{
+
+            Type: num
+          
+
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Get_WarehouseJournalTemplate', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+
+public async Get_WarehouseJournalBatch(JournalTemplateName:string,UserID:string){
+
+       
+    try {
+
+    
+        let obj: any = [{
+
+            JournalTemplateName,
+            UserID
+        
+        }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Get_WarehouseJournalBatch', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+
+}
+
+
     public async listSetup(list):Promise<any>{
 
      let obj = {}

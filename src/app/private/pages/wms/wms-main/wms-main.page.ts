@@ -16,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
 
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
+import { WSAEWOULDBLOCK } from 'constants';
 
 
 @Component({
@@ -244,51 +245,57 @@ export class WmsMainPage implements OnInit {
   }
 
 
-  async selectPI(ev) {
+async selectTemplate() {
+
+  this.intServ.loadingFunc(true);
+    let res = await this.wmsService.Get_WarehouseJournalTemplate(1);
+
+    let templates = await this.wmsService.listTraking(res.WarehouseJournalTemplate);
+
+    console.log(templates);
+    this.intServ.loadingFunc(false);
+    let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `, 'Journal Template', async (data) => {
+
+    
+      
 
 
-    const popover = await this.popoverController.create({
-      component: CreatePhysicalInventoryComponent,
-      cssClass: 'createPhysicalInventoryComponent',
-      backdropDismiss: false
-    });
-    await popover.present();
+        let erpUserId = await this.storage.get('erpUserId');
 
-    const { data } = await popover.onDidDismiss();
+        try {
 
+          let res = await this.wmsService.Get_WarehouseJournalBatch(data.Name,erpUserId);
 
-    if (data.data != null) {
+          if(res.Error) throw new Error(res.Error.Message);
 
-      this.intServ.loadingFunc(true);
-      try {
+          if(res.error) throw new Error(res.error.message);
 
-        let res = await this.wmsService.Create_WarehouseInvPhysicalCount(data.zone, "", data.locationCode, data.fecha, data.data);
+          if(res.message) throw new Error(res.message);
+      
 
-        console.log(res);
+          let batchs = await this.wmsService.listTraking(res.WarehouseJournalBatch);
 
-        if (res.Error) throw new Error(res.Error.Message);
+          var alert = setTimeout(async() => {
 
-        if (res.error) throw new Error(res.error.message);
+          this.mappingPhysicalI(batchs);
 
-        if (res.message) throw new Error(res.message);
+          clearTimeout(alert);
+        }, 100);
+          
+        } catch (error) {
 
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.js.getAlert('error','',error.message));
+          
+        }
+        
+    }, false, 9);
 
-        let p = await this.syncerp.processRequestParams('Get_WarehouseInvPhysicalCount', [{ LocationCode: data.locationCode }]);
-        let rsl = await this.syncerp.setRequest(p);
-
-        await this.mappingPhysicalI(rsl);
-
-      } catch (error) {
-
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-      }
-
-
-    }
-
+    this.intServ.searchShowFunc(obj);
 
   }
+
+
 
   pageSplitMerge() {
 
@@ -300,44 +307,10 @@ export class WmsMainPage implements OnInit {
   private async mappingPhysicalI(listPI: any) {
 
 
-    let lists = await this.wmsService.listPI(listPI);
-
-    console.log(lists);
-
-    let listOr = await this.wmsService.listPI(listPI);
-
-
-    if (lists.length > 0) {
-
       this.intServ.loadingFunc(false);
-
-
-      for (const i in listOr) {
-        for (const j in listOr) {
-
-          if (j !== i) {
-
-            if (listOr[i].fields.JournalBatchName === listOr[j].fields.JournalBatchName) listOr.splice(Number(j));
-          }
-
-
-
-        }
-      }
-
-      this.intServ.loadingFunc(false);
-      let obj = this.general.structSearch(listOr, `Physical Inv. Journal `, 'WH Physical Inv. Journal', async (data) => {
+      let obj = this.general.structSearch(listPI,`Physical Inv. Journal `, 'WH Physical Inv. Journal', async (data) => {
         this.intServ.loadingFunc(true);
         let listsOr = [];
-
-
-        for (const i in lists) {
-          if (lists[i].fields.JournalBatchName === data.fields.JournalBatchName) {
-            listsOr.push(lists[i]);
-
-          }
-        }
-
         console.log(listsOr);
 
         var alert = setTimeout(() => {
@@ -369,17 +342,7 @@ export class WmsMainPage implements OnInit {
 
       this.intServ.searchShowFunc(obj);
 
-
-
-
-
-    } else {
-
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `list Physical Inventory  Empty`));
-    }
-
-  }
+    } 
 
 
   async popoverLocate(ev) {
