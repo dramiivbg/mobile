@@ -10,18 +10,18 @@ import { Storage } from '@ionic/storage';
 })
 export class ModalLpsConfirmComponent implements OnInit {
 
-  @Input() lps:any;
-  @Input() bins:any[];
+  @Input() lps: any;
+  @Input() bins: any[];
 
   @Input() itemsL;
 
   public itemLT;
 
-  public lpNo:any = '';
-  public lpsT:any;
-  public Bin:string = '';
+  public lpNo: any = '';
+  public lpsT: any;
+  public Bin: string = '';
 
-  public deleteI:any[] = [];
+  public deleteI: any[] = [];
 
   public listB: any[] = [];
   @Input() whsePutAway: any;
@@ -44,7 +44,7 @@ export class ModalLpsConfirmComponent implements OnInit {
       this.itemsL = this.itemLT;
       this.Bin = '';
     } else {
-     this.Bin = bin.toUpperCase();
+      this.Bin = bin.toUpperCase();
       this.lps = this.lpsT.filter(
         x => {
           return (x.fields.place.toLowerCase().includes(bin.toLowerCase()));
@@ -61,7 +61,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   back() {
 
-    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins ,items:this.itemsL,delete:this.deleteI});
+    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins, items: this.itemsL, delete: this.deleteI });
 
   }
   autoComplet() {
@@ -75,18 +75,18 @@ export class ModalLpsConfirmComponent implements OnInit {
         this.lpNo = code.toUpperCase();
 
 
-        this.onFilter('', this.lpNo);   
-         }
-       ).catch(
-         err => {
-           console.log(err);
-         }
-       );
-      
+        this.onFilter('', this.lpNo);
       }
- 
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    );
 
-  
+  }
+
+
+
 
 
   onFilter(e, lpNo: any = '') {
@@ -113,7 +113,7 @@ export class ModalLpsConfirmComponent implements OnInit {
             }
           )
 
-          
+
         }
         break;
 
@@ -139,17 +139,17 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   onSubmit() {
 
-    if (this.lps.length > 0 || this.itemsL.length > 0){ 
-      let items:any[] = [];
+    if (this.lps.length > 0 || this.itemsL.length > 0) {
+      let items: any[] = [];
       for (const key in this.itemsL) {
 
         let line = items.find(item => item === this.itemsL[key].LineNo);
         if(line === null || line === undefined)items.push(this.itemsL[key].LineNo);   
       }
 
-      let groupItems:any[] = [];
+      let groupItems: any[] = [];
 
-      let list:any[] = [];
+      let list: any[] = [];
 
       for (const key in items) {
 
@@ -158,19 +158,19 @@ export class ModalLpsConfirmComponent implements OnInit {
           if(this.itemsL[j].LineNo === items[key]){
             list.push(this.itemsL[j]);
           }
-        
+
         }
         console.log(list);
 
         groupItems[items[key]] = list;
 
         list = [];
-       
+
       }
 
       console.log(groupItems);
 
-   this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: groupItems });
+      this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: groupItems });
     }
 
   }
@@ -185,14 +185,14 @@ export class ModalLpsConfirmComponent implements OnInit {
       if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index, 1);
     });
 
-  this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+    this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
 
   }
 
-  removeI(item:any){
+  removeI(item: any) {
 
     this.itemsL.filter((Item, index) => {
-      if (item.LineNo === Item.LineNo){
+      if (item.LineNo === Item.LineNo) {
         this.deleteI.push(item);
         this.itemsL.splice(index, 1);
       }
@@ -202,51 +202,51 @@ export class ModalLpsConfirmComponent implements OnInit {
       if (item.LineNo === Item.LineNo) this.itemLT.splice(index, 1);
     });
 
-  this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemLT);
+    this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemLT);
 
   }
-removeAll(){
-  if(this.Bin === ''){
-    this.deleteI = this.itemsL;
-    this.lps = [];
-    this.lpsT = [];
-    this.bins = [];
-    this.itemsL = [];
-    this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
-    this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
-    this.storage.remove(`itemsL ${this.whsePutAway.fields.No}`);
-    this.Bin = '';
-  }else{
+  removeAll() {
+    if (this.Bin === '') {
+      this.deleteI = this.itemsL;
+      this.lps = [];
+      this.lpsT = [];
+      this.bins = [];
+      this.itemsL = [];
+      this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
+      this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+      this.storage.remove(`itemsL ${this.whsePutAway.fields.No}`);
+      this.Bin = '';
+    } else {
 
-    let Lps:any[] = [];
-    let LpsT:any[] = [];
-    let items:any[] = [];
+      let Lps: any[] = [];
+      let LpsT: any[] = [];
+      let items: any[] = [];
 
-    for (const i in  this.lps) {
-      
-       if( this.lps[Number(i)].fields.place !== this.Bin) Lps.push(this.lps[Number(i)]);
-      
+      for (const i in this.lps) {
+
+        if (this.lps[Number(i)].fields.place !== this.Bin) Lps.push(this.lps[Number(i)]);
+
       }
-   for (const j in  this.lpsT) {
+      for (const j in this.lpsT) {
 
-        if( this.lpsT[Number(j)].fields.place !== this.Bin) LpsT.push(this.lpsT[Number(j)]);
+        if (this.lpsT[Number(j)].fields.place !== this.Bin) LpsT.push(this.lpsT[Number(j)]);
       }
 
-      for (const j in  this.itemsL) {
+      for (const j in this.itemsL) {
 
-        if( this.itemsL[Number(j)].place !== this.Bin) items.push(this.itemsL[Number(j)]);
-        if( this.itemsL[Number(j)].place === this.Bin) this.deleteI.push(this.itemsL[Number(j)]);
+        if (this.itemsL[Number(j)].place !== this.Bin) items.push(this.itemsL[Number(j)]);
+        if (this.itemsL[Number(j)].place === this.Bin) this.deleteI.push(this.itemsL[Number(j)]);
       }
 
       this.lps = Lps;
       this.lpsT = LpsT;
       this.itemsL = items;
-      
-    this.storage.set(`confirm ${this.whsePutAway.fields.No}`,this.lps);
-   // this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
-   this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL);
+
+      this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
+      // this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);
+      this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL);
+
+    }
 
   }
-     
-    }
 }
