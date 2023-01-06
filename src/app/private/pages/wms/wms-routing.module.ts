@@ -18,6 +18,7 @@ import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/re
 import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
 import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
+import { PhysicalInventoryPage } from './physical-inventory/physical-inventory.page';
 
 
 
@@ -52,7 +53,9 @@ const routes: Routes = [
     {path: 'readLicensePlate', component: ReadLicensePlateComponent},
     {path: 'readBinContent', component: ReadBinContentComponent },
 
-    {path: 'binToBin', component: BinToBinPage}
+    {path: 'binToBin', component: BinToBinPage},
+
+    {path: 'physicalInventory', component: PhysicalInventoryPage}
   ]
 },
 

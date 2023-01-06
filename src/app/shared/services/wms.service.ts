@@ -296,6 +296,19 @@ public async GetItemInfo(ItemNo:any){
         }
     }
 
+    public async CreateLP_FromWarehouseReceiptLine_With_SNLOT(obj:any){
+
+        try {
+            let p = await this.syncErp.processRequestParams('CreateLP_FromWarehouseReceiptLine_With_SNLOT', obj);
+            let rsl = await this.syncErp.setRequest(p);
+            return rsl;
+           
+        } catch (error) {
+            throw error;
+        }
+
+    }
+
     public async Post_WarehouseReceipts(No:any){
 
        
