@@ -188,9 +188,15 @@
             </ion-row>
 
 
-            <ion-row>
+            <ion-row *ngIf="item.fields.QtyPhysInventory === null ">
               <ion-col size="12">
-                {{item.fields.QtyPhysInventory}}
+                <ion-input value="0"></ion-input>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="item.fields.QtyPhysInventory !== null ">
+              <ion-col size="12">
+                <ion-input value="{{item.fields.QtyPhysInventory}}"></ion-input>
               </ion-col>
             </ion-row>
 
@@ -216,7 +222,11 @@
     <ion-icon class="itemfooter" size="large" name="cash-outline"></ion-icon>
     <ion-badge>{{countingNu}}</ion-badge>
   </ion-tab-button>
-  <ion-tab-button tab="movies" (click)=" enableN()">
+  <ion-tab-button tab="movies" (click)="edit()" *ngIf="boolean === false">
+    <ion-label class="itemfooter">Save</ion-label>
+    <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button tab="movies" (click)="enableN()">
     <ion-label class="itemfooter">Not Counting</ion-label>
     <ion-icon class="itemfooter" size="large" name="cash-outline"></ion-icon>
     <ion-badge>{{noCountingNu}}</ion-badge>

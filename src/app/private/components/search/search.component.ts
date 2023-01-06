@@ -54,7 +54,11 @@ export class SearchComponent implements OnInit {
   public lpNo:any = '';
   public bin:any = '';
 
+  public listsInv:any;
+
   public listPicture:any[] = [];
+
+ public  listPictureI:any[] = [];
 
   constructor(private platform: Platform
     , private syncerp: SyncerpService
@@ -106,6 +110,9 @@ export class SearchComponent implements OnInit {
   }
 
  async ngOnInit() {
+
+
+this.listsInv = await  this.storage.get('physical items');
 
   
   }
@@ -368,7 +375,7 @@ export class SearchComponent implements OnInit {
   try {
 
 
-    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].LocationCode);
+    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].LocationCode,this.listsFilter[0].JournalTemplateName,this.listsFilter[0].JournalBatchName);
 
     console.log(resR);
 
@@ -445,12 +452,17 @@ export class SearchComponent implements OnInit {
 
     if(line !== undefined){
 
-      line.fields.QtyPhysInventory = lp.fields.PLUQuantity;
+      line.QtyPhysInventory = lp.fields.PLUQuantity;
 
       listI.push(line);
     }
 
   });
+
+  if(this.items.length > 0){
+
+    this.items.filter(x => {listI.push(x)});
+  }
 
 
   let lists:any[] = [];
@@ -513,51 +525,51 @@ export class SearchComponent implements OnInit {
       name: "WarehouseJournalLine",
       fields: [ {
         name: "JournalTemplateName",
-        value: inv.fields.JournalTemplateName,
+        value: inv.JournalTemplateName,
       },
       {
         name: "JournalBatchName",
-        value: inv.fields.JournalBatchName,
+        value: inv.JournalBatchName,
       },
       {
         name: "LineNo",
-        value: inv.fields.LineNo,
+        value: inv.LineNo,
       },
       {
         name: "RegisteringDate",
-        value: inv.fields.RegisteringDate,
+        value: inv.RegisteringDate,
       },
       {
         name: "LocationCode",
-        value: inv.fields.LocationCode,   
+        value: inv.LocationCode,   
       },
       {
         name: "ItemNo",
-        value: inv.fields.ItemNo,
+        value: inv.ItemNo,
       },
       {
         name: "Qty(PhysInventory)",
-        value: Number(inv.fields.QtyPhysInventory),
+        value: Number(inv.QtyPhysInventory),
       },
       {
         name: "UserID",
-        value: inv.fields.UserID,    
+        value: inv.UserID,    
       },
       {
         name: "VariantCode",
-        value: inv.fields.VariantCode,
+        value: inv.VariantCode,
       },
       {
         name: "SerialNo",
-        value: inv.fields.SerialNo,      
+        value: inv.SerialNo,      
       },
       {
         name: "LotNo",
-        value: inv.fields.LotNo,     
+        value: inv.LotNo,     
       },   
       {
         name: "PLULicensePlates",
-        value: inv.fields.PLULicensePlates,      
+        value: inv.PLULicensePlates,      
       }]
     };
 
@@ -617,6 +629,126 @@ export class SearchComponent implements OnInit {
 
   });
 
+  this.listsFilter.filter((inv,i) => {
+
+    let line =  listI.find(x => x.LineNo === inv.LineNo);
+
+    if(line === undefined || line === null){
+
+      this.listsFilter.splice(i,1);
+
+      list = {
+        name: "WarehouseJournalLine",
+        fields: [ {
+          name: "JournalTemplateName",
+          value: inv.JournalTemplateName,
+        },
+        {
+          name: "JournalBatchName",
+          value: inv.JournalBatchName,
+        },
+        {
+          name: "LineNo",
+          value: inv.LineNo,
+        },
+        {
+          name: "RegisteringDate",
+          value: inv.RegisteringDate,
+        },
+        {
+          name: "LocationCode",
+          value: inv.LocationCode,   
+        },
+        {
+          name: "ItemNo",
+          value: inv.ItemNo,
+        },
+        {
+          name: "Qty(PhysInventory)",
+          value: 0,
+        },
+        {
+          name: "UserID",
+          value: inv.UserID,    
+        },
+        {
+          name: "VariantCode",
+          value: inv.VariantCode,
+        },
+        {
+          name: "SerialNo",
+          value: inv.SerialNo,      
+        },
+        {
+          name: "LotNo",
+          value: inv.LotNo,     
+        },   
+        {
+          name: "PLULicensePlates",
+          value: inv.PLULicensePlates,      
+        }]
+      };
+  
+      lists.push(list);
+  
+      list = {
+        name: "WarehouseJournalLine",
+        fields: [ {
+          name: "JournalTemplateName",
+          value: "",
+        },
+        {
+          name: "JournalBatchName",
+          value: "",
+        },
+        {
+          name: "LineNo",
+          value: "",
+        },
+        {
+          name: "RegisteringDate",
+          value: "",
+        },
+        {
+          name: "LocationCode",
+          value: "",   
+        },
+        {
+          name: "ItemNo",
+          value: "",
+        },
+        {
+          name: "Qty(PhysInventory)",
+          value: "",
+        },
+        {
+          name: "UserID",
+          value: "",    
+        },
+        {
+          name: "VariantCode",
+          value: "",
+        },
+        {
+          name: "SerialNo",
+          value: "",      
+        },
+        {
+          name: "LotNo",
+          value: "",     
+        },   
+        {
+          name: "PLULicensePlates",
+          value: "",      
+        }]
+      };
+  
+    }
+
+    
+  });
+
+
   try {
 
     let res = await this.wmsService.Write_WarehouseInvPhysicalCount(lists);
@@ -627,13 +759,13 @@ export class SearchComponent implements OnInit {
     if(res.error) throw new Error(res.error.message);
 
 
-    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
+   // let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(lists[0].LocationCode,lists[0].JournalTemplateName,lists[0].JournalBatchName);
 
-    if(resR.Error) throw new Error(resR.Error.Message);
+   // if(resR.Error) throw new Error(resR.Error.Message);
 
 
     this.intServ.loadingFunc(false);
-    console.log(resR);
+  //  console.log(resR);
     
     
   } catch (error) {
@@ -643,7 +775,9 @@ export class SearchComponent implements OnInit {
     
   }
 
-  if(this.lps.length === this.listsFilter.length){
+  let length = this.lps.length + this.items.length;
+
+  if( length === this.listsFilter.length){
     this.intServ.alertFunc(this.js.getAlert('success','',''))
   }
   
@@ -728,16 +862,29 @@ export class SearchComponent implements OnInit {
    
         this.intServ.loadingFunc(true);
 
-       let line = this.listsFilter.find(inv => inv.fields.PLULicensePlates === code || inv.fields.ItemNo === code || inv.fields.SerialNo === code);
+       let line = this.listsFilter.find(inv => inv.PLULicensePlates === code || inv.ItemNo === code || inv.SerialNo === code);
         
        if(line !== undefined){
 
-         switch(line.fields.PLULicensePlates){
-            case '':
+         switch(line.PLULicensePlates){
+            case null:
 
-              console.log(line);
-            
-            //  this.items.push(line);
+            let item =  await this.wmsService.GetItem(line.ItemNo);
+
+            this.items.push(line);   
+          
+            let listI = await this.wmsService.listItem(item);
+  
+  
+            listI.fields.Picture = (listI.fields.Picture !== 'NOIMAGE')?`data:image/jpeg;base64,${listI.fields.Picture}`:listI.fields.Picture;
+  
+            this.listPictureI.push(listI);
+
+            console.log(this.listPictureI);
+
+            this.visibleI = true;
+
+            this.intServ.loadingFunc(false);
       
             break;
 
@@ -761,9 +908,9 @@ export class SearchComponent implements OnInit {
                 let item =  await this.wmsService.GetItem(lp.fields.PLUNo);
       
                 let listI = await this.wmsService.listItem(item);
-      
-      
-                listI.fields.Picture =  `data:image/jpeg;base64,${listI.fields.Picture}`;
+    
+
+                listI.fields.Picture = (listI.fields.Picture !== 'NOIMAGE')?`data:image/jpeg;base64,${listI.fields.Picture}`:listI.fields.Picture;
       
                 this.listPicture.push(listI);
       

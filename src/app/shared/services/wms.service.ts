@@ -1285,7 +1285,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
    }
 
 
-   public async PreRegister_WarehouseInvPhysicalCount(LocationCode:any){
+   public async PreRegister_WarehouseInvPhysicalCount(LocationCode:any,JournalTemplateName:any,JournalBatchName:any){
 
 
     
@@ -1293,6 +1293,8 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
 
     
         let obj: any = [{
+            JournalTemplateName,
+            JournalBatchName,
             LocationCode
 
 
