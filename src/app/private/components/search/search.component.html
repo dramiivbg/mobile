@@ -521,7 +521,7 @@
 
 
 
-<ion-row class="search-salesOrder" *ngIf="searchObj.type == 9">
+<ion-row class="search-salesOrder" *ngIf="searchObj.type == 9" >
   <ion-col size="12">
     <ion-grid>
       <ion-row>
@@ -578,10 +578,27 @@
       </ion-col>
 
       <ion-col size="6" (click)="Options()">
+        <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+          <ion-fab-button>
+            <ion-icon name="chevron-up-circle"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-list side="top">
+            <ion-fab-button>
+              <ion-icon name="document"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button>
+              <ion-icon name="color-palette"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button>
+              <ion-icon name="globe"></ion-icon>
+            </ion-fab-button>
+          </ion-fab-list>
+        </ion-fab>
         <ion-icon class="itemfooter" size="large" name="ellipsis-horizontal-outline"></ion-icon>
         <div class="footertext">Options</div>
         <hr />
       </ion-col>
+      
     </ion-row>
 
   </div>
