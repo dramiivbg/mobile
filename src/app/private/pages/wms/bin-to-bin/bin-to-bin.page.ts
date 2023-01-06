@@ -64,9 +64,9 @@ export class BinToBinPage implements OnInit {
          this.intServ.loadingFunc(false);
 
          let bins = await this.wmsService.GetBinByLocation(this.lpH.fields.PLULocationCode);
-
          this.listBin = bins;
 
+         console.log( this.listBin);
          
     this.intServ.alertFunc(this.js.getAlert('confirm', '','Do you want to change it to another Bin code?', () => {
 

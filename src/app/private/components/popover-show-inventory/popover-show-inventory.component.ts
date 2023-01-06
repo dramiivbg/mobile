@@ -72,7 +72,6 @@ export class PopoverShowInventoryComponent implements OnInit {
 
     });
 
-
     this.NoCounting.filter(async(x) => {
 
       let res =  await this.wmsService.GetItem(x.fields.ItemNo);
@@ -107,6 +106,12 @@ export class PopoverShowInventoryComponent implements OnInit {
 
     this.boolean = true;
 
+  }
+
+  public async edit(){
+
+
+    
   }
 
   enableN(){

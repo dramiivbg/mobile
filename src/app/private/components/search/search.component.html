@@ -295,7 +295,7 @@
           <ion-label style="padding-left: 20px;" class="label-line-title">Item:</ion-label><br>
           <ion-row class="rowFirst">
             <ion-col size="12" class="label-line-title">
-              <ion-label>{{item.fields.PLULPDocumentNo}}</ion-label>
+              <ion-label>{{item.ItemNo}}</ion-label>
             </ion-col>
           </ion-row>
 
@@ -305,39 +305,27 @@
 
               <ion-row>
 
-
-                <ion-col size="12" class="label-line-title">
-                  <label> Item: {{item.fields.PLUNo}}</label>
-                </ion-col>
-
+                <ion-col size="12" class="label-line">
+                  Batch Name: {{item.JournalBatchName}}
+                  </ion-col>
               </ion-row>
 
               <ion-row>
-
-                <ion-col size="12" style="overflow: hidden; padding-right: 10px;" class="label-line-title blue">
-                  {{item.company}}
+                <ion-col size="6" class="label-line">
+                  Measure: {{item.UnitofMeasureCode}}
                 </ion-col>
-
-              </ion-row>
-              <ion-row>
-                <ion-col size="4" class="label-line">
-                  Item No: {{item.fields.PLUNo}}
-                </ion-col>
-                <ion-col size="4" class="label-line">
-                  Measure: {{item.fields.PLUUnitofMeasureCode}}
-                </ion-col>
-                <ion-col size="4" class="label-line">
-                  Location: {{item.fields.PLULocationCode}}
+                <ion-col size="6" class="label-line">
+                  Location: {{item.LocationCode}}
                 </ion-col>
               </ion-row>
 
               <ion-row>
                 <ion-col class="label-line" size="6">
-                  Bin Code: {{item.fields.PLUBinCode}}
+                  Bin Code: {{item.BinCode}}
                 </ion-col>
 
                 <ion-col class="label-line" size="6">
-                  No Serie: {{item.fields.PLUSerialNo}}
+                  No Serie: {{item.SerialNo}}
                 </ion-col>
 
               </ion-row>
@@ -346,18 +334,18 @@
 
               <ion-row>
                 <ion-col class="label-line" size="6">
-                  Lot: {{item.fields.PLULotNo}}
+                  Lot: {{item.LotNo}}
                 </ion-col>
 
                 <ion-col class="label-line" size="6">
-                  Exp. Date: {{item.fields.PLUExpirationDate}}
+                  Exp. Date: {{item.ExpirationDate}}
                 </ion-col>
               </ion-row>
 
 
 
-              <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE'" [src]="listPicture[i].fields.Picture" alt="">
-              <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE'" src="../../../../assets/img/caja.jpg" alt="">
+              <img *ngIf="listPictureI[i].fields.Picture != 'NOIMAGE'" [src]="listPictureI[i].fields.Picture" alt="">
+            
 
 
               <ion-row class="rowFirst">
@@ -371,7 +359,7 @@
                   <ion-icon class="btnqty" name="add-circle"></ion-icon>
                 </ion-col>
                 <ion-col size="8" style="padding-left: 50px;">
-                  <ion-input type="number" value={{item.fields.PLUQuantity}} (ionInput)="edit($event,i)"></ion-input>
+                  <ion-input readonly type="number" value={{item.QtyPhysInventory}} (ionInput)="edit($event,i)"></ion-input>
                 </ion-col>
                 <ion-col size="1" (click)="res(i)">
                   <ion-icon class="btnqty" name="remove-circle"></ion-icon>
