@@ -303,13 +303,10 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
     
   }
 
-          var alert = setTimeout(async() => {
-
+          
           this.mappingPhysicalI(batchs,data.Name);
 
-          clearTimeout(alert);
-        }, 100);
-          
+        
         
     }, false, 9);
 
@@ -343,41 +340,26 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
         
              
        items = await this.wmsService.listTraking(res3.Warehouse_Physical_Inventory_Journal);
-        console.log(items);
+        
+       this.storage.set('inventory',items);
+
+       
+        this.router.navigate(['page/wms/physicalInventory']);
+      
+        setTimeout(
+          () => {
+            this.intServ.searchShowFunc({});
+          }, 1000
+        )
+
 
       } catch (error) {
 
         this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('error','',error.message));
         return;
-      }
+      }     
        
-        var alert = setTimeout(() => {
-
-          this.intServ.loadingFunc(false);
-          let obj = this.general.structSearch(items, `Physical Inv Journal-Counting `, 'Scan/Type Bin Code', async (data, bin) => {
-
-            this.wmsService.set(bin);
-            this.storage.set('physical items',items);
-            var alert = setTimeout(() => {
-
-              console.log(data);
-
-
-              let obj = this.general.structSearch(data, `Physical Inv Journal-Counting `, 'Scan/Type License Plate', async (data) => { }, false, 6);
-
-              this.intServ.searchShowFunc(obj);
-              clearTimeout(alert);
-            }, 100)
-
-
-          }, false, 5);
-
-          this.intServ.searchShowFunc(obj);
-
-          clearTimeout(alert);
-        }, 100)
-
       }, false, 7);
 
       this.intServ.searchShowFunc(obj);

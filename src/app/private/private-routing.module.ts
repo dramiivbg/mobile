@@ -10,7 +10,9 @@ const routes: Routes = [
     { path: 'sales', loadChildren: () => import('./pages/sales/sales.module').then(m => m.SalesModule) },
     { path: 'payments', loadChildren: () => import('./pages/payments/payments.module').then( m => m.PaymentsModule ) },
     { path: 'wms', loadChildren: () => import('./pages/wms/wms.module').then(m => m.WmsModule) },
-  ]}
+  ]},
+ 
+
 ];
 
 @NgModule({
