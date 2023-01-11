@@ -753,7 +753,7 @@ export class EditPutAwayComponent implements OnInit {
     const pallets = await this.wmsService.GetLicencesPlateInPW(this.warePY.fields.No, true);
 
     const binPallet = await this.wmsService.GetDefaultBin1();
-    //  console.log('ls =>', lps);
+      console.log('ls =>', lps);
     // console.log('pallet =>', pallets);
     // console.log('bin Default =>', binPallet);
 
