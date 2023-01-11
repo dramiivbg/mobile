@@ -47,6 +47,7 @@ import { PopoverListSNComponent } from '@prv/components/popover-list-sn/popover-
 import { PopoverConfigurationCodeComponent } from '@prv/components/popover-configuration-code/popover-configuration-code.component';
 import { PhysicalInventoryPage } from './physical-inventory/physical-inventory.page';
 import { PopoverListSerialLpComponent } from '@prv/components/popover-list-serial-lp/popover-list-serial-lp.component';
+import { PopoverSerialesLpComponent } from '@prv/components/popover-seriales-lp/popover-seriales-lp.component';
 
 
 
@@ -94,6 +95,7 @@ import { PopoverListSerialLpComponent } from '@prv/components/popover-list-seria
     PopoverConfigurationCodeComponent,
     PhysicalInventoryPage,
     PopoverListSerialLpComponent,
+    PopoverSerialesLpComponent
     
   
   ],
@@ -135,7 +137,8 @@ import { PopoverListSerialLpComponent } from '@prv/components/popover-list-seria
     PopoverItemTrakingComponent,
     PopoverListSNComponent,
     PopoverConfigurationCodeComponent,
-    PopoverListSerialLpComponent
+    PopoverListSerialLpComponent,
+    PopoverSerialesLpComponent
   
   ]
 })

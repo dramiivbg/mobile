@@ -19,6 +19,7 @@ import { lutimes, truncateSync } from 'fs';
 import { utf8Encode } from '@angular/compiler/src/util';
 import { time, timeEnd } from 'console';
 import { EROFS } from 'constants';
+import { PopoverSerialesLpComponent } from '../popover-seriales-lp/popover-seriales-lp.component';
 
 
 @Component({
@@ -754,6 +755,7 @@ export class EditPutAwayComponent implements OnInit {
 
     const binPallet = await this.wmsService.GetDefaultBin1();
       console.log('ls =>', lps);
+      console.log('init =>',this.initV)
     // console.log('pallet =>', pallets);
     // console.log('bin Default =>', binPallet);
 
@@ -1046,6 +1048,7 @@ export class EditPutAwayComponent implements OnInit {
     console.log(this.initItem);
     console.log(this.binItem);
 
+  console.log('init =>',this.initV);
     this.storage.set(`init item ${this.whsePutAway.fields.No}`, this.initItem);
     this.storage.set(`listI ${this.whsePutAway.fields.No}`, this.listI);
     this.storage.set(`take ${this.whsePutAway.fields.No}`, this.take);
@@ -1214,6 +1217,28 @@ export class EditPutAwayComponent implements OnInit {
 
         const { data, role } = await modal.onWillDismiss();
 
+        case "Single":
+
+        let seriales = [];
+            this.initV.filter(x => {
+
+                 if( x.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo) seriales.push(x.fields);
+            });
+
+              if(seriales.length > 1){
+
+                const popoverI = await this.popoverController.create({
+                  component: PopoverSerialesLpComponent,
+                  cssClass: 'popoverSerialesLpComponent',
+                  backdropDismiss: false,
+                  componentProps: { seriales },
+                });
+                await popoverI.present();
+            
+                const { data } = await popoverI.onWillDismiss();
+
+              }
+             break
     }
 
 

@@ -270,11 +270,29 @@ public async onSubmit() {
       barCodeData => {
         let code = barCodeData.text;
   
-        this.frm2.patchValue({
+        let line = this.list.find(x => x.LotNo === code.toUpperCase());
+        if(line != undefined){
+          this.frm2.patchValue({
 
-          LotNo: code.toUpperCase()
+            LotNo: code.toUpperCase(),
+            exp: line.ExperationDate
+  
+          });
 
-        });
+          document.getElementById('datetime').setAttribute('disabled','true');
+
+        }else{
+
+
+          document.getElementById('datetime').setAttribute('disabled','false');
+
+          this.frm2.patchValue({
+
+            LotNo: code.toUpperCase()
+  
+          });
+        }
+      
       
       }
     ).catch(
@@ -378,7 +396,7 @@ async  save(){
 
        this.list = data.list;
 
-      this.storage.set('lists' ,this.list);
+      this.storage.set(`lists ${this.item.LineNo}` ,this.list);
 
    
     }

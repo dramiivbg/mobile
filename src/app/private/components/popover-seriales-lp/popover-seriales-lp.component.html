@@ -1,0 +1,35 @@
+<ion-content class="ion-margin" >
+
+  <ion-row class="header">
+    <ion-col size="3" (click)="close()">
+      <ion-icon  class="itemfooter" size="large"  name="close-outline"></ion-icon>
+    </ion-col>
+    <ion-col>
+      <ion-label>lists Seriales</ion-label>
+    </ion-col>
+  </ion-row>
+    
+  <ion-grid>
+
+      <ion-row style="text-align: center;" class="row">
+        <ion-col size="4">Serial No</ion-col>
+        <ion-col size="4">Lot No</ion-col>
+        <ion-col size="4">Qty</ion-col>
+    
+      </ion-row>
+
+      <div id="taula"  > 
+        <ion-row *ngFor="let item of seriales; let i = index" style="text-align: center;" >
+        
+      
+              <ion-col size="4" >{{item.PLUSerialNo}}</ion-col>
+              <ion-col size="4">{{item.PLULotNo}}</ion-col>
+              <ion-col size="4" >{{item.PLUQuantity}}</ion-col>
+        
+      
+        </ion-row>
+   
+      </div>  
+    </ion-grid>
+
+</ion-content>
