@@ -212,17 +212,19 @@ export class WmsReceiptPage implements OnInit {
 
   public async onPopLicensePlates(ev: any, item: any) {
     this.intServ.loadingFunc(true);
-
-    // console.log(item);
     let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
    // console.log('Bincode =>', item.BinCode);
     let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
+
+    
+    let res = (item.trakingCode != null)?await this.wmsService.configurationTraking(item.trakingCode):null;
+    let code = (res != null)?await this.wmsService.listCode(res):null;
 
     if (lp.LP_Pending_To_Receive > 0) {
       const popover = await this.popoverController.create({
         component: LicensePlatesComponent,
         cssClass: 'popLicensePlate-modal',
-        componentProps: { options: { item, lp, lstUoM } },
+        componentProps: { options: { item, lp, lstUoM,code } },
         backdropDismiss: false
       });
       this.intServ.loadingFunc(false);
@@ -305,65 +307,33 @@ export class WmsReceiptPage implements OnInit {
 
       if (lps.Error) throw new Error(lps.Error.Message);
 
-      this.list = await this.wmsService.createListLP(lps);
+      this.list = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+     console.log('lps =>',this.list);
+
       let contador = 0;
       this.cantidades = [];
-      let LpS = [];
-      let LpI = [];
 
       this.LpL = [];
 
-      for (const i in this.list) {
+      console.log('items =>',wareReceipts.lines);
 
-        for (const y in this.list[i].fields) {
+      for (const key in wareReceipts.lines) {
+        for (const i in this.list) {
+          if (this.list[i].PLUWhseLineNo  === wareReceipts.lines[key].LineNo) {
 
-          if (this.list[i].fields[y].name === "PLULPDocumentType" && this.list[i].fields[y].value === "Single") {
-
-            LpS.push(this.list[i]);
-
-            console.log(LpS);
-
+            contador++;
+            this.LpL.push(this.list[i]);
           }
         }
-      }
 
-      LpS.filter(lp => {
-
-        for (const key in lp.fields) {
-
-          if (lp.fields[key].value === "Item" && lp.fields[key].name === "PLUType") {
-
-            LpI.push(lp);
-
-          }
-        }
-      });
-
-      wareReceipts.lines.forEach(async (el, index) => {
-
-        LpI.filter(lp => {
-
-          for (const key in lp.fields) {
-
-            if (lp.fields[key].value === el.LineNo && lp.fields[key].name === "PLULineNo") {
-
-
-              contador++;
-
-              this.LpL.push(lp);
-            }
-          }
-        });
-
-        this.cantidades[index] = contador;
-
+        console.log(this.LpL);
+        this.cantidades[key] = contador;
+       console.log(this.cantidades);
         contador = 0;
-
-      });
-
-      console.log(this.cantidades);
-
-      this.intServ.loadingFunc(false);
+    
+   }   
+   console.log(this.cantidades);
+    this.intServ.loadingFunc(false);
     } catch (error) {
       this.intServ.loadingFunc(false);
     }
@@ -376,13 +346,10 @@ export class WmsReceiptPage implements OnInit {
     this.intServ.loadingFunc(true);
     let list = [];
     this.LpL.filter(lp => {
-
-      for (const key in lp.fields) {
-        if (lp.fields[key].name === "PLULineNo" && item.LineNo === lp.fields[key].value) {
+        if (lp.PLUWhseLineNo === item.LineNo) {
           list.push(lp);
         }
-      }
-    });
+     });
 
     this.onPopoverPl('event', list);
   }
@@ -672,23 +639,9 @@ export class WmsReceiptPage implements OnInit {
       }, 100)
 
 
-
-
-
-
-
-
-    }))
-
-
-
-
-
+    }));
 
 
   }
-
-
-
 
 }

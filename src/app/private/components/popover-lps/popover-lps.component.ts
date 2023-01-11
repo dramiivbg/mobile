@@ -42,83 +42,41 @@ export class PopoverLpsComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(this,this.lps);
+    console.log(this.lps);
 
-    this.lp = new Lp();
-
-    this.lps.filter((lp, index) =>{
-  
-
-  for (const i in lp.fields) {
-
-        
-     if(lp.fields[i].name === "PLULPDocumentNo"){
-
-
-       this.listL.push(lp.fields[i].value);
-       
-      }
-
-     if(lp.fields[i].name === "PLUQuantity"){
-
-      this.listQ.push(lp.fields[i].value.toFixed(1));
-    
-     }
-
-
-     if(lp.fields[i].name === "SystemCreatedAt"){
-
-
-     let f  = new  Date(lp.fields[i].value);
-
-    let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
-    
-    
-    this.listD.push(fecha);
-
-     }
-
-          }
-
-});
 
   }
 
 
 
- async option(lpNo:any,qty:any,ev:any){
+ async option(item:any,ev){
 
 
   this.intServ.loadingFunc(true);
 
-  let lp = await this.wmsService.GetLicencesPlate(lpNo);
 
-
-  let listLp = await this.wmsService.ListLp(lp);
-
- console.log(listLp);
 
   this.intServ.loadingFunc(false);
    const popover = await this.popoverController.create({
     component: PopoverOpionsLpComponent,
     cssClass: 'popoverOptions',
     event: ev,
-    componentProps: this.listMenu(listLp)
+    componentProps: this.listMenu(item)
   });
   await popover.present();
 
   const { data } = await popover.onDidDismiss();
 
-    if (data.name == 'Edit') {
+    switch(data.name) {
+
+      case 'Edit':
 
       this.popoverController.dismiss({data: 'editado'});
-  // this.onPopLicensePlate(ev, listLp);
-
-
-
+  // this.onPopLicensePlate(ev, item);
   
-  }else
-      if(data.name == 'Delete'){
+     break;
+
+     case 'Delete':
 
         let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Surely you want to eliminate it?', async() => {
 
@@ -128,7 +86,7 @@ export class PopoverLpsComponent implements OnInit {
           try {
 
 
-             let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(lpNo);
+             let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(item.PLULPDocumentNo);
 
              if(lpD.Error) throw Error(lpD.Error.Message);
 
@@ -141,7 +99,9 @@ export class PopoverLpsComponent implements OnInit {
             this.intServ.loadingFunc(false);
             this.intServ.alertFunc(this.jsonService.getAlert('error', '', error.message))
           }
-        }))
+        }));
+
+        break;
 
       }
 
@@ -151,7 +111,7 @@ export class PopoverLpsComponent implements OnInit {
   public async onPopLicensePlate(ev: any, lp: any) {
     this.intServ.loadingFunc(true);
 
-   let lstUoM = await this.wmsService.getUnitOfMeasure(lp.fields.PLUDescription);
+   let lstUoM = await this.wmsService.getUnitOfMeasure(lp.PLUDescription);
 
       const popover = await this.popoverController.create({
         component: PopoverLpEditComponent,
@@ -172,7 +132,7 @@ export class PopoverLpsComponent implements OnInit {
    private listMenu(lp: any): any {
     return {
       options: {
-        name: `LP No. ${lp.fields.PLULPDocumentNo}`,
+        name: `LP No. ${lp.PLULPDocumentNo}`,
         menu: [
           { 
             id: 1, 

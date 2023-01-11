@@ -285,7 +285,7 @@ public async GetItemInfo(ItemNo:any){
         }
     }
 
-    public async CreateLPFromWarehouseReceiptLine(obj: any) {
+    public async CreateLP_FromWarehouseReceiptLine(obj: any) {
         try {
             let p = await this.syncErp.processRequestParams('CreateLP_FromWarehouseReceiptLine', obj);
             let rsl = await this.syncErp.setRequest(p);
@@ -297,6 +297,8 @@ public async GetItemInfo(ItemNo:any){
     }
 
     public async CreateLP_FromWarehouseReceiptLine_With_SNLOT(obj:any){
+
+        console.log(JSON.stringify(obj));
 
         try {
             let p = await this.syncErp.processRequestParams('CreateLP_FromWarehouseReceiptLine_With_SNLOT', obj);

@@ -1,12 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PopoverController } from '@ionic/angular';
+import { PickerController, PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
 import { GeneralService } from '@svc/general.service';
 import { Router } from '@angular/router';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { PopoverListSerialLpComponent } from '@prv/components/popover-list-serial-lp/popover-list-serial-lp.component';
+import { Storage } from '@ionic/storage';
+import { PopoverConfigurationCodeComponent } from '@prv/components/popover-configuration-code/popover-configuration-code.component';
 
 @Component({
   selector: 'app-license-plates',
@@ -18,10 +22,15 @@ export class LicensePlatesComponent implements OnInit {
   public lp: any = {};
   public lstUoM: any = [];
   public frm: FormGroup;
+  public frm2: FormGroup;
+  public code:any = {};
+  public list:any[] = [];
   public lot:boolean = false; 
   public exp:boolean = false;
   public serial:boolean = false;
   public boolean:boolean = false;
+  public Boolean:boolean = true;
+  public total:number = 0;
   @Input() options: any = {};
 
   constructor(private intServ: InterceptService
@@ -30,7 +39,10 @@ export class LicensePlatesComponent implements OnInit {
     , private wmsService: WmsService
     , private popoverController: PopoverController
     , private interceptService: InterceptService,
-    private router: Router
+    private router: Router,
+    private barcodeScanner: BarcodeScanner,
+    private pickerCtrl: PickerController,
+    private storage: Storage
 
   ) {
 
@@ -48,44 +60,79 @@ export class LicensePlatesComponent implements OnInit {
         TotalToReceive: ['0', Validators.required],
         NoofPackLP: ['0', Validators.required],
         PackUnitUoM: ['', Validators.required],
+       
+      }
+    )
+
+    this.frm2 = this.formBuilder.group(
+      {
+        SerialNo: ['', Validators.required],
+        LotNo: ['', Validators.required],
+        exp: ['', Validators.required]
+
+
       }
     )
   }
 
-  public ngOnInit() {
+  public async ngOnInit() {
     this.item = this.options.item === undefined ? {} : this.options.item;
     this.lp = this.options.lp === undefined ? {} : this.options.lp;
     var lstUnitofMeasure = this.options.lstUoM === undefined ? {} : this.options.lstUoM;
     this.lstUoM = lstUnitofMeasure.UnitOfMeasure === undefined ? {} : lstUnitofMeasure.UnitOfMeasure;
+    this.code = this.options.code === null ? {} : this.options.code;
+    this.lot = (this.code.lines.LotPurchaseInboundTracking)?true:false;
+    this.serial = (this.code.lines.SNPurchaseInboundTracking)?true:false;
+    this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
 
-    console.log(this.lstUoM);
+    this.list = (await this.storage.get(`lists ${this.item.LineNo}`) != null || await this.storage.get(`lists ${this.item.LineNo}`) != undefined)?await this.storage.get(`lists ${this.item.LineNo}`):[];
+
   }
 
   onBack() {
     this.router.navigate(['page/wms/wmsMain']);
   }
 
-  public async onSubmit() {
+  async popoverConfigCode(){
 
+ 
+    const popover = await this.popoverController.create({
+      component: PopoverConfigurationCodeComponent,
+      cssClass: 'popoverConfigurationCodeComponent-modal',
+      componentProps: {code:this.code},
+      
+    });
+    await popover.present();
+    const { data } = await popover.onDidDismiss();
+  
+    }
 
-    if (this.frm.valid) {
+public async onSubmit() {
 
+    
+  
+    console.log(this.frm);
 
+    let obj = await this.jsonService.formToJson(this.frm);
+    switch(this.item.trakingCode){
+
+    case null:
+      if (this.frm.valid) {
+        let list = [];
       this.interceptService.loadingFunc(true);
 
-      let obj = await this.jsonService.formToJson(this.frm);
+      let json =    {
+        No: this.item.No,
+        ItemNo: this.item.ItemNo,
+        BinCode: this.item.BinCode,
+        UnitofMeasureCode: this.item.UnitofMeasureCode,
+        TotalToReceive: obj.TotalToReceive * obj.NoofPackLP,
+        NoofPackLP: obj.NoofPackLP,
+        PackUnitUoM: obj.PackUnitUoM,
+        
+      }
 
-
-
-      obj['No'] = this.item.No;
-      obj['ItemNo'] = this.item.ItemNo;
-      obj['BinCode'] = this.item.BinCode;
-      obj['UnitofMeasureCode'] = this.item.UnitofMeasureCode;
-      obj['TotalToReceive'] = obj.TotalToReceive;
-      obj['NoofPackLP'] = obj.NoofPackLP;
-      obj['PackUnitUoM'] = obj.PackUnitUoM;
-      obj['LineNo'] = this.item.LineNo;
-
+      list.push(json);
 
       if (obj.TotalToReceive == 0) {
         this.interceptService.loadingFunc(false);
@@ -100,46 +147,258 @@ export class LicensePlatesComponent implements OnInit {
         } else {
 
 
-          obj['TotalToReceive'] = obj.TotalToReceive * obj.NoofPackLP;
+      try {
 
-          let rsl = await this.wmsService.CreateLPFromWarehouseReceiptLine([obj]);
-
-          console.log(rsl);
+        let rsl = await this.wmsService.CreateLP_FromWarehouseReceiptLine(list);
 
           console.log(rsl);
 
-          if (rsl.Created) {
-
+          if (rsl.Error) throw new Error(rsl.Error.Message);
+          if (rsl.error) throw new Error(rsl.error.message);
+          if (rsl.message) throw new Error(rsl.message);
 
             this.interceptService.loadingFunc(false);
 
             this.interceptService.alertFunc(this.jsonService.getAlert('success', ' ', 'License plates have been created successfully'));
 
-
             this.popoverController.dismiss({ data: 'creado' });
-
-          } else {
-
-            this.interceptService.loadingFunc(false);
-            this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', 'You can not send more than you expect to receive'));
+            
+        } catch (error) {  
+          this.interceptService.loadingFunc(false);
+          this.interceptService.alertFunc(this.jsonService.getAlert('error', ' ', error.message));
+            
           }
-
-
+          
         }
 
+      }  
+      
+      break;
+      
+    default:
 
 
 
+    if(this.frm.valid && this.Boolean){
 
+      this.total =  obj.TotalToReceive * obj.NoofPackLP;
+       this.Boolean = false;
+    }
 
+    if(this.Boolean === false && this.list.length === this.total){
 
+      this.interceptService.loadingFunc(true);
+ 
+      let listTraking = [];
+      for (const key in this.list) {
+ 
+        if(this.list[key].proceded === false){
 
+          
+       let j =   {
+        LotNo: this.list[key].LotNo,
+        SerialNo: this.list[key].SerialNo,
+        ExperationDate: this.list[key].ExperationDate,
+        Qty:this.list[key].Qty
+      }
+
+      listTraking.push(j);
+
+       j =   {
+        LotNo: '',
+        SerialNo: '',
+        ExperationDate: '',
+        Qty: 0
+      }
+
+        }
+ 
+      }
+ 
+    let json2 = {
+       WarhouseReceiptNo: this.item.No,
+       ItemNo: this.item.ItemNo,
+       BinCode: this.item.BinCode,
+       SourceNo: this.item.SourceNo,
+       SourceRefNo: this.item.SourceLineNo,
+       LineNo: this.item.LineNo,
+       UnitofMeasureCode: this.item.UnitofMeasureCode,
+       TotalToReceive: obj.TotalToReceive * obj.NoofPackLP,
+       PackUnitUoM: obj.PackUnitUoM,
+       TrackingInfo: listTraking
+     }
+
+     
+       try {
+
+         let rsl = await this.wmsService.CreateLP_FromWarehouseReceiptLine_With_SNLOT([json2]);
+
+         console.log(rsl);
+ 
+         if (rsl.Error) throw new Error(rsl.Error.Message);
+         if (rsl.error) throw new Error(rsl.error.message);
+         if (rsl.message) throw new Error(rsl.message);
+       
+           this.interceptService.loadingFunc(false);
+ 
+           this.interceptService.alertFunc(this.jsonService.getAlert('success', ' ', 'License plates have been created successfully'));
+
+           this.storage.remove(`lists ${this.item.LineNo}`);
+           this.popoverController.dismiss({ data: 'creado' });
+
+         
+       } catch (error) {
+         
+         this.interceptService.loadingFunc(false);
+           this.interceptService.alertFunc(this.jsonService.getAlert('error', ' ', error.message));
+       }
+              
+  
+    }
+
+    break;
 
     }
+     
+    
+  }
+
+
+  public async scanLOT(){
+
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text;
+  
+        let line = this.list.find(x => x.LotNo === code.toUpperCase());
+        if(line != undefined){
+          this.frm2.patchValue({
+
+            LotNo: code.toUpperCase(),
+            exp: line.ExperationDate
+  
+          });
+
+          document.getElementById('datetime').setAttribute('disabled','true');
+
+        }else{
+
+
+          document.getElementById('datetime').setAttribute('disabled','false');
+
+          this.frm2.patchValue({
+
+            LotNo: code.toUpperCase()
+  
+          });
+        }
+      
+      
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+  
+  }
+
+async  save(){
+
+    if (this.frm2.valid) {
+
+      let obj = await this.jsonService.formToJson(this.frm2);
+
+      let res = new Date(obj.exp);
+
+      let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1
+
+      let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
+  
+      let fecha = res.getFullYear()+'-'+month+'-'+day;
+
+     let  json =   {
+        LotNo: obj.LotNo,
+        SerialNo: obj.SerialNo,
+        ExperationDate: fecha,
+        Qty: 1,
+        proceded:false
+      }
+
+      this.list.push(json);
+
+      this.storage.set(`lists ${this.item.LineNo}` ,this.list);
+
+      console.log(this.list);
+
+      this.frm2.patchValue({
+
+        SerialNo: "",
+        LotNo: "",
+        exp: ""
+      });
+
+      json =   {
+        LotNo: "",
+        SerialNo: "",
+        ExperationDate: "",
+        Qty: 0,
+        proceded:false
+      }
+    }
+
   }
 
   public async closePopover() {
     this.popoverController.dismiss({});
   }
+
+ async scanSN(){
+
+  this.barcodeScanner.scan().then(
+    barCodeData => {
+      let code = barCodeData.text;
+
+      let line = this.list.find(x => x.SerialNo === code.toUpperCase());
+
+      if(line === null || line === undefined){
+
+        this.frm2.patchValue({
+          SerialNo: code.toUpperCase()
+        });
+
+      }else{
+
+        this.intServ.alertFunc(this.jsonService.getAlert('alert','',`The serial ${code.toUpperCase()} already exists`));
+      }
+      
+    }
+  ).catch(
+    err => {
+      console.log(err);
+    }
+  )
+
+  }
+
+  
+    async lists(){
+
+      const popover = await this.popoverController.create({
+        component: PopoverListSerialLpComponent,
+        cssClass: 'popoverListSerialLpComponent-modal',
+        componentProps: {list:this.list},
+        backdropDismiss: false
+        
+      });
+      await popover.present();
+      const { data } = await popover.onDidDismiss();
+
+       this.list = data.list;
+
+      this.storage.set(`lists ${this.item.LineNo}` ,this.list);
+
+   
+    }
 
 }

@@ -12,12 +12,12 @@
     </ion-row>
 
     <div id="taula">
-      <ion-row *ngFor="let item of listL; let i = index" style="text-align: center;"
-        (click)="option(this.listL[i],this.listQ[i],'event')">
+      <ion-row *ngFor="let item of lps; let i = index" style="text-align: center;"
+        (click)="option(item,'event')">
 
-        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col>{{this.listL[i]}}</ion-col></a>
-        <ion-col>{{this.listQ[i]}}</ion-col>
-        <ion-col>{{this.listD[i]}}</ion-col>&nbsp;
+        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col>item.PLULPDocumentNo</ion-col></a>
+        <ion-col>item.PLUQuantity</ion-col>
+        <ion-col>item.SystemCreatedAt | date:'yyyy-dd-MM'</ion-col>&nbsp;
 
 
       </ion-row>
