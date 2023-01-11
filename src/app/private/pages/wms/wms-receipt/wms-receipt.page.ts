@@ -266,8 +266,8 @@ export class WmsReceiptPage implements OnInit {
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
-   console.log(this.wareReceipts);
-    this.GetLicencesPlateInWR(this.wareReceipts);
+    let items = await this.wmsService.listTraking(receipt.WarehouseReceipt.WarehouseReceiptLines);
+    this.GetLicencesPlateInWR(this.wareReceipts,items);
 
   }
 
@@ -297,7 +297,7 @@ export class WmsReceiptPage implements OnInit {
 
 
 
-  async GetLicencesPlateInWR(wareReceipts: any = {}) {
+  async GetLicencesPlateInWR(wareReceipts: any = {},items:any) {
 
     try {
 
@@ -307,19 +307,27 @@ export class WmsReceiptPage implements OnInit {
 
       if (lps.Error) throw new Error(lps.Error.Message);
 
-      this.list = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+      let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+      res.filter(lp => {
+
+        let line = this.list.find(x => x.PLULPDocumentNo === lp.PLULPDocumentNo);
+
+        if(line === undefined || line === null)this.list.push(lp);
+      });
+
+      
      console.log('lps =>',this.list);
+
+     
 
       let contador = 0;
       this.cantidades = [];
 
       this.LpL = [];
 
-      console.log('items =>',wareReceipts.lines);
-
-      for (const key in wareReceipts.lines) {
+      for (const key in items) {
         for (const i in this.list) {
-          if (this.list[i].PLUWhseLineNo  === wareReceipts.lines[key].LineNo) {
+          if (this.list[i].PLUWhseLineNo  === items[key].LineNo) {
 
             contador++;
             this.LpL.push(this.list[i]);
