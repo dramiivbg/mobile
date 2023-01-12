@@ -630,6 +630,29 @@ public async GetItemInfo(ItemNo:any){
 
    }
 
+   public async Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT(list:any){
+
+    try {
+
+    
+        let obj: any = [
+    
+           list
+            
+        ];
+    
+        console.log(JSON.stringify(obj));
+
+        
+        let p = await this.syncErp.processRequestParams('Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
 
    public async DeleteLPSingle_FromWarehouseReceiptLine(No:any){
     try {

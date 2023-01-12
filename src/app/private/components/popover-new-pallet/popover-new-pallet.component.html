@@ -78,20 +78,32 @@
                     <ion-item *ngIf="itemsLT !== undefined" style="width: 100%;">
                       <ion-col size="15" class="border">
                         <ion-row>
-                          <ion-col size="3" style="overflow: hidden;" class="label-line-title blue">
+                          <ion-col size="6" style="overflow: hidden;" class="label-line-title blue">
                             {{item.ItemNo
                             }}
                           </ion-col>
-                          <ion-col size="3" class="label-line-title" style="text-align: center;">
+                          <ion-col size="6" class="label-line-title" style="text-align: center;">
 
                             Qty. {{item.Qty}}
 
 
                           </ion-col>
 
-                          <ion-col size="3" class="label-line-title" style="text-align: right;">
+              
+                        </ion-row>
 
-                            LineNo. {{item.LineNo
+                        <ion-row>
+                         
+                          <ion-col size="6" class="label-line-title" *ngIf="item.SerialNo !== undefined">
+
+                            SerialNo: {{item.SerialNo}}
+
+
+                          </ion-col>
+
+                          <ion-col size="6" class="label-line-title" *ngIf="item.LotNo !== undefined">
+
+                            LotNo:{{item.LotNo
                             }}
 
 
@@ -100,6 +112,14 @@
 
                         </ion-row>
 
+                        <ion-row>
+
+                          <ion-col size="6"  class="label-line-title" *ngIf="item.ExperationDate !== undefined">
+                            exp Date: {{item.ExperationDate
+                            }}
+                          </ion-col>
+
+                        </ion-row>
 
                       </ion-col>
 

@@ -47,6 +47,8 @@ export class WmsReceiptPage implements OnInit {
 
   private LpL: any = [];
 
+  public seriales:any[] = [];
+
 
   public cantidades: number[] = [];
 
@@ -318,7 +320,12 @@ export class WmsReceiptPage implements OnInit {
       
      console.log('lps =>',this.list);
 
-     
+     let temp = [];
+
+     this.list.filter(lp => {
+
+      res
+     });
 
       let contador = 0;
       this.cantidades = [];
@@ -371,14 +378,23 @@ export class WmsReceiptPage implements OnInit {
 
     this.wmsService.set(this.wareReceipts);
 
-    let pallet = await this.wmsService.CreateLPPallet_FromWarehouseReceiptLine(this.wareReceipts);
+    try {
+      let pallet = await this.wmsService.CreateLPPallet_FromWarehouseReceiptLine(this.wareReceipts);
 
-    let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
+      let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
+
+
+    if (pallet.Error) throw new Error(pallet.Error.Message);
+    if (pallet.error) throw new Error(pallet.error.message);
+    if (pallet.message) throw new Error(pallet.message);
+   
+    if (palletL.Error) throw new Error(palletL.Error.Message);
+    if (palletL.error) throw new Error(palletL.error.message);
+    if (palletL.message) throw new Error(palletL.message);
 
     console.log(palletL);
     let palletN = await this.wmsService.ListLpH(palletL);
-
-    if (pallet.Created) {
+    
 
       let navigationExtras: NavigationExtras = {
         state: {
@@ -388,17 +404,16 @@ export class WmsReceiptPage implements OnInit {
         replaceUrl: true
       };
       this.router.navigate(['page/wms/newPallet'], navigationExtras);
-
-
-
-
-    } else {
-
+    
+      
+    } catch (error) {
+      
       this.intServ.loadingFunc(false);
 
-      this.intServ.alertFunc(this.js.getAlert('error', ' ', pallet.Error.Message));
-
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
     }
+  
+
   }
 
 
