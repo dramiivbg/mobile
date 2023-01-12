@@ -2,10 +2,10 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
+        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline" (click)="popoverConfigCode()"></ion-icon>
         <ion-col>
           <ion-label>Receive LP</ion-label>
         </ion-col>
-        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline" (click)="popoverConfigCode()"></ion-icon>
       </ion-row>
       <ion-row class="qtytoreceive titletop">
         <ion-col size="6">
@@ -81,13 +81,15 @@
   <ion-content (click)="save()">
     <form [formGroup]="frm2" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-col>
+        <ion-col class="iconeye" size="2">
+          <ion-icon class="itemfooter" name="eye-outline"  (click)="lists()"></ion-icon>
+        </ion-col>  
+        <ion-col size="5">
           <ion-label>Traking Lines</ion-label>
         </ion-col>
-        <ion-col>
+        <ion-col size="5">
           <ion-label>{{total}}/{{list.length}}</ion-label>
         </ion-col>
-        <ion-icon class="itemfooter" name="eye-outline"  (click)="lists()"></ion-icon>
       </ion-row>
       <ion-row class="qtytoreceive" *ngIf="serial">
         <ion-col size="4">

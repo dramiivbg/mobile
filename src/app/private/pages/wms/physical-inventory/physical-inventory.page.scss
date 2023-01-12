@@ -258,7 +258,7 @@ div.accornSubTotal {
 
 ion-col.item {
 
-    // border-bottom: 2px solid gray;
+    border-bottom: 2px solid gray;
     width: 100%;
 
 }
@@ -302,7 +302,7 @@ ion-list {
 }
 
 ion-item {
-    --border-color: transparent !important;
+    --border-color: transparent;
     padding: 0px 0 10px 0;
 }
 
