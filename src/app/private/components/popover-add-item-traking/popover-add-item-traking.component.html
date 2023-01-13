@@ -1,0 +1,114 @@
+<ng-container *ngIf="Boolean">
+  <ion-content>
+    <form [formGroup]="frm" (ngSubmit)="onSubmit()">
+      <ion-row class="header">
+        <ion-col>
+          <ion-label>Receive Item</ion-label>
+        </ion-col>
+        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline" (click)="popoverConfigCode()"></ion-icon>
+      </ion-row>
+      <ion-row class="qtytoreceive titletop">
+        <ion-col size="6">
+          <b>Item No:</b>
+        </ion-col>
+        <ion-col size="6">
+          {{item.ItemNo}}
+        </ion-col>
+      </ion-row>
+      <ion-row class="qtytoreceive">
+        <ion-col size="6">
+          <b>Unit of measure:</b>
+        </ion-col>
+        <ion-col size="6">
+          {{item.UnitofMeasureCode}}
+        </ion-col>
+      </ion-row>
+       
+      <ion-row class="qtytoreceive">
+        <ion-col size="6">
+          <b>Qty:</b>
+        </ion-col>
+        <ion-col size="6">
+          <ion-input class="inputqty" type="number" formControlName="TotalToReceive" [value]="item.Qty"></ion-input>
+        </ion-col>
+      </ion-row>
+    
+
+      <ion-row class="footer">
+
+        <ion-col size="6">
+          <ion-button color="success" shape="round" expand="block" type="submit">receive</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button color="danger" shape="round" expand="block" type="button"
+            (click)="closePopover()">Cancel</ion-button>
+        </ion-col>
+
+      </ion-row>
+    </form>
+  </ion-content>
+</ng-container>
+
+
+
+
+<ng-container *ngIf="!Boolean">
+  <ion-content (click)="save()">
+    <form [formGroup]="frm2" (ngSubmit)="onSubmit()">
+      <ion-row class="header">
+        <ion-col>
+          <ion-label>Traking Lines</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{total}}/{{list.length}}</ion-label>
+        </ion-col>
+        <ion-icon class="itemfooter" name="eye-outline"  (click)="lists()"></ion-icon>
+      </ion-row>
+      <ion-row class="qtytoreceive" *ngIf="serial">
+        <ion-col size="4">
+          <b>Serial No:</b>
+        </ion-col>
+        <ion-col size="2" (click)="scanSN()">
+          <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
+        </ion-col>
+        <ion-col size="6" >
+          <ion-input  readonly  class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001" value="0"></ion-input>
+        </ion-col>
+      </ion-row>
+      
+      <ion-row class="qtytoreceive" *ngIf="lot">
+        <ion-col size="4">
+          <b>Lot No:</b>
+        </ion-col>
+        <ion-col size="2" (click)="scanLOT()">
+          <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
+        </ion-col>
+        <ion-col size="6">
+          <ion-input readonly class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
+        </ion-col>
+      </ion-row>
+      
+      <ion-row class="qtytoreceive" *ngIf="exp">
+        <ion-col size="6">
+          <b>Exp Date:</b>
+        </ion-col>
+        <ion-col size="6">
+          <ion-datetime id="datetime" class="inputqty" displayFormat="MM/DD/YYYY" formControlName="exp"
+            placeholder="Select Date"></ion-datetime>
+        </ion-col>
+      </ion-row>
+      
+      <ion-row class="footer">
+
+        <ion-col size="6">
+          <ion-button color="success" shape="round" expand="block" type="submit">Add</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button color="danger" shape="round" expand="block" type="button"
+            (click)="closePopover()">Cancel</ion-button>
+        </ion-col>
+
+      </ion-row>
+    </form>
+  </ion-content>
+</ng-container>

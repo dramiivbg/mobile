@@ -315,7 +315,7 @@ async  save(){
 
       let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
   
-      let fecha = res.getFullYear()+'-'+month+'-'+day;
+      let fecha = (obj.exp.includes(':'))?res.getFullYear()+'-'+month+'-'+day:obj.exp;
 
      let  json =   {
         LotNo: obj.LotNo,

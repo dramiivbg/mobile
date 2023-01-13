@@ -47,6 +47,8 @@ export class WmsReceiptPage implements OnInit {
 
   private LpL: any = [];
 
+  public seriales:any[] = [];
+
 
   public cantidades: number[] = [];
 
@@ -266,8 +268,8 @@ export class WmsReceiptPage implements OnInit {
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
-   console.log(this.wareReceipts);
-    this.GetLicencesPlateInWR(this.wareReceipts);
+    let items = await this.wmsService.listTraking(receipt.WarehouseReceipt.WarehouseReceiptLines);
+    this.GetLicencesPlateInWR(this.wareReceipts,items);
 
   }
 
@@ -297,7 +299,7 @@ export class WmsReceiptPage implements OnInit {
 
 
 
-  async GetLicencesPlateInWR(wareReceipts: any = {}) {
+  async GetLicencesPlateInWR(wareReceipts: any = {},items:any) {
 
     try {
 
@@ -307,19 +309,32 @@ export class WmsReceiptPage implements OnInit {
 
       if (lps.Error) throw new Error(lps.Error.Message);
 
-      this.list = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+      let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+      res.filter(lp => {
+
+        let line = this.list.find(x => x.PLULPDocumentNo === lp.PLULPDocumentNo);
+
+        if(line === undefined || line === null)this.list.push(lp);
+      });
+
+      
      console.log('lps =>',this.list);
+
+     let temp = [];
+
+     this.list.filter(lp => {
+
+      res
+     });
 
       let contador = 0;
       this.cantidades = [];
 
       this.LpL = [];
 
-      console.log('items =>',wareReceipts.lines);
-
-      for (const key in wareReceipts.lines) {
+      for (const key in items) {
         for (const i in this.list) {
-          if (this.list[i].PLUWhseLineNo  === wareReceipts.lines[key].LineNo) {
+          if (this.list[i].PLUWhseLineNo  === items[key].LineNo) {
 
             contador++;
             this.LpL.push(this.list[i]);
@@ -363,14 +378,23 @@ export class WmsReceiptPage implements OnInit {
 
     this.wmsService.set(this.wareReceipts);
 
-    let pallet = await this.wmsService.CreateLPPallet_FromWarehouseReceiptLine(this.wareReceipts);
+    try {
+      let pallet = await this.wmsService.CreateLPPallet_FromWarehouseReceiptLine(this.wareReceipts);
 
-    let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
+      let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
+
+
+    if (pallet.Error) throw new Error(pallet.Error.Message);
+    if (pallet.error) throw new Error(pallet.error.message);
+    if (pallet.message) throw new Error(pallet.message);
+   
+    if (palletL.Error) throw new Error(palletL.Error.Message);
+    if (palletL.error) throw new Error(palletL.error.message);
+    if (palletL.message) throw new Error(palletL.message);
 
     console.log(palletL);
     let palletN = await this.wmsService.ListLpH(palletL);
-
-    if (pallet.Created) {
+    
 
       let navigationExtras: NavigationExtras = {
         state: {
@@ -380,17 +404,16 @@ export class WmsReceiptPage implements OnInit {
         replaceUrl: true
       };
       this.router.navigate(['page/wms/newPallet'], navigationExtras);
-
-
-
-
-    } else {
-
+    
+      
+    } catch (error) {
+      
       this.intServ.loadingFunc(false);
 
-      this.intServ.alertFunc(this.js.getAlert('error', ' ', pallet.Error.Message));
-
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
     }
+  
+
   }
 
 

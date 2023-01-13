@@ -10,6 +10,7 @@ import { WmsService } from '@svc/wms.service';
 import { SqlitePlureService} from '@svc/sqlite-plure.service';
 import { AsyncLocalStorage } from 'async_hooks';
 import { ifError } from 'assert';
+import { PopoverAddItemTrakingComponent } from '../popover-add-item-traking/popover-add-item-traking.component';
 
 
 @Component({
@@ -20,10 +21,6 @@ import { ifError } from 'assert';
 export class PopoverNewPalletComponent implements OnInit {
 
   public boolean: Boolean = true;
- 
-
-
-  
  public testListI: any[] = [];
 
  public testListL: any[] = [];
@@ -40,6 +37,9 @@ export class PopoverNewPalletComponent implements OnInit {
   public QtyItem: number = 0;
   
   public items:any [] = [];
+
+  public itemsTraking = [];
+  public traking = [];
 
   public itemsL:any[] = [];
   public itemsLT:any[];
@@ -400,10 +400,22 @@ async onBarCode(){
 
  async  onSubmit(pallet:any){
 
- // console.log(this.itemsL);
-
+  console.log(this.itemsL);
+  console.log(this.itemsTraking);
 
  if(this.itemsLT != undefined || this.lpsL != undefined){
+
+  for (const i in this.itemsTraking) {
+    for (const j  in this.itemsL) {
+      for (const key in this.itemsTraking[i].TrackingInfo) {
+        
+        if(this.itemsL[j].SerialNo === this.itemsTraking[i].TrackingInfo[key].SerialNo)this.itemsL.splice(Number(j),1);
+
+      }
+      
+    } 
+  }
+
 
   let listsI:any[] = [];
 
@@ -469,7 +481,16 @@ async onBarCode(){
        resI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(pallet.fields.PLULPDocumentNo,this.wareReceipts.No,listsI);
     
     }
-         if(this.lpsL.length > 0){
+
+    if(this.itemsTraking.length > 0){
+      
+      for (const key in this.itemsTraking) {
+
+        await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT(this.itemsTraking[key]);
+       
+      }
+    }
+        if(this.lpsL.length > 0){
 
           let resL = await this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,listLP);
 
@@ -510,6 +531,7 @@ this.lps = [];
 
   this.testListL = [];
 
+  this.traking = [];
   this.QtyItem = 0;
 
   this.QtyLP = 0;
@@ -623,12 +645,93 @@ disable(){
 
 this.items = [];
 this.lps = [];
-
-  this.boolean = true;
-
   this.testListI = [];
 
   this.testListL = []; 
+
+  let contador = 0
+
+  if(this.traking.length > 0){
+    this.trakingItem(contador);
+  }else{
+    this.boolean = true;
+  }
+ 
+}
+
+
+async trakingItem(contador:number = 0){
+  this.intServ.loadingFunc(true);
+  console.log(this.traking);
+    let res = (this.traking[contador].ItemTrackingCode != null)?await this.wmsService.configurationTraking(this.traking[contador].ItemTrackingCode):null;
+    console.log(res);
+    let code = (res != null)?await this.wmsService.listCode(res):null;
+    this.intServ.loadingFunc(false);
+  const popover = await this.popoverController.create({
+    component: PopoverAddItemTrakingComponent,
+    cssClass: 'popoverAddItemTrakingComponent',
+    backdropDismiss: false,
+    componentProps: { item:this.traking[contador], code, palletNo:this.pallet.fields.PLULPDocumentNo}
+    
+  });
+
+  await popover.present();
+
+  const { data } = await popover.onDidDismiss();
+
+  switch(data.obj){
+
+    case undefined:
+      contador++;
+      if(contador < this.traking.length){
+        this.trakingItem(contador);
+      }else{
+        this.intServ.loadingFunc(false);
+        this.boolean = true;
+      }
+      break;
+
+   default:
+    console.log(data.obj.TrackingInfo);
+
+   for (const key in data.obj.TrackingInfo) {
+   
+    let item = {
+      ItemNo: this.traking[contador].ItemNo,
+      Qty: data.obj.TrackingInfo[key].Qty,
+      LineNo: this.traking[contador].LineNo,
+      SerialNo: data.obj.TrackingInfo[key].SerialNo,
+      LotNo: data.obj.TrackingInfo[key].LotNo,
+      ExperationDate: data.obj.TrackingInfo[key].ExperationDate
+    }
+
+    this.itemsL.push(item);
+  
+    this.itemsLT.push(item);
+  
+    this.listItemsL.push(item);
+    item = {
+      ItemNo: "",
+      Qty: 0,
+      LineNo: "",
+      SerialNo: "",
+      LotNo: "",
+      ExperationDate: ""
+    }
+
+   }
+    
+    this.itemsTraking.push(data.obj);
+
+    contador++;
+    if(contador < this.traking.length){
+      this.trakingItem(contador);
+    }else{
+      this.intServ.loadingFunc(false);
+      this.boolean = true;
+    }
+    break;
+  }
 
 }
 
@@ -728,7 +831,7 @@ switch(ev.detail.checked){
   
   
     
-applyItem(item:any,ev,){
+async applyItem(item:any,ev,){
   
 switch(ev.detail.checked){
 
@@ -742,16 +845,33 @@ case true:
   if(line == null || line === undefined){
 
   this.itemsLT = [];
+  this.intServ.loadingFunc(true);
+  let info = await this.wmsService.GetItemInfo(item.ItemNo);
+  console.log(info);
 
+  if(info.Managed_by_PlurE){
 
-    this.itemsL.push(item);
+    switch(item.ItemTrackingCode){
+
+      case null:
+        this.itemsL.push(item);
   
-    this.itemsLT.push(item);
-  
-  
-    this.listItemsL.push(item);
-  
-   console.log(this.itemsL);
+        this.itemsLT.push(item);
+      
+        this.listItemsL.push(item);
+      
+       console.log(this.itemsL);
+       this.intServ.loadingFunc(false);
+       break;
+
+       default:
+        this.traking.push(item);
+        this.intServ.loadingFunc(false);
+        console.log(this.traking);
+         break;
+    }
+   
+  }
 
   }
   break;
@@ -770,7 +890,14 @@ case false:
       this.listItemsL.push(i,1);
 
     }
-  })
+  });
+
+  this.traking.filter((Item,i) => {
+
+    if(Item.ItemNo === item.ItemNo){
+      this.traking.splice(i,1);
+    };
+  });
  
 
   console.log('Delete =>', this.listItemsL, this.itemsLT, this.listItemsL);
