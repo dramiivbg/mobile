@@ -2,10 +2,13 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-col>
+        <ion-col size="2">
+        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline"
+        (click)="popoverConfigCode()"></ion-icon>
+      </ion-col>
+        <ion-col size="10">
           <ion-label>Receive Item</ion-label>
         </ion-col>
-        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline" (click)="popoverConfigCode()"></ion-icon>
       </ion-row>
       <ion-row class="qtytoreceive titletop">
         <ion-col size="6">
@@ -23,7 +26,7 @@
           {{item.UnitofMeasureCode}}
         </ion-col>
       </ion-row>
-       
+
       <ion-row class="qtytoreceive">
         <ion-col size="6">
           <b>Qty:</b>
@@ -32,7 +35,7 @@
           <ion-input class="inputqty" type="number" formControlName="TotalToReceive" [value]="item.Qty"></ion-input>
         </ion-col>
       </ion-row>
-    
+
 
       <ion-row class="footer">
 
@@ -56,13 +59,15 @@
   <ion-content (click)="save()">
     <form [formGroup]="frm2" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-col>
+        <ion-col size="2">
+        <ion-icon class="itemfooter" name="eye-outline" (click)="lists()"></ion-icon>
+      </ion-col>
+        <ion-col size="5">
           <ion-label>Traking Lines</ion-label>
         </ion-col>
-        <ion-col>
+        <ion-col size="5">
           <ion-label>{{total}}/{{list.length}}</ion-label>
         </ion-col>
-        <ion-icon class="itemfooter" name="eye-outline"  (click)="lists()"></ion-icon>
       </ion-row>
       <ion-row class="qtytoreceive" *ngIf="serial">
         <ion-col size="4">
@@ -71,11 +76,12 @@
         <ion-col size="2" (click)="scanSN()">
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
-        <ion-col size="6" >
-          <ion-input  readonly  class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001" value="0"></ion-input>
+        <ion-col size="6">
+          <ion-input readonly class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001"
+            value="0"></ion-input>
         </ion-col>
       </ion-row>
-      
+
       <ion-row class="qtytoreceive" *ngIf="lot">
         <ion-col size="4">
           <b>Lot No:</b>
@@ -87,7 +93,7 @@
           <ion-input readonly class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
         </ion-col>
       </ion-row>
-      
+
       <ion-row class="qtytoreceive" *ngIf="exp">
         <ion-col size="6">
           <b>Exp Date:</b>
@@ -97,7 +103,7 @@
             placeholder="Select Date"></ion-datetime>
         </ion-col>
       </ion-row>
-      
+
       <ion-row class="footer">
 
         <ion-col size="6">
