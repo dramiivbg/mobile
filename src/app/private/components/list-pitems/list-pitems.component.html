@@ -35,8 +35,8 @@
     <ion-grid>
 
 
-      <ion-row class=" newColor">
-        <ion-col>
+      <ion-row class=" newColor column">
+        <ion-col size="1">
           <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
 
         </ion-col>
@@ -44,21 +44,27 @@
         <ion-col size="3">
           <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
         </ion-col>
-        <ion-col size="4">
+        <ion-col size="2">
           <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
         </ion-col>
-        <ion-col size="4">
+        <ion-col size="2">
           <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
+        </ion-col>
+        <ion-col size="2">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Serial</div>
+        </ion-col>
+        <ion-col size="2">
+          <div style="font-family: Arial, Helvetica, sans-serif;">lot</div>
         </ion-col>
       </ion-row>
 
 
 
 
-      <ion-row class=" delivery ContentTable" *ngFor="let item of listLp ; let i= index">
+      <ion-row class=" delivery ContentTable field" *ngFor="let item of listLp ; let i= index">
 
 
-        <ion-col *ngIf="testListL.length > 0">
+        <ion-col *ngIf="testListL.length > 0" size="1">
 
 
 
@@ -75,11 +81,21 @@
           <div>{{item.PLUNo
             }}</div>
         </ion-col>
-        <ion-col size="4">
+        <ion-col size="2">
           <div>{{item.PLUQuantity}}</div>
         </ion-col>
-        <ion-col size="4">
+        <ion-col size="2">
           <div>{{item.PLUUnitofMeasureCode
+            }}</div>
+        </ion-col>
+        <ion-col size="2">
+          <div>{{item.PLUSerialNo
+
+            }}</div>
+        </ion-col>
+        <ion-col size="2">
+          <div>{{item.PLULotNo
+
             }}</div>
         </ion-col>
       </ion-row>
@@ -131,14 +147,14 @@
   <ion-list>
 
 
-    <ion-grid>
+    <ion-grid >
 
 
-      <ion-row class=" newColor">
+      <ion-row class=" newColor column">
 
 
 
-        <ion-col>
+        <ion-col size="1">
 
           <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
 
@@ -150,11 +166,14 @@
         <ion-col size="3">
           <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
         </ion-col>
-        <ion-col size="4">
+        <ion-col size="2">
           <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
         </ion-col>
-        <ion-col size="4">
-          <div style="font-family: Arial, Helvetica, sans-serif;">LineNo</div>
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;"> Serial</div>
+        </ion-col>
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Lot</div>
         </ion-col>
       </ion-row>
 
@@ -162,9 +181,9 @@
 
 
 
-      <ion-row class=" delivery ContentTable" *ngFor="let item of listItem ; let i= index">
+      <ion-row class=" delivery ContentTable field" *ngFor="let item of listItem ; let i= index">
 
-        <ion-col *ngIf="item.PLUQuantity > 0  &&  testListI.length > 0">
+        <ion-col *ngIf="item.PLUQuantity > 0  &&  testListI.length > 0" size="1">
 
 
 
@@ -174,16 +193,23 @@
 
         </ion-col>
 
-
+ 
         <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
           <div>{{item.PLUNo}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.PLUQuantity > 0 ">
+        <ion-col size="2" *ngIf="item.PLUQuantity > 0 ">
           <div>{{item.PLUQuantity
             }}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.PLUQuantity > 0 ">
-          <div>{{item.PLUWhseLineNo
+        <ion-col size="3" *ngIf="item.PLUQuantity > 0">
+          <div>{{item.PLUSerialNo
+
+            }}</div>
+        </ion-col>
+
+        <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
+          <div>{{item.PLULotNo
+
             }}</div>
         </ion-col>
 

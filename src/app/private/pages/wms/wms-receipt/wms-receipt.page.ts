@@ -222,6 +222,8 @@ export class WmsReceiptPage implements OnInit {
     let res = (item.trakingCode != null)?await this.wmsService.configurationTraking(item.trakingCode):null;
     let code = (res != null)?await this.wmsService.listCode(res):null;
 
+    console.log(lp);
+    console.log(item);
     if (lp.LP_Pending_To_Receive > 0) {
       const popover = await this.popoverController.create({
         component: LicensePlatesComponent,
@@ -384,6 +386,7 @@ export class WmsReceiptPage implements OnInit {
       let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
 
 
+
     if (pallet.Error) throw new Error(pallet.Error.Message);
     if (pallet.error) throw new Error(pallet.error.message);
     if (pallet.message) throw new Error(pallet.message);
@@ -485,33 +488,19 @@ export class WmsReceiptPage implements OnInit {
         }
 
 
-
         console.log('despues =>', pallet);
         console.log('despues =>', pallet2);
 
 
-
-
-
-
         for (const i in pallet) {
-
+          pallet[i].fields = [];
+          let res = pallet[i].recordId.split(' ');
+          let No = res[3].split(',');
+          console.log(No);
           for (const j in pallet2) {
-            if (pallet[i].fields[0].PLULPDocumentNo === pallet2[j].fields[0].PLULPDocumentNo) {
-
-
-
-
-
-              let line = pallet[i].fields.find(lp => lp.PLUNo === pallet2[j].fields[0].PLUNo);
-
-              if (line === null || line === undefined) {
-
+            if (No[0] === pallet2[j].fields[0].PLULPDocumentNo) {
+                console.log(pallet2[j].fields[0])
                 pallet[i].fields.push(pallet2[j].fields[0]);
-
-
-
-              }
 
             }
           }

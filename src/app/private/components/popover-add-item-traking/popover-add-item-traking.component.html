@@ -29,10 +29,10 @@
 
       <ion-row class="qtytoreceive">
         <ion-col size="6">
-          <b>Qty:</b>
+          <b>Qty Receive:</b>
         </ion-col>
         <ion-col size="6">
-          <ion-input class="inputqty" type="number" formControlName="TotalToReceive" [value]="item.Qty"></ion-input>
+          <ion-input class="inputqty" type="number" formControlName="TotalToReceive"></ion-input>
         </ion-col>
       </ion-row>
 
@@ -101,6 +101,15 @@
         <ion-col size="6">
           <ion-datetime id="datetime" class="inputqty" displayFormat="MM/DD/YYYY" formControlName="exp"
             placeholder="Select Date"></ion-datetime>
+        </ion-col>
+      </ion-row>
+      
+      <ion-row class="qtytoreceive" *ngIf="serial === false">
+        <ion-col size="6">
+          <b>Qty</b>
+        </ion-col>
+        <ion-col size="6">
+          <ion-input class="inputqty" type="number" formControlName="Qty" ></ion-input>
         </ion-col>
       </ion-row>
 

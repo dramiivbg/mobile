@@ -47,6 +47,15 @@
         </ion-col>
       </ion-row>
 
+      <ion-row size="12">
+        <ion-col size="6">
+          <ion-label>Quantity: {{quantity}} </ion-label>
+        </ion-col>
+        <ion-col size="6">
+          <ion-label>Counted: {{counted}}</ion-label>
+        </ion-col>
+      </ion-row>
+
       <ion-row class="delivery newColor2">
         <ion-col size="10">
           <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
