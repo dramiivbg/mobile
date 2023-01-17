@@ -31,6 +31,7 @@ export class LicensePlatesComponent implements OnInit {
   public boolean:boolean = false;
   public Boolean:boolean = true;
   public total:number = 0;
+  public Quantity = 0;
   @Input() options: any = {};
 
   constructor(private intServ: InterceptService
@@ -68,7 +69,8 @@ export class LicensePlatesComponent implements OnInit {
       {
         SerialNo: ['', Validators.required],
         LotNo: ['', Validators.required],
-        exp: ['', Validators.required]
+        exp: ['', Validators.required],
+        Qty: ['', Validators.required]
 
 
       }
@@ -85,8 +87,20 @@ export class LicensePlatesComponent implements OnInit {
     this.serial = (this.code.lines.SNPurchaseInboundTracking)?true:false;
     this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
 
+    this.storage.remove(`lists ${this.item.LineNo}`);
+    this.storage.remove(`Qty ${this.item.LineNo}`);
+
     this.list = (await this.storage.get(`lists ${this.item.LineNo}`) != null || await this.storage.get(`lists ${this.item.LineNo}`) != undefined)?await this.storage.get(`lists ${this.item.LineNo}`):[];
 
+    this.Quantity = (await this.storage.get(`Qty ${this.item.LineNo}`) != null || await this.storage.get(`Qty ${this.item.LineNo}`) != undefined)?await this.storage.get(`Qty ${this.item.LineNo}`):0;
+    if(this.lot === false) this.frm2.controls['LotNo'].disable();
+   
+    if(this.serial === false) this.frm2.controls['SerialNo'].disable();
+ 
+    if(this.exp === false) this.frm2.controls['exp'].disable();
+
+    if(this.serial) this.frm2.controls['Qty'].disable();
+ 
   }
 
   onBack() {
@@ -107,10 +121,8 @@ export class LicensePlatesComponent implements OnInit {
   
     }
 
-public async onSubmit() {
+public async onSubmit() {    
 
-    
-  
     console.log(this.frm);
 
     let obj = await this.jsonService.formToJson(this.frm);
@@ -134,17 +146,9 @@ public async onSubmit() {
 
       list.push(json);
 
-      if (obj.TotalToReceive == 0) {
-        this.interceptService.loadingFunc(false);
-        this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', 'Please put how many license plate you want'));
+      if (obj.TotalToReceive == 0) throw new Error('Please put how many license plate you want');      
 
-      } else
-
-        if (obj.NoofPackLP == 0) {
-          this.interceptService.loadingFunc(false);
-          this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', ' Please put how many packs each license plate will have'));
-
-        } else {
+      if (obj.NoofPackLP == 0) throw new Error('Please put how many packs each license plate will have');
 
 
       try {
@@ -169,14 +173,11 @@ public async onSubmit() {
             
           }
           
-        }
-
       }  
       
       break;
       
     default:
-
 
 
     if(this.frm.valid && this.Boolean){
@@ -185,7 +186,7 @@ public async onSubmit() {
        this.Boolean = false;
     }
 
-    if(this.Boolean === false && this.list.length === this.total){
+    if(this.Boolean === false && this.Quantity === this.total){
 
       this.interceptService.loadingFunc(true);
  
@@ -244,6 +245,7 @@ public async onSubmit() {
            this.interceptService.alertFunc(this.jsonService.getAlert('success', ' ', 'License plates have been created successfully'));
 
            this.storage.remove(`lists ${this.item.LineNo}`);
+           this.storage.remove(`Qty ${this.item.LineNo}`);
            this.popoverController.dismiss({ data: 'creado' });
 
          
@@ -278,13 +280,13 @@ public async onSubmit() {
             exp: line.ExperationDate
   
           });
-
-          document.getElementById('datetime').setAttribute('disabled','true');
+          if(this.exp) document.getElementById('datetime').setAttribute('disabled','true');
+      
 
         }else{
 
 
-          document.getElementById('datetime').setAttribute('disabled','false');
+         if(this.exp) document.getElementById('datetime').setAttribute('disabled','false');
 
           this.frm2.patchValue({
 
@@ -303,20 +305,27 @@ public async onSubmit() {
   
   }
 
+ 
+  
+
 async  save(){
 
-    if (this.frm2.valid) {
+  switch(this.Quantity === this.total){
+    case false:
+      if (this.frm2.valid) {
 
-      let obj = await this.jsonService.formToJson(this.frm2);
-
-      let res = new Date(obj.exp);
-
-      let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1
-
-      let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
+        let obj = await this.jsonService.formToJson(this.frm2);
   
-      let fecha = (obj.exp.includes(':'))?res.getFullYear()+'-'+month+'-'+day:obj.exp;
-
+        let res = new Date(obj.exp);
+  
+        let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1
+  
+        let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
+    
+        let fecha = (obj.exp.includes(':'))?res.getFullYear()+'-'+month+'-'+day:obj.exp;
+  
+   if(this.serial){
+        
      let  json =   {
         LotNo: obj.LotNo,
         SerialNo: obj.SerialNo,
@@ -325,9 +334,12 @@ async  save(){
         proceded:false
       }
 
+      this.Quantity += json.Qty;
+      
       this.list.push(json);
 
       this.storage.set(`lists ${this.item.LineNo}` ,this.list);
+      this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
 
       console.log(this.list);
 
@@ -345,7 +357,74 @@ async  save(){
         Qty: 0,
         proceded:false
       }
-    }
+    
+
+    }else{
+  
+         let line = this.list.find(x => x.LotNo === obj.LotNo);
+  
+         switch(line){
+  
+          case undefined:
+            let  json =   {
+              LotNo: obj.LotNo,
+              SerialNo: obj.SerialNo,
+              ExperationDate: fecha,
+              Qty: obj.Qty,
+              proceded: false
+            }
+                 
+          this.list.push(json);
+          this.storage.set(`lists ${this.item.LineNo}` ,this.list);
+            this.Quantity += json.Qty;
+           this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
+            console.log(this.list);
+      
+            this.frm2.patchValue({
+      
+              SerialNo: "",
+              LotNo: "",
+              exp: "",
+              Qty:""
+            });
+      
+            json =   {
+              LotNo: "",
+              SerialNo: "",
+              ExperationDate: "",
+              Qty: 0,
+              proceded: false
+            }
+      
+            break;
+  
+          default:
+  
+          line.Qty += obj.Qty;
+          this.Quantity += obj.Qty; 
+          this.storage.set(`lists ${this.item.LineNo}` ,this.list);
+          this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
+          this.frm2.patchValue({
+      
+            SerialNo: "",
+            LotNo: "",
+            exp: "",
+            Qty: ""
+          });
+        
+         }
+  
+        }
+  
+      }
+      break
+
+     default:
+      this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
+      break;
+    
+  }
+
 
   }
 

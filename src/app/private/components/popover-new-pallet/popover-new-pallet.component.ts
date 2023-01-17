@@ -30,9 +30,9 @@ export class PopoverNewPalletComponent implements OnInit {
   public visilityL:Boolean = true;
   public visilityI:Boolean = true;
   public booleanL: Boolean = true;
-  
 
-
+  public itemB = false;
+  public lpsB = false;
   public QtyLP:number = 0;
   public QtyItem: number = 0;
   
@@ -95,34 +95,7 @@ export class PopoverNewPalletComponent implements OnInit {
 
         this.lp = this.router.getCurrentNavigation().extras.state.lp;
         
-        this.item = this.router.getCurrentNavigation().extras.state.item;
-
-        if(this.lp !== undefined){
-
-
-   
-        localStorage.setItem('lp', JSON.stringify(this.lp))
-      
-        let lp =   JSON.parse(localStorage.getItem('lp'));
-
-         console.log(lp.fields.PLULPDocumentNo);
-        }
-
-    
-        if(this.item !== undefined){
-
-
-          localStorage.setItem('item', JSON.stringify(this.item))
-
-
-      let item = JSON.parse(localStorage.getItem('item'));
-
-      console.log(item);
-
-
-        }
-
-      
+        this.item = this.router.getCurrentNavigation().extras.state.item;      
      
       } else {
         this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
@@ -145,17 +118,6 @@ public onBack() {
    this.wareReceipts = this.wmsService.get();
 
 
-   let f  = new  Date(this.pallet.fields.SystemCreatedAt);
-
-   let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
-   
-   
-   this.pallet.fields.SystemCreatedAt = fecha;
-
-
- 
-
-  
   }
 
 
@@ -222,12 +184,9 @@ public onBack() {
         )
       
     }
-
-
  
    
   }
-
 
 
 async onBarCode(){
@@ -283,7 +242,7 @@ async onBarCode(){
 
     let identifier = await this.wmsService.GetItemIdentifier(code);
      if(!identifier.Error){
-        boolean = true;
+        boolean = false;
       for (const key in identifier.ItemIdentifier) {
         
           line = items.Possible_ItemsChilds.find(x =>  x.ItemNo === identifier.ItemIdentifier[key].ItemNo && x.VariantCode === identifier.ItemIdentifier[key].VariantCode);
@@ -311,7 +270,8 @@ async onBarCode(){
 
             console.log(this.lpsL);
       
-            this.lpsLT = [];
+            this.lpsB = true
+            this.lpsT.push(line)
       
             this.listLpsL.push(line);
             this.intServ.loadingFunc(false);
@@ -336,8 +296,9 @@ async onBarCode(){
 
           console.log(this.lpsL);
     
-          this.lpsLT = [];
+          this.lpsB = true;
     
+          this.lpsT.push(line)
           this.listLpsL.push(line);
 
           this.intServ.loadingFunc(false);
@@ -352,11 +313,28 @@ async onBarCode(){
     case false:
 
         if(this.itemsL.length < 1){
-          this.itemsL.push(line);
-          this.itemsLT = [];
-  
-          this.listItemsL.push(line);
-          this.intServ.loadingFunc(false);
+          let info = await this.wmsService.GetItemInfo(line.ItemNo);
+          switch(info.Managed_by_PlurE){
+            case true:
+
+              if(line.ItemTrackingCode != null){
+                
+                this.traking.push(line);
+                let contador = 0
+                this.trakingItem(contador);
+                
+
+              }else{
+
+                this.itemsL.push(line);
+                this.itemB = true;
+                this.itemsT.push(line);       
+                this.listItemsL.push(line);
+                this.intServ.loadingFunc(false);
+              }
+              break;
+          }
+         
         }
 
       else{
@@ -372,10 +350,11 @@ async onBarCode(){
 
          
         this.itemsL.push(line);
-        this.itemsLT = [];
+        this.itemB = true;
 
         this.listItemsL.push(line);
 
+        this.itemsT.push(line);
         this.intServ.loadingFunc(false);
 
       }
@@ -403,7 +382,7 @@ async onBarCode(){
   console.log(this.itemsL);
   console.log(this.itemsTraking);
 
- if(this.itemsLT != undefined || this.lpsL != undefined){
+ if(this.itemB || this.lpsB){
 
   for (const i in this.itemsTraking) {
     for (const j  in this.itemsL) {
@@ -499,11 +478,10 @@ async onBarCode(){
 
          this.intServ.loadingFunc(false);
   
-         this.intServ.alertFunc(this.js.getAlert('success', 'success', ` `, () =>{ 
+         this.intServ.alertFunc(this.js.getAlert('success', 'Success', ` `, () =>{ 
+          this.router.navigate(['page/wms/wmsReceipt']);
 
-          this.QtyLP -= this.lpsL.length;
-          this.QtyItem -= this.itemsL.length;
-          this.itemsL = []; this.itemsLT = undefined; this.lpsL = []; this.lpsLT = undefined}));
+         }));
      
       
   } catch (Error) {
@@ -563,11 +541,15 @@ let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.
 
     console.log('item =>',this.items);
 
+  
+
     this.lpsNo = lps.Possible_LPChilds.split("|");
 
     this.lpsNo.filter(async(no,index) => {
 
       let lps = await this.wmsService.getLpNo(no);
+    
+      if(!lps.Error && !lps.error){
 
       let lp = await this.wmsService.ListLp(lps);
 
@@ -588,8 +570,12 @@ let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.
         checkboxL = {testID: 0, testName: "", checked: false};
 
       }     
-      
+    
+    }
+
     });
+
+    
 
     this.items.filter((item, index) =>{
 
@@ -665,13 +651,17 @@ async trakingItem(contador:number = 0){
   console.log(this.traking);
     let res = (this.traking[contador].ItemTrackingCode != null)?await this.wmsService.configurationTraking(this.traking[contador].ItemTrackingCode):null;
     console.log(res);
+    let res2 = await this.wmsService.GetItemTrackingSpecificationOpen(this.traking[contador].ItemNo,this.traking[contador].SourceNo,this.traking[contador].SourceLineNo);
+    let res3 = await this.wmsService.GetItemTrackingSpecificationClosed(this.traking[contador].ItemNo,this.traking[contador].SourceNo,this.traking[contador].SourceLineNo);
+    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationOpen):null;
+    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res3.TrackingSpecificationClose):null;
     let code = (res != null)?await this.wmsService.listCode(res):null;
     this.intServ.loadingFunc(false);
   const popover = await this.popoverController.create({
     component: PopoverAddItemTrakingComponent,
     cssClass: 'popoverAddItemTrakingComponent',
     backdropDismiss: false,
-    componentProps: { item:this.traking[contador], code, palletNo:this.pallet.fields.PLULPDocumentNo}
+    componentProps: { item:this.traking[contador], code, palletNo:this.pallet.fields.PLULPDocumentNo,trakingClose,trakingOpen}
     
   });
 
@@ -686,6 +676,7 @@ async trakingItem(contador:number = 0){
       if(contador < this.traking.length){
         this.trakingItem(contador);
       }else{
+        this.traking = [];
         this.intServ.loadingFunc(false);
         this.boolean = true;
       }
@@ -705,11 +696,10 @@ async trakingItem(contador:number = 0){
       ExperationDate: data.obj.TrackingInfo[key].ExperationDate
     }
 
-    this.itemsL.push(item);
-  
-    this.itemsLT.push(item);
-  
+    this.itemB = true;
+    this.itemsL.push(item); 
     this.listItemsL.push(item);
+    this.itemsT.push(item);
     item = {
       ItemNo: "",
       Qty: 0,
@@ -729,6 +719,7 @@ async trakingItem(contador:number = 0){
     }else{
       this.intServ.loadingFunc(false);
       this.boolean = true;
+      this.traking = [];
     }
     break;
   }
@@ -799,11 +790,12 @@ switch(ev.detail.checked){
   if(line == null || line === undefined){
 
 
-    this.lpsLT = [];
+  
    
     this.lpsL.push(lp);
      this.listLpsL.push(lp);
-     this.lpsLT.push(lp);
+     this.lpsB = true;
+     this.lpsT.push(lp)
    
      console.log(this.lpsL);
 
@@ -817,7 +809,7 @@ switch(ev.detail.checked){
         if(Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
            this.lpsL.splice(index,1)
           this.listLpsL.splice(index,1)
-          this.lpsLT.splice(index,1)
+          this.lpsT.splice(index,1);
         }
       })
   
@@ -856,7 +848,8 @@ case true:
       case null:
         this.itemsL.push(item);
   
-        this.itemsLT.push(item);
+        this.itemB = true;
+        this.itemsT.push(item)
       
         this.listItemsL.push(item);
       
@@ -882,12 +875,9 @@ case false:
 
     if(Item.ItemNo === item.ItemNo){
 
-      this.itemsL.splice(i,1);
-
-      this.itemsLT.push(i,1);
-    
-    
+      this.itemsL.splice(i,1);    
       this.listItemsL.push(i,1);
+      this.itemsT.splice(i,1);
 
     }
   });
@@ -917,6 +907,7 @@ case false:
         this.lpsL = [];
         this.itemsLT = undefined;
         this.lpsLT = undefined;
+        this.lpsT = [];
 
       }
 
@@ -941,6 +932,7 @@ case false:
         this.listItemsL.splice(index,1);
 
         this.itemsL.splice(index,1);
+        this.itemsT.splice(index,1);
       }
     });
     }));
@@ -959,6 +951,7 @@ case false:
         this.listLpsL.splice(index,1);
 
         this.lpsL.splice(index,1);
+        this.lpsT.splice(index,1);
       }
     });
 

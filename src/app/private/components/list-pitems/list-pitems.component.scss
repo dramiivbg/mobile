@@ -595,3 +595,17 @@ ion-list{
 ion-checkbox{
     --border-radius: 50%;
 }
+
+.column{
+
+    overflow: auto;
+}
+
+.field{
+
+    overflow: auto;
+}
+
+ion-grid{
+    width: 150%;
+}
