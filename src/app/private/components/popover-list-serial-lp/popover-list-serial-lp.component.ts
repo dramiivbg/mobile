@@ -27,7 +27,9 @@ export class PopoverListSerialLpComponent implements OnInit {
 
   delete(index:any){
 
-   this.list.splice(index,1);
+  let con = this.list.splice(Number(index),1);
+  console.log(con);
+  console.log(this.list);
 
   }
 

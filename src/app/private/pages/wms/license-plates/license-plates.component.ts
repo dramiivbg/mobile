@@ -58,8 +58,8 @@ export class LicensePlatesComponent implements OnInit {
 
     this.frm = this.formBuilder.group(
       {
-        TotalToReceive: ['0', Validators.required],
-        NoofPackLP: ['0', Validators.required],
+        TotalToReceive: ['', Validators.required],
+        NoofPackLP: ['', Validators.required],
         PackUnitUoM: ['', Validators.required],
        
       }

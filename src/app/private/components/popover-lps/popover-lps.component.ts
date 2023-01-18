@@ -10,6 +10,7 @@ import {PopoverLpEditComponent} from '../popover-lp-edit/popover-lp-edit.compone
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import { SqlitePlureService } from '@svc/sqlite-plure.service';
+import { PopoverShowSerialesComponent } from '../popover-show-seriales/popover-show-seriales.component';
 
 
 
@@ -49,64 +50,87 @@ export class PopoverLpsComponent implements OnInit {
 
 
 
- async option(item:any,ev){
+async option(item:any,ev){
 
+switch(item.seriales.length === 1){
 
-  this.intServ.loadingFunc(true);
+   case true:
+      this.intServ.loadingFunc(true);
 
-
-
-  this.intServ.loadingFunc(false);
-   const popover = await this.popoverController.create({
-    component: PopoverOpionsLpComponent,
-    cssClass: 'popoverOptions',
-    event: ev,
-    componentProps: this.listMenu(item)
-  });
-  await popover.present();
-
-  const { data } = await popover.onDidDismiss();
-
-    switch(data.name) {
-
-      case 'Edit':
-
-      this.popoverController.dismiss({data: 'editado'});
-  // this.onPopLicensePlate(ev, item);
-  
-     break;
-
-     case 'Delete':
-
-        let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Surely you want to eliminate it?', async() => {
-
-
-          this.intServ.loadingFunc(true);
-
-          try {
-
-
-             let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(item.PLULPDocumentNo);
-
-             if(lpD.Error) throw Error(lpD.Error.Message);
-
-             this.popoverController.dismiss({data: 'eliminado'});
-             this.intServ.loadingFunc(false);
-             this.intServ.alertFunc(this.jsonService.getAlert('success', '', `The license plate ${lpD.LPPallet_DocumentNo} has been successfully deleted`));
-          
-          } catch (error) {
-            
-            this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.jsonService.getAlert('error', '', error.message))
+      this.intServ.loadingFunc(false);
+       const popover = await this.popoverController.create({
+        component: PopoverOpionsLpComponent,
+        cssClass: 'popoverOptions',
+        event: ev,
+        componentProps: this.listMenu(item)
+      });
+      await popover.present();
+    
+      const { data } = await popover.onDidDismiss();
+    
+        switch(data.name) {
+    
+          case 'Edit':
+    
+          this.popoverController.dismiss({data: 'editado'});
+      // this.onPopLicensePlate(ev, item);
+      
+         break;
+    
+         case 'Delete':
+    
+            let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Surely you want to eliminate it?', async() => {
+    
+    
+              this.intServ.loadingFunc(true);
+    
+              try {
+    
+    
+                 let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(item.PLULPDocumentNo);
+    
+                 if(lpD.Error) throw Error(lpD.Error.Message);
+    
+                 this.popoverController.dismiss({data: 'eliminado'});
+                 this.intServ.loadingFunc(false);
+                 this.intServ.alertFunc(this.jsonService.getAlert('success', '', `The license plate ${lpD.LPPallet_DocumentNo} has been successfully deleted`));
+              
+              } catch (error) {
+                
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.jsonService.getAlert('error', '', error.message))
+              }
+            }));
+    
+            break;
+    
           }
-        }));
+      break;
 
+      default:
+
+      const popover1 = await this.popoverController.create({
+        component: PopoverShowSerialesComponent,
+        cssClass: 'popoverShowSerialesComponent',
+        componentProps: {lps:item},
+        backdropDismiss: false
+      });
+      this.intServ.loadingFunc(false);
+      await popover1.present();   
+      this.options(popover1);
         break;
-
-      }
-
+  }
+ 
   }
 
+
+  public async options(obj:any){
+
+    const { data } = await obj.onDidDismiss();
+
+    this.popoverController.dismiss({data:data.data});
+
+  }
 
   public async onPopLicensePlate(ev: any, lp: any) {
     this.intServ.loadingFunc(true);

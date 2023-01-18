@@ -6,6 +6,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { Storage } from '@ionic/storage';
 import { PopoverListSerialLpComponent } from '../popover-list-serial-lp/popover-list-serial-lp.component';
+import { PopoverConfigurationCodeComponent } from '../popover-configuration-code/popover-configuration-code.component';
 
 @Component({
   selector: 'app-popover-add-item-traking',
@@ -20,6 +21,7 @@ export class PopoverAddItemTrakingComponent implements OnInit {
   @Input() palletNo:any;
   @Input() trakingClose:any;
   @Input() trakingOpen:any;
+  public mensaje = '';
   public Quantity = 0;
   public total:number;
   public obj:any = {};
@@ -33,16 +35,20 @@ export class PopoverAddItemTrakingComponent implements OnInit {
   constructor( private formBuilder: FormBuilder, public popoverController: PopoverController, private barcodeScanner: BarcodeScanner,
     private jsonService: JsonService, private intServ: InterceptService,  private storage: Storage) { 
 
+      
   }
 
   ngOnInit() {
 
+    
     this.frm = this.formBuilder.group(
       {
         TotalToReceive: [this.item.Qty, Validators.required],
        
       }
     )
+
+    console.log(this.trakingClose,this.trakingOpen);
 
     this.frm2 = this.formBuilder.group(
       {
@@ -81,6 +87,8 @@ export class PopoverAddItemTrakingComponent implements OnInit {
 
    if(this.serial) this.frm2.controls['Qty'].disable();
 
+   this.intServ.loadingFunc(false);
+
   }
 
 
@@ -95,8 +103,6 @@ export class PopoverAddItemTrakingComponent implements OnInit {
         console.log(code);
 
         let line = this.list.find(x => x.LotNo === code.toUpperCase());
-        let line2  = this.trakingOpen.find(x => x.LotNo === code.toUpperCase());
-        let line3  = this.trakingClose.find(x => x.LotNo === code.toUpperCase());
 
         if(line != undefined){
           this.frm2.patchValue({
@@ -111,8 +117,6 @@ export class PopoverAddItemTrakingComponent implements OnInit {
 
         }else{
 
-          if((line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
-
             if(this.exp) document.getElementById('datetime').setAttribute('disabled','false');
          
             this.frm2.patchValue({
@@ -120,7 +124,7 @@ export class PopoverAddItemTrakingComponent implements OnInit {
               LotNo: code.toUpperCase()
     
             });
-          }
+          
 
         }
       
@@ -296,8 +300,10 @@ async  save(){
       let code = barCodeData.text;
 
       let line = this.list.find(x => x.SerialNo === code.toUpperCase());
+      let line2 = this.trakingOpen.find(x => x.SerialNo === code.toUpperCase());
+      let line3  = this.trakingClose.find(x => x.SerialNo === code.toUpperCase());
 
-      if(line === null || line === undefined){
+      if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
 
         this.frm2.patchValue({
           SerialNo: code.toUpperCase()
@@ -305,7 +311,7 @@ async  save(){
 
       }else{
 
-        this.intServ.alertFunc(this.jsonService.getAlert('alert','',`The serial ${code.toUpperCase()} already exists`));
+        this.mensaje = `The serial ${code.toUpperCase()} already exists`;
       }
       
     }
@@ -343,6 +349,21 @@ async  onSubmit(){
         break;
     }
   }
+
+
+  async popoverConfigCode(){
+
+ 
+    const popover = await this.popoverController.create({
+      component: PopoverConfigurationCodeComponent,
+      cssClass: 'popoverConfigurationCodeComponent-modal',
+      componentProps: {code:this.code},
+      
+    });
+    await popover.present();
+    const { data } = await popover.onDidDismiss();
+  
+    }
   
     async lists(){
 
@@ -357,9 +378,10 @@ async  onSubmit(){
       const { data } = await popover.onDidDismiss();
 
        this.list = data.list;
-
-      this.storage.set(`lists ${this.item.LineNo}` ,this.list);
-
+       this.obj.TrackingInfo = [];
+       data.list.map(x => {if(x.proceded === false)this.obj.TrackingInfo.push(x)});
+       this.Quantity = 0;
+       this.list.map(x => this.Quantity+= x.Qty);
    
     }
 }

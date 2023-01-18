@@ -32,9 +32,8 @@
             <ion-col class="itemlist" size="4">{{item.ExperationDate}}</ion-col>
             <ion-col class="itemlist" size="2">{{item.Qty}}</ion-col>
           </ion-item>
-
-          <ion-item-options *ngIf="item.proceded === false">
-            <ion-item-option color="danger" (click)="delete(i)">
+            <ion-item-options *ngIf="item.proceded === false"  (click)="delete(i)">
+            <ion-item-option color="danger">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-item-option>
           </ion-item-options>

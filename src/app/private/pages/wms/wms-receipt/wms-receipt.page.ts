@@ -254,7 +254,9 @@ export class WmsReceiptPage implements OnInit {
       let receipt = await this.wmsService.getReceiptByNo(wms.id);
 
       if (receipt.Error) throw new Error(receipt.Error.Message);
-
+      if(receipt.error) throw new Error(receipt.error.message);
+      if(receipt.message) throw new Error(receipt.message);
+    
       this.mappingReceipt(receipt);
 
     } catch (error) {
@@ -324,9 +326,20 @@ export class WmsReceiptPage implements OnInit {
 
      let temp = [];
 
+     let qty = 0
+
      this.list.filter(lp => {
 
-      res
+      res.map(x => {
+        if(x.PLULPDocumentNo === lp.PLULPDocumentNo){
+        temp.push(x);
+        qty+= x.PLUQuantity;
+      } });
+
+      lp['seriales'] = temp;
+      lp.PLUQuantity = qty;
+      temp = [];
+      qty = 0;
      });
 
       let contador = 0;

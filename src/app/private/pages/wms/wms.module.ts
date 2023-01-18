@@ -50,6 +50,7 @@ import { PopoverListSerialLpComponent } from '@prv/components/popover-list-seria
 import { PopoverSerialesLpComponent } from '@prv/components/popover-seriales-lp/popover-seriales-lp.component';
 import { PopoverAddItemTrakingComponent } from '@prv/components/popover-add-item-traking/popover-add-item-traking.component';
 import { PopoverCountingComponent } from '@prv/components/popover-counting/popover-counting.component';
+import { PopoverShowSerialesComponent } from '@prv/components/popover-show-seriales/popover-show-seriales.component';
 
 
 
@@ -99,7 +100,8 @@ import { PopoverCountingComponent } from '@prv/components/popover-counting/popov
     PopoverListSerialLpComponent,
     PopoverSerialesLpComponent,
     PopoverAddItemTrakingComponent,
-    PopoverCountingComponent
+    PopoverCountingComponent,
+    PopoverShowSerialesComponent
     
   
   ],
@@ -144,7 +146,8 @@ import { PopoverCountingComponent } from '@prv/components/popover-counting/popov
     PopoverListSerialLpComponent,
     PopoverSerialesLpComponent,
     PopoverAddItemTrakingComponent,
-    PopoverCountingComponent
+    PopoverCountingComponent,
+    PopoverShowSerialesComponent 
   
   ]
 })

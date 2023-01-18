@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
 import { WmsService } from '@svc/wms.service';
 
 @Component({
@@ -9,11 +10,17 @@ import { WmsService } from '@svc/wms.service';
 export class PopoverConfigurationCodeComponent implements OnInit {
 
   @Input() code:any;
-  constructor() { }
+  constructor( public popoverController: PopoverController) { }
 
  async ngOnInit() {
   console.log(this.code);
   
+  }
+
+  close(){
+
+    this.popoverController.dismiss({});
+
   }
 
 }

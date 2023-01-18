@@ -134,10 +134,9 @@ export class WmsMainPage implements OnInit {
 
 
         if (rsl.Error) throw new Error(rsl.Error.Message);
-        // if(rsl.error.message) throw new Error(rsl.error.message);
-
-
-
+         if(rsl.error) throw new Error(rsl.error.message);
+         if(rsl.message) throw new Error(rsl.message);
+         
         let wareReceipts = rsl.WarehouseReceipts;
 
         this.intServ.loadingFunc(false);
