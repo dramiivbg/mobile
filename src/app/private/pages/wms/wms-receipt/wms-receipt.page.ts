@@ -214,13 +214,18 @@ export class WmsReceiptPage implements OnInit {
 
   public async onPopLicensePlates(ev: any, item: any) {
     this.intServ.loadingFunc(true);
+    
+    let res = await this.wmsService.GetItemTrackingSpecificationOpen(item.ItemNo,item.SourceNo,item.SourceLineNo);
+    let res2 = await this.wmsService.GetItemTrackingSpecificationClosed(item.ItemNo,item.SourceNo,item.SourceLineNo);
+    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):[];
+    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationClose):[];
     let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
    // console.log('Bincode =>', item.BinCode);
     let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
 
     
-    let res = (item.trakingCode != null)?await this.wmsService.configurationTraking(item.trakingCode):null;
-    let code = (res != null)?await this.wmsService.listCode(res):null;
+    let resC = (item.trakingCode != null)?await this.wmsService.configurationTraking(item.trakingCode):null;
+    let code = (res != null)?await this.wmsService.listCode(resC):null;
 
     console.log(lp);
     console.log(item);
@@ -228,7 +233,7 @@ export class WmsReceiptPage implements OnInit {
       const popover = await this.popoverController.create({
         component: LicensePlatesComponent,
         cssClass: 'popLicensePlate-modal',
-        componentProps: { options: { item, lp, lstUoM,code } },
+        componentProps: { options: { item, lp, lstUoM,code,trakingClose,trakingOpen } },
         backdropDismiss: false
       });
       this.intServ.loadingFunc(false);
@@ -334,7 +339,7 @@ export class WmsReceiptPage implements OnInit {
         if(x.PLULPDocumentNo === lp.PLULPDocumentNo){
         temp.push(x);
         qty+= x.PLUQuantity;
-      } });
+      }});
 
       lp['seriales'] = temp;
       lp.PLUQuantity = qty;

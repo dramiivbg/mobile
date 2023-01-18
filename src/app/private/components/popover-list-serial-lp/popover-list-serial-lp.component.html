@@ -30,7 +30,8 @@
               (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
             <ion-col class="itemlist" size="3">{{item.LotNo}}</ion-col>
             <ion-col class="itemlist" size="4">{{item.ExperationDate}}</ion-col>
-            <ion-col class="itemlist" size="2">{{item.Qty}}</ion-col>
+            <ion-col class="itemlist" size="2" *ngIf="item.Qty != undefined">{{item.Qty}}</ion-col>
+            <ion-col class="itemlist" size="2" *ngIf="item.Qty === undefined">{{item.QtyPhysInventory}}</ion-col>
           </ion-item>
             <ion-item-options *ngIf="item.proceded === false"  (click)="delete(i)">
             <ion-item-option color="danger">

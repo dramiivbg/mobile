@@ -2,33 +2,46 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-col>
+        <ion-col class="iconeye" size="2">
+          <ion-icon class="itemfooter" name="eye-outline"  (click)="lists()"></ion-icon>
+        </ion-col>  
+        <ion-col size="5">
           <ion-label>Count</ion-label>
         </ion-col>
+        <ion-col *ngIf="item === undefined" size="5">
+          <ion-label>{{qty}}/{{count}}</ion-label>
+        </ion-col>
       </ion-row>
-      <ion-row class="qtytoreceive titletop">
+      <ion-row class="qtytoreceive titletop" >
         <ion-col size="6">
           <b>Item No:</b>
         </ion-col>
-        <ion-col size="6">
+        <ion-col size="6" *ngIf="item != undefined">
           {{item.ItemNo}}
         </ion-col>
+        <ion-col size="6" *ngIf="item === undefined">
+          {{list[0].ItemNo}}
+        </ion-col>
       </ion-row>
+      
       <ion-row class="qtytoreceive">
         <ion-col size="6">
           <b>Unit of measure:</b>
         </ion-col>
-        <ion-col size="6">
+        <ion-col size="6" *ngIf="item != undefined">
           {{item.UnitofMeasureCode}}
         </ion-col>
+        <ion-col size="6" *ngIf="item === undefined">
+          {{list[0].UnitofMeasureCode}}
+        </ion-col>
       </ion-row>
-      <ion-row class="qtytoreceive"  *ngIf="item !== undefined">
+      <ion-row class="qtytoreceive" *ngIf="item != undefined">
         <ion-col size="6">
           <b>Qty P.I:</b>
         </ion-col>
-        <ion-col size="6">
+        <ion-col size="6" >
           {{item.QtyPhysInventory}}
-        </ion-col>
+        </ion-col>    
       </ion-row>
       
       <ion-row class="qtytoreceive" *ngIf="item !== undefined">
@@ -44,7 +57,7 @@
         <ion-col size="6">
           <b>Scan Counting:</b>
         </ion-col>
-        <ion-col size="6">
+        <ion-col size="6" (click)="onScan()">
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
       </ion-row>

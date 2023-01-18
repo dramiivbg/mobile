@@ -24,6 +24,8 @@ export class LicensePlatesComponent implements OnInit {
   public frm: FormGroup;
   public frm2: FormGroup;
   public code:any = {};
+  public trakingClose:any;
+  public trakingOpen:any;
   public list:any[] = [];
   public lot:boolean = false; 
   public exp:boolean = false;
@@ -83,6 +85,9 @@ export class LicensePlatesComponent implements OnInit {
     var lstUnitofMeasure = this.options.lstUoM === undefined ? {} : this.options.lstUoM;
     this.lstUoM = lstUnitofMeasure.UnitOfMeasure === undefined ? {} : lstUnitofMeasure.UnitOfMeasure;
     this.code = this.options.code === null ? {} : this.options.code;
+    this.trakingClose = this.options.trakingClose;
+    this.trakingOpen = this.options.trakingOpen;
+
     this.lot = (this.code.lines.LotPurchaseInboundTracking)?true:false;
     this.serial = (this.code.lines.SNPurchaseInboundTracking)?true:false;
     this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
@@ -439,8 +444,10 @@ async  save(){
       let code = barCodeData.text;
 
       let line = this.list.find(x => x.SerialNo === code.toUpperCase());
+      let line2 = this.trakingOpen.find(x => x.SerialNo === code.toUpperCase());
+      let line3 = this.trakingClose.find(x => x.SerialNo === code.toUpperCase());
 
-      if(line === null || line === undefined){
+      if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
 
         this.frm2.patchValue({
           SerialNo: code.toUpperCase()
