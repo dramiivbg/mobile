@@ -22,23 +22,23 @@
                 <ion-row size="12" class="titleslist">
 
                   <ion-col size="6" class="titleblue LPNo">
-                    {{item.PLULPDocumentNo}}
+                    {{item.PLUNo}}
                   </ion-col>
                   <ion-col size="6" class="label-line-title">
                     Qty. {{item.PLUQuantity}}
                   </ion-col>
                 </ion-row>
                 <ion-row size="12">
-                  <ion-col size="3" class="label-line">
+                  <ion-col size="6" class="label-line">
                     UoM: <b>{{item.PLUUnitofMeasureCode}}</b>
                   </ion-col>
-                  <ion-col size="4" class="label-line">
+                  <ion-col size="6" class="label-line">
                     Variant: <b>{{item.PLUVariantCode}}</b>
                   </ion-col>
-                  <ion-col size="5" class="label-line" *ngIf="item.PLUSerialNo != null">
+                  <ion-col size="6" class="label-line" *ngIf="item.PLUSerialNo != null">
                     Serial: <b>{{item.PLUSerialNo}}</b>
                   </ion-col>
-                  <ion-col size="5" class="label-line" *ngIf="item.PLULotNo != null">
+                  <ion-col size="6" class="label-line" *ngIf="item.PLULotNo != null">
                     Lot: <b>{{item.PLULotNo}}</b>
                   </ion-col>
                 </ion-row>
