@@ -22,9 +22,9 @@
         <ion-row *ngFor="let item of seriales; let i = index" style="text-align: center;" >
         
       
-              <ion-col size="4" >{{item.PLUSerialNo}}</ion-col>
-              <ion-col size="4">{{item.PLULotNo}}</ion-col>
-              <ion-col size="4" >{{item.PLUQuantity}}</ion-col>
+              <ion-col size="4" >{{item.fields.PLUSerialNo}}</ion-col>
+              <ion-col size="4">{{item.fields.PLULotNo}}</ion-col>
+              <ion-col size="4" >{{item.fields.PLUQuantity}}</ion-col>
         
       
         </ion-row>

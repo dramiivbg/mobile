@@ -15,7 +15,7 @@ import { WmsService } from '@svc/wms.service';
 export class PhysicalInventoryPage implements OnInit {
 
   public lists:any;
-  public bins:any[] = [];
+  public bins:string[] = [];
   public listT:any[] = [];
   public list:any[] = [];
   public bin:any = '';
@@ -49,8 +49,11 @@ export class PhysicalInventoryPage implements OnInit {
   this.barcodeScanner.scan().then(
     barCodeData => {
       let code = barCodeData.text;
-      let line = this.bins.find(x => x === code.toUpperCase());
+      let line = this.bins.find(x => x.toUpperCase() === code.toUpperCase());
 
+      console.log(line);
+      console.log(code.toUpperCase());
+      console.log(this.bins);
       if(line != undefined){
 
         this.bin = line;
@@ -75,40 +78,50 @@ export class PhysicalInventoryPage implements OnInit {
 
  async onScanAll(){
 
-  this.barcodeScanner.scan().then(
-    barCodeData => {
-      let code = barCodeData.text;
+  switch(this.bin){
+    case '':
+      this.intServ.alertFunc(this.js.getAlert('alert','','Please confirm the bin to count'));
+      break;
 
-      if(this.list.length > 0){
-
-        let line = this.list.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-        let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-
-        if((line !== undefined) && (line2 === undefined || line2 === null)){
-          let vector = []
-          this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
-          this.PopoverCounting(vector);
+    default:
+      this.barcodeScanner.scan().then(
+        barCodeData => {
+          let code = barCodeData.text;
+    
+          if(this.list.length > 0){
+    
+            let line = this.list.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
+            let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
+    
+            if((line !== undefined) && (line2 === undefined || line2 === null)){
+              let vector = []
+              this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
+              this.PopoverCounting(vector);
+            }
+          }else{
+    
+            
+            let line = this.lists.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
+            let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
+    
+            if((line !== undefined) && (line2 === undefined || line2 === null)){
+              let vector = []
+              this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
+         
+            }
+    
+          }
+         
         }
-      }else{
-
-        
-        let line = this.lists.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-        let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-
-        if((line !== undefined) && (line2 === undefined || line2 === null)){
-          let vector = []
-          this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
-          this.PopoverCounting(vector);
+      ).catch(
+        err => {
+          console.log(err);
         }
-
-      }
+      )
      
-    }
-  ).catch(
-    err => {
-      console.log(err);
-    }
-  )
+      break;
+
+  }
   }
 
  async PopoverCounting(obj:any){
