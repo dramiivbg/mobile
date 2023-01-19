@@ -2,7 +2,8 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline" (click)="popoverConfigCode()"></ion-icon>
+        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline"
+          (click)="popoverConfigCode()"></ion-icon>
         <ion-col>
           <ion-label>Receive LP</ion-label>
         </ion-col>
@@ -31,41 +32,32 @@
           {{lp.LP_Pending_To_Receive}}
         </ion-col>
       </ion-row>
-      
+
       <ion-row class="qtytoreceive">
         <ion-col size="6">
-          <b>Qty x Pack:</b>
+          <b>Qty x Pack:</b> <ion-text *ngIf="frm.controls['TotalToReceive'].errors['required']" color="danger">*</ion-text>
         </ion-col>
         <ion-col size="6">
-          <ion-input class="inputqty" type="number" formControlName="TotalToReceive" ></ion-input>
+          <ion-input class="inputqty" type="number" formControlName="TotalToReceive"></ion-input>
         </ion-col>
-        <div *ngIf="frm.controls['TotalToReceive'].errors">
-          <ion-text  *ngIf="frm.controls['TotalToReceive'].errors['required']" color="danger">*Campo requerido</ion-text>     
-        </div>
+        </ion-row>
+      <ion-row class="qtytoreceive">
+        <ion-col size="6">
+          <b>No of Pack(LP):</b> <ion-text *ngIf="frm.controls['NoofPackLP'].errors['required']" color="danger">*</ion-text>
+        </ion-col>
+        <ion-col size="6">
+          <ion-input class="inputqty" type="number" formControlName="NoofPackLP"></ion-input>
+        </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive">
         <ion-col size="6">
-          <b>No of Pack(LP):</b>
-        </ion-col>
-        <ion-col size="6">
-          <ion-input class="inputqty" type="number" formControlName="NoofPackLP" ></ion-input>
-        </ion-col>
-        <div *ngIf="frm.controls['NoofPackLP'].errors">
-          <ion-text  *ngIf="frm.controls['NoofPackLP'].errors['required']" color="danger">*Campo requerido</ion-text>     
-        </div>
-      </ion-row>
-      <ion-row class="qtytoreceive">
-        <ion-col size="6">
-          <b>Pack Unit:</b>
+          <b>Pack Unit:</b> <ion-text *ngIf="frm.controls['PackUnitUoM'].errors['required']" color="danger">*</ion-text>
         </ion-col>
         <ion-col size="6">
           <ion-select class="inputqty" placeholder="Select Unit" formControlName="PackUnitUoM">
             <ion-select-option *ngFor="let uoM of lstUoM" [value]="uoM.Code">{{uoM.Code}}</ion-select-option>
           </ion-select>
         </ion-col>
-        <div *ngIf="frm.controls['PackUnitUoM'].errors">
-          <ion-text  *ngIf="frm.controls['PackUnitUoM'].errors['required']" color="danger">*Campo requerido</ion-text>     
-        </div>
       </ion-row>
 
       <ion-row class="footer">
@@ -91,8 +83,8 @@
     <form [formGroup]="frm2" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col class="iconeye" size="2">
-          <ion-icon class="itemfooter" name="eye-outline"  (click)="lists()"></ion-icon>
-        </ion-col>  
+          <ion-icon class="itemfooter" name="eye-outline" (click)="lists()"></ion-icon>
+        </ion-col>
         <ion-col size="5">
           <ion-label>Traking Lines</ion-label>
         </ion-col>
@@ -102,23 +94,20 @@
       </ion-row>
       <ion-row class="qtytoreceive" *ngIf="serial">
         <ion-col size="4">
-          <b>Serial No:</b>
+          <b>Serial No:</b> <ion-text *ngIf="frm2.controls['SerialNo'].errors['required']" color="danger">*</ion-text>
         </ion-col>
         <ion-col size="2" (click)="scanSN()">
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
-        <ion-col size="6" >
-          <ion-input  readonly  class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001" value="0"></ion-input>
+        <ion-col size="6">
+          <ion-input readonly class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001"
+            value="0"></ion-input>
         </ion-col>
-
-        <div *ngIf="frm2.controls['SerialNo'].errors">
-          <ion-text  *ngIf="frm2.controls['SerialNo'].errors['required']" color="danger">*Campo requerido</ion-text>     
-        </div>
       </ion-row>
-      
+
       <ion-row class="qtytoreceive" *ngIf="lot">
         <ion-col size="4">
-          <b>Lot No:</b>
+          <b>Lot No:</b> <ion-text *ngIf="frm2.controls['LotNo'].errors['required']" color="danger">*</ion-text>
         </ion-col>
         <ion-col size="2" (click)="scanLOT()">
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
@@ -126,36 +115,28 @@
         <ion-col size="6">
           <ion-input readonly class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
         </ion-col>
-        <div *ngIf="frm2.controls['LotNo'].errors">
-          <ion-text  *ngIf="frm2.controls['LotNo'].errors['required']" color="danger">*Campo requerido</ion-text>     
-        </div>
       </ion-row>
-      
+
       <ion-row class="qtytoreceive" *ngIf="exp">
         <ion-col size="6">
-          <b>Exp Date:</b>
+          <b>Exp Date:</b> <ion-text *ngIf="frm2.controls['exp'].errors['required']" color="danger">*</ion-text>
+
         </ion-col>
         <ion-col size="6">
           <ion-datetime id="datetime" class="inputqty" displayFormat="MM/DD/YYYY" formControlName="exp"
             placeholder="Select Date"></ion-datetime>
         </ion-col>
-        <div *ngIf="frm2.controls['exp'].errors">
-          <ion-text  *ngIf="frm2.controls['exp'].errors['required']" color="danger">*Campo requerido</ion-text>     
-        </div>
       </ion-row>
 
       <ion-row class="qtytoreceive" *ngIf="serial === false">
         <ion-col size="6">
-          <b>Qty</b>
+          <b>Qty</b> <ion-text *ngIf="frm2.controls['Qty'].errors['required']" color="danger">*</ion-text>
         </ion-col>
         <ion-col size="6">
-          <ion-input class="inputqty" type="number" formControlName="Qty" ></ion-input>
+          <ion-input class="inputqty" type="number" formControlName="Qty"></ion-input>
         </ion-col>
-        <div *ngIf="frm2.controls['Qty'].errors">
-          <ion-text  *ngIf="frm2.controls['Qty'].errors['required']" color="danger">*Campo requerido</ion-text>     
-        </div>
       </ion-row>
-      
+
       <ion-row class="footer">
 
         <ion-col size="6">
@@ -170,6 +151,3 @@
     </form>
   </ion-content>
 </ng-container>
-
-
-

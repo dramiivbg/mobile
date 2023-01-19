@@ -44,7 +44,7 @@ ion-item::part(native) {
 .label-lines {
     width: 100%;
     font-size: 13px;
-    // padding: 0px 0px 10px 20px;
+    padding: 5px 0 0px 17px;
 
     // ion-col {
     //     padding: 2px 10px 2px 0;
@@ -104,9 +104,7 @@ ion-button.add-lines::part(native) {
 .designform-header {
     background: linear-gradient(to top, #5CABF9, #1A518E) !important;
     // margin-top: 5px;
-    padding-top: 5px;
-    padding-bottom: 0.3rem;
-    position: relative;
+    padding: 9px 0 5px 20px;
     color: #ffffff;
     border-radius: 0 0 70% 0;
     font-weight: bold;
@@ -160,13 +158,13 @@ ion-button.add-lines::part(native) {
     .newColor {
         background: rgb(255, 255, 255, 0.25);
         border-radius: 23px;
-        width: 92%;
+        width: 100%;
         margin: 5px 0 22px 0;
         --ion-color-base: var(--ion-color-plureHeader)
     }
 
     .newColor2 {
-        width: 92%;
+        width: 100%;
         margin: 0px 0 10px -5px;
         --ion-color-base: var(--ion-color-plureHeader)
     }
@@ -186,7 +184,7 @@ ion-button.add-lines::part(native) {
     div.text-header {
         float: left;
         padding-top: 3px;
-        width: 40%;
+        width: 100%;
     }
 
 
@@ -198,7 +196,7 @@ ion-button.add-lines::part(native) {
 
     hr {
         background: var(--ion-color-plure-contrast);
-        width: 92%;
+        width: 100%;
         margin: 0 0 4px 35px;
     }
 }
@@ -256,13 +254,6 @@ div.accornSubTotal {
     }
 }
 
-ion-col.item {
-
-    border-bottom: 2px solid gray;
-    width: 100%;
-
-}
-
 
 .barcodebtn {
     margin: auto;
@@ -286,24 +277,29 @@ ion-col.item {
 }
 
 .itemfooter {
-    color: #F2F2F2 !important;
+    text-align: center;
+    font-size: 15px;
 }
 
 ion-content {
     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
-    height: 90%;
+    height: 100%;
     overflow: auto;
 }
 
 ion-list {
     background: transparent;
     padding-top: 0;
+    padding-bottom: 0;
+    width: 100%;
+    --inner-border-width: 0 0 1px 0;
 
 }
 
 ion-item {
-    --border-color: transparent;
-    padding: 0px 0 10px 0;
+    // --border-color: transparent;
+    // padding: 0px 0 10px 0;
+    width: 100%;
 }
 
 .select {
@@ -382,9 +378,9 @@ ion-fab-button.custom {
     text-align: left;
 }
 
-ion-list {
-    padding: 20px 0 0 20px;
-}
+// ion-list {
+//     padding: 20px 0 0 20px;
+// }
 
 ion-input {
     --background: rgba(92, 171, 249, 0.08) !important;
@@ -395,7 +391,17 @@ ion-input {
     --padding-top: 5px;
 }
 
-.overflow{
+.overflow {
 
     overflow-y: scroll;
+}
+
+.col1 {
+    display: flex;
+    align-items: center;
+}
+
+.col1,
+.col2 {
+    text-align: center;
 }
