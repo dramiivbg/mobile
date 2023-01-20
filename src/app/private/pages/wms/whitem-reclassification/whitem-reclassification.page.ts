@@ -34,6 +34,7 @@ export class WhitemReclassificationPage implements OnInit {
   public PLUBinCode: any = '';
 
   public boolean: Boolean = true;
+  public palletH: any;
 
   constructor(
     private barcodeScanner: BarcodeScanner, private formBuilder: FormBuilder, private wmsService: WmsService, private intServ: InterceptService

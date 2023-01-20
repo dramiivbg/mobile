@@ -102,7 +102,7 @@
       
       <ion-row class="qtytoreceive" *ngIf="serial === false">
         <ion-col size="6">
-          <b>Qty</b>  <ion-text *ngIf="frm.controls['QtyBase'].errors && frm2.controls['QtyBase'].errors['required']" color="danger">*</ion-text>
+          <b>Qty</b>  <ion-text *ngIf="frm.controls['QtyBase'].errors && frm.controls['QtyBase'].errors['required']" color="danger">*</ion-text>
         </ion-col>
         <ion-col size="6">
           <ion-input class="inputqty" type="number" formControlName="QtyBase"></ion-input>

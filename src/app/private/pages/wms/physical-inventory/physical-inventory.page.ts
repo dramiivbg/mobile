@@ -22,6 +22,7 @@ export class PhysicalInventoryPage implements OnInit {
   public lps:any[] = [];
   public counted = 0;
   public quantity = 0;
+  public binCode:any;
   constructor(private storage: Storage ,private intServ: InterceptService
     , private js: JsonService, private barcodeScanner: BarcodeScanner,
     public popoverController: PopoverController,

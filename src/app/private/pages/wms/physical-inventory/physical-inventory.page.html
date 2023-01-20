@@ -21,11 +21,11 @@
     <ion-icon md="checkmark-done-outline" ios="checkmark-done-outline"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
-    <ion-fab-button color="secondary" (click)="onBarCode()" data-desc="Count">
+    <ion-fab-button color="secondary" data-desc="Count">
       <ion-icon name="checkmark-circle-outline"></ion-icon>
     </ion-fab-button>
 
-    <ion-fab-button color="danger" (click)="onBarCodeChange()" data-desc="Non Count">
+    <ion-fab-button color="danger"  data-desc="Non Count">
       <ion-icon name="close-circle-outline"></ion-icon>
     </ion-fab-button>
 
@@ -58,11 +58,11 @@
 
       <ion-row class="delivery newColor2">
         <ion-col size="10">
-          <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
+          <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" 
             show-clear-button="always" clear-icon="close-outline" placeholder="group by bin code"></ion-searchbar>
         </ion-col>
         <ion-col size="2" class="barcodebtn">
-          <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
+          <ion-icon size="large" name="barcode-outline" ></ion-icon>
         </ion-col>
       </ion-row>
 
