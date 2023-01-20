@@ -319,6 +319,8 @@ export class WmsReceiptPage implements OnInit {
       if (lps.Error) throw new Error(lps.Error.Message);
 
       let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+      let res2 = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+      console.log('res =>',res);
       res.filter(lp => {
 
         let line = this.list.find(x => x.PLULPDocumentNo === lp.PLULPDocumentNo);
@@ -328,24 +330,28 @@ export class WmsReceiptPage implements OnInit {
 
       
      console.log('lps =>',this.list);
-
      let temp = [];
 
      let qty = 0
 
-     this.list.filter(lp => {
-
-      res.map(x => {
-        if(x.PLULPDocumentNo === lp.PLULPDocumentNo){
-        temp.push(x);
-        qty+= x.PLUQuantity;
-      }});
-
-      lp['seriales'] = temp;
-      lp.PLUQuantity = qty;
-      temp = [];
-      qty = 0;
-     });
+     
+  for (const key in this.list) {
+        for (const j in res2) {
+          if (res2[j].PLULPDocumentNo === this.list[key].PLULPDocumentNo) {
+            console.log('x =>',res2[j]);
+            temp.push(res2[j]);
+            qty+= res2[j].PLUQuantity;
+            
+          }
+        }
+        
+        this.list[key]['seriales'] = temp;
+        this.list[key].PLUQuantity = qty;
+        temp = [];
+        qty = 0;
+      }
+     
+  
 
       let contador = 0;
       this.cantidades = [];

@@ -35,7 +35,7 @@ export class UpdateItemComponent implements OnInit {
 
     this.frm = this.formBuilder.group(
       {
-        TotalToReceive: ['0', Validators.required],
+        TotalToReceive: [' ', Validators.required],
 
       }
     )

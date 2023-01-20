@@ -32,7 +32,7 @@
       </ion-row>
       <ion-row>
         <ion-col class="qtytoreceive" size="6">
-          <b>Qty to Receive</b>
+          <b>Qty to Receive</b><ion-text  *ngIf="frm.controls['TotalToReceive'].errors && frm.controls['TotalToReceive'].errors['required']" color="danger">*</ion-text>
         </ion-col>
         <ion-col size="6">
           <ion-input class="inputqty" type="number" formControlName="TotalToReceive" value="0"></ion-input>
