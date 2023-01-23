@@ -20,7 +20,7 @@
           {{item.ItemNo}}
         </ion-col>
         <ion-col size="6" *ngIf="item === undefined">
-          {{list[0].ItemNo}}
+          {{list.ItemNo}}
         </ion-col>
       </ion-row>
       
@@ -32,7 +32,7 @@
           {{item.UnitofMeasureCode}}
         </ion-col>
         <ion-col size="6" *ngIf="item === undefined">
-          {{list[0].UnitofMeasureCode}}
+          {{list.UnitofMeasureCode}}
         </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive" *ngIf="item != undefined">

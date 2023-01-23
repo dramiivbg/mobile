@@ -144,8 +144,11 @@ export class WmsReceiptPage implements OnInit {
           cssClass: 'UpdateItemComponent',
           componentProps: { options: { item, lp, lstUoM } },
         });
-        await popoverI.present();
+       await popoverI.present();
 
+       const { data } = await popoverI.onDidDismiss();
+
+       if(data.receive) this.getReceipt();
         break;
       }else{
         this.popoverItemTraking(item,lp);
@@ -225,7 +228,7 @@ export class WmsReceiptPage implements OnInit {
 
     
     let resC = (item.trakingCode != null)?await this.wmsService.configurationTraking(item.trakingCode):null;
-    let code = (res != null)?await this.wmsService.listCode(resC):null;
+    let code = (resC != null)?await this.wmsService.listCode(resC):null;
 
     console.log(lp);
     console.log(item);
@@ -368,9 +371,6 @@ export class WmsReceiptPage implements OnInit {
         }
 
         console.log(this.LpL);
-        this.cantidades[key] = contador;
-       console.log(this.cantidades);
-        contador = 0;
     
    }   
    console.log(this.cantidades);

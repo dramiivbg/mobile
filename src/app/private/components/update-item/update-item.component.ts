@@ -74,18 +74,8 @@ export class UpdateItemComponent implements OnInit {
               ZoneCode: this.item.ZoneCode,
               LocationCode: this.item.LocationCode,
               BinCode: this.item.BinCode,
-              QtyToReceive: this.item.Quantity / obj.TotalToReceive
-            },
-            {
-              No: this.item.No,
-              SourceNo: this.item.SourceNo,
-              ItemNo: this.item.ItemNo,
-              LineNo: this.item.LineNo,
-              ZoneCode: this.item.ZoneCode,
-              LocationCode: this.item.LocationCode,
-              BinCode: this.item.BinCode,
               QtyToReceive: obj.TotalToReceive
-            }
+            },
           ]
         }
       ]
@@ -105,7 +95,7 @@ export class UpdateItemComponent implements OnInit {
 
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.jsonService.getAlert('success', 'The item quantities have been successfully posted.', ''));
+        this.intServ.alertFunc(this.jsonService.getAlert('success', 'The item quantities have been successfully posted.', '', ()=> {this.popoverController.dismiss({receive: obj.TotalToReceive})}));
 
 
       } catch (error) {

@@ -44,7 +44,7 @@ export class PopoverItemTrakingComponent implements OnInit {
         TotalToReceive: [0, Validators.required],
         SerialNo: ['', Validators.required],
         LotNo: ['', Validators.required],
-        QtyBase: [0, Validators.required],
+        QtyBase: ['', Validators.required],
 
 
 
@@ -158,7 +158,7 @@ export class PopoverItemTrakingComponent implements OnInit {
 
           this.frm.patchValue({
 
-            requestedDeliveryDate: code.toUpperCase()
+            LotNo: code.toUpperCase()
   
           });
         }
@@ -327,8 +327,11 @@ async  view(){
  
           this.storage.set(`${this.item.LineNo} receive`,this.frm.get('TotalToReceive').value);
  
-           this.list = [];       
+           this.list = [];    
+           this.popoverController.dismiss({receive:this.frm.get('TotalToReceive').value});   
          }));
+
+         
                     
        } catch (error) {
          this.intServ.loadingFunc(false);

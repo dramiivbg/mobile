@@ -34,9 +34,9 @@ export class PopoverCountingComponent implements OnInit {
     }
 
   ngOnInit() {
-   this.item = (this.list.length === 1)? this.list[0]:undefined;
+   this.item = (this.list.seriales === 1)? this.list.seriales[0]:undefined;
    console.log(this.item);
-  this.qty = this.list.length;
+  this.qty = this.list.seriales.length;
    console.log(this.list);
   }
 
@@ -47,10 +47,12 @@ export class PopoverCountingComponent implements OnInit {
 
   public async onSubmit(){
 
-    if(this.frm.valid){
+    if(this.frm.valid && this.item != undefined){
 
       let obj = await this.jsonService.formToJson(this.frm);
       this.popoverController.dismiss({qty:obj.qty, obj: this.list});
+    }else{
+      this.popoverController.dismiss({qty:this.count, obj: this.seriales});
     }
   }
 
@@ -61,12 +63,18 @@ export class PopoverCountingComponent implements OnInit {
     barCodeData => {
       let code = barCodeData.text;
    
-      let line = this.list.find(x => code.toUpperCase() === x.SerialNo);
+    switch(this.count != this.qty){
+     case true:
+      let line = this.list.seriales.find(x => code.toUpperCase() === x.SerialNo);
 
-      if(line != undefined)this.seriales.push(line);
-
+      if(line != undefined){
+        line['proceded'] = false;
+        this.seriales.push(line);
+      } 
       this.count = this.seriales.length;
-
+      break;
+    }
+  
     }
   ).catch(
     err => {
