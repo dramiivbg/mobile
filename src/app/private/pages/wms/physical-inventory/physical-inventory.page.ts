@@ -19,6 +19,7 @@ export class PhysicalInventoryPage implements OnInit {
   public listT:any[] = [];
   public list:any[] = [];
   public bin:any = '';
+  public batch:any;
   public lps:any[] = [];
   public counted = 0;
   public quantity = 0;
@@ -30,98 +31,8 @@ export class PhysicalInventoryPage implements OnInit {
  async ngOnInit() {
   this.lists = await  this.storage.get('inventory');
 
-  for (const key in this.lists) {
-    
-    let line = this.bins.find(x => x === this.lists[key].BinCode);
+  this.batch = await  this.storage.get('batch'); 
 
-    if(line === undefined || line === null)this.bins.push(this.lists[key].BinCode);
-  }
-
-  console.log(this.lists);
-  console.log(this.bins);
-
-  this.intServ.loadingFunc(false);
-
-  }
-
- async onScanBin(){
-
-  this.barcodeScanner.scan().then(
-    barCodeData => {
-      let code = barCodeData.text;
-      let line = this.bins.find(x => x.toUpperCase() === code.toUpperCase());
-
-      console.log(line);
-      console.log(code.toUpperCase());
-      console.log(this.bins);
-      if(line != undefined){
-
-        this.bin = line;
-
-        this.lists.map(x => {if(x.BinCode === line)this.list.push(x)});
-
-        this.quantity = this.list.length;
-      }
-
-      
-    }
-  ).catch(
-    err => {
-      console.log(err);
-    }
-  )
-
-  this.listT = this.list;
-  console.log(this.list);
-
-  }
-
- async onScanAll(){
-
-  switch(this.bin){
-    case '':
-      this.intServ.alertFunc(this.js.getAlert('alert','','Please confirm the bin to count'));
-      break;
-
-    default:
-      this.barcodeScanner.scan().then(
-        barCodeData => {
-          let code = barCodeData.text;
-    
-          if(this.list.length > 0){
-    
-            let line = this.list.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-            let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-    
-            if((line !== undefined) && (line2 === undefined || line2 === null)){
-              let vector = []
-              this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
-              this.PopoverCounting(vector);
-            }
-          }else{
-    
-            
-            let line = this.lists.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-            let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-    
-            if((line !== undefined) && (line2 === undefined || line2 === null)){
-              let vector = []
-              this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
-         
-            }
-    
-          }
-         
-        }
-      ).catch(
-        err => {
-          console.log(err);
-        }
-      )
-     
-      break;
-
-  }
   }
 
  async PopoverCounting(obj:any){
@@ -140,6 +51,22 @@ export class PhysicalInventoryPage implements OnInit {
       
       this.WritePI(data.obj,data.qty);
     }
+
+  }
+
+  async onBarCode(){
+
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text;
+       
+        
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
 
   }
 

@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { PopoverSerialesLpComponent } from '../popover-seriales-lp/popover-seriales-lp.component';
 
 @Component({
   selector: 'app-modal-lps-confirm',
@@ -26,7 +27,7 @@ export class ModalLpsConfirmComponent implements OnInit {
   public listB: any[] = [];
   @Input() whsePutAway: any;
 
-  constructor(private barcodeScanner: BarcodeScanner, private modalCtrl: ModalController, private storage: Storage) { }
+  constructor(private barcodeScanner: BarcodeScanner, private modalCtrl: ModalController, private storage: Storage,public popoverController: PopoverController) { }
 
   ngOnInit() {
     this.lpsT = this.lps;
@@ -135,6 +136,23 @@ export class ModalLpsConfirmComponent implements OnInit {
         break;
     }
 
+  }
+
+  async show(lp:any){
+
+    if(lp.seriales.length > 1){
+
+      const popoverI = await this.popoverController.create({
+        component: PopoverSerialesLpComponent,
+        cssClass: 'popoverSerialesLpComponent',
+        backdropDismiss: false,
+        componentProps: {seriales:lp.seriales},
+      });
+      await popoverI.present();
+  
+      const { data } = await popoverI.onWillDismiss();
+
+    }
   }
 
   onSubmit() {

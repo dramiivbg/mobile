@@ -129,10 +129,10 @@
                                         <ion-item-sliding>
 
                                             <ion-item style="width: 100%;">
-                                                <ion-col size="12" class="item" (click)="show(item)">
+                                                <ion-col size="12" class="item" >
 
                                                     <ion-row class="titleslist">
-                                                        <ion-col size="7" class="titleblue">
+                                                        <ion-col size="7" class="titleblue" (click)="show(item)">
                                                             {{item.fields.PLULPDocumentNo}}
                                                         </ion-col>
                                                         <ion-col size="5" class="select">

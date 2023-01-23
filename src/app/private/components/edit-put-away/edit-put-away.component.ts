@@ -511,6 +511,10 @@ export class EditPutAwayComponent implements OnInit {
 
       try {
 
+        if(this.split.Error) throw new Error(this.split.Error.Message);
+        if(this.split.error) throw new Error(this.split.error.message);
+        if(this.split.message) throw new Error(this.split.message);
+        
 
         console.log(this.itemsG);
 
@@ -625,8 +629,8 @@ export class EditPutAwayComponent implements OnInit {
               let updateI = await this.wmsService.Update_Wsheput_Lines_V2(listItem);
 
               console.log('update =>', updateI);
-              if (updateI.Error || updateI.error) throw new Error((updateI.Error !== undefined) ? updateI.Error.Message : updateI.error.message);
-
+              if (updateI.Error) throw new Error(updateI.Error.Message);
+              if(updateI.error) throw new Error(updateI.error.message);
               if (updateI.message) throw new Error(updateI.message);
 
               this.obj.ActivityType = 1;
@@ -653,8 +657,6 @@ export class EditPutAwayComponent implements OnInit {
 
               listItem = [];
 
-
-
             }
           }
         }
@@ -671,7 +673,7 @@ export class EditPutAwayComponent implements OnInit {
 
               if (l !== undefined) {
                 Lp.fields.place = l.fields.place;
-                Lp.seriales.map(x => x.fields.place = l.fields.place);
+                Lp.seriales = l.fields.seriales;
               }
 
               this.split.WarehousePutAwayLines.filter(lp => {
@@ -756,7 +758,10 @@ export class EditPutAwayComponent implements OnInit {
 
         console.log('post away =>', postAway);
 
-        if (postAway.Error || postAway.error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
+        if (postAway.Error) throw new Error(postAway.Error.Message);
+        if (postAway.error) throw new Error(postAway.error.message);
+        if (postAway.message) throw new Error(postAway.message);
+        
 
         this.intServ.loadingFunc(false);
 
@@ -891,6 +896,7 @@ export class EditPutAwayComponent implements OnInit {
 
     if (!lps.Error) {
       let listLp = await this.wmsService.ListLP(lps);
+      let listLp2 = await this.wmsService.ListLP(lps);
       let listLpH = await this.wmsService.ListLPH(lps);
       listLp.filter(lp => {
         let find2: any = undefined;
@@ -929,7 +935,11 @@ export class EditPutAwayComponent implements OnInit {
 
       this.initV.filter(lp => {
 
-        listLp.map(x => {if(x.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){temp.push(x); qty += x.fields.PLUQuantity}})
+        listLp2.map(x => {if(x.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
+          x.fields.place = lp.fields.place;
+          temp.push(x); 
+          qty += x.fields.PLUQuantity
+        }});
 
         lp['seriales'] = temp;
         lp.fields.PLUQuantity = qty;
@@ -1637,6 +1647,8 @@ export class EditPutAwayComponent implements OnInit {
             if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) {
 
               lp.fields.place = bin.toUpperCase();
+              lp.seriales.map(x => x.fields.place = bin.toUpperCase());
+              console.log(lp);
 
             }
           });
