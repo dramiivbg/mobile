@@ -339,7 +339,9 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
         
              
        items = await this.wmsService.listTraking(res3.Warehouse_Physical_Inventory_Journal);
-        
+
+      this.storage.set('batch',data.Name); 
+
        this.storage.set('inventory',items);
 
        

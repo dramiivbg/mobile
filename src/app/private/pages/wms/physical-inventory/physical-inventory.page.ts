@@ -3,6 +3,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { PopoverCountingComponent } from '@prv/components/popover-counting/popover-counting.component';
+import { PopoverListSNComponent } from '@prv/components/popover-list-sn/popover-list-sn.component';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
@@ -19,6 +20,7 @@ export class PhysicalInventoryPage implements OnInit {
   public listT:any[] = [];
   public list:any[] = [];
   public bin:any = '';
+  public batch:any;
   public lps:any[] = [];
   public counted = 0;
   public quantity = 0;
@@ -31,98 +33,10 @@ export class PhysicalInventoryPage implements OnInit {
  async ngOnInit() {
   this.lists = await  this.storage.get('inventory');
 
-  for (const key in this.lists) {
-    
-    let line = this.bins.find(x => x === this.lists[key].BinCode);
-
-    if(line === undefined || line === null)this.bins.push(this.lists[key].BinCode);
-  }
-
-  console.log(this.lists);
-  console.log(this.bins);
+  this.batch = await  this.storage.get('batch'); 
 
   this.intServ.loadingFunc(false);
 
-  }
-
- async onScanBin(){
-
-  this.barcodeScanner.scan().then(
-    barCodeData => {
-      let code = barCodeData.text;
-      let line = this.bins.find(x => x.toUpperCase() === code.toUpperCase());
-
-      console.log(line);
-      console.log(code.toUpperCase());
-      console.log(this.bins);
-      if(line != undefined){
-
-        this.bin = line;
-
-        this.lists.map(x => {if(x.BinCode === line)this.list.push(x)});
-
-        this.quantity = this.list.length;
-      }
-
-      
-    }
-  ).catch(
-    err => {
-      console.log(err);
-    }
-  )
-
-  this.listT = this.list;
-  console.log(this.list);
-
-  }
-
- async onScanAll(){
-
-  switch(this.bin){
-    case '':
-      this.intServ.alertFunc(this.js.getAlert('alert','','Please confirm the bin to count'));
-      break;
-
-    default:
-      this.barcodeScanner.scan().then(
-        barCodeData => {
-          let code = barCodeData.text;
-    
-          if(this.list.length > 0){
-    
-            let line = this.list.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-            let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-    
-            if((line !== undefined) && (line2 === undefined || line2 === null)){
-              let vector = []
-              this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
-              this.PopoverCounting(vector);
-            }
-          }else{
-    
-            
-            let line = this.lists.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-            let line2 = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo);
-    
-            if((line !== undefined) && (line2 === undefined || line2 === null)){
-              let vector = []
-              this.lists.map(x => {if(x.PLULicensePlates === line.PLULicensePlates)vector.push(x)});
-         
-            }
-    
-          }
-         
-        }
-      ).catch(
-        err => {
-          console.log(err);
-        }
-      )
-     
-      break;
-
-  }
   }
 
  async PopoverCounting(obj:any){
@@ -144,6 +58,75 @@ export class PhysicalInventoryPage implements OnInit {
 
   }
 
+  async onBarCode(){
+
+    this.barcodeScanner.scan().then(
+     async barCodeData => {
+        let code = barCodeData.text;
+        switch(this.bin === ''){
+
+          case true:
+          this.intServ.loadingFunc(true);
+          let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(),'WMS');
+          if(!res.Error){
+            this.bin = code.toUpperCase();
+            console.log(res);
+            res.map(async x => {
+    
+              let obj = await this.lists.find(obj => obj.PLULicensePlates ===  x.LPHeader);
+                     
+               obj['seriales'] = x.Lines;
+               obj.QtyPhysInventory = x.Lines.length; 
+               obj.QtyCalculated = x.Lines.length;
+               
+               let line = this.lps.find(x => x.PLULicensePlates === obj.PLULicensePlates);
+                if(line === null || line === undefined)this.lps.push(obj);          
+              
+              console.log(obj);
+            
+            });
+
+            this.lists.map(x => x.BinCode === code.toUpperCase()?this.quantity+= x.QtyPhysInventory:x);
+           
+            this.intServ.loadingFunc(false);
+          }
+          break;
+
+          case false:
+
+          let line = this.lps.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase());
+          if(line != undefined)this.PopoverCounting(line);
+            break;
+
+        }
+      
+       
+        
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+async show(item:any){
+
+  let list = [];
+  if(item.seriales.length > 0){
+
+    item.seriales.map(x => {x['proceded'] = false; list.push(x)});
+
+    const popover = await this.popoverController.create({
+      component: PopoverListSNComponent,
+      cssClass: 'popoverListSNComponent-modal',
+      componentProps: { list },
+    });
+    this.intServ.loadingFunc(false);
+    await popover.present();
+  }
+}
 
   async WritePI(obj:any,qty:any){
 

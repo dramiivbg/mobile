@@ -50,7 +50,7 @@ export class EditPutAwayComponent implements OnInit {
   public scanLP: boolean = true;
   public scanBin: boolean = false;
 
-  public itemsG: any[] = [];
+  public itemsG: any[];
   public groupItems: any[] = [];
 
   public binItem: any[] = [];
@@ -504,22 +504,37 @@ export class EditPutAwayComponent implements OnInit {
       }
 
       console.log(this.initV);
-
+      
       this.intServ.loadingFunc(true);
       this.split = (this.initV.length > 0) ? await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No) : [];
       let contador = 0;
 
+      console.log(this.split);
+
       try {
 
+        if(this.split.Error) throw new Error(this.split.Error.Message);
+        if(this.split.error) throw new Error(this.split.error.message);
+        if(this.split.message) throw new Error(this.split.message);
 
-        console.log(this.itemsG);
-
-        for (const key in this.itemsG) {
-
-          if (this.itemsG[key].length > 0) {
-
+       if(this.itemsG.length > 0){
+        for (const key in this.itemsG) {      
             for (const i in this.itemsG[key]) {
 
+              let listItem: any[] = [];
+              let item = {
+                ActivityType: 1,
+                No: '',
+                ItemNo: '',
+                LineNo: '',
+                ZoneCode: "STO",
+                LocationCode: '',
+                BinCode: '',
+                Quantity: 0
+              }
+
+            if(this.itemsG[key][i].Quantity > 1){
+              console.log(this.itemsG);
 
               let listI = {
 
@@ -581,9 +596,9 @@ export class EditPutAwayComponent implements OnInit {
 
               if (res.message) throw new Error(res.message);
 
-              let listItem: any[] = [];
+               listItem = [];
 
-              let item = {
+               item = {
                 ActivityType: 1,
                 No: res.WarehousePutAwayLines[0].No,
                 ItemNo: res.WarehousePutAwayLines[0].ItemNo,
@@ -608,6 +623,7 @@ export class EditPutAwayComponent implements OnInit {
               }
 
 
+             
 
               item = {
                 ActivityType: 1,
@@ -619,14 +635,29 @@ export class EditPutAwayComponent implements OnInit {
                 BinCode: this.binItem[this.itemsG[key][i].ItemNo],
                 Quantity: res.WarehousePutAwayLines[1].Quantity
               }
-              listItem.push(item)
+              listItem.push(item);
+            }else{
+
+              listItem = [];
+
+              item.No = this.itemsG[key][i].No,
+              item.LocationCode = this.itemsG[key][i].LocationCode;
+              item.LineNo = this.itemsG[key][i].LineNo;
+              item.ItemNo = this.itemsG[key][i].ItemNo;
+              item.BinCode = this.itemsG[key][i].place;
+              item.Quantity = this.itemsG[key][i].Quantity;
+
+              listItem.push(item);
+
+            }
+
               //console.log(listI);
 
               let updateI = await this.wmsService.Update_Wsheput_Lines_V2(listItem);
 
               console.log('update =>', updateI);
-              if (updateI.Error || updateI.error) throw new Error((updateI.Error !== undefined) ? updateI.Error.Message : updateI.error.message);
-
+              if (updateI.Error) throw new Error(updateI.Error.Message);
+              if(updateI.error) throw new Error(updateI.error.message);
               if (updateI.message) throw new Error(updateI.message);
 
               this.obj.ActivityType = 1;
@@ -653,8 +684,6 @@ export class EditPutAwayComponent implements OnInit {
 
               listItem = [];
 
-
-
             }
           }
         }
@@ -662,7 +691,6 @@ export class EditPutAwayComponent implements OnInit {
 
         let list: any[] = [];
         if (this.initV.length > 0) {
-
           this.initV.filter(Lp => {
 
             if (Lp.fields.PLULPDocumentType !== "Pallet") {
@@ -671,31 +699,47 @@ export class EditPutAwayComponent implements OnInit {
 
               if (l !== undefined) {
                 Lp.fields.place = l.fields.place;
-                Lp.seriales.map(x => x.fields.place = l.fields.place);
+                Lp.seriales = l.seriales;
               }
+              console.log(Lp);
 
               this.split.WarehousePutAwayLines.filter(lp => {
 
 
                 if (Lp.fields.PLULPDocumentNo === lp.LP) {
 
+                  if(Lp.seriales.length > 0){
+                    Lp.seriales.map(x => {
+                      lp.BinCode = x.fields.place;
+                      request.ActivityType = 1;
+                      request.BinCode = lp.BinCode;
+                      request.ItemNo = lp.ItemNo;
+                      request.LP = lp.LP;
+                      request.LineNo = lp.LineNo;
+                      request.LocationCode = lp.LocationCode;
+                      request.No = lp.No;
+                      request.Quantity = lp.Quantity;
+                      request.ZoneCode = lp.ZoneCode;
+  
+                      list.push(request);
+  
+                      
+                    request = {
+  
+                      ActivityType: 1,
+                      No: "",
+                      ItemNo: "",
+                      LineNo: "",
+                      ZoneCode: "",
+                      LocationCode: "",
+                      BinCode: "",
+                      Quantity: 0,
+                      LP: ""
+                    }
+                    });
+                  }else{
+                    lp.BinCode = Lp.fields.place;
 
-                  lp.BinCode = Lp.fields.place;
-
-                  request.ActivityType = 1;
-                  request.BinCode = lp.BinCode;
-                  request.ItemNo = lp.ItemNo;
-                  request.LP = lp.LP;
-                  request.LineNo = lp.LineNo;
-                  request.LocationCode = lp.LocationCode;
-                  request.No = lp.No;
-                  request.Quantity = lp.Quantity;
-                  request.ZoneCode = lp.ZoneCode;
-
-                  list.push(request);
-
-                  Lp.seriales.map(x => {
-                    lp.BinCode = x.fields.place;
                     request.ActivityType = 1;
                     request.BinCode = lp.BinCode;
                     request.ItemNo = lp.ItemNo;
@@ -705,42 +749,32 @@ export class EditPutAwayComponent implements OnInit {
                     request.No = lp.No;
                     request.Quantity = lp.Quantity;
                     request.ZoneCode = lp.ZoneCode;
-
+  
                     list.push(request);
-
-                    
-                  request = {
-
-                    ActivityType: 1,
-                    No: "",
-                    ItemNo: "",
-                    LineNo: "",
-                    ZoneCode: "",
-                    LocationCode: "",
-                    BinCode: "",
-                    Quantity: 0,
-                    LP: ""
-                  }
-                  });
-
-                  request = {
-
-                    ActivityType: 1,
-                    No: "",
-                    ItemNo: "",
-                    LineNo: "",
-                    ZoneCode: "",
-                    LocationCode: "",
-                    BinCode: "",
-                    Quantity: 0,
-                    LP: ""
-                  }
+  
+                   
+  
+                    request = {
+  
+                      ActivityType: 1,
+                      No: "",
+                      ItemNo: "",
+                      LineNo: "",
+                      ZoneCode: "",
+                      LocationCode: "",
+                      BinCode: "",
+                      Quantity: 0,
+                      LP: ""
+                    }
+                  }           
                 }
               });
             }
 
           });
         }
+
+        
 
         if (this.initV.length > 0) {
 
@@ -756,7 +790,10 @@ export class EditPutAwayComponent implements OnInit {
 
         console.log('post away =>', postAway);
 
-        if (postAway.Error || postAway.error) throw new Error((postAway.Error === undefined) ? postAway.error.message : postAway.Error.Message);
+        if (postAway.Error) throw new Error(postAway.Error.Message);
+        if (postAway.error) throw new Error(postAway.error.message);
+        if (postAway.message) throw new Error(postAway.message);
+        
 
         this.intServ.loadingFunc(false);
 
@@ -891,6 +928,7 @@ export class EditPutAwayComponent implements OnInit {
 
     if (!lps.Error) {
       let listLp = await this.wmsService.ListLP(lps);
+      let listLp2 = await this.wmsService.ListLP(lps);
       let listLpH = await this.wmsService.ListLPH(lps);
       listLp.filter(lp => {
         let find2: any = undefined;
@@ -929,7 +967,11 @@ export class EditPutAwayComponent implements OnInit {
 
       this.initV.filter(lp => {
 
-        listLp.map(x => {if(x.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){temp.push(x); qty += x.fields.PLUQuantity}})
+        listLp2.map(x => {if(x.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
+          x.fields.place = lp.fields.place;
+          temp.push(x); 
+          qty += x.fields.PLUQuantity
+        }});
 
         lp['seriales'] = temp;
         lp.fields.PLUQuantity = qty;
@@ -1207,7 +1249,7 @@ export class EditPutAwayComponent implements OnInit {
 
   async onChangeBinI(Item: any, bin: any) {
 
-    this.initItem.filter(item => {
+    this.listItems.filter(item => {
 
       if (Item.ItemNo === item.ItemNo) item.ItemNo = bin;
 
@@ -1637,6 +1679,8 @@ export class EditPutAwayComponent implements OnInit {
             if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) {
 
               lp.fields.place = bin.toUpperCase();
+              lp.seriales.map(x => x.fields.place = bin.toUpperCase());
+              console.log(lp);
 
             }
           });

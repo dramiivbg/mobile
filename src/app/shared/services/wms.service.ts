@@ -24,15 +24,14 @@ export class WmsService {
     ) {}
 
 
-    public async GetBinContent_LP(BinCode: string, LocationCode: string, ItemNo: string, UnitofMeasureCode: string){
+    public async GetBinContent_LP(BinCode: string, LocationCode: string){
 
         try {
             let obj: any = [
                 {
                     BinCode,
                     LocationCode,
-                    ItemNo,
-                    UnitofMeasureCode
+                    
                 }
             ];
             let p = await this.syncErp.processRequestParams('GetBinContent_LP', obj);
@@ -251,6 +250,8 @@ public async GetItemInfo(ItemNo:any){
         }
 
     }
+
+
 
     public async getPendingToReceiveLP(no: string, itemNo: string, unitofMeasureCode: string, binCode: string = '') {
         try {

@@ -84,13 +84,17 @@ export class LicensePlatesComponent implements OnInit {
     this.lp = this.options.lp === undefined ? {} : this.options.lp;
     var lstUnitofMeasure = this.options.lstUoM === undefined ? {} : this.options.lstUoM;
     this.lstUoM = lstUnitofMeasure.UnitOfMeasure === undefined ? {} : lstUnitofMeasure.UnitOfMeasure;
-    this.code = this.options.code === null ? {} : this.options.code;
+    this.code = this.options.code;
     this.trakingClose = this.options.trakingClose;
     this.trakingOpen = this.options.trakingOpen;
 
-    this.lot = (this.code.lines.LotPurchaseInboundTracking)?true:false;
-    this.serial = (this.code.lines.SNPurchaseInboundTracking)?true:false;
-    this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
+    console.log(this.code);
+    
+    if(this.code != null){
+      this.lot = (this.code.lines.LotPurchaseInboundTracking)?true:false;
+      this.serial = (this.code.lines.SNPurchaseInboundTracking)?true:false;
+      this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
+    }
 
     this.storage.remove(`lists ${this.item.LineNo}`);
     this.storage.remove(`Qty ${this.item.LineNo}`);
@@ -146,6 +150,7 @@ public async onSubmit() {
         TotalToReceive: obj.TotalToReceive * obj.NoofPackLP,
         NoofPackLP: obj.NoofPackLP,
         PackUnitUoM: obj.PackUnitUoM,
+        LineNo: this.item.LineNo,
         
       }
 
