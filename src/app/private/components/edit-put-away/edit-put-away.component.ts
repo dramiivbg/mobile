@@ -157,8 +157,9 @@ export class EditPutAwayComponent implements OnInit {
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
       || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
 
-    if (this.initV.length === 0) this.init();
+   // if (this.initV.length === 0) this.init();
 
+   this.init();
     if (this.listItems.length === 0) this.initI();
 
     if (this.initV.length > 0) {
@@ -773,6 +774,44 @@ export class EditPutAwayComponent implements OnInit {
 
           });
         }
+        const binPallet = await this.wmsService.GetDefaultBin1();
+
+        for (const i in this.pallet) {
+         for (const j in this.pallet[i].fields) {
+          this.split.WarehousePutAwayLines.filter(lp => {
+            if ( this.pallet[i].fields[j].PLUNo === lp.LP) {
+
+                  lp.BinCode = binPallet.Default_Bin;
+                  request.ActivityType = 1;
+                  request.BinCode = lp.BinCode;
+                  request.ItemNo = lp.ItemNo;
+                  request.LP = lp.LP;
+                  request.LineNo = lp.LineNo;
+                  request.LocationCode = lp.LocationCode;
+                  request.No = lp.No;
+                  request.Quantity = lp.Quantity;
+                  request.ZoneCode = lp.ZoneCode;
+
+                  list.push(request);
+
+                  
+                request = {
+
+                  ActivityType: 1,
+                  No: "",
+                  ItemNo: "",
+                  LineNo: "",
+                  ZoneCode: "",
+                  LocationCode: "",
+                  BinCode: "",
+                  Quantity: 0,
+                  LP: ""
+                }
+                   
+            }
+          });
+         }
+        }
 
         
 
@@ -824,7 +863,7 @@ export class EditPutAwayComponent implements OnInit {
     const binPallet = await this.wmsService.GetDefaultBin1();
       console.log('ls =>', lps);
       console.log('init =>',this.initV)
-    // console.log('pallet =>', pallets);
+      //console.log('pallet =>', pallets);
     // console.log('bin Default =>', binPallet);
 
     if (!pallets.Error) {
@@ -833,6 +872,7 @@ export class EditPutAwayComponent implements OnInit {
 
       this.pallet = await this.wmsService.ListLPallet(pallets);
 
+      console.log(this.pallet);
       this.pallet2 = await this.wmsService.ListLPallet(pallets);
 
       for (const i in this.pallet) {
@@ -870,9 +910,7 @@ export class EditPutAwayComponent implements OnInit {
         for (const j in this.pallet2) {
           if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
 
-            let line = this.pallet[i].fields.find(lp => lp.PLUNo === this.pallet2[j].fields[0].PLUNo);
-
-            if (line === null || line === undefined) {
+            if (this.pallet[i].fields[0].PLUNo !== this.pallet2[j].fields[0].PLUNo) {
 
               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
             }

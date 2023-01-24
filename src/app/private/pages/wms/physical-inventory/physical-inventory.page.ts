@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -24,15 +25,20 @@ export class PhysicalInventoryPage implements OnInit {
   public lps:any[] = [];
   public counted = 0;
   public quantity = 0;
+  public template:any;
   constructor(private storage: Storage ,private intServ: InterceptService
     , private js: JsonService, private barcodeScanner: BarcodeScanner,
     public popoverController: PopoverController,
-    private wmsService: WmsService) { }
+    private wmsService: WmsService, public router: Router) { }
 
  async ngOnInit() {
   this.lists = await  this.storage.get('inventory');
 
+  console.log(this.lists);
+
   this.batch = await  this.storage.get('batch'); 
+
+  this.template = await this.storage.get('template');
 
   this.intServ.loadingFunc(false);
 
@@ -52,6 +58,7 @@ export class PhysicalInventoryPage implements OnInit {
 
     if(data.qty != undefined){
       
+      console.log(data);
       this.WritePI(data.obj,data.qty);
     }
 
@@ -67,6 +74,8 @@ export class PhysicalInventoryPage implements OnInit {
           case true:
           this.intServ.loadingFunc(true);
           let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(),'WMS');
+          console.log(res);
+          /*
           if(!res.Error){
             this.bin = code.toUpperCase();
             console.log(res);
@@ -97,6 +106,8 @@ export class PhysicalInventoryPage implements OnInit {
           if(line != undefined)this.PopoverCounting(line);
             break;
 
+            */
+
         }
       
        
@@ -107,6 +118,7 @@ export class PhysicalInventoryPage implements OnInit {
         console.log(err);
       }
     )
+
 
   }
 
@@ -127,6 +139,25 @@ async show(item:any){
   }
 }
 
+public async popoverCount(){
+  this.intServ.loadingFunc(true);
+  let  resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount('WMS',this.template,this.batch);
+
+  let count = await this.wmsService.listTraking(resR.Warehouse_Physical_Inventory_Counted);
+  this.storage.set('count', count);
+  this.router.navigate(['page/wms/physicalCount']);
+  
+}
+
+public async popoverNonCount(){
+
+  this.intServ.loadingFunc(true);
+  let  resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount('WMS',this.template,this.batch);
+  let Nocount = await this.wmsService.listTraking(resR.Warehouse_Physical_Inventory_NoCounted);
+  this.storage.set('Nocount',Nocount);
+  this.router.navigate(['page/wms/physicalNoCount']);
+}
+
   async WritePI(obj:any,qty:any){
 
     this.intServ.loadingFunc(true);
@@ -134,6 +165,15 @@ async show(item:any){
      let listI:any[] = [];
   
      let lists:any[] = [];
+
+     obj.map(x => {
+      let line = this.lists.find(o => x.SerialNo === o.SerialNo);
+      if(line != undefined){
+        listI.push(line);
+        this.lps.map((j,i) => (j.SerialNo === line.SerialNo || j.PLULicensePlates === line.PLULicensePlates)?this.lps.splice(i,1):j);
+      }
+    
+     });
    
      let  list = {
        name: "WarehouseJournalLine",
@@ -187,7 +227,7 @@ async show(item:any){
        }]
      };
   
-     /*
+     
      listI.filter(inv => {
    
        list = {
@@ -300,14 +340,8 @@ async show(item:any){
 
      
    
-     
-     this.listsFilter.filter((inv,i) => {
-   
-       let line =  listI.find(x => x.LineNo === inv.LineNo);
-   
-       if(line === undefined || line === null){
-   
-         this.listsFilter.splice(i,1);
+     /*
+     this.lps.filter((inv,i) => {
    
          list = {
            name: "WarehouseJournalLine",
@@ -415,11 +449,7 @@ async show(item:any){
            }]
          };
      
-       }
-   
-       
-     });
-   
+        }); 
    */
 
      try {
@@ -431,11 +461,9 @@ async show(item:any){
        
        if(res.error) throw new Error(res.error.message);
    
+       console.log(res);
    
-      // let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(lists[0].LocationCode,lists[0].JournalTemplateName,lists[0].JournalBatchName);
-   
-      // if(resR.Error) throw new Error(resR.Error.Message);
-   
+     
    
        this.intServ.loadingFunc(false);
      //  console.log(resR);
@@ -449,9 +477,8 @@ async show(item:any){
      }
    
    
-   
    }
      
    
-
+  
 }
