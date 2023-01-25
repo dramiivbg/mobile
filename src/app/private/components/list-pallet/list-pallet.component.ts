@@ -28,7 +28,7 @@ export class ListPalletComponent implements OnInit {
  // @Input() WareReceipts: any;
 
   private routExtras: any;
-  private listPallet:any;
+  public listPallet:any;
 
   public wareReceipts: any;
 

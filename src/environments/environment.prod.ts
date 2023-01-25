@@ -1,4 +1,5 @@
 export const environment = {
+  api: "https://plureapi.azurewebsites.net/api/v1/Mobile/getWarehouses?mobileUserId=",
   production: true,
   appSource: 'Mobile',
   platformCode: 'D365BC',

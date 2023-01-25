@@ -27,7 +27,7 @@
           <ion-item>
             <ion-col class="itemlist" size="3" *ngIf="item.proceded === false">{{item.SerialNo}}</ion-col>
             <ion-col class="itemlist" size="3" *ngIf="item.proceded === true"
-              (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
+              ><a>{{item.SerialNo}}</a></ion-col>
             <ion-col class="itemlist" size="3">{{item.LotNo}}</ion-col>
             <ion-col class="itemlist" size="4">{{item.ExperationDate}}</ion-col>
             <ion-col class="itemlist" size="2" *ngIf="item.Qty != undefined">{{item.Qty}}</ion-col>
