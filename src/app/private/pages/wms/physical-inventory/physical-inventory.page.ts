@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { PopoverChildrensPalletComponent } from '@prv/components/popover-childrens-pallet/popover-childrens-pallet.component';
 import { PopoverCountingComponent } from '@prv/components/popover-counting/popover-counting.component';
 import { PopoverListSNComponent } from '@prv/components/popover-list-sn/popover-list-sn.component';
 import { InterceptService } from '@svc/intercept.service';
@@ -46,21 +47,36 @@ export class PhysicalInventoryPage implements OnInit {
 
  async PopoverCounting(obj:any){
 
-    const popover = await this.popoverController.create({
-      component: PopoverCountingComponent,
-      cssClass: 'popoverCountingComponent',
-      componentProps: {list:obj},
-      backdropDismiss: false
-      
-    });
-    await popover.present();
-    const { data } = await popover.onDidDismiss();
+  switch(obj.type){
+    case undefined:
+      const popover = await this.popoverController.create({
+        component: PopoverCountingComponent,
+        cssClass: 'popoverCountingComponent',
+        componentProps: {list:obj},
+        backdropDismiss: false
+        
+      });
+      await popover.present();
+      const { data } = await popover.onDidDismiss();
+  
+      if(data.qty != undefined){
+        
+        console.log(data);
+        this.WritePI(data.obj,data.qty);
+      }
+      break;
 
-    if(data.qty != undefined){
-      
-      console.log(data);
-      this.WritePI(data.obj,data.qty);
-    }
+    default:
+
+    const popover1 = await this.popoverController.create({
+      component: PopoverChildrensPalletComponent,
+      cssClass: 'popoverChildrensPalletComponent',
+      componentProps: { item:obj, count:true},
+    });
+    await popover1.present();
+      break;
+  }
+ 
 
   }
 
@@ -75,22 +91,61 @@ export class PhysicalInventoryPage implements OnInit {
           this.intServ.loadingFunc(true);
           let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(),'WMS');
           console.log(res);
-          /*
+          
           if(!res.Error){
             this.bin = code.toUpperCase();
             console.log(res);
-            res.map(async x => {
-    
+            res.map(async x => {    
               let obj = await this.lists.find(obj => obj.PLULicensePlates ===  x.LPHeader);
-                     
-               obj['seriales'] = x.Lines;
-               obj.QtyPhysInventory = x.Lines.length; 
-               obj.QtyCalculated = x.Lines.length;
+              if(obj != undefined){
+                obj['seriales'] = x.Lines;
+                obj.QtyPhysInventory = x.Lines.length; 
+                obj.QtyCalculated = x.Lines.length;
+                
+                let line = this.lps.find(x => x.PLULicensePlates === obj.PLULicensePlates);
+                 if(line === null || line === undefined)this.lps.push(obj);          
                
-               let line = this.lps.find(x => x.PLULicensePlates === obj.PLULicensePlates);
-                if(line === null || line === undefined)this.lps.push(obj);          
+               console.log(obj);
+              }else{
+
+                let pallet = {
+                  PLULicensePlates: "",
+                  QtyCalculated: 0,
+                  QtyPhysInventory: 0,
+                  ItemNo: null,
+                  UnitofMeasureCode: null,
+                  BinCode: "",
+                  type: "",
+                  SerialNo: null,
+                  LotNo: null,
+                  childrens: [],
+                  seriales: [],
+                }
+
+                let res = await this.wmsService.getLpNo(x.LPHeader);
+                let lp = await this.wmsService.listSetup(res.LicensePlates.LicensePlatesHeaders);
+                pallet.PLULicensePlates = lp.PLULPDocumentNo;
+                pallet.BinCode = lp.PLUBinCode;
+                pallet.type = lp.PLULPDocumentType;
+                console.log(pallet,x);
+
+               x.Lines.filter(lp => {
+
+                  let line = this.lists.find(x => x.PLULicensePlates === lp.No);
+                  if(line != undefined){
+                    line['seriales'] = lp.Childs;
+                    line.QtyPhysInventory = 0;
+                    lp.Childs.map(i => {this.quantity+= i.Quantity;line.QtyPhysInventory+=i.Quantity });
+                    line.QtyCalculated = line.QtyPhysInventory;
+                    pallet.childrens.push(line);
+                  }
+               });
+
+               this.lps.push(pallet);
+               console.log(pallet);
+
+              }                     
               
-              console.log(obj);
             
             });
 
@@ -106,7 +161,7 @@ export class PhysicalInventoryPage implements OnInit {
           if(line != undefined)this.PopoverCounting(line);
             break;
 
-            */
+            
 
         }
       
@@ -125,18 +180,35 @@ export class PhysicalInventoryPage implements OnInit {
 async show(item:any){
 
   let list = [];
-  if(item.seriales.length > 0){
+  switch(item.type){
 
-    item.seriales.map(x => {x['proceded'] = false; list.push(x)});
+    case undefined:
+      if(item.seriales.length > 0){
 
-    const popover = await this.popoverController.create({
-      component: PopoverListSNComponent,
-      cssClass: 'popoverListSNComponent-modal',
-      componentProps: { list },
-    });
-    this.intServ.loadingFunc(false);
-    await popover.present();
+        item.seriales.map(x => {x['proceded'] = false; list.push(x)});
+    
+        const popover = await this.popoverController.create({
+          component: PopoverListSNComponent,
+          cssClass: 'popoverListSNComponent-modal',
+          componentProps: { list },
+        });
+        this.intServ.loadingFunc(false);
+        await popover.present();
+      }
+      break;
+
+    default:
+      const popover = await this.popoverController.create({
+        component: PopoverChildrensPalletComponent,
+        cssClass: 'popoverChildrensPalletComponent',
+        componentProps: { item, count:false},
+      });
+      this.intServ.loadingFunc(false);
+      await popover.present();
+
+      break;
   }
+ 
 }
 
 public async popoverCount(){

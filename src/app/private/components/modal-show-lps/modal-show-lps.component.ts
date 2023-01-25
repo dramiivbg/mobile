@@ -12,7 +12,6 @@ export class ModalShowLpsComponent implements OnInit {
 
   @Input() lps:any;
 
-  @Input() listPwL:any;
   public show:boolean = false;
 
   public lpsT:any[] = [];

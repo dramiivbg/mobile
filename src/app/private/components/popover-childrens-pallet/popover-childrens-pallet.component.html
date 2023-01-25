@@ -1,22 +1,3 @@
-<PlureHeader type="1" title="Physical Inventory Journal" url="page/wms/wmsMain" notify="0"></PlureHeader>
-
-<ion-fab horizontal="start" vertical="bottom" slot="fixed">
-  <ion-fab-button color="secondary">
-    <ion-icon md="checkmark-done-outline" ios="checkmark-done-outline"></ion-icon>
-  </ion-fab-button>
-  <ion-fab-list side="top">
-    <ion-fab-button color="secondary" (click)="popoverCount()" data-desc="Count">
-      <ion-icon name="checkmark-circle-outline"></ion-icon>
-    </ion-fab-button>
-
-    <ion-fab-button color="danger" (click)="popoverNonCount()" data-desc="Non Count">
-      <ion-icon name="close-circle-outline"></ion-icon>
-    </ion-fab-button>
-
-  </ion-fab-list>
-</ion-fab>
-
-
 
 <ion-content>
   <form>
@@ -24,26 +5,17 @@
 
       <ion-row size="12">
         <ion-col size="6">
-          <ion-label>Batch: {{batch}} </ion-label>
+          <ion-label>Pallet No: {{item.PLULicensePlates}} </ion-label>
         </ion-col>
         <ion-col size="6">
-          <ion-label>BIN: {{bin}}</ion-label>
-        </ion-col>
-      </ion-row>
-
-      <ion-row size="12">
-        <ion-col size="6">
-          <ion-label>Quantity: {{quantity}} </ion-label>
-        </ion-col>
-        <ion-col size="6">
-          <ion-label>Counted: {{counted}}</ion-label>
+          <ion-label>Bin Code: {{item.BinCode}} </ion-label>
         </ion-col>
       </ion-row>
 
       <ion-row class="delivery newColor2">
         <ion-col size="10">
-          <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
-            show-clear-button="always" clear-icon="close-outline" placeholder="group by bin code"></ion-searchbar>
+          <ion-searchbar [(ngModel)]="data" [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
+            show-clear-button="always" clear-icon="close-outline" placeholder="Filter"></ion-searchbar>
         </ion-col>
         <ion-col size="2" class="barcodebtn">
           <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
@@ -61,7 +33,7 @@
 
               <ion-item>
                 <div class="label-lines" part="item-width">
-                  <ion-row *ngFor="let item of lps">
+                  <ion-row *ngFor="let item of item.childrens">
 
                     <!-- <ion-item-sliding> -->
 
@@ -78,36 +50,26 @@
                             </ion-col>
                           </ion-row>
 
-                          <ion-row size="12" class="subtitlelist"  *ngIf="item.QtyCalculated > 0 || item.QtyPhysInventory > 0">
-                            <ion-col size="5" class="label-line-title" *ngIf="item.QtyCalculated > 0">
+                          <ion-row size="12" class="subtitlelist">
+                            <ion-col size="5" class="label-line-title">
                               Qty. Calculated: {{item.QtyCalculated}}
                             </ion-col>
                             <ion-col size="3" class="label-line-title">
                               Qty. P.I: 
                             </ion-col>
-                            <ion-col size="4" class="label-line-title" *ngIf="item.QtyPhysInventory > 0">
+                            <ion-col size="4" class="label-line-title">
                               {{item.QtyPhysInventory}}
                             </ion-col>
                           </ion-row>
 
-                          <ion-row *ngIf="item.ItemNo != null && item.UnitofMeasureCode != null">
-                            <ion-col size="5" class="titleblue" *ngIf="item.ItemNo != null">
+                          <ion-row>
+                            <ion-col size="5" class="titleblue">
                               Item No: <b>{{item.ItemNo}}</b>
                             </ion-col>
-                            <ion-col size="3.5" class="titleblue" *ngIf="item.UnitofMeasureCode != null">
+                            <ion-col size="3.5" class="titleblue">
                               UoM: <b>{{item.UnitofMeasureCode}}</b>
                             </ion-col>
                             <ion-col size="3.5" class="titleblue">
-                              BIN: <b>{{item.BinCode}}</b>
-                            </ion-col>
-                          </ion-row>
-
-                          <ion-row *ngIf="item.ItemNo == null && item.UnitofMeasureCode == null">
-                            <ion-col size="6" class="titleblue" >
-                              type: <b>{{item.type}}</b>
-                            </ion-col>
-                           
-                            <ion-col size="6" class="titleblue">
                               BIN: <b>{{item.BinCode}}</b>
                             </ion-col>
                           </ion-row>
@@ -148,7 +110,7 @@
 
 </ion-content>
 
-<PlureVersion class="footerputaway" showVersion="0">
+<PlureVersion class="footerputaway" showVersion="0" *ngIf="count">
   <ion-row>
     <ion-col size="12" (click)="onBarCode()">
       <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>

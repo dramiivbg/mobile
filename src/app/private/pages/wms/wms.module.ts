@@ -53,6 +53,7 @@ import { PopoverCountingComponent } from '@prv/components/popover-counting/popov
 import { PopoverShowSerialesComponent } from '@prv/components/popover-show-seriales/popover-show-seriales.component';
 import { PhysicalCountComponent } from '@prv/components/physical-count/physical-count.component';
 import { PhysicalNoCountComponent } from '@prv/components/physical-no-count/physical-no-count.component';
+import { PopoverChildrensPalletComponent } from '@prv/components/popover-childrens-pallet/popover-childrens-pallet.component';
 
 
 
@@ -105,7 +106,8 @@ import { PhysicalNoCountComponent } from '@prv/components/physical-no-count/phys
     PopoverCountingComponent,
     PopoverShowSerialesComponent,
     PhysicalCountComponent,
-    PhysicalNoCountComponent
+    PhysicalNoCountComponent,
+    PopoverChildrensPalletComponent
     
   
   ],
@@ -151,7 +153,8 @@ import { PhysicalNoCountComponent } from '@prv/components/physical-no-count/phys
     PopoverSerialesLpComponent,
     PopoverAddItemTrakingComponent,
     PopoverCountingComponent,
-    PopoverShowSerialesComponent 
+    PopoverShowSerialesComponent,
+    PopoverChildrensPalletComponent 
   
   ]
 })
