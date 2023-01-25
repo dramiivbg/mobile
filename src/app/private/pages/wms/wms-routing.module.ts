@@ -19,6 +19,8 @@ import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-b
 import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { PhysicalInventoryPage } from './physical-inventory/physical-inventory.page';
+import { PhysicalCountComponent } from '@prv/components/physical-count/physical-count.component';
+import { PhysicalNoCountComponent } from '@prv/components/physical-no-count/physical-no-count.component';
 
 
 
@@ -55,7 +57,9 @@ const routes: Routes = [
 
     {path: 'binToBin', component: BinToBinPage},
 
-    {path: 'physicalInventory', component: PhysicalInventoryPage}
+    {path: 'physicalInventory', component: PhysicalInventoryPage},
+    {path: 'physicalCount', component: PhysicalCountComponent},
+    {path: 'physicalNoCount', component: PhysicalNoCountComponent}
   ]
 },
 

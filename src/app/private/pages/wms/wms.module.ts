@@ -51,6 +51,8 @@ import { PopoverSerialesLpComponent } from '@prv/components/popover-seriales-lp/
 import { PopoverAddItemTrakingComponent } from '@prv/components/popover-add-item-traking/popover-add-item-traking.component';
 import { PopoverCountingComponent } from '@prv/components/popover-counting/popover-counting.component';
 import { PopoverShowSerialesComponent } from '@prv/components/popover-show-seriales/popover-show-seriales.component';
+import { PhysicalCountComponent } from '@prv/components/physical-count/physical-count.component';
+import { PhysicalNoCountComponent } from '@prv/components/physical-no-count/physical-no-count.component';
 
 
 
@@ -101,7 +103,9 @@ import { PopoverShowSerialesComponent } from '@prv/components/popover-show-seria
     PopoverSerialesLpComponent,
     PopoverAddItemTrakingComponent,
     PopoverCountingComponent,
-    PopoverShowSerialesComponent
+    PopoverShowSerialesComponent,
+    PhysicalCountComponent,
+    PhysicalNoCountComponent
     
   
   ],

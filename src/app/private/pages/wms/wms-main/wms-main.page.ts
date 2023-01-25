@@ -276,6 +276,7 @@ async selectTemplate() {
     this.intServ.loadingFunc(false);
 let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `, 'Journal Template', async (data) => {
 
+  this.storage.set('template', data.Name);
   this.intServ.loadingFunc(true);
         let erpUserId = await this.storage.get('erpUserId');
 

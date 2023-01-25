@@ -212,32 +212,35 @@ export class GeneralService {
         let traking = await this.wmsService.listItem(res);
 
        obj['trakingCode'] = traking.fields.ItemTrackingCode;
-      }    
+      }
+     
     }
 
-/*
-    const lps = await this.wmsService.GetLicencesPlateInWR(obj.No, false);
 
-    console.log(lps);
+    const lps = await this.wmsService.GetLicencesPlateInWR(obj['No'], false);
 
-    let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
-    let res2 = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+    if(!lps.Error){
 
-   
-    for (const key in items) {
-      
-        if (obj.PLUWhseLineNo  === items[key].LineNo) {
+      console.log(lps);
 
-          contador++;
-          
-        }
-      
-
-      obj['QtyLp'] = contador;
-      contador = 0;
+      let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+     
+      for (const key in res) {
+        
+          if (obj['PLUWhseLineNo']  === res[key].LineNo) {
   
- }   
-*/
+            contador++;
+            
+          }
+        
+  
+        obj['QtyLp'] = contador;
+        contador = 0;
+    
+   }   
+    }
+   
+
     
     // fields.forEach(field => {
     //   obj[field.name] = field.value

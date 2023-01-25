@@ -34,7 +34,7 @@ export class PopoverCountingComponent implements OnInit {
     }
 
   ngOnInit() {
-   this.item = (this.list.seriales === 1)? this.list.seriales[0]:undefined;
+   this.item = (this.list.seriales === 1)? this.list:undefined;
    console.log(this.item);
   this.qty = this.list.seriales.length;
    console.log(this.list);

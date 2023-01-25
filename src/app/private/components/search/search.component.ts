@@ -110,10 +110,6 @@ export class SearchComponent implements OnInit {
   }
 
  async ngOnInit() {
-
-
-this.listsInv = await  this.storage.get('physical items');
-
   
   }
 
@@ -163,42 +159,6 @@ this.listsInv = await  this.storage.get('physical items');
       )
     } 
   }
-
-
-  onChangeL(e, lpNo:any = '') {
-  
-    switch(lpNo){
-
-      case '':
-        let val = e.target.value;
-      
-        if (val === '') {
-          this.lps = this.lists;
-        } else {
-          this.lps = this.lists.filter(
-            x => {
-              return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || x.fields.PLUNo.toLowerCase().includes(val.toLowerCase()));
-            }
-          )
-        }
-        
-        break;
-  
-    default:
-  
-      this.lps = this.lists.filter(
-        x => {
-          return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
-        }
-      )
-  
-     
-      
-  
-     } 
-  }
-
-  
 
   onChangeP(e) {
     let val = e.target.value;
@@ -265,41 +225,6 @@ this.listsInv = await  this.storage.get('physical items');
 
   }
 
-  onChangePI(e, bin:any = '') {
-
-
-   switch(bin){
-
-    case '':
-      let val = e.target.value;
-    
-      if (val === '') {
-        this.listsFilter = this.lists;
-      } else {
-        this.listsFilter = this.lists.filter(
-          x => {
-            return (x.ZoneCode.toLowerCase().includes(val.toLowerCase()) || x.BinCode.toLowerCase().includes(val.toLowerCase()) ||  x.ItemNo.toLowerCase().includes(val.toLowerCase()));
-          }
-        )
-      }
-      
-      break;
-
-  default:
-
-    this.listsFilter = this.lists.filter(
-      x => {
-        return (x.BinCode.toLowerCase().includes(bin.toLowerCase()));
-      }
-    )
-
-    this.active = true;
-
-    
-
-   } 
- 
-  }
 
   onHeight() {
     this.platform.ready().then(
@@ -317,49 +242,8 @@ this.listsInv = await  this.storage.get('physical items');
   }
 
 
-  
- public onFilter(){
 
 
-    this.barcodeScanner.scan().then(
-      barCodeData => {
-        let code = barCodeData.text.toUpperCase();
-
-        
-
-        this.lpNo = code;
-
-        this.onChangeL('', code);
-      
-       
-      
-
-      }
-    ).catch(
-      err => {
-        console.log(err);
-      }
-    )
-
-  }
-
-  public onBarCode() {
-    this.barcodeScanner.scan().then(
-      barCodeData => {
-        let code = barCodeData.text.toUpperCase();
-
-      
-        this.bin = code;
-
-        this.onChangePI('', code);
-      
-      }
-    ).catch(
-      err => {
-        console.log(err);
-      }
-    )
-  }
 
 
   edit(e,index:any){
@@ -369,77 +253,6 @@ this.listsInv = await  this.storage.get('physical items');
     this.lps[index].fields.PLUQuantity = val;
 
   }
-
- async showInventory(){
-
-  try {
-
-
-    let resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.listsFilter[0].LocationCode,this.listsFilter[0].JournalTemplateName,this.listsFilter[0].JournalBatchName);
-
-    console.log(resR);
-
-    if(resR.Error) throw new Error(resR.Error.Message);
-
-    let counting = await this.wmsService.listPIC(resR);
-
-    let NoCounting = await this.wmsService.listPINC(resR);
-
-    const modal = await this.modalCtrl.create({
-      component: PopoverShowInventoryComponent,
-      cssClass: 'popoverShowInventoryComponent',
-      componentProps: { counting, NoCounting}
-    });
-    await modal.present();
-  
-    const { data } = await modal.onDidDismiss();
-    
-  } catch (error) {
-
-    this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-    
-  }
-
- 
-
-
-  }
-
-  onRegister(){
-
-
-    this.intServ.alertFunc(this.js.getAlert('register',`Bin Code: ${this.binCode}`, 'Locate Complete, or Add New LP? ', async()=> {
-
-
-      this.intServ.loadingFunc(true);
-
-
-      try {
-
-
-        let res = await this.wmsService.Register_WarehouseInvPhysicalCount(this.listsFilter[0].fields.LocationCode);
-
-        if(res.Error) throw new Error(res.Error.Message);
-
-        this.intServ.loadingFunc(false);
-
-        this.intServ.alertFunc(this.js.getAlert('success', '', 'The inventory was successfully recorded'));
-
-        this.router.navigate(['page/wms/wmsMain']);
-        
-        
-      } catch (error) {
-
-        this.intServ.loadingFunc(false);
-
-        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-        
-      }
-    }));
-
-
-  }
-
 
   
   
