@@ -14,9 +14,10 @@ import { PopoverLogLpComponent } from '../popover-log-lp/popover-log-lp.componen
 export class ReadLicensePlateComponent implements OnInit {
 
   public principalcontent:boolean=true;
-  public lp:any = undefined;
-  public palletH:any = undefined;
-  public palletL:any[] = [];
+  public lp:any;
+  public lpH:any;
+  public single = false;
+  public pallet = false;
   constructor(private barcodeScanner: BarcodeScanner,  private intServ: InterceptService, private wmsService: WmsService,
     private js: JsonService,   private modalCtrl: ModalController ) { }
 
@@ -25,8 +26,6 @@ export class ReadLicensePlateComponent implements OnInit {
 
   onBarCode(){
 
-
-    let lp;
     this.barcodeScanner.scan().then(
       async(barCodeData) => {
         let No = barCodeData.text;
@@ -35,54 +34,18 @@ export class ReadLicensePlateComponent implements OnInit {
 
         try {
 
-           lp = await this.wmsService.getLpNo(No.toUpperCase());
+         let  lp = await this.wmsService.getLpNo(No.toUpperCase());
 
            console.log(lp);
 
 
           if(lp.Error) throw Error(lp.Error.Message);
-          let lpH = await this.wmsService.ListLpH(lp);
-          this.lp = await this.wmsService.ListLp(lp);
+          this.lpH = await this.wmsService.listSetup(lp.LicensePlates.LicensePlatesHeaders);
+          this.lp = await this.wmsService.listTraking(lp.LicensePlates.LicensePlatesLines);
+          console.log(this.lpH,this.lp);
 
-          if(this.lp.fields.PLULPDocumentType === 'Single'){
-
-            this.principalcontent = false;
-            this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
-            this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
-            this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
-
-            this.principalcontent = false
-  
-            this.lp.fields.PLUReferenceDocument =  lpH.fields.PLUReferenceDocument;
-            this.lp.fields.PLUUnitofMeasure =  lpH.fields.PLUUnitofMeasure;
-           
-  
-            
-            
-  
-            console.log(this.lp);
-  
-            this.intServ.loadingFunc(false);
-
-          }else{
-
-            this.principalcontent = false;
-            this.palletH = await this.wmsService.PalletH(lp);
-
-            this.palletL = await this.wmsService.PalletL(lp);
-
-            console.log(this.palletH);
-
-            console.log(this.palletL);
-
-            console.log(this.palletH,this.palletL);
-
-          
-
-            this.intServ.loadingFunc(false);
-
-          }
-
+          this.principalcontent = false;
+         this.intServ.loadingFunc(false);
       
           
         } catch (error) {
@@ -106,25 +69,21 @@ export class ReadLicensePlateComponent implements OnInit {
 
 
   async log(No:any,ev){
-
+    this.intServ.loadingFunc(true);
    let log = await this.wmsService.Get_LPLedgerEntries(No.toUpperCase());
-
-
+   let listLogsFilter = log.LicensePlateEntries;
+   let listLogs =  log.LicensePlateEntries;
+   
    const modal = await this.modalCtrl.create({
     component: PopoverLogLpComponent,
-    componentProps: { logs: log }
+    componentProps: { listLogsFilter,listLogs }
 
   
   });
-  modal.present();
-
-
-
-    
-    
+  this.intServ.loadingFunc(false);
+ await modal.present();   
 
   }
-
 
 
 }

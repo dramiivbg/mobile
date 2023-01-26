@@ -3,44 +3,25 @@
 <ion-content>
   <div class="designform-header">
 
-    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single'">
+    <ion-row class="headerow" *ngIf="!principalcontent">
       <ion-col size="4">
         Whse. Document.
       </ion-col>
       <ion-col size="7">
-        {{lp.fields.PLUWhseDocument}}
+        {{lpH.PLUWhseDocument}}
       </ion-col>
     </ion-row>
 
 
-    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single' ">
+    <ion-row class="headerow" *ngIf="!principalcontent">
       <ion-col size="4">
         Reference No.
       </ion-col>
       <ion-col size="7">
-        {{lp.fields.PLUWhseDocumentNo}}
+        {{lpH.PLUWhseDocumentNo}}
       </ion-col>
     </ion-row>
 
-
-    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Pallet'">
-      <ion-col size="4">
-        Whse. Document.
-      </ion-col>
-      <ion-col size="7">
-        {{palletH.fields.PLUWhseDocument}}
-      </ion-col>
-    </ion-row>
-
-
-    <ion-row class="headerow" *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Pallet' ">
-      <ion-col size="4">
-        Reference No.
-      </ion-col>
-      <ion-col size="7">
-        {{palletH.fields.PLUWhseDocumentNo}}
-      </ion-col>
-    </ion-row>
 
     <ion-row class="headerowprinc" *ngIf="principalcontent">
       <ion-col size="12">Please scan or enter the License Plate ID</ion-col>
@@ -50,7 +31,7 @@
     </ion-row>
   </div>
 
-  <ion-list *ngIf="lp != undefined && lp.fields.PLULPDocumentType === 'Single'">
+  <ion-list *ngIf="!principalcontent">
 
     <ion-item class="Title">
 
@@ -62,7 +43,7 @@
         </ion-col>
         <ion-col size="6" class="buttonhistory">
 
-          <ion-button style="color: #F2F2F2 !important" (click)="log(lp.fields.PLULPDocumentNo,$event)">
+          <ion-button style="color: #F2F2F2 !important" (click)="log(lpH.PLULPDocumentNo,$event)">
             <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
             Logs
           </ion-button>
@@ -75,17 +56,17 @@
 
       <ion-col class="Subtitle">
 
-        Document No.
+        LP No.
       </ion-col>
 
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLULPDocumentNo}}
+        {{lpH.PLULPDocumentNo}}
       </ion-col>
     </ion-row>
 
-
+  
     <ion-row class="rowlist">
 
       <ion-col class="Subtitle">
@@ -96,7 +77,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLULocationCode}}
+        {{lpH.PLULocationCode}}
       </ion-col>
     </ion-row>
 
@@ -111,7 +92,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUZoneCode}}
+        {{lpH.PLUZoneCode}}
       </ion-col>
     </ion-row>
 
@@ -125,7 +106,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLULicensePlateStatus}}
+        {{lpH.PLULicensePlateStatus}}
       </ion-col>
     </ion-row>
 
@@ -139,7 +120,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUBinCode}}
+        {{lpH.PLUBinCode}}
       </ion-col>
     </ion-row>
 
@@ -153,7 +134,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUUnitofMeasure}}
+        {{lpH.PLUUnitofMeasure}}
       </ion-col>
     </ion-row>
 
@@ -161,13 +142,13 @@
 
       <ion-col class="Subtitle">
 
-        Reference Document No.
+        Reference Document.
       </ion-col>
 
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUReferenceDocument}}
+        {{lpH.PLUReferenceDocument}}
       </ion-col>
     </ion-row>
 
@@ -177,13 +158,13 @@
 
       <ion-col class="Subtitle">
 
-        Document Type.
+        LP Type.
       </ion-col>
 
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLULPDocumentType}}
+        {{lpH.PLULPDocumentType}}
       </ion-col>
 
     </ion-row>
@@ -194,18 +175,19 @@
     </ion-item>
 
 
+  <div *ngFor="let item of lp">
 
     <ion-row class="rowlistfirst">
 
       <ion-col class="Subtitle">
 
-        LP Type.
+         Type.
       </ion-col>
 
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUType}}
+        {{item.PLUType}}
       </ion-col>
 
 
@@ -221,7 +203,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUNo}}
+        {{item.PLUNo}}
       </ion-col>
 
 
@@ -237,7 +219,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUDescription}}
+        {{item.PLUDescription}}
       </ion-col>
 
 
@@ -253,7 +235,7 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUQuantity}}
+        {{item.PLUQuantity}}
       </ion-col>
 
 
@@ -269,217 +251,60 @@
 
       <ion-col size="5" class="label">
 
-        {{lp.fields.PLUUnitofMeasureCode}}
+        {{item.PLUUnitofMeasureCode}}
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="rowlist" *ngIf="item.PLUSerialNo !== null">
+
+      <ion-col class="Subtitle">
+
+        Serial No.
+      </ion-col>
+
+
+      <ion-col size="5" class="label">
+
+        {{item.PLUSerialNo}}
       </ion-col>
 
 
     </ion-row>
 
+    <ion-row class="rowlist" *ngIf="item.PLULotNo !== null">
 
+      <ion-col class="Subtitle">
+
+        Lot No.
+      </ion-col>
+
+
+      <ion-col size="5" class="label">
+
+        {{item.PLULotNo}}
+      </ion-col>
+
+
+    </ion-row>
+
+    <ion-row class="rowlist" *ngIf="item.PLUExpirationDate !== null">
+
+      <ion-col class="Subtitle">
+
+        Exp Date.
+      </ion-col>
+
+
+      <ion-col size="5" class="label">
+
+        {{item.PLUExpirationDate}}
+      </ion-col>
+
+
+    </ion-row>
+  </div>
 
   </ion-list>
-
-
-  <ion-list *ngIf="palletH != undefined && lp.fields.PLULPDocumentType === 'Pallet'">
-
-    <ion-item class="Title">
-
-      <ion-row size="6">
-        <ion-col>
-
-          <h2><strong>General</strong></h2>
-
-        </ion-col>
-        <ion-col size="6" class="buttonhistory">
-
-          <ion-button style="color: #F2F2F2 !important" (click)="log(palletH.fields.PLULPDocumentNo,$event)">
-            <ion-icon name="reader-outline"></ion-icon>&nbsp;&nbsp;
-            Logs
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-item>
-
-    <ion-row class="rowlistfirst">
-
-      <ion-col class="Subtitle">
-
-        Document No.
-      </ion-col>
-
-
-      <ion-col size="5" class="label">
-
-        {{palletH.fields.PLULPDocumentNo}}
-      </ion-col>
-    </ion-row>
-
-
-    <ion-row class="rowlist">
-
-      <ion-col class="Subtitle">
-
-        Location Code.
-      </ion-col>
-
-
-      <ion-col size="5" class="label">
-
-        {{palletH.fields.PLULocationCode}}
-      </ion-col>
-    </ion-row>
-
-
-    <ion-row class="rowlist">
-
-      <ion-col class="Subtitle">
-
-        Zone Code.
-      </ion-col>
-
-
-      <ion-col size="5" class="label">
-
-        {{palletH.fields.PLUZoneCode}}
-      </ion-col>
-    </ion-row>
-
-    <ion-row class="rowlist">
-
-      <ion-col class="Subtitle">
-
-        License Plate Status.
-      </ion-col>
-
-
-      <ion-col size="5" class="label">
-
-        {{palletH.fields.PLULicensePlateStatus}}
-      </ion-col>
-    </ion-row>
-
-    <ion-row class="rowlist">
-
-      <ion-col class="Subtitle">
-
-        Bin Code.
-      </ion-col>
-
-
-      <ion-col size="5" class="label">
-
-        {{palletH.fields.PLUBinCode}}
-      </ion-col>
-    </ion-row>
-
-
-    <ion-row class="rowlist">
-
-      <ion-col class="Subtitle">
-
-        Document Type.
-      </ion-col>
-
-
-      <ion-col size="5" class="label">
-
-        {{palletH.fields.PLULPDocumentType}}
-      </ion-col>
-
-    </ion-row>
-
-    <ion-item class="Title">
-
-      <h3><strong>Lines</strong></h3>
-    </ion-item>
-
-
-    <ion-list class="list" *ngFor="let item of palletL">
-      <ion-row class="rowlistfirst">
-
-        <ion-col class="Subtitle">
-
-          LP Type.
-        </ion-col>
-
-
-        <ion-col size="5" class="label">
-
-          {{item.PLUType}}
-        </ion-col>
-
-
-      </ion-row>
-
-      <ion-row class="rowlist">
-
-        <ion-col class="Subtitle">
-
-          No.
-        </ion-col>
-
-
-        <ion-col size="5" class="label">
-
-          {{item.PLUNo}}
-        </ion-col>
-
-
-      </ion-row>
-
-      <ion-row class="rowlist">
-
-        <ion-col class="Subtitle">
-
-          Description.
-        </ion-col>
-
-
-        <ion-col size="5" class="label">
-
-          {{item.PLUDescription}}
-        </ion-col>
-
-
-      </ion-row>
-
-      <ion-row class="rowlist">
-
-        <ion-col class="Subtitle">
-
-          Quantity.
-        </ion-col>
-
-
-        <ion-col size="5" class="label">
-
-          {{item.PLUQuantity}}
-        </ion-col>
-
-
-      </ion-row>
-
-      <ion-row class="rowlist">
-
-        <ion-col class="Subtitle">
-
-          Unit of Measure Code.
-        </ion-col>
-
-
-        <ion-col size="5" class="label">
-
-          {{item.PLUUnitofMeasureCode}}
-        </ion-col>
-
-
-      </ion-row>
-
-    </ion-list>
-
-  </ion-list>
-
-
 
 
 </ion-content>

@@ -299,35 +299,38 @@ async  view(){
            }
             
          }
+
+         let res = await this.wmsService.GetItemTrackingSpecificationOpen(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
+         this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
+
+         let list = [
+           {
+             WarehouseReceiptLines: [
+               {
+                 No: this.item.No,
+                 SourceNo: this.item.SourceNo,
+                 ItemNo: this.item.ItemNo,
+                 LineNo: this.item.LineNo,
+                 ZoneCode: this.item.ZoneCode,
+                 LocationCode: this.item.LocationCode,
+                 BinCode: this.item.BinCode,
+                 QtyToReceive: this.frm.get('TotalToReceive').value
+               }
+             ]
+           }
+         ]
+         
+       
+
+          await this.wmsService.Update_WsheReceiveLine(list); 
+
+        this.storage.set(`${this.item.LineNo} receive`,this.frm.get('TotalToReceive').value);
+
+         this.list = [];  
+         
          this.intServ.loadingFunc(false);
          this.intServ.alertFunc(this.jsonService.getAlert('success','','The operation was successfully performed',async() => {        
-           let res = await this.wmsService.GetItemTrackingSpecificationOpen(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
-           this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
- 
-           let list = [
-             {
-               WarehouseReceiptLines: [
-                 {
-                   No: this.item.No,
-                   SourceNo: this.item.SourceNo,
-                   ItemNo: this.item.ItemNo,
-                   LineNo: this.item.LineNo,
-                   ZoneCode: this.item.ZoneCode,
-                   LocationCode: this.item.LocationCode,
-                   BinCode: this.item.BinCode,
-                   QtyToReceive: this.frm.get('TotalToReceive').value
-                 }
-               ]
-             }
-           ]
-           
-         
- 
-            await this.wmsService.Update_WsheReceiveLine(list); 
- 
-          this.storage.set(`${this.item.LineNo} receive`,this.frm.get('TotalToReceive').value);
- 
-           this.list = [];    
+            
            this.popoverController.dismiss({receive:this.frm.get('TotalToReceive').value});   
          }));
 

@@ -280,6 +280,7 @@ export class WmsReceiptPage implements OnInit {
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
+    console.log(this.wareReceipts);
     let items = await this.wmsService.listTraking(receipt.WarehouseReceipt.WarehouseReceiptLines);
     this.GetLicencesPlateInWR(this.wareReceipts,items);
 

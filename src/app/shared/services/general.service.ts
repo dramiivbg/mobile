@@ -196,7 +196,7 @@ export class GeneralService {
     return objLst;
   }
 
-  async fieldsToJson(fields: any) : Promise<any> {
+  async fieldsToJson(fields: any,data = '') : Promise<any> {
     let obj = {};
     let list = [];
     let contador = 0;
@@ -216,8 +216,9 @@ export class GeneralService {
      
     }
 
+    if(data === 'line'){
 
-    const lps = await this.wmsService.GetLicencesPlateInWR(obj['No'], false);
+      const lps = await this.wmsService.GetLicencesPlateInWR(obj['No'], false);
 
     if(!lps.Error){
 
@@ -239,8 +240,7 @@ export class GeneralService {
     
    }   
     }
-   
-
+    }
     
     // fields.forEach(field => {
     //   obj[field.name] = field.value
@@ -355,7 +355,7 @@ export class GeneralService {
     let obj = {};
     obj = await this.fieldsToJson(item.WarehouseReceiptHeader.fields);
     item.WarehouseReceiptLines.forEach(async line => {
-      lines.push(await this.fieldsToJson(line.fields,));
+      lines.push(await this.fieldsToJson(line.fields,'line'));
     });
    
     obj['lines'] = lines;
