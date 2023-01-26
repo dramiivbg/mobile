@@ -910,6 +910,7 @@ export class EditPutAwayComponent implements OnInit {
         for (const j in this.pallet2) {
           if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
 
+
             if (this.pallet[i].fields[0].PLUNo !== this.pallet2[j].fields[0].PLUNo) {
 
               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
@@ -1339,7 +1340,7 @@ export class EditPutAwayComponent implements OnInit {
         this.intServ.loadingFunc(false);
         const modal = await this.modalCtrl.create({
           component: ModalShowLpsComponent,
-          componentProps: { lps, listPwL: this.listPwL, No: pallet.fields[0].PLULPDocumentNo }
+          componentProps: { lps, No: pallet.fields[0].PLULPDocumentNo }
         });
         modal.present();
 

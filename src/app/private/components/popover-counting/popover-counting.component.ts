@@ -66,8 +66,9 @@ export class PopoverCountingComponent implements OnInit {
     switch(this.count != this.qty){
      case true:
       let line = this.list.seriales.find(x => code.toUpperCase() === x.SerialNo);
+      let line2 = this.seriales.find(x => code.toUpperCase() === x.SerialNo);
 
-      if(line != undefined){
+      if(line != undefined && (line2 == null || line2 === undefined)){
         line['proceded'] = false;
         this.seriales.push(line);
       } 
