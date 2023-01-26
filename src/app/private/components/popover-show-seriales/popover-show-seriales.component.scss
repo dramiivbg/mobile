@@ -399,9 +399,11 @@ ion-input {
 .col1 {
     display: flex;
     align-items: center;
+    text-align: center;
 }
 
-.col1,
 .col2 {
+    position: relative;
+    bottom: 4px;
     text-align: center;
 }
