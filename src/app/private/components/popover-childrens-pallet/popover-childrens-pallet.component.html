@@ -110,9 +110,12 @@
 
 </ion-content>
 
-<ion-row class="footerputaway" *ngIf="count">
-  <ion-col size="12" (click)="onBarCode()">
-    <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-    <div class="itemfooter">Bar code</div>
+<ion-row *ngIf="count">
+  <ion-col class="buttonscan" size="12">
+    <ion-button shape="round" color="secondary" (click)="onBarCode()">
+      Scan
+      <ion-icon class="itemfooter" name="barcode-outline"></ion-icon>
+      <!-- <div class="itemfooter">Scan</div> -->
+    </ion-button>
   </ion-col>
 </ion-row>
