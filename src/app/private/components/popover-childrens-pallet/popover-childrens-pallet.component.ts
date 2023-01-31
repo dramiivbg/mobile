@@ -26,11 +26,13 @@ export class PopoverChildrensPalletComponent implements OnInit {
         if(item.seriales.length > 0){
   
           item.seriales.map(x => {x['proceded'] = false; list.push(x)});
+
+          let boolean = (item.LotNo === null && item.SerialNo === null)?true:false;
       
           const popover = await this.popoverController.create({
             component: PopoverListSNComponent,
             cssClass: 'popoverListSNComponent-modal',
-            componentProps: { list },
+            componentProps: { list, boolean },
           });     
           await popover.present();
         }

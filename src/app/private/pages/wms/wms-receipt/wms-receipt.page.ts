@@ -313,6 +313,8 @@ export class WmsReceiptPage implements OnInit {
 
 
   async GetLicencesPlateInWR(wareReceipts: any = {},items:any) {
+    this.list = [];
+    this.LpL = [];
 
     try {
 
@@ -660,6 +662,7 @@ export class WmsReceiptPage implements OnInit {
 
           }));
 
+          this.getReceipt();
 
         } catch (error) {
 

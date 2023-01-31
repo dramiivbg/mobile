@@ -223,23 +223,32 @@ export class GeneralService {
     if(!lps.Error){
 
       console.log(lps);
+      console.log(obj);
 
       let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+
+      console.log(res);
+      let lp = [];
+      res.map(x => {
+        let line = lp.find(i => i.PLULPDocumentNo === x.PLULPDocumentNo);
+        if(line === undefined || line === null)lp.push(x);
+      });
+      console.log(lp);
      
-      for (const key in res) {
+      for (const key in lp) {
         
-          if (obj['PLUWhseLineNo']  === res[key].LineNo) {
+          if (obj['LineNo']  === lp[key].PLUWhseLineNo) {
   
             contador++;
             
-          }
-        
-  
-        obj['QtyLp'] = contador;
-        contador = 0;
-    
-   }   
+          }   
+   } 
+   
     }
+
+    obj['QtyLp'] = contador;
+   contador = 0;  
+
     }
     
     // fields.forEach(field => {

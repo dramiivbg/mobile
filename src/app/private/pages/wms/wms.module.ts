@@ -29,8 +29,7 @@ import { PopoverMergeComponent } from '@prv/components/popover-merge/popover-mer
 import { PopoverSplitComponent } from '@prv/components/popover-split/popover-split.component';
 import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
 import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-lp-edit.component';
-import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/read-license-plate.component';
-import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
+
 import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-log-lp.component';
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
@@ -54,6 +53,9 @@ import { PopoverShowSerialesComponent } from '@prv/components/popover-show-seria
 import { PhysicalCountComponent } from '@prv/components/physical-count/physical-count.component';
 import { PhysicalNoCountComponent } from '@prv/components/physical-no-count/physical-no-count.component';
 import { PopoverChildrensPalletComponent } from '@prv/components/popover-childrens-pallet/popover-childrens-pallet.component';
+import { PopoverListLpComponent } from '@prv/components/popover-list-lp/popover-list-lp.component';
+import { PopoverListPalletComponent } from '@prv/components/popover-list-pallet/popover-list-pallet.component';
+import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-inquiries.component';
 
 
 
@@ -83,8 +85,6 @@ import { PopoverChildrensPalletComponent } from '@prv/components/popover-childre
     PopoverSplitComponent,
     PopoverOpionsLpComponent,
     PopoverLpEditComponent,
-    ReadLicensePlateComponent,
-    ReadBinContentComponent,
     PopoverLogLpComponent,
     SplitItemComponent,
     BinToBinPage,
@@ -107,7 +107,10 @@ import { PopoverChildrensPalletComponent } from '@prv/components/popover-childre
     PopoverShowSerialesComponent,
     PhysicalCountComponent,
     PhysicalNoCountComponent,
-    PopoverChildrensPalletComponent
+    PopoverChildrensPalletComponent,
+    PopoverListLpComponent,
+    PopoverListPalletComponent,
+    PagueInquiriesComponent
     
   
   ],
@@ -133,8 +136,6 @@ import { PopoverChildrensPalletComponent } from '@prv/components/popover-childre
     PopoverMergeComponent,
     PopoverSplitComponent,
     PopoverOpionsLpComponent,
-    ReadLicensePlateComponent,
-    ReadBinContentComponent,
     PopoverLogLpComponent,
     OptionsLpsOrItemsComponent,
     SplitItemComponent,
@@ -154,7 +155,10 @@ import { PopoverChildrensPalletComponent } from '@prv/components/popover-childre
     PopoverAddItemTrakingComponent,
     PopoverCountingComponent,
     PopoverShowSerialesComponent,
-    PopoverChildrensPalletComponent 
+    PopoverChildrensPalletComponent,
+    PopoverListLpComponent,
+    PopoverListPalletComponent,
+    PagueInquiriesComponent
   
   ]
 })
