@@ -188,31 +188,11 @@ export class WmsMainPage implements OnInit {
   }
 
 
-  menuInqueris() {
+  pagueInqueris() {
 
 
-    this.boolean = false;
-    this.booleanInQ = true;
+    this.router.navigate(['page/wms/Inquiries']);
 
-
-  }
-
-
-
-
-  pageReadLicensePlate() {
-
-
-
-    this.router.navigate(['page/wms/readLicensePlate']);
-  }
-
-
-  pageReadBinContent() {
-
-
-
-    this.router.navigate(['page/wms/readBinContent']);
 
   }
 

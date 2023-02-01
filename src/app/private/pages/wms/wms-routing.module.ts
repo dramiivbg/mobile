@@ -14,13 +14,12 @@ import { WmsItemJournalPage } from './wms-item-journal/wms-item-journal.page';
 import { WhitemReclassificationPage } from './whitem-reclassification/whitem-reclassification.page';
 import { WmsSplitMergePage } from './wms-split-merge/wms-split-merge.page';
 
-import { ReadLicensePlateComponent } from '@prv/components/read-license-plate/read-license-plate.component';
-import { ReadBinContentComponent } from '@prv/components/read-bin-content/read-bin-content.component';
 import { BinToBinPage } from './bin-to-bin/bin-to-bin.page';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { PhysicalInventoryPage } from './physical-inventory/physical-inventory.page';
 import { PhysicalCountComponent } from '@prv/components/physical-count/physical-count.component';
 import { PhysicalNoCountComponent } from '@prv/components/physical-no-count/physical-no-count.component';
+import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-inquiries.component';
 
 
 
@@ -52,8 +51,9 @@ const routes: Routes = [
     {path: 'wmsItemJournal',component: WmsItemJournalPage},
 
     {path: 'wmsSplitMerge', component: WmsSplitMergePage},
-    {path: 'readLicensePlate', component: ReadLicensePlateComponent},
-    {path: 'readBinContent', component: ReadBinContentComponent },
+
+    {path: 'Inquiries', component: PagueInquiriesComponent },
+
 
     {path: 'binToBin', component: BinToBinPage},
 

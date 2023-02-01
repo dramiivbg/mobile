@@ -5,20 +5,21 @@
   <ion-grid>
 
       <ion-row style="text-align: center;" class="row">
-        <ion-col size="3">Serial No</ion-col>
-        <ion-col size="3">Lot No</ion-col>
-        <ion-col size="3">Exp Date</ion-col>
+        <ion-col size="6" *ngIf="boolean">Item No</ion-col>
+        <ion-col size="3" *ngIf="!boolean">Serial No</ion-col>
+        <ion-col size="3" *ngIf="!boolean">Lot No</ion-col>
+        <ion-col size="3" *ngIf="!boolean">Exp Date</ion-col>
         <ion-col size="3">Qty</ion-col>
     
       </ion-row>
 
       <div id="taula"  > 
         <ion-row *ngFor="let item of list; let i = index" style="text-align: center;" >
-        
-          <ion-col size="3" *ngIf="item.proceded === false">{{item.SerialNo}}</ion-col>
-          <ion-col size="3" *ngIf="item.proceded === true" (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
-          <ion-col size="3">{{item.LotNo}}</ion-col>
-          <ion-col size="3">{{item.ExperationDate}}</ion-col>
+          <ion-col size="6" *ngIf="boolean">{{item.No}}</ion-col>
+          <ion-col size="3" *ngIf="item.proceded === false && !boolean" >{{item.SerialNo}}</ion-col>
+          <ion-col size="3" *ngIf="item.proceded === true && !boolean" (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
+          <ion-col size="3" *ngIf="!boolean">{{item.LotNo}}</ion-col>
+          <ion-col size="3" *ngIf="!boolean">{{item.ExperationDate}}</ion-col>
           <ion-col size="3" *ngIf="item.Qty !== undefined">{{item.Qty}}</ion-col>
           <ion-col size="3" *ngIf="item.Quantity !== undefined && item.Quantity !== null">{{item.Quantity}}</ion-col> 
           <ion-col size="3" *ngIf="item.QtyPhysInventory !== undefined">{{item.QtyPhysInventory}}</ion-col>

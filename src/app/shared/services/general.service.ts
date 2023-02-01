@@ -196,7 +196,7 @@ export class GeneralService {
     return objLst;
   }
 
-  async fieldsToJson(fields: any) : Promise<any> {
+  async fieldsToJson(fields: any,data = '') : Promise<any> {
     let obj = {};
     let list = [];
     let contador = 0;
@@ -216,31 +216,40 @@ export class GeneralService {
      
     }
 
+    if(data === 'line'){
 
-    const lps = await this.wmsService.GetLicencesPlateInWR(obj['No'], false);
+      const lps = await this.wmsService.GetLicencesPlateInWR(obj['No'], false);
 
     if(!lps.Error){
 
       console.log(lps);
+      console.log(obj);
 
       let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+
+      console.log(res);
+      let lp = [];
+      res.map(x => {
+        let line = lp.find(i => i.PLULPDocumentNo === x.PLULPDocumentNo);
+        if(line === undefined || line === null)lp.push(x);
+      });
+      console.log(lp);
      
-      for (const key in res) {
+      for (const key in lp) {
         
-          if (obj['PLUWhseLineNo']  === res[key].LineNo) {
+          if (obj['LineNo']  === lp[key].PLUWhseLineNo) {
   
             contador++;
             
-          }
-        
-  
-        obj['QtyLp'] = contador;
-        contador = 0;
-    
-   }   
-    }
+          }   
+   } 
    
+    }
 
+    obj['QtyLp'] = contador;
+   contador = 0;  
+
+    }
     
     // fields.forEach(field => {
     //   obj[field.name] = field.value
@@ -355,7 +364,7 @@ export class GeneralService {
     let obj = {};
     obj = await this.fieldsToJson(item.WarehouseReceiptHeader.fields);
     item.WarehouseReceiptLines.forEach(async line => {
-      lines.push(await this.fieldsToJson(line.fields,));
+      lines.push(await this.fieldsToJson(line.fields,'line'));
     });
    
     obj['lines'] = lines;

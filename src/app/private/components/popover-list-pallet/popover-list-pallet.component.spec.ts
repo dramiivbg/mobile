@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ReadLicensePlateComponent } from './read-license-plate.component';
+import { PopoverListPalletComponent } from './popover-list-pallet.component';
 
-describe('ReadLicensePlateComponent', () => {
-  let component: ReadLicensePlateComponent;
-  let fixture: ComponentFixture<ReadLicensePlateComponent>;
+describe('PopoverListPalletComponent', () => {
+  let component: PopoverListPalletComponent;
+  let fixture: ComponentFixture<PopoverListPalletComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReadLicensePlateComponent ],
+      declarations: [ PopoverListPalletComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ReadLicensePlateComponent);
+    fixture = TestBed.createComponent(PopoverListPalletComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -16,6 +16,7 @@ export class PopoverListSNComponent implements OnInit {
 
   @Input() list:any;
   @Input() item:any;
+  @Input() boolean = false;
   constructor(public popoverController: PopoverController,private wmsService: WmsService, 
     private jsonService: JsonService,  private intServ: InterceptService,private storage: Storage) { }
 

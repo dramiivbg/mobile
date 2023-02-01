@@ -131,6 +131,9 @@ export class PhysicalInventoryPage implements OnInit {
 
                x.Lines.filter(lp => {
 
+                lp.map(j => {
+
+                  console.log(lp);
                   let line = this.lists.find(x => x.PLULicensePlates === lp.No);
                   if(line != undefined){
                     line['seriales'] = lp.Childs;
@@ -139,6 +142,9 @@ export class PhysicalInventoryPage implements OnInit {
                     line.QtyCalculated = line.QtyPhysInventory;
                     pallet.childrens.push(line);
                   }
+
+                });
+                
                });
 
                this.lps.push(pallet);
@@ -152,6 +158,9 @@ export class PhysicalInventoryPage implements OnInit {
             this.lists.map(x => x.BinCode === code.toUpperCase()?this.quantity+= x.QtyPhysInventory:x);
            
             this.intServ.loadingFunc(false);
+          }else{
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('error','', `The bin ${code.toUpperCase()}  does not exist`));
           }
           break;
 

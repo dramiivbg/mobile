@@ -46,7 +46,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row (click)="menuInqueris()">
+    <ion-row (click)="pagueInqueris()">
       <ion-col size="1">
         <ion-icon name="analytics-outline"></ion-icon>
       </ion-col>
@@ -64,32 +64,6 @@
       </ion-col>
     </ion-row>
   </ion-list>
-
-
-  <ion-list class="list" *ngIf="booleanInQ">
-    <ion-row (click)="pageReadLicensePlate()">
-      <ion-col size="1">
-        <ion-icon name="barcode-outline"></ion-icon>
-      </ion-col>
-      <ion-col size="11">
-        <ion-label>Read License Plate</ion-label>
-      </ion-col>
-    </ion-row>
-
-
-    <ion-row (click)="pageReadBinContent()">
-      <ion-col size="1">
-        <ion-icon name="barcode-outline"></ion-icon>
-      </ion-col>
-      <ion-col size="11">
-        <ion-label>Read Bin Content</ion-label>
-      </ion-col>
-
-    </ion-row>
-
-
-  </ion-list>
-
 
 
   <ion-list class="list" *ngIf="booleanM">

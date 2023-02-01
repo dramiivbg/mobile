@@ -10,23 +10,15 @@ import { InterceptService } from '@svc/intercept.service';
 })
 export class PopoverLogLpComponent implements OnInit {
 
-  @Input() logs: any = {} ;
+  @Input() listLogs:any;
 
-  public listLogs:any[] = [];
-
-  public listLogsFilter:any[] = [];
+  @Input() listLogsFilter:any;
  
   constructor( private intServ: InterceptService, private modalCtrl: ModalController) { 
-
 
   }
 
   ngOnInit() {
-
-
-    this.listLogsFilter = this.logs.LicensePlateEntries;
-
-    this.listLogs = this.logs.LicensePlateEntries;
 
 }
 
