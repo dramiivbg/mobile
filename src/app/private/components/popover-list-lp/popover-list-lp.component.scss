@@ -13,8 +13,8 @@ ion-content {
     }
 
     ion-list {
-        border-bottom: 1px solid #999;
-        padding: 0;
+        padding: 0 0 0 15PX;
+        background: transparent;
 
         ion-row {
             ion-col {
@@ -236,7 +236,7 @@ ion-fab-button {
 
 ion-col.item {
 
-    border-bottom: 2px solid gray;
+    border-bottom: 1px solid gray;
     width: 100%;
 
 }
