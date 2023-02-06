@@ -872,9 +872,10 @@ export class EditPutAwayComponent implements OnInit {
 
       this.pallet = await this.wmsService.ListLPallet(pallets);
 
-      console.log(this.pallet);
+      console.log('pallet =>',this.pallet);
       this.pallet2 = await this.wmsService.ListLPallet(pallets);
 
+    
       for (const i in this.pallet) {
 
         for (const j in this.pallet2) {
@@ -911,7 +912,7 @@ export class EditPutAwayComponent implements OnInit {
           if (this.pallet[i].fields[0].PLULPDocumentNo === this.pallet2[j].fields[0].PLULPDocumentNo) {
 
 
-            if (this.pallet[i].fields[0].PLUNo !== this.pallet2[j].fields[0].PLUNo) {
+            if (this.pallet[i].fields[0].PLUNo !== this.pallet2[j].fields[0].PLUNo || this.pallet[i].fields[0].PLUSerialNo !== this.pallet2[j].fields[0].PLUSerialNo) {
 
               this.pallet[i].fields.push(this.pallet2[j].fields[0]);
             }
@@ -942,6 +943,7 @@ export class EditPutAwayComponent implements OnInit {
           //  lp.fields.place = binPallet.Default_Bin;
         });
       }
+
 
       listPallet = await this.wmsService.ListLP(pallets);
 
@@ -1031,6 +1033,7 @@ export class EditPutAwayComponent implements OnInit {
       this.bins = bin.Bins;
 
       console.log(this.initV);
+      console.log(this.pallet);
 
     }
 
@@ -1308,33 +1311,52 @@ export class EditPutAwayComponent implements OnInit {
         let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
         let lps: any[] = [];
         pallet.fields.filter(async (lp, index) => {
-
+          let p;
+          let img;
           let res = await this.wmsService.getLpNo(lp.PLUNo);
+          if(!res.Error){
+             p = await this.wmsService.ListLp(res);
 
-          let p = await this.wmsService.ListLp(res);
+            let pH = await this.wmsService.ListLpH(res);
+  
+            let resI = await this.wmsService.GetItem(p.fields.PLUNo);
+  
+            img = await this.wmsService.listItem(resI);
 
-          let pH = await this.wmsService.ListLpH(res);
-
-          let resI = await this.wmsService.GetItem(p.fields.PLUNo);
-
-          let img = await this.wmsService.listItem(resI);
-
-          p.fields['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
-          p.fields.PLUBinCode = pH.fields.PLUBinCode;
-          p.fields.PLULocationCode = pH.fields.PLULocationCode;
-
-          this.listPwL.filter(
-            x => {
-              switch (x.fields.ActionType) {
-                case "Place":
-                  if (p.fields.PLUNo === x.fields.ItemNo) {
-                    p.fields.place = x.fields.BinCode;
-                    break;
-                  }
+            p.fields['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
+            p.fields.PLUBinCode = pH.fields.PLUBinCode;
+            p.fields.PLULocationCode = pH.fields.PLULocationCode;
+            this.listPwL.filter(
+              x => {
+                switch (x.fields.ActionType) {
+                  case "Place":
+                    if (p.fields.PLUNo === x.fields.ItemNo) {
+                      p.fields.place = x.fields.BinCode;
+                      break;
+                    }
+                }
               }
-            }
-          )
-          lps.push(p);
+            )
+            lps.push(p);
+
+          }else{
+            let resI = await this.wmsService.GetItem(lp.PLUNo);  
+            img = await this.wmsService.listItem(resI);
+            lp['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
+
+            this.listPwL.filter(
+              x => {
+                switch (x.fields.ActionType) {
+                  case "Place":
+                    if (img.fields.No === x.fields.ItemNo) {
+                      lp['place'] = x.fields.BinCode;
+                      break;
+                    }
+                }
+              }
+            )
+            lps.push(lp);
+          }      
 
         });
         this.intServ.loadingFunc(false);

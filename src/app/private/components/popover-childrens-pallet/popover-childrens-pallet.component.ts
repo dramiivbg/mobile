@@ -22,6 +22,8 @@ export class PopoverChildrensPalletComponent implements OnInit {
   async show(item:any){
 
     let list = [];
+
+    item.seriales[0].Quantity = (item.seriales.length === 1)?item.QtyPhysInventoryBase:item.seriales[0].Quantity;
     
         if(item.seriales.length > 0){
   
@@ -44,12 +46,12 @@ export class PopoverChildrensPalletComponent implements OnInit {
       barCodeData => {
         let code = barCodeData.text;
       
-        let line = this.item.childrens.find(x => x.PLULicensePlates === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo === code.toUpperCase() || x.LotNo === code.toUpperCase());
+        let line = this.item.childrens.find(x => x.PLULPDocumentNo === code.toUpperCase() || x.ItemNo === code.toUpperCase() || x.SerialNo === code.toUpperCase() || x.LotNo === code.toUpperCase());
       
         if(line != undefined){
 
-          this.popoverController.dismiss({});
-          this.counting(line);
+         this.popoverController.dismiss({line});
+          
         
         }
       
@@ -62,17 +64,10 @@ export class PopoverChildrensPalletComponent implements OnInit {
 
   }
 
-  async counting(obj){
-
-    const popover = await this.popoverController.create({
-      component: PopoverCountingComponent,
-      cssClass: 'popoverCountingComponent',
-      componentProps: {list:obj},
-      backdropDismiss: false
-      
-    });
-    await popover.present();
-    const { data } = await popover.onDidDismiss();
+  onCancel(){
+    this.popoverController.dismiss({});
   }
+
+
 
 }

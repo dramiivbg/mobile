@@ -48,23 +48,36 @@
                                             <ion-col size="15" *ngFor="let item of lps; let i=index">
                                                 <ion-row>
 
-                                                    <ion-col size="6" class="label-line-title blue">
+                                                    <ion-col size="6" class="label-line-title blue" *ngIf="item.fields != undefined">
                                                         {{item.fields.PLULPDocumentNo}}
                                                     </ion-col>
+                                                    <ion-col size="4" class="label-line-title blue" *ngIf="item.fields === undefined">
+                                                        {{item.PLUNo}}
+                                                    </ion-col>
+                                                    <ion-col  size="4" class="label-line-title" *ngIf="item.fields === undefined">
+                                                        Measure: {{item.PLUUnitofMeasureCode}}
+                                                    </ion-col>
+
+                                                    <ion-col size="4" class="label-line-title"
+                                                     *ngIf="item.fields === undefined">
+                                                    Qty. {{item.PLUQuantity}}
+
+                                                </ion-col>
                                                 </ion-row>
 
-                                                <ion-row>
+                                                <ion-row *ngIf="item.fields != undefined">
                                                     <ion-col size="5" style="overflow: hidden;"
                                                         class="label-line-title blue">
                                                         {{item.company}}
                                                     </ion-col>
                                                     <ion-col size="3" class="label-line-title"
-                                                        style="text-align: right;">
+                                                        style="text-align: right;" >
                                                         Qty. {{item.fields.PLUQuantity}}
 
                                                     </ion-col>
+                                                  
                                                 </ion-row>
-                                                <ion-row>
+                                                <ion-row *ngIf="item.fields != undefined ">
                                                     <ion-col size="4" class="label-line">
                                                         Item No: {{item.fields.PLUNo}}
                                                     </ion-col>
@@ -75,19 +88,17 @@
                                                 </ion-row>
 
 
-                                                <ion-row>
+                                                <ion-row *ngIf="item.fields != undefined ">
                                                     <ion-col size="3" class="label-line">
                                                         Take: {{item.fields.PLUBinCode}}
                                                     </ion-col>
 
 
-                                                    <ion-col size="3" class="label-line">
-                                                        Document Type:
+                                                    <ion-col size="5" class="label-line">
+                                                        Document Type:{{item.fields.PLULPDocumentType}}
                                                     </ion-col>
-                                                    <ion-col size="2" style="padding-bottom: 10px;" class="negrilla">
-                                                        {{item.fields.PLULPDocumentType}}
-                                                    </ion-col>
-
+                                                    
+                                                
                                                     <ion-col size="3" class="label-line-ligth"
                                                         style="text-align: right;">
                                                         Place: {{item.fields.place}}
@@ -96,16 +107,66 @@
 
                                                 </ion-row>
 
+                                                <ion-row *ngIf="item.fields === undefined ">
+                                                    <ion-col size="3" class="label-line">
+                                                        Take: {{item.PLUBinCode}}
+                                                    </ion-col>
+
+
+                                                    <ion-col size="5" class="label-line">
+                                                        Document Type:{{item.PLUType}}
+                                                    </ion-col>
+                                                
+
+                                                    <ion-col size="3" class="label-line-ligth"
+                                                        style="text-align: right;">
+                                                        Place: {{item.place}}
+
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                            <ion-row *ngIf="item.fields === undefined">
+                                                <ion-col size="4" *ngIf="item.PLUSerialNo != null">
+
+                                                    Serial No:{{item.PLUSerialNo}}
+                                                </ion-col>
+
+                                                <ion-col size="4"  *ngIf="item.PLULotNo != null">
+                                                    Lot No:{{item.PLULotNo}}
+                                                    
+                                                </ion-col>
+
+                                                <ion-col size="4"   *ngIf="item.PLUExpirationDate != null">
+                                                    
+                                                    Exp Date:{{item.PLUExpirationDate}}
+                                                </ion-col>
+
+                                            </ion-row>
+
                                                 <ion-item-sliding>
 
                                                     <ion-item style="width: 100%;">
-                                                        <ion-row>
+                                                        <ion-row *ngIf="item.fields != undefined">
                                                             <ion-col size="12" class="label-line splitimage">
                                                                 <label *ngIf="item.fields.image != 'NOIMAGE' && show"
                                                                     class="label">{{item.fields.PLUNo}}</label>&nbsp;
                                                                 <img *ngIf="item.fields.image != 'NOIMAGE' && show"
                                                                     [src]="item.fields.image" alt="">
                                                                 <img *ngIf="item.fields.image === 'NOIMAGE' && show"
+                                                                    src="../../../../assets/img/caja.jpg" alt="">
+
+                                                            </ion-col>
+
+                                                        </ion-row>
+
+                                                        <ion-row *ngIf="item.fields === undefined">
+                                                            <ion-col size="12" class="label-line splitimage">
+                                                                <label *ngIf="item.image != 'NOIMAGE' && show"
+                                                                    class="label">{{item.PLUNo}}</label>&nbsp;
+                                                                <img *ngIf="item.image != 'NOIMAGE' && show"
+                                                                    [src]="item.image" alt="">
+                                                                <img *ngIf="item.image === 'NOIMAGE' && show"
                                                                     src="../../../../assets/img/caja.jpg" alt="">
 
                                                             </ion-col>

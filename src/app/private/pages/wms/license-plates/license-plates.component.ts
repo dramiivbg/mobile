@@ -421,6 +421,7 @@ async  save(){
             exp: "",
             Qty: ""
           });
+          break;
         
          }
   
@@ -430,7 +431,7 @@ async  save(){
       break
 
      default:
-      this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
+    //  this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
       break;
     
   }

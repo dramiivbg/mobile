@@ -48,7 +48,7 @@ export class PopoverListPalletComponent implements OnInit {
      const popover = await this.popoverController.create({
           component: PopoverListLpComponent,
           cssClass: 'popoverCountingComponent',
-          componentProps: {lp:obj},
+          componentProps: {lp:obj,active:false},
           backdropDismiss: false
           
         });
@@ -59,7 +59,7 @@ export class PopoverListPalletComponent implements OnInit {
         switch(data.action){
           case 'BintoBin':
             console.log(data);
-          this.popoverController.dismiss({lp:data.lp,action:data.action});
+         // this.popoverController.dismiss({lp:data.lp,action:data.action});
           break;
         }
 
@@ -68,5 +68,11 @@ export class PopoverListPalletComponent implements OnInit {
       onCancel(){
         this.popoverController.dismiss({});
       }
+
+ BinToBin(){
+
+  this.popoverController.dismiss({lp:this.pallet,action:'BintoBin'});
+ }
+      
 
 }

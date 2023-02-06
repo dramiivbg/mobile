@@ -23,6 +23,7 @@
 
     </div>
 
+
     <div class="accorn">
       <div class="accorn-body">
         <div class="lines">
@@ -76,18 +77,26 @@
 </ion-content>
 
 <ion-row >
-  <ion-col class="buttonscan" size="6">
+  <ion-col class="buttonscan" size="4">
     <ion-button shape="round" color="secondary" (click)="onBarCode()">
       Scan
       <ion-icon class="itemfooter" name="barcode-outline"></ion-icon>
       <!-- <div class="itemfooter">Scan</div> -->
     </ion-button>
   </ion-col>
-  <ion-col class="buttonscan" size="6"  (click)="onCancel()">
+  <ion-col class="buttonscan" size="4"  (click)="onCancel()">
     <ion-button shape="round" color="danger">
       Cancel
       <ion-icon class="itemfooter" name="close-outline"></ion-icon>
       <!-- <div class="itemfooter">Scan</div> -->
+    </ion-button>
+  </ion-col>
+
+  <ion-col class="buttonscan" size="4" >
+    <ion-button shape="round" color="secondary" (click)="BinToBin()" >
+      Bin to Bin
+      <ion-icon class="itemfooter" name="move-outline"></ion-icon>
+
     </ion-button>
   </ion-col>
 </ion-row>

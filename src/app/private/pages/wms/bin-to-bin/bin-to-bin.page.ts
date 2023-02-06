@@ -105,7 +105,7 @@ export class BinToBinPage implements OnInit {
 
     
    let res = await this.wmsService.MoveBinToBin_LP(this.lpH.fields.PLULPDocumentNo,this.lpH.fields.PLUZoneCode,this.binOrigi,this.lpH.fields.PLUBinCode,
-    this.lpH.fields.PLULocationCode,this.lp.fields.PLUNo,this.lp.fields.PLUQuantity,this.lp.fields.PLUUnitofMeasureCode);
+    this.lpH.fields.PLULocationCode);
 
 
 
@@ -135,10 +135,6 @@ export class BinToBinPage implements OnInit {
 
     
    }
-
-
-
-
 
   }
 

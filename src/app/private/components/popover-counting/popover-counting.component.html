@@ -2,24 +2,30 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-col class="iconeye" size="2">
-          <ion-icon class="itemfooter" name="eye-outline" (click)="lists()"></ion-icon>
+        <ion-col class="iconeye" size="2" >
+          <ion-icon class="itemfooter" name="eye-outline" (click)="lists()" *ngIf="item === undefined"></ion-icon>
         </ion-col>
         <ion-col size="5">
           <ion-label>Count</ion-label>
         </ion-col>
-        <ion-col *ngIf="item === undefined" size="5">
-          <ion-label>{{qty}}/{{count}}</ion-label>
+        <ion-col>
+          <ion-label *ngIf="item === undefined" size="5">{{qty}}/{{count}}</ion-label>
         </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive titletop">
         <ion-col size="6">
           <b>Item No:</b>
         </ion-col>
-        <ion-col size="6" *ngIf="item != undefined">
+        <ion-col size="6" *ngIf="item != undefined && item.PLUItemNo != undefined">
+          {{item.PLUItemNo}}
+        </ion-col>
+        <ion-col size="6" *ngIf="item === undefined && list.PLUItemNo != undefined">
+          {{list.PLUItemNo}}
+        </ion-col>
+        <ion-col size="6" *ngIf="item != undefined && item.ItemNo != undefined">
           {{item.ItemNo}}
         </ion-col>
-        <ion-col size="6" *ngIf="item === undefined">
+        <ion-col size="6" *ngIf="item === undefined && list.ItemNo != undefined">
           {{list.ItemNo}}
         </ion-col>
       </ion-row>
@@ -28,19 +34,35 @@
         <ion-col size="6">
           <b>Unit of measure:</b>
         </ion-col>
-        <ion-col size="6" *ngIf="item != undefined">
+        <ion-col size="6" *ngIf="item != undefined && item.PLUUnitofMeasure != undefined">
+          {{item.PLUUnitofMeasure}}
+        </ion-col>
+        <ion-col size="6" *ngIf="item === undefined && list.PLUUnitofMeasure != undefined">
+          {{list.PLUUnitofMeasure}}
+        </ion-col>
+
+        <ion-col size="6" *ngIf="item != undefined && item.UnitofMeasureCode != undefined">
           {{item.UnitofMeasureCode}}
         </ion-col>
-        <ion-col size="6" *ngIf="item === undefined">
+        <ion-col size="6" *ngIf="item === undefined && list.UnitofMeasureCode != undefined">
           {{list.UnitofMeasureCode}}
         </ion-col>
       </ion-row>
-      <ion-row class="qtytoreceive" *ngIf="item != undefined">
+      <ion-row class="qtytoreceive" *ngIf="item != undefined && item.QtyPhysInventory != undefined">
         <ion-col size="6">
           <b>Qty P.I:</b>
         </ion-col>
         <ion-col size="6">
-          {{item.QtyPhysInventory}}
+          {{item.QtyPhysInventoryBase}}
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="qtytoreceive" *ngIf="item != undefined && item.Quantity != undefined && item.Quantity > 0">
+        <ion-col size="6">
+          <b>Qty</b>
+        </ion-col>
+        <ion-col size="6">
+          {{item.Quantity}}
         </ion-col>
       </ion-row>
 

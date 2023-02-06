@@ -1144,7 +1144,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
    }
 
 
-   public async MoveBinToBin_LP(LPNo:any,Zone:any,FromBin:any,ToBin:any,LocationCode:any,ItemNo:any,Qty:any,UnitofMeasureCode:any){
+   public async MoveBinToBin_LP(LPNo:any,Zone:any,FromBin:any,ToBin:any,LocationCode:any){
 
     try {
 
@@ -1156,10 +1156,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
             FromBin,
             ToBin,
             LocationCode,
-            ItemNo,
-            Qty,
-            UnitofMeasureCode
-
+           
           }];
     
 
@@ -1414,7 +1411,6 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     
         let obj: any = [{
 
-            Code,
         }];
     
 

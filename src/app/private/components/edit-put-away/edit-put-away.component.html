@@ -146,10 +146,11 @@
                                                         </ion-col>
                                                     </ion-row>
 
-                                                    <ion-row size="12" class="subtitlelist">
-                                                        <ion-col size="2" class="label-line-title">
+                                                    <ion-row size="12" class="subtitlelist" *ngIf="item.fields.PLULPDocumentType != 'Pallet'">
+                                                        <ion-col size="2" class="label-line-title" >
                                                             Qty: {{item.fields.PLUQuantity}}
                                                         </ion-col>
+                                    
                                                         <ion-col size="5" class="label-line-title"
                                                             style="text-align: right;">
                                                             Take: {{item.fields.PLUBinCode}}
@@ -162,6 +163,25 @@
 
                                                     </ion-row>
 
+                                                    <ion-row size="12" class="subtitlelist" *ngIf="item.fields.PLULPDocumentType === 'Pallet'">
+                                                        <ion-col size="4"  class="label-line">
+                                                            LP Type: <b>{{item.fields.PLULPDocumentType}}</b>
+                                                        </ion-col>
+    
+                                    
+                                                        <ion-col size="4" class="label-line-title"
+                                                            style="text-align: right;">
+                                                            Take: {{item.fields.PLUBinCode}}
+                                                        </ion-col>
+
+                                                        <ion-col size="4" class="label-line-title"
+                                                            style="text-align: right;">
+                                                            Place: {{item.fields.place}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                        
 
                                                     <ion-row *ngIf="item.fields.PLULPDocumentType === 'Single'">
                                                         <ion-col size="4" class="label-line">
@@ -176,13 +196,7 @@
 
                                                     </ion-row>
 
-                                                    <ion-row *ngIf="item.fields.PLULPDocumentType === 'Pallet'">
-
-                                                        <ion-col size="12" class="label-line">
-                                                            LP Type: <b>{{item.fields.PLULPDocumentType}}</b>
-                                                        </ion-col>
-
-                                                    </ion-row>
+                                                   
 
                                                 </ion-col>
 

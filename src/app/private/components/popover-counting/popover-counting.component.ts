@@ -34,7 +34,7 @@ export class PopoverCountingComponent implements OnInit {
     }
 
   ngOnInit() {
-   this.item = (this.list.seriales === 1)? this.list:undefined;
+   this.item = (this.list.seriales.length === 1 )?this.list:undefined;
    console.log(this.item);
   this.qty = this.list.seriales.length;
    console.log(this.list);
@@ -50,9 +50,9 @@ export class PopoverCountingComponent implements OnInit {
     if(this.frm.valid && this.item != undefined){
 
       let obj = await this.jsonService.formToJson(this.frm);
-      this.popoverController.dismiss({qty:obj.qty, obj: this.list});
+      this.popoverController.dismiss({qty:obj.qty, obj: this.list,type:'normal'});
     }else{
-      this.popoverController.dismiss({qty:this.count, obj: this.seriales});
+      this.popoverController.dismiss({qty:this.count, seriales: this.seriales,obj: this.list,type:'serial'});
     }
   }
 

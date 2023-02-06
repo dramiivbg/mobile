@@ -4,7 +4,7 @@
 
       <ion-row size="12">
         <ion-col size="6">
-          <ion-label>Pallet No: {{item.PLULicensePlates}} </ion-label>
+          <ion-label>Pallet No: {{item.PLULPDocumentNo}} </ion-label>
         </ion-col>
         <ion-col size="6">
           <ion-label>Bin Code: {{item.BinCode}} </ion-label>
@@ -42,7 +42,7 @@
                         <ion-row class="titleslist">
 
                           <ion-col size="12" class="titleblue LPNo" *ngIf="item.PLULicensePlates !== null">
-                            {{item.PLULicensePlates}}
+                            {{item.PLULPDocumentNo}}
                           </ion-col>
                           <ion-col size="12" class="titleblue LPNo" *ngIf="item.PLULicensePlates === null">
                             {{item.ItemNo}}
@@ -57,7 +57,7 @@
                             Qty. P.I:
                           </ion-col>
                           <ion-col size="4" class="label-line-title">
-                            {{item.QtyPhysInventory}}
+                            {{item.QtyPhysInventoryBase}}
                           </ion-col>
                         </ion-row>
 
@@ -110,11 +110,18 @@
 
 </ion-content>
 
-<ion-row *ngIf="count">
-  <ion-col class="buttonscan" size="12">
+<ion-row >
+  <ion-col class="buttonscan" size="6">
     <ion-button shape="round" color="secondary" (click)="onBarCode()">
       Scan
       <ion-icon class="itemfooter" name="barcode-outline"></ion-icon>
+      <!-- <div class="itemfooter">Scan</div> -->
+    </ion-button>
+  </ion-col>
+  <ion-col class="buttonscan" size="6"  (click)="onCancel()">
+    <ion-button shape="round" color="danger">
+      Cancel
+      <ion-icon class="itemfooter" name="close-outline"></ion-icon>
       <!-- <div class="itemfooter">Scan</div> -->
     </ion-button>
   </ion-col>

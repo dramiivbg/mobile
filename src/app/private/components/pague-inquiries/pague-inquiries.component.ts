@@ -4,6 +4,7 @@ import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
+import { request } from 'https';
 import { PopoverChildrensPalletComponent } from '../popover-childrens-pallet/popover-childrens-pallet.component';
 import { PopoverCountingComponent } from '../popover-counting/popover-counting.component';
 import { PopoverListLpComponent } from '../popover-list-lp/popover-list-lp.component';
@@ -32,20 +33,22 @@ export class PagueInquiriesComponent implements OnInit {
     this.barcodeScanner.scan().then(
      async barCodeData => {
         let code = barCodeData.text;
-        switch(this.bin === ''){
-
-          case true:
+      
             this.obj = [];
           this.intServ.loadingFunc(true);
           try {
             let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(),'WMS');
 
-            if(res.Error) throw new Error(res.Error.Message);
+            let resL = await this.wmsService.getLpNo(code.toUpperCase());
+
+            let identifier = await this.wmsService.GetItemIdentifier(code.toUpperCase());
+
+           console.log(res,code);
             
 
             console.log(res);
           
-            if(!res.Error){
+            if(!res.Error && !res.error){
               this.bin = code.toUpperCase();
               console.log(res);
               res.map(async x => {    
@@ -81,7 +84,7 @@ export class PagueInquiriesComponent implements OnInit {
                       console.log(childrens);
                       this.quantity+= qty;
                       obj['childrens'] = childrens;
-                      obj['Quantity'] = childrens.length;
+                    //  obj['Quantity'] = childrens.length;
                       
                     }else{
   
@@ -102,11 +105,136 @@ export class PagueInquiriesComponent implements OnInit {
          
               this.viewBin = true;
               this.intServ.loadingFunc(false);
-            }else{
+            }else
+             if(!resL.Error && !resL.Error){
 
-              
-             // this.intServ.loadingFunc(false);
-              //this.intServ.alertFunc(this.js.getAlert('error','', `The bin ${code.toUpperCase()}  does not exist`));
+              this.viewBin = false;
+              let resquest = {
+                ExpirationDate: '',
+                LPDocumentNo: "",
+                LineNo: 0,
+                LotNo: '',
+                No: "",
+                Quantity: 0,
+                SerialNo: '',
+                Type: "",
+                VariantCode: ''
+              }
+
+              let lpH = await this.wmsService.listSetup(resL.LicensePlates.LicensePlatesHeaders);
+              let lpL = await this.wmsService.listTraking(resL.LicensePlates.LicensePlatesLines);
+
+            if(lpH.PLULicensePlateStatus === "Stored"){
+
+              switch(lpH.PLULPDocumentType){
+                case 'Single':
+
+                let Lines = [];
+                lpL.map(x => {
+
+                  resquest.ExpirationDate = x.PLUExpirationDate;
+                  resquest.LPDocumentNo = x.PLULPDocumentNo;
+                  resquest.LineNo = x.PLULineNo;
+                  resquest.LotNo = x.PLULotNo;
+                  resquest.No = x.PLUNo;
+                  resquest.Quantity = x.PLUQuantity;
+                  resquest.SerialNo = x.PLUSerialNo;
+                  resquest.Type = x.PLUType;
+                  resquest.VariantCode = " "
+
+                  Lines.push(resquest);
+
+                  resquest = {
+                    ExpirationDate: '',
+                    LPDocumentNo: "",
+                    LineNo: 0,
+                    LotNo: '',
+                    No: "",
+                    Quantity: 0,
+                    SerialNo: '',
+                    Type: "",
+                    VariantCode: ''
+                  }
+                });
+                let qty = 0;
+                lpH['seriales'] = Lines;
+                Lines.map(x => qty+=x.Quantity);
+                lpH['Quantity'] = qty; 
+                this.obj.push(lpH);          
+                this.quantity+= qty;
+
+                console.log(lpH);
+                  break;
+                
+                case 'Pallet':
+                let LinesP = [];
+                let lp = [];
+                let childrens = [];
+                let length = 0;
+
+                 lpL.map(async x => {
+
+                  let resP = await this.wmsService.getLpNo(x.PLUNo);
+                  let lpHP = await this.wmsService.listSetup(resP.LicensePlates.LicensePlatesHeaders);
+                  let lpLP = await this.wmsService.listTraking(resP.LicensePlates.LicensePlatesLines);
+
+                  lpLP.map(x => {
+
+                    resquest.ExpirationDate = x.PLUExpirationDate;
+                    resquest.LPDocumentNo = x.PLULPDocumentNo;
+                    resquest.LineNo = x.PLULineNo;
+                    resquest.LotNo = x.PLULotNo;
+                    resquest.No = x.PLUNo;
+                    resquest.Quantity = x.PLUQuantity;
+                    resquest.SerialNo = x.PLUSerialNo;
+                    resquest.Type = x.PLUType;
+                     
+                    LinesP.push(resquest);
+  
+                    resquest = {
+                      ExpirationDate: '',
+                      LPDocumentNo: "",
+                      LineNo: 0,
+                      LotNo: '',
+                      No: "",
+                      Quantity: 0,
+                      SerialNo:'',
+                      Type: "",
+                      VariantCode: ''
+                    }
+                  });
+
+                  let qty = 0;
+                  lpHP['seriales'] = LinesP;
+                  LinesP.map(x => qty+=x.Quantity);
+                  lpHP['Quantity'] = qty; 
+                  childrens.push(lpHP);
+                  length++;         
+                  this.quantity+= qty;          
+
+                 });
+
+                 lpH['childrens'] = childrens;
+              //   lpH['Quantity'] = length;
+                 this.obj.push(lpH);
+
+                 console.log(lpH);
+
+                  break;
+              }
+            }else{
+              this.intServ.alertFunc(this.js.getAlert('error', '', `License plate ${code.toUpperCase()} is not in storage state`));
+            }
+             
+              this.intServ.loadingFunc(false);
+              // console.log(lpH,lpL);
+            
+            }else if(!identifier.Error || !identifier.error){
+
+              this.intServ.loadingFunc(false);
+
+              let res = await this.wmsService.GetItem(identifier.ItemIdentifier[0].ItemNo);
+              console.log(res);
             }
             
           } catch (error) {
@@ -116,20 +244,7 @@ export class PagueInquiriesComponent implements OnInit {
             
           }
         
-         
-          break;
-
-          case false:
-
-         let line = this.obj.find(x => x.PLULPDocumentNo === code.toUpperCase() || x.PLUItemNo === code.toUpperCase());
-         if(line != undefined)this.PopoverCounting(line);
-            break;
-
-            
-
-        }
       
-       
         
       }
     ).catch(
@@ -174,7 +289,7 @@ export class PagueInquiriesComponent implements OnInit {
            if(line != undefined){
  
              let res = await this.wmsService.MoveBinToBin_LP(data.lp.PLULPDocumentNo,data.lp.PLUZoneCode,data.lp.PLUBinCode,line.BinCode,
-              data.lp.PLULocationCode,data.lp.PLUItemNo,data.lp.Quantity,data.lp.PLUUnitofMeasure);
+              data.lp.PLULocationCode);
  
              if(res.Error) throw new Error(res.Error.Message);
  
@@ -251,14 +366,23 @@ export class PagueInquiriesComponent implements OnInit {
          if(line != undefined){
 
            let res = await this.wmsService.MoveBinToBin_LP(data.lp.PLULPDocumentNo,data.lp.PLUZoneCode,data.lp.PLUBinCode,line.BinCode,
-            data.lp.PLULocationCode,data.lp.PLUItemNo,data.lp.Quantity,data.lp.PLUUnitofMeasure);
-
+            data.lp.PLULocationCode);
+            console.log(res);
            if(res.Error) throw new Error(res.Error.Message);
+           if(res.error) throw new Error(res.error.message);
+           if(res.message) throw new Error(res.message);
+           
+           console.log(obj);
+           this.obj.map((x,i) => {
+            console.log(x);
+            if(x.PLULPDocumentNo === data.lp.PLULPDocumentNo)this.obj.splice(i,1)
+          });
 
            this.intServ.loadingFunc(false);
-           this.intServ.alertFunc(this.js.getAlert('success','',`License plate ${data.lp.PLULPDocumentNo} moved from bin ${data.lp.PLUZoneCode} 
-           to ${line.BinCode}`));         
-
+           this.intServ.alertFunc(this.js.getAlert('success','',`License plate ${data.lp.PLULPDocumentNo} moved from bin ${data.lp.PLUBinCode} 
+           to ${line.BinCode}`));   
+         
+    
          }else{
           // this.intServ.alertFunc(this.js.getAlert('error','',''))
 
