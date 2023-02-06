@@ -55,6 +55,11 @@ ion-list.list {
     }
 }
 
+.avatar-txt{
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
 ion-content{
     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
 }

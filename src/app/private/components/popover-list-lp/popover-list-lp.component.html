@@ -7,71 +7,71 @@
         </ion-col>
         <ion-col class="title" size="11">
           LP No: {{lp.PLULPDocumentNo}}
-        </ion-col> 
+        </ion-col>
       </ion-row>
+
+      <ion-list>
+
+        <ion-row *ngFor="let item of lp.seriales">
+
+          <ion-col size="12" class="item">
+
+            <ion-row class="titleslist">
+
+              <ion-col size="8" class="titleblue LPNo">
+                {{item.No}}
+              </ion-col>
+
+              <ion-col size="4" class="label-line-title">
+                Qty. {{item.Quantity}}
+              </ion-col>
+            </ion-row>
+
+
+
+            <ion-row>
+              <ion-col size="6" class="label-line-title" *ngIf="item.SerialNo != ''">
+                Serial No: <b>{{item.SerialNo}}</b>
+              </ion-col>
+              <ion-col size="6" class="label-line-title" *ngIf="item.LotNo != ''">
+                Lot No: <b>{{item.LotNo}}</b>
+              </ion-col>
+
+
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="7" class="label-line-title" *ngIf="item.ExpirationDate != ''">
+                Exp Date: <b>{{item.ExpirationDate}}</b>
+              </ion-col>
+              <ion-col size="5" class="label-line-title" *ngIf="item.VariantCode != ''">
+                Variant Code: <b>{{item.VariantCode}}</b>
+              </ion-col>
+
+
+            </ion-row>
+
+          </ion-col>
+
+        </ion-row>
+
+
+      </ion-list>
+
       <ion-row class="qtytoreceive titletop">
         <ion-col size="6" (click)="Count()">
-          <ion-button>
-            <ion-icon slot="start" name="star"></ion-icon>
+          <ion-button shape="round" expand="block">
             Count
           </ion-button>
         </ion-col>
-        <ion-col size="6" (click)="BinToBin()" *ngIf="active">
-          <ion-button>
-            <ion-icon slot="start" name="move-outline"></ion-icon>
+        <ion-col size="6" (click)="BinToBin()">
+          <ion-button shape="round" expand="block" color="secondary">
             Bin to Bin
           </ion-button>
         </ion-col>
       </ion-row> 
-  
-            <ion-list>
-             
-                    <ion-row *ngFor="let item of lp.seriales">   
-  
-                          <ion-col size="12" class="item">
-  
-                            <ion-row class="titleslist">
-                              
-                              <ion-col size="8" class="titleblue LPNo" >
-                                 {{item.No}}
-                              </ion-col>
-                            
-                              <ion-col size="4" class="label-line-title">
-                                Qty. {{item.Quantity}}
-                              </ion-col>
-                            </ion-row>
-  
-                           
-  
-                            <ion-row >
-                              <ion-col size="6" class="label-line-title" *ngIf="item.SerialNo != ''">
-                                Serial No: <b>{{item.SerialNo}}</b>
-                              </ion-col>
-                              <ion-col size="6" class="label-line-title" *ngIf="item.LotNo != ''" >
-                                Lot No: <b>{{item.LotNo}}</b>
-                              </ion-col>
-                             
-                             
-                            </ion-row>
 
-                            <ion-row >
-                              <ion-col size="6" class="label-line-title" *ngIf="item.ExpirationDate != ''">
-                                Exp Date: <b>{{item.ExpirationDate}}</b>
-                              </ion-col>
-                              <ion-col size="6" class="label-line-title" *ngIf="item.VariantCode != ''" >
-                                Variant Code: <b>{{item.VariantCode}}</b>
-                              </ion-col>
-                             
-                             
-                            </ion-row>
-  
-                          </ion-col>
-                  
-                    </ion-row>
-  
-                
-            </ion-list>
-           
+
     </form>
   </ion-content>
 </ng-container>

@@ -38,6 +38,11 @@ ion-content.main {
                 }
             }
 
+            .Username{
+                font-weight: bold;
+                text-transform: capitalize;
+            }
+
             div.menuInfo {
                 color: var(--ion-color-plureHeader);
                 margin-top: 10px;
