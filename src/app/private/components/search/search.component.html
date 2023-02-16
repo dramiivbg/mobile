@@ -1,4 +1,4 @@
-<ion-header [hidden]="searchObj.title == undefined">
+<ion-header [hidden]="searchObj.title == undefined" >
   <ion-toolbar color="plureHeader">
     <ion-buttons slot="start">
       <ion-button (click)="onBack()">
@@ -8,6 +8,7 @@
     <ion-title mode="ios">{{searchObj.title}}</ion-title>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content [hidden]="searchObj.title == undefined" :style="height: {{ height }}px">
   <div class="search-content" *ngIf="searchObj.type == 0">
@@ -46,7 +47,8 @@
     </div>
   </div>
 
-  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 1">  <!-- sales order -->
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 1">
+    <!-- sales order -->
     <ion-col size="12">
       <ion-grid>
         <ion-row>
@@ -70,7 +72,8 @@
         <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index">
           <ion-item-sliding>
             <ion-item-options side="start">
-              <ion-item-option color="danger" (click)="onDeleteLine(item, i)" style="padding: 0 20px;">Delete</ion-item-option> <!-- Delete item -->
+              <ion-item-option color="danger" (click)="onDeleteLine(item, i)" style="padding: 0 20px;">Delete
+              </ion-item-option> <!-- Delete item -->
             </ion-item-options>
 
             <ion-item (click)="onClick(item)">
@@ -83,23 +86,221 @@
             </ion-item>
 
             <ion-item-options side="end" *ngIf="item.parameters == undefined">
-              <ion-item-option color="plureBlue" (click)="onPostLine(item, i)" style="padding: 0 20px;">Post</ion-item-option> <!-- Delete item -->
+              <ion-item-option color="plureBlue" (click)="onPostLine(item, i)" style="padding: 0 20px;">Post
+              </ion-item-option> <!-- Delete item -->
             </ion-item-options>
           </ion-item-sliding>
-          
+
         </ion-row>
       </ion-list>
     </ion-col>
   </ion-row>
+
+
+
+
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 2">
+    <ion-col size="12">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item class="item-native-plure">
+              <div class="search-all">
+                <div class="icon">
+                  <img src="../../../assets/img/modules/search.svg" />
+                </div>
+                <div class="input">
+                  <ion-input (ionInput)="onChangeLP($event)" placeholder="Search by {{searchObj.name}}"></ion-input>
+                </div>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-col>
+    <ion-col size="12">
+      <ion-list class="listOrders">
+        <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
+
+          <ion-col>
+            <ion-label class="text-id">{{item.id}}-</ion-label>
+            <ion-label class="text-value">{{item.fields.PLULPDocumentNo}}</ion-label>
+          </ion-col>
+
+        </ion-row>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+
+
+
+
+
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 3">
+    <ion-col size="12">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item class="item-native-plure">
+              <div class="search-all">
+                <div class="icon">
+                  <img src="../../../assets/img/modules/search.svg" />
+                </div>
+                <div class="input">
+                  <ion-input (ionInput)="onChangeP($event)" placeholder="Search by {{searchObj.name}}"></ion-input>
+                </div>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-col>
+    <ion-col size="12">
+      <ion-list class="listOrders">
+        <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
+
+          <ion-col>
+            <ion-label class="text-id">{{item.fields[0].PLUWhseDocumentNo
+              }}-</ion-label>
+            <ion-label class="text-value">{{item.fields[0].PLULPDocumentNo}}</ion-label>
+          </ion-col>
+
+        </ion-row>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+
+
+
+  <ion-row class="search-salesOrder" *ngIf="searchObj.type == 4">
+    <ion-col size="12">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item class="item-native-plure">
+              <div class="search-all">
+                <div class="icon">
+                  <img src="../../../assets/img/modules/search.svg" />
+                </div>
+                <div class="input">
+                  <ion-input (ionInput)="onChangePutAway($event)" placeholder="Search by {{searchObj.name}}">
+                  </ion-input>
+                </div>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-col>
+    <ion-col size="12">
+      <ion-list class="listOrders">
+        <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
+
+          <ion-col>
+            <ion-label class="text-id">{{item.id
+              }}-</ion-label>
+            <ion-label class="text-value">{{item.fields.No}}</ion-label>
+          </ion-col>
+
+        </ion-row>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+
+ 
+<ion-row class="search-salesOrder" *ngIf="searchObj.type == 7">  
+  <ion-col size="12">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="item-native-plure">
+            <div class="search-all">
+              <div class="icon">
+                <img src="../../../assets/img/modules/search.svg" />
+              </div>
+              <div class="input">
+                <ion-input (ionInput)="onChangeBatch($event)" placeholder="{{searchObj.name}}"></ion-input>
+              </div>
+            </div>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-col>
+  <ion-col size="12">
+    <ion-list class="listOrders">
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-label class="titlebin" style="padding-left: 20px;" >Inventory Journals Batch</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
+        <ion-col >
+            <ion-label class="text-id">{{item.Name}}-</ion-label>
+            <ion-label class="text-value">{{item.LocationCode}}</ion-label>
+
+          
+          </ion-col>
+      
+      </ion-row>
+    </ion-list>
+  </ion-col> 
+</ion-row>
+
+
+
+<ion-row class="search-salesOrder" *ngIf="searchObj.type == 9" >
+  <ion-col size="12">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="item-native-plure">
+            <div class="search-all">
+              <div class="icon">
+                <img src="../../../assets/img/modules/search.svg" />
+              </div>
+              <div class="input">
+                <ion-input (ionInput)="onChangeTemplate($event)" placeholder="Search by {{searchObj.name}}">
+                </ion-input>
+              </div>
+            </div>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-col>
+
+  <ion-row>
+    <ion-col size="12">
+      <ion-label class="titlebin" style="padding-left: 20px;" >Inventory Journals Template</ion-label>
+    </ion-col>
+  </ion-row>
+
+  <ion-col size="12">
+    <ion-list class="listOrders">
+      <ion-row class="rowFirst" *ngFor="let item of listsFilter; let i = index" (click)="onClick(item)">
+        <ion-col>
+          <ion-label class="text-value">{{item.Name}}</ion-label>
+        </ion-col>
+
+      </ion-row>
+    </ion-list>
+  </ion-col>
+</ion-row>
+
+
+
   <div class="logofooter2" *ngIf="searchObj.type == 1 && new">
     <ion-row>
       <ion-col size="4">
       </ion-col>
       <ion-col size="4" (click)="onAddSalesOrder()">
-        <img src="../../../../assets/img/add.svg" />
-        <div>Add</div>
+        <ion-icon size="large" name="add-circle-outline"></ion-icon>
+        <div class="footertext">Add</div>
         <hr />
       </ion-col>
     </ion-row>
   </div>
+
 </ion-content>

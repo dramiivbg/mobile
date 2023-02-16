@@ -19,6 +19,8 @@ import { SK_ENVIRONMENT } from '@var/consts';
 import { SyncerpService } from '@svc/syncerp.service';
 import { Network } from '@capacitor/network';
 
+
+
 const { App } = Plugins;
 
 export interface Module {
@@ -45,12 +47,14 @@ export class ModulesPage implements OnInit {
     , private intServ: InterceptService
     , private js: JsonService
     , private storage: Storage
-    , private syncErp: SyncerpService
+    , private syncErp: SyncerpService,
+    
+   
   )
   {
     let objBack = {
       func: () => {
-        this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+        this.intServ.alertFunc(this.js.getAlert('confirm', ' ', 'Do you want to close the app?',
           () => {
             App.exitApp();
           }
@@ -62,14 +66,25 @@ export class ModulesPage implements OnInit {
 
   async ngOnInit() {
     let sync = await this.storage.get(SK_SYNC);
+
+   // console.log('sync =>',sync);
     sync = (sync === undefined || sync === null) ? false : sync;
     this.intServ.loadingFunc(true);
     await this.onEnvironment();
     this.environment = (await this.authService.getUserSession()).environment;
+   // console.log('enviroment =>',this.environment);
     for(let i in this.environment.modules) {
+     // console.log('module =>', i);
       let moduleType: E_MODULETYPE = this.environment.modules[i].moduleType;
+
+     // console.log('moduleType =>', this.environment.modules[i]);
+     // console.log('moduleType =>', moduleType);
       let obj: any = this.environment.modules[i];
+
+     // console.log('moduleType =>',obj);
       obj['icon'] = E_MODULETYPE[moduleType].toLowerCase();
+
+    
       this.modules.push(obj);
       if (!sync) await this.onSync(this.environment.modules[i]);
     }
@@ -94,6 +109,9 @@ export class ModulesPage implements OnInit {
   public async onClick(mod: any) {
     await this.moduleService.setSelectedModule(mod);
     console.log(mod);
+
+    this.storage.set('erpUserId',mod.erpUserId);
+    
     switch(mod.moduleType)
     {
       case E_MODULETYPE.Sales:
@@ -130,11 +148,11 @@ export class ModulesPage implements OnInit {
   }
 
   async onSync(mod) {
-    this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'Synchronization will be performed in the background',
+    this.intServ.alertFunc(this.js.getAlert('alert', ' ', 'Synchronization will be performed in the background',
       async () => {
         let objAlert = {
           funcError: (error) => {
-            this.intServ.alertFunc(this.js.getAlert('error', 'Error', error));
+            this.intServ.alertFunc(this.js.getAlert('error', '', error));
           },
           func: () => {
             let obj = undefined;
@@ -170,7 +188,7 @@ export class ModulesPage implements OnInit {
       };
       this.router.navigate(['page/sales/main'], navigationExtras);
     } catch (error) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', JSON.stringify(error)));
     }
   }
 
@@ -184,7 +202,7 @@ export class ModulesPage implements OnInit {
       };
       this.router.navigate(['page/wms/wmsMain'], navigationExtras);
     } catch (error) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', JSON.stringify(error)));
     }
   }
 
@@ -199,10 +217,10 @@ export class ModulesPage implements OnInit {
         };
         this.router.navigate(['page/payments/paymentMain'], navigationExtras);
       } else {
-        this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'This module is not available for the offline version.'));
+        this.intServ.alertFunc(this.js.getAlert('alert', ' ', 'This module is not available for the offline version.'));
       }
     } catch (error) {
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', JSON.stringify(error)));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', JSON.stringify(error)));
     }
   }
 

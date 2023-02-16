@@ -1,0 +1,269 @@
+<ng-container>
+  <ion-content>
+      <ion-row class="header">
+        <ion-col size="1" (click)="close()">
+          <ion-icon class="itemfooter" name="close-outline"></ion-icon>
+        </ion-col>    
+        <ion-col class="title" size="11">
+          Tracking Code Configuration
+        </ion-col>
+        <ion-row>
+          <ion-col class="title" size="12">
+          
+          </ion-col>
+        </ion-row>  
+      </ion-row>
+      <ion-row>
+        <ion-col class="Title2">
+          General
+        </ion-col>
+      </ion-row>
+      <ion-row class="rowpadding">
+        <ion-col class="itemtitle">
+          Code: {{code.lines.Code}}
+        </ion-col>
+      </ion-row>
+      <ion-row class="rowpadding">
+        <ion-col class="itemtitle">
+          Description: {{code.lines.Description}}
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="Title2">
+          Serial No.
+        </ion-col>
+      </ion-row>
+
+      <ion-list class="GeneralList">
+        <ion-row class="rowpadding">
+          <ion-col class="subtitle">
+            General
+          </ion-col>
+        </ion-row>
+        <ion-item *ngIf="code.lines.SNSpecificTracking === true">      
+          <ion-label>SN Specific Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.CreateSNInfoonPosting === true">      
+          <ion-label>Create SN Info. on posting</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNWarehouseTracking === true">      
+          <ion-label>SN Whse. Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item  *ngIf="code.lines.SNTransferTracking === true">      
+          <ion-label>SN Transfer Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+
+      </ion-list>
+
+      <ion-list class="InboundList">
+        <ion-row class="rowpadding">
+          <ion-col class="subtitle">
+            Inbound
+          </ion-col>
+        </ion-row>
+
+        <ion-item *ngIf="code.lines.SNInfoInboundMustExist === true">      
+          <ion-label>SN No. Info Must Exist</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNPurchaseInboundTracking === true">      
+          <ion-label>SN Purchase Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNSalesInboundTracking === true">      
+          <ion-label>SN Sales Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNPosAdjmtInbTracking === true">      
+          <ion-label>SN Positive Adjmt. Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNAssemblyInboundTracking === true">      
+          <ion-label>SN Assembly Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+      </ion-list>
+
+      <ion-list class="OutboundList">
+        <ion-row class="rowpadding">
+          <ion-col class="subtitle">
+            Outbound
+          </ion-col>
+        </ion-row>
+
+        <ion-item *ngIf="code.lines.SNInfoOutboundMustExist === true">      
+          <ion-label>SN No. Info Must Exist</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNPurchaseOutboundTracking === true">      
+          <ion-label>SN Purchase Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNSalesOutboundTracking === true">      
+          <ion-label>SN Sales Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNPosAdjmtOutbTracking === true">      
+          <ion-label>SN Positive Adjmt. Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.SNAssemblyOutboundTracking === true">      
+          <ion-label>SN Assembly Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+      </ion-list>
+
+      <ion-row>
+        <ion-col class="Title2">
+          Lot No.
+        </ion-col>
+      </ion-row>
+
+      <ion-list class="GeneralList">
+        <ion-row class="rowpadding">
+          <ion-col class="subtitle">
+            General
+          </ion-col>
+        </ion-row>
+        <ion-item *ngIf="code.lines.LotSpecificTracking  === true">      
+          <ion-label>Lot Specific Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.CreateLotNoInfoonposting === true">      
+          <ion-label>Create Lot Info. on posting</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotWarehouseTracking  === true">      
+          <ion-label>Lot Whse. Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotTransferTracking === true">      
+          <ion-label>Lot Transfer Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+
+      </ion-list>
+
+      <ion-list class="InboundList">
+        <ion-row class="rowpadding">
+          <ion-col class="subtitle">
+            Inbound
+          </ion-col>
+        </ion-row>
+
+        <ion-item *ngIf="code.lines.LotInfoInboundMustExist === true">      
+          <ion-label>Lot No. Info Must Exist</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotPurchaseInboundTracking === true">      
+          <ion-label>Lot Purchase Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item  *ngIf="code.lines.LotSalesInboundTracking === true">      
+          <ion-label>Lot Sales Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotPosAdjmtInbTracking === true">      
+          <ion-label>Lot Positive Adjmt. Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotAssemblyInboundTracking === true">      
+          <ion-label>Lot Assembly Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+      </ion-list>
+
+      <ion-list class="OutboundList">
+        <ion-row class="rowpadding">
+          <ion-col class="subtitle">
+            Outbound
+          </ion-col>
+        </ion-row>
+
+        <ion-item *ngIf="code.lines.LotInfoOutboundMustExist  === true">      
+          <ion-label>Lot No. Info Must Exist</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotPurchaseOutboundTracking === true">      
+          <ion-label>Lot Purchase Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item  *ngIf="code.lines.LotSalesOutboundTracking === true">      
+          <ion-label>Lot Sales Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotPosAdjmtOutbTracking === true">      
+          <ion-label>Lot Positive Adjmt. Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.LotAssemblyOutboundTracking === true">      
+          <ion-label>Lot Assembly Tracking</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+      </ion-list>
+
+      <ion-list class="MiscList">
+        <ion-row class="rowpadding">
+          <ion-col class="Title2">
+            Misc.
+          </ion-col>
+        </ion-row>
+
+        <ion-item *ngIf="code.lines.ManWarrantyDateEntryReqd === true">      
+          <ion-label>Require Warranty Date Entry</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.UseExpirationDates === true">      
+          <ion-label>Use Expiration Dates</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item  *ngIf="code.lines.ManExpirDateEntryReqd === true">      
+          <ion-label>Require Expiration Date Entry</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+        <ion-item *ngIf="code.lines.StrictExpirationPosting === true">      
+          <ion-label>Strict Expiration Posting</ion-label>
+          <ion-toggle disabled="true" color="secondary" slot="end" [checked]="true"></ion-toggle>
+        </ion-item>
+
+      </ion-list>
+
+
+    </ion-content>
+</ng-container>

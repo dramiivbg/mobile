@@ -1,0 +1,119 @@
+<PlureHeader   type="1" title="List Pallet" url="page/wms/wmsReceipt" notify="0"></PlureHeader>
+
+
+<ion-content>
+    <form >
+        <div class="designform-header">
+            <ion-row>
+                <ion-col>
+                    <ion-label>No. {{wareReceipts.No}}</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Loc. {{wareReceipts.LocationCode}}</ion-label>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label>Zone. {{wareReceipts.ZoneCode}}</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Bin. {{wareReceipts.BinCode}}</ion-label>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label>Posting Date. {{wareReceipts.PostingDate}}</ion-label>
+                </ion-col>
+            </ion-row>
+        </div>
+        <div class="accorn">
+            <div class="order-details">
+                <ion-row>
+                    <ion-col size="3" class="txt">
+                       
+                    </ion-col>
+                
+                </ion-row>
+            </div>
+            <div class="accorn-body">
+                <div class="lines">
+                    <ion-list *ngFor="let item of listPallet; let i=index">
+                        <div>
+
+                         
+                                    <div class="label-lines" part="item-width" >
+                                        <ion-row >
+
+                                            <ion-item-sliding>
+
+                        
+                                                <ion-item>
+                                          <ion-col size="15" class="item" (click)="listLpOrItems(item)">
+                     
+                                            <ion-row >
+                                                <ion-col size="6" style="overflow: hidden;"
+                                                    class="label-line-title blue">
+                                                    {{item.fields[0].PLULPDocumentNo}}
+                                                </ion-col>
+                                               
+
+                                            </ion-row>
+
+                                            <ion-row>
+                                                <ion-col size="5" style="overflow: hidden;"
+                                                    class="label-line-title blue">
+                                                    {{item.company}}
+                                                </ion-col>
+                                         
+                                                <ion-col size="6" class="label-line-title">
+                                                    {{item.fields[0].PLUWhseDocumentNo}}
+                                                  </ion-col>
+                                               
+
+                                            </ion-row>
+
+                                         
+                                            <ion-row>
+                                                <ion-col size="3" class="label-line">
+                                                  Status: {{item.fields[0].PLULicensePlateStatus}}
+                                                </ion-col>
+                                                <ion-col size="6" class="label-line">
+                                                  fechaC: {{item.fields[0].SystemCreatedAt
+                                                  }}
+                                                </ion-col>
+                                                
+                                            </ion-row>
+                                            <ion-row>
+                                                <ion-col class="label-line" size="3">
+                                                <!--     Line: {{item.LineNo}}-->
+                                                </ion-col>
+                                            </ion-row>
+                                        </ion-col>
+
+                                    </ion-item>    
+                                
+                                    <ion-item-options side="end">
+                                        <ion-item-option color="danger" (click)="delete(item)">
+                                          <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                        </ion-item-option>
+
+                                      
+                                      </ion-item-options>
+                          
+                                </ion-item-sliding>
+
+                                        </ion-row>
+                                    </div>
+             
+
+                                
+
+                                 
+                              
+                        </div>
+                    </ion-list>
+                </div>
+            </div>
+        </div>
+    </form>
+</ion-content>

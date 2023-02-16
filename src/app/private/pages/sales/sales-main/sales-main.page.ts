@@ -48,6 +48,7 @@ export class SalesMainPage implements OnInit {
     try {
       this.intServ.loadingFunc(true);
       this.module = await this.moduleService.getSelectedModule();
+     // console.log('module =>',this.module);
       this.session = (await this.js.getSession()).login;
       await this.getSalesCount(); 
       this.intServ.loadingFunc(false);
@@ -57,13 +58,21 @@ export class SalesMainPage implements OnInit {
   }
 
   async onSales(process: Process) {
+
+    //console.log('process =>', process.sysPermits[0]);
     this.intServ.loadingFunc(true);
     const method = await this.method(process);
     process.salesType = await this.general.typeSalesBC(process);
+  // console.log('permisos =>',process.permissions);
     process.sysPermits = await this.general.getPermissions(process.permissions);
+   // console.log('processSysPermits =>', process.sysPermits);
     await this.moduleService.setSelectedProcess(process);
+
+    // console.log('process =>', process.sysPermits[0]);
     let p = await this.syncerp.processRequestParams(method, [{ type: process.salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
     let sales = await this.syncerp.setRequest(p);
+
+    console.log('ventas =>', sales);
     let salesList = await this.general.salesOrderList(sales.SalesOrders);
     let navg: NavigationExtras = {
       state: {
@@ -90,6 +99,8 @@ export class SalesMainPage implements OnInit {
     try {
       let salesCountStr = await this.syncerp.processRequestParams('GetSalesCount', [{ pageSize:'', salesPerson: this.module.erpUserId }]);
       let salesCount = (await this.syncerp.setProcessRequest(salesCountStr)).Sales[0];
+
+     // console.log('cuentas de ventas =>', salesCount);
       
       salesCount.Amount_Order = salesCount.Amount_Order === undefined ? 0 : salesCount.Amount_Order;
       salesCount.Count_Order = salesCount.Count_Order === undefined ? 0 : salesCount.Count_Order;

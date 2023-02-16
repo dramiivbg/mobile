@@ -28,3 +28,85 @@
 @import "./_design_root";
 @import "./_variables";
 @import "./design";
+
+
+.transparent-modal {
+
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+
+}
+
+.popLicensePlate-modal {
+
+    --heigth: 400px;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverConfigurationCodeComponent-modal {
+
+    --heigth: 200px !important;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverListSNComponent-modal{
+
+    --heigth: 20px !important;
+    --width: 365px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverListSerialLpComponent-modal{
+
+    --heigth: 20px !important;
+    --width: 365px;
+    border-radius: 23px 0 0 23px;
+
+}
+
+.popoverSerialesLpComponent{
+
+    --heigth: 20px !important;
+    --width: 330px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverAddItemTrakingComponent{
+
+    --heigth: 400px;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverCountingComponent{
+   
+    --heigth: 400px;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverShowSerialesComponent{
+
+    --width: 330px;
+    border-radius: 23px 0 0 23px;
+
+}
+
+.popoverChildrensPalletComponent{
+    --width: 365px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverListPalletComponent{
+    --width: 375px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverSplitItemComponent{
+
+    --heigth: 400px;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+}

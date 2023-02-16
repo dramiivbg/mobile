@@ -34,6 +34,8 @@ export class StripePayComponent implements OnInit {
   ) {
     this.intServ.stripePay$.subscribe(
       async (req: any) => {
+
+        console.log('res =>',req);
         if (req.CustomerId !== undefined) {
           if (await this.setupMakeStripe()) {
             this.chargeOptions = req;
@@ -90,15 +92,19 @@ export class StripePayComponent implements OnInit {
 
     this.form = document.getElementById('payment-form');
     this.form.addEventListener('submit', event => {
+  
       event.preventDefault();
       this.intServ.loadingFunc(true);
+  
       try {
+  
         this.stripe.createToken(this.card).then((result: any) => {
           if (result.error === undefined) {
             this.intServ.loadingFunc(false);
             this.makePayment(result.token.id);
           } else {
             this.intServ.alertFunc(this.js.getAlert('error', 'Error', result.error.message));
+            this.intServ.loadingFunc(false);
             throw 'error';
           }
         })
@@ -150,6 +156,7 @@ export class StripePayComponent implements OnInit {
       
       try {
         let paymentPosted = await this.salesService.paidPostedSalesInvoices(this.chargeOptions.paidBC);
+        console.log('paymentPosted =>', paymentPosted)
         if (paymentPosted != null && paymentPosted.Posted) {
           if (this.forceAuthorization(transactionId, paymentPosted.DocumentNo)) {
             this.intServ.alertFunc(this.js.getAlert('success', 'Success', 'Payment was successful'));

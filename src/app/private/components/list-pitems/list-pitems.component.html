@@ -1,0 +1,254 @@
+<PlureHeader (click)="back()" type="1" title="LP Details " url="page/wms/lists" notify="0" *ngIf="boolean">
+</PlureHeader>
+
+
+<div class="docnumber" *ngIf="boolean">
+  <p> Document No: {{pallet.fields[0].PLULPDocumentNo}} </p>
+</div>
+
+
+
+
+<ion-content *ngIf="boolean">
+
+
+  <ion-row>
+    <ion-col size="10">
+      <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event)"
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search Pallet"></ion-searchbar>
+    </ion-col>
+    <ion-col size="2" class="barcodebtn">
+      <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+
+  <ion-row class="header" style="text-align: center;">
+    <ion-col class="TitleHeader">
+      <ion-label>License plate</ion-label>
+    </ion-col>
+  </ion-row>
+
+
+  <ion-list>
+
+    <ion-grid>
+
+
+      <ion-row class=" newColor column">
+        <ion-col size="1">
+          <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
+
+        </ion-col>
+
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
+        </ion-col>
+        <ion-col size="2">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
+        </ion-col>
+        <ion-col size="2">
+          <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
+        </ion-col>
+        <ion-col size="2">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Serial</div>
+        </ion-col>
+        <ion-col size="2">
+          <div style="font-family: Arial, Helvetica, sans-serif;">lot</div>
+        </ion-col>
+      </ion-row>
+
+
+
+
+      <ion-row class=" delivery ContentTable field" *ngFor="let item of listLp ; let i= index">
+
+
+        <ion-col *ngIf="testListL.length > 0" size="1">
+
+
+
+
+          <ion-checkbox (ionChange)="selectl(item,$event)" [(ngModel)]=" testListL[i].checked"></ion-checkbox>
+
+
+
+        </ion-col>
+
+
+
+        <ion-col size="3">
+          <div>{{item.PLUNo
+            }}</div>
+        </ion-col>
+        <ion-col size="2">
+          <div>{{item.PLUQuantity}}</div>
+        </ion-col>
+        <ion-col size="2">
+          <div>{{item.PLUUnitofMeasureCode
+            }}</div>
+        </ion-col>
+        <ion-col size="2">
+          <div>{{item.PLUSerialNo
+
+            }}</div>
+        </ion-col>
+        <ion-col size="2">
+          <div>{{item.PLULotNo
+
+            }}</div>
+        </ion-col>
+      </ion-row>
+
+
+
+    </ion-grid>
+
+
+
+
+  </ion-list>
+
+
+</ion-content>
+
+
+
+<PlureHeader type="1" title="Items Details " url="page/wms/lists" notify="0" *ngIf="!boolean" (click)="exit()">
+</PlureHeader>
+
+
+<div class="docnumber" *ngIf="!boolean">
+  <p> Document No: {{pallet.fields[0].PLULPDocumentNo}} </p>
+</div>
+
+
+
+<ion-content *ngIf="!boolean">
+
+  <ion-row *ngIf="!boolean">
+    <ion-col size="10">
+      <ion-searchbar [(ngModel)]="itemNo" (ionInput)="onChangeI($event)" show-clear-button="always"
+        clear-icon="close-outline" placeholder="Search Pallet" *ngIf="!boolean"></ion-searchbar>
+    </ion-col>
+    <ion-col size="2" class="barcodebtn">
+      <ion-icon size="large" name="barcode-outline" *ngIf="!boolean" (click)="autoComplet()"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="header" style="text-align: center;">
+    <ion-col class="TitleHeader">
+      <ion-label>Items</ion-label>
+    </ion-col>
+  </ion-row>
+
+
+
+  <ion-list>
+
+
+    <ion-grid >
+
+
+      <ion-row class=" newColor column">
+
+
+
+        <ion-col size="1">
+
+          <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
+
+
+        </ion-col>
+
+
+
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;">ItemNo</div>
+        </ion-col>
+        <ion-col size="2">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
+        </ion-col>
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;"> Serial</div>
+        </ion-col>
+        <ion-col size="3">
+          <div style="font-family: Arial, Helvetica, sans-serif;">Lot</div>
+        </ion-col>
+      </ion-row>
+
+
+
+
+
+      <ion-row class=" delivery ContentTable field" *ngFor="let item of listItem ; let i= index">
+
+        <ion-col *ngIf="item.PLUQuantity > 0  &&  testListI.length > 0" size="1">
+
+
+
+          <ion-checkbox (ionChange)="selectl(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
+
+
+
+        </ion-col>
+
+ 
+        <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
+          <div>{{item.PLUNo}}</div>
+        </ion-col>
+        <ion-col size="2" *ngIf="item.PLUQuantity > 0 ">
+          <div>{{item.PLUQuantity
+            }}</div>
+        </ion-col>
+        <ion-col size="3" *ngIf="item.PLUQuantity > 0">
+          <div>{{item.PLUSerialNo
+
+            }}</div>
+        </ion-col>
+
+        <ion-col size="3" *ngIf="item.PLUQuantity > 0 ">
+          <div>{{item.PLULotNo
+
+            }}</div>
+        </ion-col>
+
+      </ion-row>
+
+
+
+    </ion-grid>
+
+
+
+
+  </ion-list>
+
+
+
+
+
+
+
+</ion-content>
+
+
+
+
+<ion-tab-bar class="footerlistpitems" slot="bottom">
+  <ion-tab-button tab="music" (click)="enableLP()">
+    <ion-label class="itemfooter">LPS</ion-label>
+    <ion-icon class="itemfooter" size="large" name="newspaper-outline"></ion-icon>
+    <ion-badge>{{QtyLP}}</ion-badge>
+  </ion-tab-button>
+  <ion-tab-button tab="movies" (click)=" enableItem()">
+    <ion-label class="itemfooter">Items</ion-label>
+    <ion-icon class="itemfooter" size="large" name="cube-outline"></ion-icon>
+    <ion-badge>{{QtyItem}}</ion-badge>
+  </ion-tab-button>
+
+  <ion-tab-button tab="games" (click)="delect()">
+    <ion-label class="itemfooter">Delete</ion-label>
+    <ion-icon class="itemfooter" size="large" name="trash-outline"></ion-icon>
+  </ion-tab-button>
+</ion-tab-bar>

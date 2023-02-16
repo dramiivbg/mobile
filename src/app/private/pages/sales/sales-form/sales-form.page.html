@@ -1,5 +1,7 @@
-<PlureHeader type="1" *ngIf="new" title="New - {{process.description}}" notify="0" url="none" [getObjFunc]="backObj"></PlureHeader>
-<PlureHeader type="1" *ngIf="!new" title="{{process.description}} - {{idSales}}" notify="0" url="none" [getObjFunc]="backObj"></PlureHeader>
+<PlureHeader type="1" *ngIf="new" title="New - {{process.description}}" notify="0" url="none" [getObjFunc]="backObj">
+</PlureHeader>
+<PlureHeader type="1" *ngIf="!new" title="{{process.description}} - {{idSales}}" notify="0" url="none"
+  [getObjFunc]="backObj"></PlureHeader>
 
 <ion-content>
   <form [formGroup]="frm" (ngSubmit)="onSubmit()">
@@ -8,7 +10,8 @@
       <ion-row>
         <ion-col *ngIf="new" (click)="onCustomer()">
           <ion-label class="customerName" *ngIf="frm.controls.customerNo.value == ''">____________</ion-label>
-          <ion-label class="customerName" *ngIf="frm.controls.customerNo.value != ''">{{frm.controls.customerName.value}}</ion-label>
+          <ion-label class="customerName" *ngIf="frm.controls.customerNo.value != ''">
+            {{frm.controls.customerName.value}}</ion-label>
         </ion-col>
         <ion-col *ngIf="!new">
           <ion-label class="customerName">{{frm.controls.customerName.value}}</ion-label>
@@ -26,7 +29,8 @@
           </div>
           <div class="text-header">
             <ion-label class="smallfont">Ship-to: </ion-label>
-            <ion-label class="smallfont" *ngIf="frm.controls.shippingNo.value != ''">{{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+            <ion-label class="smallfont" *ngIf="frm.controls.shippingNo.value != ''">{{frm.controls.shippingNo.value}} -
+              {{frm.controls.shippingName.value}}</ion-label>
           </div>
         </ion-col>
         <ion-col *ngIf="!new && !edit" size="11">
@@ -35,7 +39,8 @@
           </div>
           <div class="text-header">
             <ion-label class="smallfont">Ship-to: </ion-label>
-            <ion-label class="smallfont">{{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}</ion-label>
+            <ion-label class="smallfont">{{frm.controls.shippingNo.value}} - {{frm.controls.shippingName.value}}
+            </ion-label>
           </div>
         </ion-col>
         <ion-col size="1" *ngIf="new || edit" class="edit-header">
@@ -60,7 +65,7 @@
       </ion-row>
       <!-- <hr *ngIf="!hideShipTo" /> -->
       <ion-row class="delivery newColor" (click)="onDate(1)" *ngIf="!hideShipTo">
-        <ion-col size="11" >
+        <ion-col size="11">
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/delivery-date.svg" width="100%" />
           </div>
@@ -80,8 +85,10 @@
       </ion-row>
       <ion-row style="display: none;">
         <ion-col>
-          <ion-datetime #dateOrder class="smallfont" formControlName="orderDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
-          <ion-datetime #dateDelivery class="smallfont" formControlName="requestedDeliveryDate" display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
+          <ion-datetime #dateOrder class="smallfont" formControlName="orderDate" display-format="MM/DD/YYYY"
+            pickerFormat="MM DD YYYY"></ion-datetime>
+          <ion-datetime #dateDelivery class="smallfont" formControlName="requestedDeliveryDate"
+            display-format="MM/DD/YYYY" pickerFormat="MM DD YYYY"></ion-datetime>
         </ion-col>
       </ion-row>
     </div>
@@ -97,26 +104,30 @@
           </ion-col> -->
         </ion-row>
       </div>
-      <div  class="accorn-body">
+      <div class="accorn-body">
         <div formArrayName="lines" class="lines">
           <!-- <ion-list *ngFor="let item of frm.get('lines')['controls']; let i=index"> -->
           <ion-list *ngFor="let item of frm.get('lines')['controls']; let i=index">
             <div [formGroupName]="i" *ngIf="item.controls.title.value != ''">
-              
+
               <ion-item-sliding>
                 <ion-item-options side="start">
-                  <ion-item-option *ngIf="new || edit" color="danger" (click)="onDeleteLine(i)" style="padding: 0 20px;">
+                  <ion-item-option *ngIf="new || edit" color="danger" (click)="onDeleteLine(i)"
+                    style="padding: 0 20px;">
                     <ion-icon name="trash-outline"></ion-icon>
                   </ion-item-option>
-                  <ion-item-option color="plureHeader" class="select-floating" *ngIf="item.controls.type.value == 'Inventory'">
+                  <ion-item-option color="plureHeader" class="select-floating"
+                    *ngIf="item.controls.type.value == 'Inventory'">
                     <ion-label>Location code</ion-label>
                     <ion-select *ngIf="new || edit" style="width: 150px;" formControlName="locationCode">
                       <ion-select-option value="">Select location</ion-select-option>
-                      <ion-select-option *ngFor="let location of locationSetup" value="{{location.Code}}">{{location.Code}}</ion-select-option>
+                      <ion-select-option *ngFor="let location of locationSetup" value="{{location.Code}}">
+                        {{location.Code}}</ion-select-option>
                     </ion-select>
                     <ion-select *ngIf="!new && !edit" style="width: 150px;" formControlName="locationCode" disabled>
                       <ion-select-option value=""></ion-select-option>
-                      <ion-select-option *ngFor="let location of locationSetup" value="{{location.Code}}">{{location.Code}}</ion-select-option>
+                      <ion-select-option *ngFor="let location of locationSetup" value="{{location.Code}}">
+                        {{location.Code}}</ion-select-option>
                     </ion-select>
                   </ion-item-option>
                 </ion-item-options>
@@ -125,8 +136,10 @@
                   <div class="label-lines">
                     <ion-row>
                       <ion-col size="2" class="label-line-title">
-                        <img class="noImage" *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'" src="../../../../assets/img/NOIMAGE.svg" />
-                        <img *ngIf="item.controls.picture.value != 'data:image/jpeg;base64,NOIMAGE'" src="{{item.controls.picture.value}}" />
+                        <img class="noImage" *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'"
+                          src="../../../../assets/img/NOIMAGE.svg" />
+                        <img *ngIf="item.controls.picture.value != 'data:image/jpeg;base64,NOIMAGE'"
+                          src="{{item.controls.picture.value}}" />
                       </ion-col>
                       <ion-col size="10">
                         <ion-row>
@@ -147,10 +160,13 @@
                                 Disc %
                               </ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input *ngIf="new || edit" style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" 
-                                  type="number" formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)"></ion-input>
-                                <ion-input *ngIf="!new && !edit" style="height: 14px;" 
-                                  type="number" formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)" readonly></ion-input>
+                                <ion-input *ngIf="new || edit"
+                                  style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
+                                  formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)">
+                                </ion-input>
+                                <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number"
+                                  formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)"
+                                  readonly></ion-input>
                               </ion-col>
                             </ion-row>
                             <!-- Disc %: {{item.controls.lineDiscountPercentage.value}} -->
@@ -167,9 +183,11 @@
                             <ion-row>
                               <ion-col size="5" style="padding: 0;">U.Price</ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input *ngIf="new || edit" style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" 
-                                  type="number" formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
-                                <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number" formControlName="unitPrice" readonly></ion-input>
+                                <ion-input *ngIf="new || edit"
+                                  style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
+                                  formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
+                                <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number"
+                                  formControlName="unitPrice" readonly></ion-input>
                               </ion-col>
                             </ion-row>
                             <!-- Unit price: ${{item.controls.unitPrice.value}} -->
@@ -179,7 +197,7 @@
                           </ion-col>
                         </ion-row>
                       </ion-col>
-                    </ion-row>                    
+                    </ion-row>
                   </div>
                 </ion-item>
 
@@ -192,11 +210,8 @@
                   </ion-item-option>
                   <ion-item-option class="item-lines" color="plureHeader">
                     <ion-button color="plureHeader" class="btn-decrement" (click)="onIncDec(i, 0)">-</ion-button>
-                    <ion-input color="plureHeader" 
-                      style="color: #000 !important; width: 44px !important;" 
-                      formControlName="quantity"
-                      (focusout)="onQuantity(i)"
-                      type="number"></ion-input>
+                    <ion-input color="plureHeader" style="color: #000 !important; width: 44px !important;"
+                      formControlName="quantity" (focusout)="onQuantity(i)" type="number"></ion-input>
                     <ion-button color="plureHeader" class="btn-increment" (click)="onIncDec(i, 1)">+</ion-button>
                   </ion-item-option>
                 </ion-item-options>
@@ -285,20 +300,20 @@
   </ion-buttons>
 </ion-toolbar> -->
 
-<PlureVersion showVersion="0" *ngIf="new || edit">
+<PlureVersion class="footerReceipt" showVersion="0" *ngIf="new || edit">
   <ion-row>
     <ion-col size="4" (click)="onItem()">
-      <img src="../../../../assets/img/add.svg" />
-      <div>Add</div>
+      <ion-icon class="itemfooter" size="large" name="add-circle-outline"></ion-icon>
+      <div class="itemfooter">Add</div>
     </ion-col>
     <ion-col size="4" (click)="onBarCode()">
-      <img src="../../../../assets/img/bar-code.svg" />
-      <div>Bar code</div>
+      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooter">Bar code</div>
       <hr />
     </ion-col>
     <ion-col size="4" (click)="onSubmit()">
-      <img src="../../../../assets/img/save.svg" />
-      <div>Save</div>
+      <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+      <div class="itemfooter">Save</div>
     </ion-col>
   </ion-row>
 </PlureVersion>

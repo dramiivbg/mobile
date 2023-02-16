@@ -1,0 +1,165 @@
+<PlureHeader type="1" title="Item Journal" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
+  <ion-content >
+
+    <div class="designform-header">
+      <ion-row class="headerow">
+        <ion-col size="8">
+          <ion-label>No. {{No}}</ion-label>
+        </ion-col>
+        <ion-col size="4">
+          <ion-label>Loc. {{locate}} </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row class="headerow">
+        <ion-col>
+          <ion-label>Registering Date: {{fecha}}</ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+
+  
+
+    <form [formGroup]="frm">
+      <ion-list>
+        <ion-item>
+          <ion-label class="TitleInput" position="stacked">Scan LP</ion-label>
+          <ion-row class="inputscanRow">
+            <ion-col class="inputscan" size="10">
+              <ion-input formControlName="lpNo" [clearInput]="true" placeholder="Scan or enter the LP ID"></ion-input>
+            </ion-col>
+            <ion-col class="barcodeinput" size="2" (click)="onScanLP()">
+              <ion-icon size="large" name="barcode-outline"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+
+        <ion-item *ngIf="boolean">
+          <ion-label class="TitleInput" position="stacked">Scan Item</ion-label>
+          <ion-row class="inputscanRow">
+            <ion-col class="inputscan" size="10">
+              <ion-input formControlName="ItemNo" [clearInput]="true" placeholder="Scan or enter the Item" readonly></ion-input>
+            </ion-col>
+            <ion-col class="barcodeinput" size="2" (click)="onScanItem()">
+              <ion-icon size="large" name="barcode-outline"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+      </ion-list>
+
+      <div class="accorn-body" >
+        <div class="lines">
+          <ion-list class="titlelist">
+
+                <ion-item class="labelitem">
+                  <div class="label-lines" part="item-width">
+                    <ion-row>
+                      <ion-col size="10">
+                        <ion-row>
+                          <ion-col size="7" style="overflow: hidden;" class="label-line-title blue">
+                            {{company}}
+                          </ion-col>
+                          <ion-col size="5" class="label-line-title" style="text-align: right;">
+                            Qty. {{qty}}
+
+                          </ion-col>
+
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="4" class="label-line">
+                            Item No: {{PLUNo}}
+                          </ion-col>
+                          <ion-col size="4" class="label-line">
+                            UoM: {{UoM}}
+                          </ion-col>
+                          <ion-col size="4" class="label-line">
+                            Serial No: 
+                          </ion-col>
+                          <ion-col size="4" class="label-line">
+                            Lot No: 
+                          </ion-col>
+                          <ion-col size="4" class="label-line">
+                            Exp Date: 
+                          </ion-col>
+    
+
+                        </ion-row>
+
+                      </ion-col>
+                    </ion-row>
+                  </div>
+                </ion-item>
+
+          </ion-list>
+        </div>
+      </div>
+
+      <ion-row class="rowsubtitles" >
+
+        <ion-col class="subtitles" size="3">
+          <div>Zone:{{zone}}</div>
+        </ion-col>
+        <ion-col class="subtitles" size="3">
+          <div>Bin: {{binCode}}</div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="qtyrow">
+        <ion-col class="titleqty" size="4">
+          Comfirm Qty
+        </ion-col>
+        
+        <ion-col class="confirmqty" size="5" (click)="listQty()">
+          <ion-input formControlName="qty" readonly [clearInput]="true" type="number" placeholder="Confirm Quantity" value="{{qty}}"></ion-input>
+        </ion-col>
+       
+      </ion-row>
+
+
+      <ion-item *ngIf="boolean">
+        <ion-label class="TitleInput" position="stacked">Scan Bin</ion-label>
+        <ion-row class="inputscanRow">
+          <ion-col class="inputscan" size="10">
+            <ion-input  formControlName="bin" [clearInput]="true" placeholder="Scan or enter the Bin"></ion-input>
+          </ion-col>
+          <ion-col class="barcodeinput" size="2" (click)="onScanBin()">
+            <ion-icon size="large" name="barcode-outline"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+
+
+
+     
+
+    </form>
+
+  </ion-content>
+
+
+
+
+  <PlureVersion class="footerReceipt" showVersion="0" >
+    <ion-row>
+      <ion-col size="4" (click)="newLP($event)">
+        <ion-icon class="itemfooter" size="large"  name="document-outline"></ion-icon>
+        <div class="itemfooter">New LP</div>
+      </ion-col>
+
+      <ion-col size="4" (click)="onSubmit()">
+        <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+        <div class="itemfooter">Save</div>
+      </ion-col>
+      <ion-col size="4" (click)="onSubmit()">
+        <ion-icon class="itemfooter" size="large"  name="cube-outline"></ion-icon>
+        <div class="itemfooter">New Pallet</div>
+      </ion-col>
+    </ion-row>
+  </PlureVersion>
+
+
+
+
+  

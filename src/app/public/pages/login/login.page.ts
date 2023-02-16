@@ -59,7 +59,7 @@ export class LoginPage implements OnInit {
   ) {
     let objBack = {
       func: () => {
-        this.intServ.alertFunc(this.jsonServ.getAlert('confirm', 'Confirm', 'Do you want to close the app?',
+        this.intServ.alertFunc(this.jsonServ.getAlert('confirm', ' ', 'Do you want to close the app?',
           () => {
             App.exitApp();
           }
@@ -94,7 +94,7 @@ export class LoginPage implements OnInit {
   */ 
   public async onSubmit() {
     if (!(await Network.getStatus()).connected) {
-      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', "You can't login to Plur-e, because you don't have Internet Access. Please check and try again."));
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', "You can't login to Plur-e, because you don't have Internet Access. Please check and try again."));
       return false;
     }
     this.intServ.loadingFunc(true);
@@ -129,6 +129,8 @@ export class LoginPage implements OnInit {
       .then(
         res => {
           this.storage.set(SK_AUTHORIZE_ACCESS_CLIENT, JSON.stringify(res));
+
+         // console.log('auth =>', res)
         }
       )
       .catch(error => {
@@ -139,7 +141,7 @@ export class LoginPage implements OnInit {
 
   public async onChangeUser(event: any) {
     if (!(await Network.getStatus()).connected) {
-      this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', "You can't login to Plur-e, because you don't have Internet Access. Please check and try again."));
+      this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', "You can't login to Plur-e, because you don't have Internet Access. Please check and try again."));
       return false;
     }
     if (this.frm.controls['User'].valid) {
@@ -148,6 +150,8 @@ export class LoginPage implements OnInit {
       if (this.frm.value.User !== "") {
         this.apiConnect.postData('mobileUser', `checkingMobileUser`, { login }).then(
           res => {
+
+           // console.log('usuario =>', res)
             this.authorizeAccessClient(res.customerId).finally(
               () => {
                 var changeTemporaryPassword = res.temporaryPassword != '';
@@ -171,10 +175,10 @@ export class LoginPage implements OnInit {
             this.frm.controls['User'].setValue('');
 
             if (err.error != undefined) {
-              this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
+              this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', err.error.message));
             }
             else {
-              this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.message));
+              this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', err.message));
             }
           }
         )
@@ -183,7 +187,7 @@ export class LoginPage implements OnInit {
     else {
       if (this.frm.value.User != '') {
         this.frm.controls['User'].setValue('');
-        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', 'Please provide a valid email address'));
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', 'Please provide a valid email address'));
       }
     }
   }
@@ -203,7 +207,7 @@ export class LoginPage implements OnInit {
         this.frm.controls['User'].setValue('');
 
         this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message));
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', err.error.message));
       });
   }
 
@@ -250,7 +254,7 @@ export class LoginPage implements OnInit {
           uuid: this.device.uuid
         };
         if (compareVersion.versionAppUpgrade !== null) {
-          this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Alert', `Mobile version '${compareVersion.versionAppUpgrade.versionName}' is available.`, 
+          this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', `Mobile version '${compareVersion.versionAppUpgrade.versionName}' is available.`, 
           async () => {
             await this.loginUserAuth(data, compareVersion);
           }
@@ -261,7 +265,7 @@ export class LoginPage implements OnInit {
       }
     } catch ( {error} ) {
       this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.jsonServ.getAlert('error', 'Error', error.message));
+      this.intServ.alertFunc(this.jsonServ.getAlert('error', ' ', error.message));
     }
   }
 
@@ -293,14 +297,14 @@ export class LoginPage implements OnInit {
           );
         }
       }
-    )
-    .catch(
+    ) .catch(
       err => {
         this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.jsonServ.getAlert('alert', 'Error', err.error.message)
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', err.error.message)
         );
       }
     );
+   
   }
 
   private async resetClic() {

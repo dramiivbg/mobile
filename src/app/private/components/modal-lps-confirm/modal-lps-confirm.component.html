@@ -1,0 +1,210 @@
+<PlureHeader (click)="back()" type="1" title="Confirm LP/PL" url="page/wms/wmsPutAway" notify="0"></PlureHeader>
+
+
+<ion-content>
+    <form>
+        <div class="designform-header">
+
+            <ion-row class="delivery newColor2">
+                <ion-col size="10">
+                    <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}"
+                        (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline"
+                        placeholder="filter LP No or Item No"></ion-searchbar>
+                </ion-col>
+                <ion-col size="2" class="barcodebtn">
+                    <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="6" class="select">
+                    <ion-select interface="popover" #bin (ionChange)="onFilterBin(bin.value)"
+                        placeholder="Filter by Bincode" class="thebinselect">
+                        <ion-select-option [value]=''></ion-select-option>
+                        <ion-select-option *ngFor="let bin of bins" [value]="bin">{{bin}}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-col>
+            </ion-row>
+        </div>
+
+        <ion-row>
+            <ion-col style="padding-left: 300px;">
+                <ion-fab>
+                    <ion-fab-button class="custom" color="danger" (click)="removeAll()">
+                        <ion-icon class="itemfooter" name="trash-outline"></ion-icon>
+                    </ion-fab-button>
+                </ion-fab>
+            </ion-col>
+        </ion-row>
+        <div class="accorn">
+            <div class="order-details">
+                <ion-row>
+                    <ion-col size="3" class="txt">
+                        <ion-label>Lines</ion-label>
+                    </ion-col>
+                </ion-row>
+            </div>
+            <div class="accorn-body">
+                <div class="lines">
+
+                    <ion-list>
+                        <div>
+
+                            <ion-item>
+                                <div class="label-lines" part="item-width">
+                                    <ion-row *ngFor="let item of lps">
+
+                                        <ion-item-sliding>
+
+                                            <ion-item style="width: 100%;">
+                                                <ion-col size="12" class="item" >
+
+                                                    <ion-row class="titleslist">
+                                                        <ion-col size="6" class="titleblue">
+                                                            {{item.fields.PLULPDocumentNo}}
+                                                        </ion-col>
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Qty: {{item.fields.PLUQuantity}}
+                                                        </ion-col>
+
+
+                                                    </ion-row>
+
+                                                    <ion-row size="12" class="subtitlelist">
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Take: {{item.fields.PLUBinCode}}
+                                                        </ion-col>
+
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Place: {{item.fields.place}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+
+                                                    <ion-row>
+                                                        <ion-col size="4" class="label-line">
+                                                            Item No: {{item.fields.PLUItemNo}}
+                                                        </ion-col>
+                                                        <ion-col size="4" class="label-line">
+                                                            UoM: {{item.fields.PLUUnitofMeasureCode}}
+                                                        </ion-col>
+                                                        <ion-col size="4" class="label-line">
+                                                            LP Type: {{item.fields.PLULPDocumentType}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                                                </ion-col>
+
+                                            </ion-item>
+
+                                            <ion-item-options>
+                                                <ion-item-option color="danger" (click)="remove(item)">
+                                                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                                </ion-item-option>
+                                            </ion-item-options>
+
+                                        </ion-item-sliding>
+                                    </ion-row>
+
+
+                                    <ion-row *ngFor="let item of itemsL">
+
+                                        <ion-item-sliding>
+
+                                            <ion-item style="width: 100%;">
+                                                <ion-col size="12" class="item">
+
+                                                    <ion-row class="titleslist">
+                                                        <ion-col size="6" class="titleblue">
+                                                            {{item.ItemNo}}
+                                                        </ion-col>
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Qty: {{item.Quantity}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                                                    <ion-row size="12" class="subtitlelist">
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Take: {{item.take}}
+                                                        </ion-col>
+
+                                                        <ion-col size="6" class="label-line-title">
+                                                            Place: {{item.place}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                                                    <ion-row size="12">
+
+                                                        <ion-col size="6" class="label-line"
+                                                            *ngIf="item.ExpirationDate != null">
+                                                            Exp Date: {{item.ExpirationDate}}
+                                                        </ion-col>
+                                                        <ion-col size="6" class="label-line" *ngIf="item.LotNo != null">
+                                                            Lot No: {{item.LotNo}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                                                    <ion-row size="12">
+
+
+                                                        <ion-col size="6" class="label-line"
+                                                            *ngIf="item.VariantCode != null">
+                                                            Variant Code: {{item.VariantCode}}
+                                                        </ion-col>
+
+                                                        <ion-col size="6" class="label-line"
+                                                            *ngIf="item.SerialNo != null">
+                                                            Serial No: {{item.SerialNo}}
+                                                        </ion-col>
+
+                                                    </ion-row>
+
+                                                </ion-col>
+
+                                            </ion-item>
+
+                                            <ion-item-options>
+                                                <ion-item-option color="danger" (click)="removeI(item)">
+                                                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                                </ion-item-option>
+                                            </ion-item-options>
+
+                                        </ion-item-sliding>
+                                    </ion-row>
+                                </div>
+
+                            </ion-item>
+
+                        </div>
+                    </ion-list>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</ion-content>
+
+<PlureVersion class="footerputaway" showVersion="0">
+    <ion-row>
+        <!-- 
+      <ion-col size="5" (click)="onBarCode()">
+          <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+          <div class="itemfooter">Scan</div>
+      </ion-col> -->
+
+        <ion-col size="4"></ion-col>
+
+        <ion-col size="4" (click)="onSubmit()">
+            <ion-icon class="itemfooter" size="large" name="checkmark-done-outline"></ion-icon>
+            <div class="itemfooter">Register</div>
+        </ion-col>
+
+        <ion-col size="4"></ion-col>
+    </ion-row>
+</PlureVersion>

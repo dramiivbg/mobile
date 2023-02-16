@@ -15,7 +15,9 @@ const routes: Routes = [
     { path: 'change-instance', component: ChangeInstancePage },
     { path: 'init/sync', component: SyncPage },
     { path: 'environments', component: EnvironmentsPage }
-  ]}
+  ]},
+
+
 ];
 
 @NgModule({

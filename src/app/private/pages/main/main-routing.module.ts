@@ -11,7 +11,8 @@ const routes: Routes = [
     { path: 'settings/profile', loadChildren: () => import('./settings/profile/profile.module').then( m => m.ProfilePageModule) },
     { path: 'settings/change-password', loadChildren: () => import('./settings/change-password/change-password.module').then( m => m.ChangePasswordPageModule) },
     { path: 'init/sync', loadChildren: () => import('./sync/sync.module').then( m => m.SyncPageModule) },
-    { path: 'change-company', loadChildren: () => import('./change-company/change-company.module').then( m => m.ChangeCompanyPageModule) }
+    { path: 'change-company', loadChildren: () => import('./change-company/change-company.module').then( m => m.ChangeCompanyPageModule) },
+  
   ]}
 ];
 

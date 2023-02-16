@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { IPosted } from '@mdl/posted';
 import { E_MODULETYPE, E_PROCESSTYPE } from '@var/enums';
 import { throwError } from 'rxjs';
-
+import {JsonService} from '../services/json.service';
+import { InterceptService } from './intercept.service';
+import { WmsService } from './wms.service';
 @Injectable({
   providedIn: 'root'
 })
 export class GeneralService {
 
-  constructor() { }
+  constructor(private alerta: JsonService,private router: Router, private interceptService: InterceptService,private wmsService: WmsService) { }
 
   // Structure for search component
   structSearch(array: any, title: string, name: string, func: any = null, clear: boolean =  true, type: Number = 0, process: any = {}) {
@@ -193,16 +196,67 @@ export class GeneralService {
     return objLst;
   }
 
-  async fieldsToJson(fields: any) : Promise<any> {
+  async fieldsToJson(fields: any,data = '') : Promise<any> {
     let obj = {};
+    let list = [];
+    let contador = 0;
     for (let i in fields) {
       obj[fields[i].name] = fields[i].value
+      if(fields[i].name === "ItemNo"){
+        let plure = await this.wmsService.GetItemInfo(fields[i].value);
+        obj['plure'] =  plure.Managed_by_PlurE;
+        obj['Auto_Generate_SN'] = plure.Auto_Generate_SN;
+        obj['Auto_Generate_LOT'] = plure.Auto_Generate_LOT;
+
+        let res = await this.wmsService.GetItem(fields[i].value);
+        let traking = await this.wmsService.listItem(res);
+
+       obj['trakingCode'] = traking.fields.ItemTrackingCode;
+      }
+     
     }
+
+    if(data === 'line'){
+
+      const lps = await this.wmsService.GetLicencesPlateInWR(obj['No'], false);
+
+    if(!lps.Error){
+
+      console.log(lps);
+      console.log(obj);
+
+      let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
+
+      console.log(res);
+      let lp = [];
+      res.map(x => {
+        let line = lp.find(i => i.PLULPDocumentNo === x.PLULPDocumentNo);
+        if(line === undefined || line === null)lp.push(x);
+      });
+      console.log(lp);
+     
+      for (const key in lp) {
+        
+          if (obj['LineNo']  === lp[key].PLUWhseLineNo) {
+  
+            contador++;
+            
+          }   
+   } 
+   
+    }
+
+    obj['QtyLp'] = contador;
+   contador = 0;  
+
+    }
+    
     // fields.forEach(field => {
     //   obj[field.name] = field.value
     // });
     return obj;
   }
+
 
   async createFields(lists: any) : Promise<any> {
     let objLst = [];
@@ -235,7 +289,10 @@ export class GeneralService {
     let types: Array<E_PROCESSTYPE> = [];
     try {
       for (let i in p) {
+
+       // console.log('permisos =>',i);
         let id: string = p[i].permissionId;
+        //console.log('permisosid =>',p[i].permissionId);
         let allow: boolean = p[i].allow;
         if (allow) {
           let permissionEnum: E_PROCESSTYPE = await this.obtainPermissions(id);
@@ -272,6 +329,10 @@ export class GeneralService {
    */
   public async ReceiptsList(lists: any) : Promise<any> {
     let objLst = [];
+
+    
+
+    if(lists > 0 || lists !== undefined){
     lists.forEach(item => {
       let obj = {};
       item.fields.forEach(async field => {
@@ -286,7 +347,13 @@ export class GeneralService {
       objLst.push(obj);
     });
     return objLst;
+  }else{
+
+    return lists;
+   
   }
+
+}
 
   /**
    * Mapping Receipts
@@ -297,9 +364,12 @@ export class GeneralService {
     let obj = {};
     obj = await this.fieldsToJson(item.WarehouseReceiptHeader.fields);
     item.WarehouseReceiptLines.forEach(async line => {
-      lines.push(await this.fieldsToJson(line.fields));
+      lines.push(await this.fieldsToJson(line.fields,'line'));
     });
+   
     obj['lines'] = lines;
+   
+    
     return obj;
   }
 

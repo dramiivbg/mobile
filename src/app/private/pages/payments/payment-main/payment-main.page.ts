@@ -41,6 +41,8 @@ export class PaymentMainPage implements OnInit {
     try {
       this.intServ.loadingFunc(true);
       this.module = await this.moduleService.getSelectedModule();
+
+   //   console.log('modulos =>',this.module);
       console.log(this.module);
       this.session = (await this.js.getSession()).login;
       this.intServ.loadingFunc(false);
@@ -50,11 +52,16 @@ export class PaymentMainPage implements OnInit {
   }
 
   public async  onPosted(process) {
+
+    
     try {
       if (process.processId === 'P005')
         this.router.navigate(['page/payments/posted'], { replaceUrl: true });
       else if (process.processId === 'P006') {
+        
+        console.log('permisos =>',process.permissions);
         process.sysPermits = await this.general.getPermissions(process.permissions);
+       console.log('permisos =>', process.sysPermits);
         if (process.sysPermits.indexOf(E_PROCESSTYPE.ViewPayments) === -1) {
           let error = { message: 'You do not have permission to view payments' }
           throw error;

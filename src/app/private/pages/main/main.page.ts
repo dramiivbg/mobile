@@ -26,19 +26,19 @@ export class MainPage implements OnInit {
   userSession: any = {};
   selectedCompany: any = {};
   version: string = "";
-  avatar: string = "../../assets/img/img-robot.svg";
+  avatar: string = "../../assets/img/img-robothead.svg";
 
   menuContent: Array<MenuItem> = [
     {
       description: "Modules",
-      iconName: "",
-      iconPath: "../../assets/img/modules/modules.svg",
+      iconName: "cube-outline",
+      iconPath: "",
       action: "modules"
     },
     {
       description: "Change Company",
-      iconName: "",
-      iconPath: "../../assets/img/modules/change_company.svg",
+      iconName: "business",
+      iconPath: "",
       action: "change_company",
     },
     {
@@ -50,7 +50,7 @@ export class MainPage implements OnInit {
     {
       description: "Support",
       iconName: "",
-      iconPath: "../../assets/icon/support.svg",
+      iconPath: "../../assets/icon/supporthead.svg",
       action: "support",
     },
     {
@@ -61,8 +61,8 @@ export class MainPage implements OnInit {
     },
     {
       description: "Sign out",
-      iconName: "",
-      iconPath: "../../assets/img/modules/sign_out.svg",
+      iconName: "exit-outline",
+      iconPath: "",
       action: "sign_out"
     }
   ];
@@ -146,6 +146,16 @@ export class MainPage implements OnInit {
       default:
         break;
     }
+  }
+
+
+  employee(event){
+
+    console.log('evento',event);
+
+    this.router.navigate(['page/main/employee']);
+
+    
   }
 
   async onSignout() {

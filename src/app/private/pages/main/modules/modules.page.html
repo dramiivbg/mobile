@@ -1,13 +1,13 @@
 <PlureHeader type="0" title="Modules" notify="1"></PlureHeader>
 
 <ion-content class="modules">
-  <ion-toolbar>
+  <ion-toolbar class="toolbar">
     <ion-buttons slot="end">
       <ion-button type="button" (click)="onGrid(false)" *ngIf="grid">
-        <img src="../../../../assets/icon/giroutline.svg" />
+        <ion-icon size="large" name="list"></ion-icon>
       </ion-button>
       <ion-button type="button" (click)="onGrid(true)" *ngIf="!grid">
-        <img src="../../../../assets/icon/listoutline.svg" />
+        <ion-icon size="large" name="grid"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -16,10 +16,10 @@
     <ion-list *ngIf="!grid">
       <div class="grid-content" *ngFor="let mod of modules">
         <ion-row  class="ion-no-padding" (click)="onClick(mod)">
-          <ion-col size="3">
-            <img src="../../../../assets/img/modules/{{mod.icon}}.svg" alt="">
+          <ion-col size="2">
+            <img class="iconimagegrid" src="../../../../assets/img/modules/{{mod.icon}}2.svg" alt="">
           </ion-col>
-          <ion-col size="9">
+          <ion-col size="10">
             <h1>{{mod.description}}</h1>
           </ion-col>
         </ion-row>
@@ -36,10 +36,10 @@
             <div class="module-item-icon">
               <img src="../../../../assets/img/modules/{{mod.icon}}2.svg" alt="">
             </div>
-            <div class="module-elipse">
+            <!-- <div class="module-elipse">
               <img src="../../../../assets/img/modules/elipse.svg" />
               <img src="../../../../assets/img/modules/elipse.svg" />
-            </div>
+            </div> -->
           </div>
         </ion-col>
       </ion-row>

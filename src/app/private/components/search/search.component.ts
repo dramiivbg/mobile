@@ -1,7 +1,9 @@
+import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Network } from '@capacitor/network';
-import { Platform } from '@ionic/angular';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Module, Process } from '@mdl/module';
 import { AuthService } from '@svc/auth.service';
@@ -14,9 +16,12 @@ import { JsonService } from '@svc/json.service';
 import { OfflineService } from '@svc/offline.service';
 import { SalesService } from '@svc/Sales.service';
 import { SyncerpService } from '@svc/syncerp.service';
+import { WmsService } from '@svc/wms.service';
 import { SK_OFFLINE } from '@var/consts';
 import { E_PROCESSTYPE } from '@var/enums';
 import { constants } from 'buffer';
+import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
+import { PopoverShowInventoryComponent } from '../popover-show-inventory/popover-show-inventory.component';
 
 @Component({
   selector: 'btn-search',
@@ -38,6 +43,23 @@ export class SearchComponent implements OnInit {
   private delete: boolean = false;
   private post: boolean = false;
 
+  public visible: Boolean = false;
+  public visibleI: Boolean = false;
+  public items:any[] = [];
+  public binCode:any;
+  private session:any;
+
+  public lps:any[] = [];
+  public active: Boolean = false;
+  public lpNo:any = '';
+  public bin:any = '';
+
+  public listsInv:any;
+
+  public listPicture:any[] = [];
+
+ public  listPictureI:any[] = [];
+
   constructor(private platform: Platform
     , private syncerp: SyncerpService
     , private general: GeneralService
@@ -47,7 +69,12 @@ export class SearchComponent implements OnInit {
     , private moduleService: ModuleService
     , private offline: OfflineService
     , private storage: Storage
-    , private salesService: SalesService
+    , private salesService: SalesService,
+    private wmsService: WmsService,
+    private barcodeScanner: BarcodeScanner,
+    private modalCtrl: ModalController,
+    public popoverController: PopoverController
+
   ) {
     intServ.searchShow$.subscribe(
       async obj => {
@@ -59,34 +86,145 @@ export class SearchComponent implements OnInit {
         };
         this.intServ.appBackFunc(objFunc);
 
+        let bin = this.wmsService.get();
+
         this.searchObj = obj;
+        this.binCode = (this.searchObj.type === 6 && bin !== undefined) ? bin : "all";
+      //  console.log('obj =>',obj);
         this.listsFilter = obj.data;
+
+     //   console.log('listFilter =>',this.listsFilter);
         this.lists = obj.data;
         this.module = await this.moduleService.getSelectedModule();
         this.process = await this.moduleService.getSelectedProcess();
         /** start permissions for sales */
         this.onResetPermissions();
         this.getPermissions();
+        this.getSession();
         // this.onHeight();
         /** end permissions for sales */
       }
     )
+
+    
   }
 
-  ngOnInit() {}
+ async ngOnInit() {
+  
+  }
+
+ async getSession(){
+
+    this.session = (await this.js.getSession()).login;
+
+    console.log(this.session);
+  }
 
   onChange(e) {
     let val = e.target.value;
+
+  //  console.log('change =>',val);
+    
     if (val === '') {
       this.listsFilter = this.lists;
     } else {
       this.listsFilter = this.lists.filter(
         x => {
-          return (x.value.toLowerCase().includes(val.toLowerCase()) || (x.id.toLowerCase().includes(val.toLowerCase())));
+
+          if(x.value != null){
+
+            return (x.value.toLowerCase().includes(val.toLowerCase()) || (x.id.toLowerCase().includes(val.toLowerCase())));
+
+          }
+        
+          
         }
       )
     } 
   }
+
+
+  onChangeLP(e) {
+    let val = e.target.value;
+
+  //  console.log('change =>',val);
+    
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || (String(x.id).toLowerCase().includes(val.toLowerCase())));
+        }
+      )
+    } 
+  }
+
+  onChangeP(e) {
+    let val = e.target.value;
+
+  //  console.log('change =>',val);
+    
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.fields[0].PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || (String(x.id).toLowerCase().includes(val.toLowerCase())));
+        }
+      )
+    } 
+  }
+
+  onChangePutAway(e) {
+    let val = e.target.value;
+
+  //  console.log('change =>',val);
+    
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.fields.No.toLowerCase().includes(val.toLowerCase()) || (String(x.id).toLowerCase().includes(val.toLowerCase())));
+        }
+      )
+    } 
+  }
+
+  onChangeBatch(e){
+
+    let val = e.target.value;
+
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.Name.toLowerCase().includes(val.toLowerCase()) || x.LocationCode.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+  }
+
+  onChangeTemplate(e){
+
+    
+    let val = e.target.value;
+
+    if (val === '') {
+      this.listsFilter = this.lists;
+    } else {
+      this.listsFilter = this.lists.filter(
+        x => {
+          return (x.Name.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+
+  }
+
 
   onHeight() {
     this.platform.ready().then(
@@ -103,6 +241,21 @@ export class SearchComponent implements OnInit {
     )
   }
 
+
+
+
+
+
+  edit(e,index:any){
+
+    let val = e.target.value;
+
+    this.lps[index].fields.PLUQuantity = val;
+
+  }
+
+  
+  
   onResetPermissions() {
     this.new = false;
     this.delete = false;
@@ -112,21 +265,45 @@ export class SearchComponent implements OnInit {
    * Return to the another page
    */
   onBack() {
+
     this.searchObj = {};
+    this.listsFilter = [];
     let appBack = {
       old: true
     }
     this.intServ.appBackFunc(appBack);
+   
+   
+  
   }
 
   onClick(item) {
-    this.searchObj.func(item);
-    if (this.searchObj.clear) this.onBack();
-    let appBack = {
-      old: true
+
+    let data = this.wmsService.getPallet();
+
+    if(data === undefined){
+
+
+
+      this.searchObj.func(item);
+      if (this.searchObj.clear) this.onBack();
+      let appBack = {
+        old: true
+      }
+      this.intServ.appBackFunc(appBack);
+    }else{
+
+    
+
+      this.searchObj.func(item,data);
+      if (this.searchObj.clear) this.onBack();
+      let appBack = {
+        old: true
+      }
+      this.intServ.appBackFunc(appBack);
     }
-    this.intServ.appBackFunc(appBack);
-  }
+
+    }
 
   // Start Sales Orders
 
@@ -178,6 +355,8 @@ export class SearchComponent implements OnInit {
       return;
     } 
     if (sell.parameters !== undefined) {
+
+     
       this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
         async () =>{
           await this.deleteSalesTemp(i);
@@ -189,7 +368,10 @@ export class SearchComponent implements OnInit {
       if (!this.delete) {
         this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', 'You do not have permission to delete sales'));
       } else {
+       // console.log('parametros =>',sell);
         this.intServ.alertFunc(this.js.getAlert('confirm', 'Confirm', `Do you want to delete item No. ${sell.id}?`, 
+
+        
           async () =>{
             await this.deleteSales(sell, i);
           }

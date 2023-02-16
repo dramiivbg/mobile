@@ -1,0 +1,31 @@
+<ion-content class="ion-margin">
+
+
+  <ion-grid>
+
+    <ion-row style="text-align: center;" class="row">
+      <ion-col>LP</ion-col>
+      <ion-col>QTY</ion-col>
+      <ion-col>Date REC</ion-col>
+
+
+    </ion-row>
+
+    <div id="taula">
+      <ion-row *ngFor="let item of lps; let i = index" style="text-align: center;"
+        (click)="option(item,$event)">
+
+        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col>{{item.PLULPDocumentNo}}</ion-col></a>
+        <ion-col>{{item.PLUQuantity}}</ion-col>
+        <ion-col>{{item.SystemCreatedAt | date:'yyyy-dd-MM'}}</ion-col>&nbsp;
+
+
+      </ion-row>
+
+
+
+
+    </div>
+  </ion-grid>
+
+</ion-content>

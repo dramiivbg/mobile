@@ -1,0 +1,114 @@
+ion-content {
+
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+
+    ion-row.header {
+        background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+        color: #ffffff;
+        font-size: 16px;
+        padding: 10px 0;
+        text-align: center;
+        font-weight: bold;
+        border-radius: 0 0 70% 0;
+    }
+
+    ion-list {
+        border-bottom: 1px solid #999;
+        padding: 0;
+
+        ion-row {
+            ion-col {
+                ion-icon {
+                    font-size: 25px;
+                    color: var(--ion-color-plureBlue);
+                }
+
+                ion-label {
+                    margin-top: 4px;
+                    width: 100%;
+                    position: absolute;
+                    margin-left: 13px;
+                }
+            }
+        }
+    }
+}
+
+ion-button {
+    color: white;
+    --backround: var(--ion-color-plureBlue) !important;
+    border-radius: 23px;
+}
+
+.qtytoreceive {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+
+.newColor2 {
+    width: 100%;
+    margin: 0px 0 1px 0px;
+    --ion-color-base: var(--ion-color-plureHeader)
+}
+
+
+.barcodebtn {
+    margin: auto;
+    text-align: start;
+}
+
+.barcoideicon {
+    font-size: 30px;
+}
+
+.Title {
+    font-size: 16px;
+    text-align: center;
+    color: var(--ion-color-plureBlue);
+    font-weight: bold;
+}
+
+.subTitle {
+    font-size: 12px;
+    text-align: left;
+}
+
+// .inputqty {
+//     border-bottom: 1px black !important;
+// }
+
+.contentbody {
+    padding: 0 0 0 10px;
+}
+
+.selectpopupitem {
+    border-bottom: none !important;
+    padding: 0 0 10px 0 !important;
+}
+
+ion-input.inputqty {
+    --background: rgba(92, 171, 249, 0.08);
+    --color: black;
+    border-radius: 23px;
+
+
+    --padding-bottom: 10px;
+    --padding-end: 10px;
+    --padding-start: 10px;
+    --padding-top: 10px;
+}
+
+.seclectorbg {
+    background: transparent;
+}
+
+ion-searchbar.custom {
+    --border-radius: 23px;
+    max-width: 100%;
+}
+
+.thebinselect {
+    --background: transparent;
+}

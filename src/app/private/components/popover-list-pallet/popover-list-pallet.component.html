@@ -1,0 +1,102 @@
+<ion-content>
+  <form>
+    <div class="designform-header">
+
+      <ion-row size="12">
+        <ion-col size="6">
+          <ion-label>Pallet No: {{pallet.PLULPDocumentNo}} </ion-label>
+        </ion-col>
+        <ion-col size="6">
+          <ion-label>Bin Code: {{pallet.PLUBinCode}} </ion-label>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="delivery newColor2">
+        <ion-col size="10">
+          <ion-searchbar [(ngModel)]="data" [ngModelOptions]="{standalone: true}" (ionInput)="onFilter($event)"
+            show-clear-button="always" clear-icon="close-outline" placeholder="Filter"></ion-searchbar>
+        </ion-col>
+        <ion-col size="2" class="barcodebtn">
+          <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
+        </ion-col>
+      </ion-row>
+
+    </div>
+
+
+    <div class="accorn">
+      <div class="accorn-body">
+        <div class="lines">
+
+          <ion-list>
+            <div>
+
+              <ion-item>
+                <div class="label-lines" part="item-width">
+                  <ion-row *ngFor="let item of pallet.childrens">
+                      <ion-col size="12" class="item" (click)="PopoverList(item)">
+
+                        <ion-row class="titleslist">
+                          <ion-col size="8" class="titleblue LPNo">
+                            {{item.PLULPDocumentNo}}
+                          </ion-col>
+                          <ion-col size="4" class="label-line-title">
+                            Qty. {{item.Quantity}}
+                          </ion-col>
+                        </ion-row>                     
+
+                        <ion-row>
+                          <ion-col size="8" class="titleblue">
+                            Item No: <b>{{item.PLUItemNo}}</b>
+                          </ion-col>
+                          <ion-col size="4" class="titleblue">
+                            UoM: <b>{{item.PLUUnitofMeasure}}</b>
+                          </ion-col>
+          
+                        </ion-row>
+
+                        
+
+                      </ion-col>
+
+                
+                  </ion-row>
+
+                </div>
+
+              </ion-item>
+
+            </div>
+          </ion-list>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+</ion-content>
+
+<ion-row >
+  <ion-col  size="3">
+    <ion-button shape="round" color="secondary" (click)="onBarCode()">
+      Scan
+      <ion-icon class="itemfooter" name="barcode-outline"></ion-icon>
+      <!-- <div class="itemfooter">Scan</div> -->
+    </ion-button>
+  </ion-col>
+  <ion-col  size="3"  (click)="onCancel()">
+    <ion-button shape="round" color="danger">
+      Cancel
+      <ion-icon class="itemfooter" name="close-outline"></ion-icon>
+      <!-- <div class="itemfooter">Scan</div> -->
+    </ion-button>
+  </ion-col>
+
+  <ion-col size="4" >
+    <ion-button style="padding-left: 15px;" shape="round" color="secondary" (click)="BinToBin()" >
+      Bin to Bin
+      <ion-icon class="itemfooter" name="move-outline"></ion-icon>
+
+    </ion-button>
+  </ion-col>
+</ion-row>

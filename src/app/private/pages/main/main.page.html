@@ -8,11 +8,9 @@
           </ion-avatar>
           <ion-label>
             <div class="menuInfo">
-              <h1>{{userSession.userName}}</h1>
+              <h1 class="Username">{{userSession.userName}}</h1>
               <p>Company Name: {{selectedCompany.companyName}}</p>
             </div>
-            <p>{{userSession.email}}</p>
-            <p>Id: {{selectedCompany.companyId}}</p>
           </ion-label>
         </div>
         <div class="main-menu-content">
@@ -29,15 +27,22 @@
                   <div class="main-menu-item-title">
                     <h1>{{ mi.description }}</h1>
                   </div>
+
                 </div>
               </ion-item>
+
+
             </ion-menu-toggle>
           </ion-list>
+
+          <p class="idmail">{{userSession.email}}<br>
+          Id: {{selectedCompany.companyId}}</p>
+
         </div>
       </div>
     </ion-content>
     <ion-footer class="ion-no-border">
-      <ion-text color="primary">
+      <ion-text>
         <PlureVersion showVersion="1"></PlureVersion>
       </ion-text>
     </ion-footer>

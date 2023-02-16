@@ -6,6 +6,7 @@ import { Network } from '@capacitor/network';
 
 import { OfflineService } from './offline.service';
 import { SK_ENVIRONMENT, SK_OFFLINE, SK_USER_SESSION } from '@var/consts';
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class ApiService {
@@ -73,7 +74,7 @@ export class ApiService {
             try {
                 let subscription: any;
                 let timer: any;
-
+                
                 timer = setTimeout(() => {
                     subscription.unsubscribe();
                     reject({message: this.msgTimeOut, status: 500});

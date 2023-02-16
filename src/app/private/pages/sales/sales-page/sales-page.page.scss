@@ -1,43 +1,52 @@
 ion-content {
-    .header {
-        background: #154983;
-        margin: 6px 0 0;
-        padding: 15px 20px;
-        h1 {
-            color: #ffffff;
-            margin: 0;
-        }
-    }
+
+    // .header {
+    //     background: #154983;
+    //     margin: 0px 0 0;
+    //     padding: 15px 20px;
+    //     text-align: center;
+    //     font-weight: bold;
+    //     h1 {
+    //         color: #ffffff;
+    //         margin: 0;
+    //     }
+    // }
     .content-desing {
-        background: #1A518E;
-        border-radius: 0 0 15px 15px;
-        height: 460px;
+        background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
+        height: 100%;
         margin-top: -1px;
         padding: 20px;
+
         .content-section {
-            background: #154983;
-            border-radius: 10px;
+            background: rgba(21, 73, 131, 0.2);
+            border-radius: 23px;
             padding: 10px;
+            font-weight: bold;
         }
+
         .content-section.sect2 {
             margin-top: 20px;
         }
+
         .content-section.sect3 {
             margin-top: 20px;
-            height: 105px;
-            border-radius: 0;
+            border-radius: 23px;
+
             .list-orders {
                 box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
             }
         }
+
         .title {
             color: var(--ion-color-plureHeader);
             padding: 0 10px;
             font-size: 18px;
+
             img {
-                margin: 0 0 0 1px;                
+                margin: 0 0 0 1px;
             }
         }
+
         .add {
             background: var(--ion-color-plureHeader);
             color: var(--ion-color-plureMain);
@@ -45,18 +54,23 @@ ion-content {
             border-radius: 10px;
             font-size: 15px;
             font-family: SourceSansProBold;
+
             span {
                 text-transform: lowercase;
             }
+
             .nopadding {
                 padding: 0;
                 padding-top: 5px;
             }
+
             .nopadding2 {
                 padding-top: 11px;
             }
+
             .icon {
                 text-align: right;
+
                 img {
                     display: inline-block;
                     width: 30px;
@@ -64,42 +78,53 @@ ion-content {
             }
         }
     }
+
     .list-orders {
         border-radius: 10px;
         background: var(--ion-color-plureHeader);
         height: 110px;
+
         .icon {
             img {
                 padding-left: 13px;
                 padding-top: 5px;
             }
         }
+
         .btn-list-orders {
             padding-top: 13px;
             padding-right: 10px;
             padding-left: 10px;
         }
+
         .sales {
             text-align: right;
+
             div {
                 font-size: 13px;
             }
+
             div.blue {
                 color: var(--ion-color-plureBlue);
             }
+
             div.bold {
                 font-size: 14px;
                 font-family: SourceSansProBold;
                 color: var(--ion-color-plureMain);
             }
         }
+
         div.temporaly {
             div.icon-temporaly {
                 padding-bottom: 5px;
-                ion-row{
+
+                ion-row {
                     width: 100%;
+
                     ion-col.offl {
                         padding: 10px;
+
                         div {
                             background: rgba(72, 74, 81, 0.1);
                             border-radius: 64.6477px;
@@ -117,6 +142,7 @@ ion-content {
 
             div.progress-temporaly {
                 padding-bottom: 10px;
+
                 ion-progress-bar {
                     height: 15px;
                     border-radius: 10px;
@@ -125,3 +151,16 @@ ion-content {
         }
     }
 }
+
+.Footersales{
+    height: 76px;
+}
+
+.iconfooter{
+    font-size: 45px;
+}
+
+// .footersales{
+//     background: transparent linear-gradient(180deg, #11355E00 0%, #11355E 100%) 0% 0% no-repeat padding-box;
+//     opacity: 1;
+// }

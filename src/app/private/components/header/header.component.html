@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="plureHeader">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button *ngIf="type == 0" menu="menu-content"></ion-menu-button>
       <ion-button *ngIf="type == 1" (click)="onEvent()">
@@ -12,7 +12,7 @@
         <div class="notf">
           <div class="nf">{{notifyCount}}</div>
         </div>
-        <img src="../../../assets/img/alertc.svg" />
+        <ion-icon class="bellnotif" size="large" name="notifications-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

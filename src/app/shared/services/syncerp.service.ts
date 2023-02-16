@@ -80,6 +80,7 @@ export class SyncerpService {
           let obj: any = {};
           if (rsl.temp !== undefined) {
             obj = rsl;
+
           } else {
             obj = JSON.parse(rsl.value);
           }
@@ -126,6 +127,7 @@ export class SyncerpService {
   }
 
   async sycnAll(module, objAlert: any) : Promise<boolean> {
+    
     this.countTask = 0;
     let process: any = {};
     this.notifyObj = await this.notify.createNotification(E_NOTIFYTYPE.Notify, 'We are synchronizing the sales tables', true);

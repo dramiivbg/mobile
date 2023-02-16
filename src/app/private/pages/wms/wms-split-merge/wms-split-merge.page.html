@@ -1,0 +1,282 @@
+<PlureHeader type="1" title="Split / Merge" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
+<ion-content>
+    <form>
+        <div class="designform-header">
+            <!-- <ion-row>
+                <ion-col>
+                  <h2> + New License Plate</h2>
+                </ion-col>
+               
+            </ion-row> -->
+
+
+            <ion-row class="delivery newColor2">
+                <ion-col size="10">
+                    <ion-searchbar [(ngModel)]="LPNo" [ngModelOptions]="{standalone: true}"
+                        (ionInput)="onFilter($event)" show-clear-button="always" clear-icon="close-outline"
+                        placeholder="Filter LP"></ion-searchbar>
+                </ion-col>
+
+                <ion-col size="2" class="barcodebtn">
+                    <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
+                </ion-col>
+            </ion-row>
+
+
+        </div>
+        <div class="accorn">
+            <div class="order-details">
+                <ion-row>
+                    <ion-col size="3" class="txt">
+
+                    </ion-col>
+
+                </ion-row>
+            </div>
+            <div class="accorn-body">
+                <div class="lines">
+                    <ion-list>
+                        <div>
+
+                            <ion-item-sliding>
+
+
+                                <ion-item>
+                                    <div class="label-lines" part="item-width">
+                                        <ion-row class="row1" *ngIf="lp !== undefined">
+                                            <ion-col class="contentcol" size="12" *ngFor="let item of lps; let i=index">
+                                                <ion-row class="titlerow">
+                                                    <ion-col size="5" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.company}}
+                                                    </ion-col>
+                                                    <ion-col size="3" class="label-line-title">
+                                                        Qty. {{item.fields.PLUQuantity
+                                                        }}
+
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row>
+                                                    <ion-col size="4" class="label-line">
+                                                        Item No: {{item.fields.PLUNo
+                                                        }}
+                                                    </ion-col>
+                                                    <ion-col size="4" class="label-line">
+                                                        UoM: {{item.fields.PLUUnitofMeasure}}
+                                                    </ion-col>
+
+                                                    <ion-col size="4" class="label-line">
+                                                        Loc. {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+
+                                                    <ion-col size="4" class="label-line">
+                                                        Serial No. {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+
+                                                    <ion-col size="4" class="label-line">
+                                                        Lot No. {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+
+                                                    <ion-col size="4" class="label-line">
+                                                        Exp Date {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+
+
+
+                                                </ion-row>
+
+
+                                                <ion-row>
+                                                    <ion-col size="4" class="label-line">
+                                                        Line: {{item.fields.PLUWhseLineNo}}
+                                                    </ion-col>
+
+
+                                                    <ion-col size="4" class="label-line">
+                                                        Doc Type: {{item.fields.PLULPDocumentType}}
+                                                    </ion-col>
+
+                                                    <ion-col size="4" class="label-line">
+                                                        Bin. {{item.fields.PLUBinCode
+                                                        }}
+
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                                <ion-item-sliding>
+
+                                                    <ion-item>
+                                                        <ion-row *ngIf="listPicture.length > 0 ">
+                                                            <ion-col size="12" class="label-line splitimage">
+                                                                <label
+                                                                    *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show"
+                                                                    class="label">{{listPicture[i].fields.No}}</label>&nbsp;
+                                                                <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show"
+                                                                    [src]="listPicture[i].fields.Picture" alt="">
+                                                                <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE' && show"
+                                                                    src="../../../../assets/img/caja.jpg" alt="">
+
+                                                            </ion-col>
+
+                                                        </ion-row>
+
+                                                    </ion-item>
+
+                                                    <ion-item-options>
+                                                        <ion-item-option color="danger" >
+                                                            <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                                        </ion-item-option>
+                                                    </ion-item-options>
+
+                                                </ion-item-sliding>
+
+                                                <ion-row>
+                                                    <ion-col class="buttoncol" size="6">
+
+                                                        <ion-button class="buttonsplitmerge" shape="round"
+                                                            expand="block" (click)="popoverSplit(item,$event)"><ion-icon
+                                                                name="cut-outline"></ion-icon>&nbsp;&nbsp;Split</ion-button>
+                                                    </ion-col>
+
+                                                    <ion-col class="buttoncol" size="6">
+
+                                                        <ion-button class="buttonsplitmerge" shape="round"
+                                                            expand="block" (click)="popoverMerge(item,$event)"><ion-icon
+                                                                name="shuffle-outline"></ion-icon>&nbsp;&nbsp;Merge</ion-button>
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                            </ion-col>
+                                        </ion-row>
+
+
+                                        <ion-row class="row2" *ngIf="palletH  !== undefined ">
+                                            <ion-col size="15" *ngFor="let item of pallets">
+                                                <ion-row>
+                                                    <ion-col size="5" style="overflow: hidden;"
+                                                        class="label-line-title blue">
+                                                        {{item.company}}
+                                                    </ion-col>
+
+                                                    <ion-col size="3" class="label-line" style="padding-top: 7px;">
+                                                        Document Type:
+                                                    </ion-col>
+                                                    <ion-col size="2" style="padding-top: 7px;" class="negrilla">
+                                                        {{item.fields.PLULPDocumentType}}
+                                                    </ion-col>
+
+
+                                                </ion-row>
+                                                <ion-row>
+                                                    <ion-col size="4" class="label-line">
+                                                        Entry No: {{item.fields.PLUWarehouseEntryNo
+
+                                                        }}
+                                                    </ion-col>
+                                                    <ion-col style="padding-right: 30px;" size="4" class="label-line">
+                                                        Zone Code: {{item.fields.PLUZoneCode}}
+                                                    </ion-col>
+
+                                                    <ion-col size="4" class="label-line-ligth">
+                                                        Loc. {{item.fields.PLULocationCode}}
+                                                    </ion-col>
+
+                                                </ion-row>
+
+
+                                                <ion-row>
+                                                    <ion-col size="5" class="label-line">
+                                                        Status: {{item.fields.PLULicensePlateStatus}}
+                                                    </ion-col>
+
+
+
+
+                                                    <ion-col size="5" class="label-line-ligth"
+                                                        style="text-align: right;">
+                                                        Bin. {{item.fields.PLUBinCode
+
+                                                        }}
+
+                                                    </ion-col>
+
+                                                </ion-row>
+
+
+                                                <ion-row>
+                                                    <ion-col size="12" class="label-line splitimage">
+
+
+                                                        <ion-slides>
+                                                            <ion-slide *ngFor="let img of  listImagenesP; let i=index">
+                                                                <label
+                                                                    *ngIf="img.fields.Picture != 'NOIMAGE' && show">{{img.fields.No}}</label>&nbsp;
+                                                                <img *ngIf="img.fields.Picture != 'NOIMAGE'  && show "
+                                                                    [src]="img.fields.Picture">
+                                                            </ion-slide>
+                                                        </ion-slides>
+
+
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                                <ion-row>
+                                                    <ion-col size="6" class="buttoncol">
+
+                                                        <ion-button shape="round" class="buttonsplitmerge"
+                                                            expand="block" (click)="option(item,$event)">Split
+                                                            Pallet</ion-button>
+                                                    </ion-col>
+
+                                                    <ion-col size="6" class="buttoncol">
+
+                                                        <ion-button shape="round" class="buttonsplitmerge"
+                                                            expand="block" (click)="popoverMergeP(item,$event)">Merge
+                                                            Pallet
+                                                        </ion-button>
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                            </ion-col>
+                                        </ion-row>
+                                    </div>
+
+
+
+                                </ion-item>
+
+
+                            </ion-item-sliding>
+
+
+
+                        </div>
+                    </ion-list>
+                </div>
+            </div>
+        </div>
+    </form>
+</ion-content>
+
+
+<PlureVersion class="footerReceipt" showVersion="0">
+    <ion-row>
+        <ion-col size="6" (click)="onBarCode()">
+            <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+            <div class="itemfooter">Bar code</div>
+        </ion-col>
+
+        <ion-col size="6" (click)="onShow()">
+            <ion-icon class="itemfooter" size="large" name="eye-outline" *ngIf="!show"></ion-icon>
+            <ion-icon class="itemfooter" size="large" name="eye-off-outline" *ngIf="show"></ion-icon>
+            <div class="itemfooter" *ngIf="!show">Show Images</div>
+            <div class="itemfooter" *ngIf="show">Hide images</div>
+        </ion-col>
+
+    </ion-row>
+</PlureVersion>

@@ -1,7 +1,7 @@
 @import '../../../../../sass/var';
 
 ion-item {
-    background: #FFFFFF;
+    --background: rgb(255, 255, 255, 0.25);
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.14);
     border-radius: 5px;
     margin: 2.5px 20px;
@@ -12,9 +12,22 @@ ion-item {
 }
 
 ion-content {
+    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
     ion-list-header {
         color: var(--ion-color-plureBlue);
         font-size: 18px;
         font-family: SourceSansProBold;
     }
+}
+
+ion-list{
+    background: transparent;
+}
+
+.Footersales{
+    height: 76px;
+}
+
+.iconfooter{
+    font-size: 45px;
 }

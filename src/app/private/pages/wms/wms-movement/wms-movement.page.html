@@ -1,0 +1,179 @@
+<PlureHeader type="1" title="Whse. Movement" url="page/wms/wmsMain" notify="0"></PlureHeader>
+
+<ion-content>
+  <form>
+    <div class="designform-header">
+      <ion-row>
+        <ion-col>
+          <ion-label>No. </ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Loc. </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>Assigned User: </ion-label>
+        </ion-col>
+
+      </ion-row>
+
+    </div>
+    <div class="accorn">
+      <div class="order-details">
+        <ion-row>
+          <ion-col size="3" class="txt">
+            <ion-label>Lines</ion-label>
+          </ion-col>
+          <!-- <ion-col *ngIf="new || edit">
+                  <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
+                </ion-col> -->
+        </ion-row>
+      </div>
+      <div class="accorn-body">
+        <div class="lines">
+          <ion-list>
+            <div>
+
+              <ion-item-sliding>
+
+
+                <ion-item>
+                  <div class="label-lines" part="item-width">
+                    <ion-row>
+                      <ion-col size="10">
+                        <ion-row>
+                          <ion-col size="7" style="overflow: hidden;" class="label-line-title blue">
+                            Gane
+                          </ion-col>
+                          <ion-col size="5" class="label-line-title" style="text-align: right;">
+                            Qty. 5
+
+                          </ion-col>
+
+
+
+
+
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="5" class="label-line">
+                            Serial No: 214523
+                          </ion-col>
+                          <ion-col size="6" class="label-line">
+                            Lot No: A35263E-2023
+                          </ion-col>
+                          <ion-col size="5" class="label-line">
+                            Item No: 1007P
+                          </ion-col>
+                          <ion-col size="5" class="label-line">
+                            Measure: Pcs
+                          </ion-col>
+                          <ion-col size="6" class="label-line">
+                            Exp Date: 19/03/2023
+                          </ion-col>
+
+
+                        </ion-row>
+
+                      </ion-col>
+                    </ion-row>
+                  </div>
+
+
+
+                </ion-item>
+
+
+              </ion-item-sliding>
+
+
+
+              <ion-grid class="gridtakeplace">
+
+
+                <ion-row class="titlespecs">
+
+                  <ion-col size="3">
+
+                  </ion-col>
+                  <ion-col size="3">
+                    <div style="font-size: 20px;">Zone</div>
+                  </ion-col>
+                  <ion-col size="3">
+                    <div style=" font-size: 20px;">Bin</div>
+                  </ion-col>
+                  <ion-col size="3">
+                    <div style="font-size: 20px;">Qty</div>
+                  </ion-col>
+
+
+                </ion-row>
+
+
+
+
+
+                <ion-row *ngFor="let item of vector">
+
+                  <ion-col size="3">
+                    <div class="titletakeplace">{{item}}</div>
+                  </ion-col>
+
+                  <ion-col size="3">
+                    <div class="label-line-title blue">Z1</div>
+                  </ion-col>
+                  <ion-col size="3">
+                    <div style=" font-size: 15px ">REC</div>
+                  </ion-col>
+                  <ion-col size="3">
+                    <div class="label-line-title blue">0/10</div>
+                  </ion-col>
+
+                </ion-row>
+
+
+
+
+              </ion-grid>
+
+
+
+              <ion-grid class="ion-margin">
+                <ion-row class="titletable">
+                  <ion-col size="3">LP</ion-col>
+                  <ion-col>No/S</ion-col>
+                  <ion-col>Lote</ion-col>
+                  <ion-col>F.Exp</ion-col>
+                  <ion-col>Qty</ion-col>
+                </ion-row>
+                <ion-row class="datatable">
+                  <ion-col size="3">LP-0000234</ion-col>
+                  <ion-col>s00001</ion-col>
+                  <ion-col>LOT1</ion-col>
+                  <ion-col>25-Oct</ion-col>
+                  <ion-col>1</ion-col>
+                </ion-row>
+              </ion-grid>
+            </div>
+          </ion-list>
+        </div>
+      </div>
+    </div>
+  </form>
+</ion-content>
+
+
+
+<PlureVersion class="footerReceipt" showVersion="0">
+  <ion-row>
+    <ion-col size="6" (click)="onBarCode()">
+      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooter">Bar code</div>
+    </ion-col>
+    <ion-col size="6" (click)="onSubmit()">
+      <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+      <div class="itemfooter">Save</div>
+    </ion-col>
+  </ion-row>
+</PlureVersion>

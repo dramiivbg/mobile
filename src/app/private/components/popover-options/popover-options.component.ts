@@ -12,12 +12,12 @@ export class PopoverOptionsComponent implements OnInit {
   constructor(private popoverController: PopoverController) { }
 
   public ngOnInit() {
-    console.log(this.options);
+    
   }
 
   public closeModal(item: any) {
     console.log(item)
-    this.popoverController.dismiss({data: item.obj});
+    this.popoverController.dismiss({data: item.obj, action: item.name});
   }
 
 }
