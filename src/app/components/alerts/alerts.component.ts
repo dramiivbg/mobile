@@ -39,7 +39,7 @@ export class AlertsComponent implements OnInit {
 
   // Ok - hide alert
   onOk() {
-    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue')
+    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue'  &&  this.alertObj.type !== 'res')
 
       this.alertObj.func();
       this.alertObj = {};
@@ -61,6 +61,11 @@ export class AlertsComponent implements OnInit {
 
  
 
+}
+
+viewRes(){
+
+  
 }
 
 
