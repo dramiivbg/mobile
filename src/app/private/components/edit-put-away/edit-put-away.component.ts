@@ -192,7 +192,6 @@ export class EditPutAwayComponent implements OnInit {
 
   }
 
-
   public async onBarCodeChange() {
 
     let line = undefined;
@@ -221,6 +220,7 @@ export class EditPutAwayComponent implements OnInit {
 
           this.listsFilter.filter(lp => {
             lp.fields.place = code.toUpperCase();
+            lp.seriales.map(x => x.fields.place = code.toUpperCase());
 
           });
 
@@ -301,8 +301,6 @@ export class EditPutAwayComponent implements OnInit {
           this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
         }
 
-
-
         if ((lineI === undefined || lineI === null) && boolean === false) {
 
 
@@ -359,8 +357,6 @@ export class EditPutAwayComponent implements OnInit {
 
               }
 
-
-
               this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
 
               let bin = await this.wmsService.GetPossiblesBinFromPutAway(this.listsFilter[0].fields.PLULPDocumentNo);
@@ -369,6 +365,7 @@ export class EditPutAwayComponent implements OnInit {
 
               break;
           }
+          this.intServ.loadingFunc(false);
         } else {
 
           if (lineI != undefined || lineI != null && boolean === false) {
@@ -388,6 +385,7 @@ export class EditPutAwayComponent implements OnInit {
 
             this.storage.set(`items ${this.whsePutAway.fields.No}`, this.listItems);
 
+            this.intServ.loadingFunc(false);
 
           }
 
@@ -507,7 +505,7 @@ export class EditPutAwayComponent implements OnInit {
       console.log(this.initV);
       
       this.intServ.loadingFunc(true);
-      this.split = (this.initV.length > 0) ? await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No) : [];
+      this.split = (this.initV.length > 0) ? await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No) : this.split;
       let contador = 0;
 
       console.log(this.split);
@@ -689,6 +687,7 @@ export class EditPutAwayComponent implements OnInit {
           }
         }
 
+        console.log(this.split);
 
         let list: any[] = [];
         if (this.initV.length > 0) {
@@ -723,7 +722,7 @@ export class EditPutAwayComponent implements OnInit {
                       request.ZoneCode = lp.ZoneCode;
   
                       list.push(request);
-  
+                      console.log(list);
                       
                     request = {
   
@@ -753,7 +752,7 @@ export class EditPutAwayComponent implements OnInit {
   
                     list.push(request);
   
-                   
+                    console.log(list);
   
                     request = {
   
@@ -776,46 +775,49 @@ export class EditPutAwayComponent implements OnInit {
         }
         const binPallet = await this.wmsService.GetDefaultBin1();
 
+      if(this.split != undefined ){
         for (const i in this.pallet) {
-         for (const j in this.pallet[i].fields) {
-          this.split.WarehousePutAwayLines.filter(lp => {
-            if ( this.pallet[i].fields[j].PLUNo === lp.LP) {
-
-                  lp.BinCode = binPallet.Default_Bin;
-                  request.ActivityType = 1;
-                  request.BinCode = lp.BinCode;
-                  request.ItemNo = lp.ItemNo;
-                  request.LP = lp.LP;
-                  request.LineNo = lp.LineNo;
-                  request.LocationCode = lp.LocationCode;
-                  request.No = lp.No;
-                  request.Quantity = lp.Quantity;
-                  request.ZoneCode = lp.ZoneCode;
-
-                  list.push(request);
-
-                  
-                request = {
-
-                  ActivityType: 1,
-                  No: "",
-                  ItemNo: "",
-                  LineNo: "",
-                  ZoneCode: "",
-                  LocationCode: "",
-                  BinCode: "",
-                  Quantity: 0,
-                  LP: ""
-                }
+          for (const j in this.pallet[i].fields) {
+           this.split.WarehousePutAwayLines.filter(lp => {
+             if ( this.pallet[i].fields[j].PLUNo === lp.LP) {
+ 
+                   lp.BinCode = binPallet.Default_Bin;
+                   request.ActivityType = 1;
+                   request.BinCode = lp.BinCode;
+                   request.ItemNo = lp.ItemNo;
+                   request.LP = lp.LP;
+                   request.LineNo = lp.LineNo;
+                   request.LocationCode = lp.LocationCode;
+                   request.No = lp.No;
+                   request.Quantity = lp.Quantity;
+                   request.ZoneCode = lp.ZoneCode;
+ 
+                   list.push(request);
+ 
                    
-            }
-          });
+                 request = {
+ 
+                   ActivityType: 1,
+                   No: "",
+                   ItemNo: "",
+                   LineNo: "",
+                   ZoneCode: "",
+                   LocationCode: "",
+                   BinCode: "",
+                   Quantity: 0,
+                   LP: ""
+                 }
+                    
+             }
+           });
+          }
          }
-        }
-
+ 
+      }
+       
         
 
-        if (this.initV.length > 0) {
+        if (this.initV.length > 0 && this.split != undefined) {
 
           let update = await this.wmsService.Update_Wsheput_Lines_V1(list);
 
@@ -863,12 +865,12 @@ export class EditPutAwayComponent implements OnInit {
     const binPallet = await this.wmsService.GetDefaultBin1();
       console.log('ls =>', lps);
       console.log('init =>',this.initV)
-      //console.log('pallet =>', pallets);
+      console.log('pallet =>', pallets);
     // console.log('bin Default =>', binPallet);
 
     if (!pallets.Error) {
 
-      const listLp = await this.wmsService.ListLP(lps);
+      const listLp = (!lps.error && !lps.Error)?await this.wmsService.ListLP(lps):[];
 
       this.pallet = await this.wmsService.ListLPallet(pallets);
 
@@ -1370,7 +1372,7 @@ export class EditPutAwayComponent implements OnInit {
 
         case "Single":
 
-              if(lp.seriales.length > 1){
+              if(lp.seriales.length > 0){
 
                 const popoverI = await this.popoverController.create({
                   component: PopoverSerialesLpComponent,
@@ -1395,6 +1397,7 @@ export class EditPutAwayComponent implements OnInit {
     const popoverI = await this.popoverController.create({
       component: PopoverSplitItemComponent,
       cssClass: 'popoverSplitItemComponent',
+      backdropDismiss: false,
       componentProps: { item },
     });
     await popoverI.present();

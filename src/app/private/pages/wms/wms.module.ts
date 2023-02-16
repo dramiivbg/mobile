@@ -56,6 +56,7 @@ import { PopoverChildrensPalletComponent } from '@prv/components/popover-childre
 import { PopoverListLpComponent } from '@prv/components/popover-list-lp/popover-list-lp.component';
 import { PopoverListPalletComponent } from '@prv/components/popover-list-pallet/popover-list-pallet.component';
 import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-inquiries.component';
+import { ProductsResComponent } from '@prv/components/products-res/products-res.component';
 
 
 
@@ -110,7 +111,8 @@ import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-i
     PopoverChildrensPalletComponent,
     PopoverListLpComponent,
     PopoverListPalletComponent,
-    PagueInquiriesComponent
+    PagueInquiriesComponent,
+    ProductsResComponent
     
   
   ],
@@ -158,7 +160,8 @@ import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-i
     PopoverChildrensPalletComponent,
     PopoverListLpComponent,
     PopoverListPalletComponent,
-    PagueInquiriesComponent
+    PagueInquiriesComponent,
+    ProductsResComponent
   
   ]
 })

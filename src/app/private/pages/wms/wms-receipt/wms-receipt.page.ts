@@ -310,8 +310,6 @@ export class WmsReceiptPage implements OnInit {
   }
 
 
-
-
   async GetLicencesPlateInWR(wareReceipts: any = {},items:any) {
     this.list = [];
     this.LpL = [];
@@ -411,8 +409,6 @@ export class WmsReceiptPage implements OnInit {
       let pallet = await this.wmsService.CreateLPPallet_FromWarehouseReceiptLine(this.wareReceipts);
 
       let palletL = await this.wmsService.getLpNo(pallet.LPPallet_DocumentNo);
-
-
 
     if (pallet.Error) throw new Error(pallet.Error.Message);
     if (pallet.error) throw new Error(pallet.error.message);
@@ -514,10 +510,8 @@ export class WmsReceiptPage implements OnInit {
           }
         }
 
-
         console.log('despues =>', pallet);
         console.log('despues =>', pallet2);
-
 
         for (const i in pallet) {
           pallet[i].fields = [];
@@ -533,12 +527,9 @@ export class WmsReceiptPage implements OnInit {
           }
         }
 
-
         console.log('final =>', pallet);
 
         let wareReceipts = this.wareReceipts;
-
-
 
         let navigationExtras: NavigationExtras = {
           state: {
@@ -549,7 +540,6 @@ export class WmsReceiptPage implements OnInit {
           replaceUrl: true
         };
         this.router.navigate(['page/wms/listPallet'], navigationExtras);
-
 
       }
       else {
@@ -588,7 +578,9 @@ export class WmsReceiptPage implements OnInit {
           let postWR = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
 
           console.log(postWR);
-          if (postWR.Error) throw Error(postWR.Error.Message);
+          if (postWR.Error) throw new Error(postWR.Error.Message);
+          if (postWR.error) throw new  Error(postWR.error.message);
+          if (postWR.message) throw new  Error(postWR.message);
 
           this.wmsService.setPutAway(postWR);
 
@@ -601,8 +593,6 @@ export class WmsReceiptPage implements OnInit {
 
             this.intServ.loadingFunc(true);
 
-
-
             var alert = setTimeout(() => {
 
               this.intServ.loadingFunc(false);
@@ -610,8 +600,6 @@ export class WmsReceiptPage implements OnInit {
               this.intServ.alertFunc(this.js.getAlert('edit', 'If you press "No" the Put-Away will be processed by default on the floor!', 'Will you edit the default Put-Away?', async () => {
 
                 this.intServ.loadingFunc(true);
-
-
 
                 try {
 
@@ -624,11 +612,9 @@ export class WmsReceiptPage implements OnInit {
                   console.log('postWP', data);
 
 
-                  if (data.Error) throw Error(data.Error.Message);
-
-
-
-
+                  if (data.Error) throw new  Error(data.Error.Message);
+                  if (data.error) throw new  Error(data.error.message);
+                  if (data.message) throw new  Error(data.message);
 
                   this.intServ.loadingFunc(false);
                   this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
@@ -638,19 +624,10 @@ export class WmsReceiptPage implements OnInit {
                   }))
 
 
-
-
                 } catch (error) {
-
-
-
-
-
 
                   this.intServ.loadingFunc(false);
                   this.intServ.alertFunc(this.js.getAlert('error', '', error.message))
-
-
 
                 }
 
@@ -668,11 +645,7 @@ export class WmsReceiptPage implements OnInit {
 
           this.intServ.loadingFunc(false);
 
-
-          let e = error.message.split('/')
-
-
-          this.intServ.alertFunc(this.js.getAlert('error', '', e[0]));
+          this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
         }
 
         clearTimeout(alert);

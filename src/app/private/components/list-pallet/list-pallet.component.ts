@@ -158,17 +158,12 @@ export class ListPalletComponent implements OnInit {
     };
     this.router.navigate(['page/wms/lists'], navigationExtras);
 
-    
-
-
   }
 
 
-  delete(item:any){
+ delete(item:any){
 
-  
-
-    this.intServ.alertFunc(this.js.getAlert('alert', '', `You are sure to delete the Pallet ${item.fields[0].PLULPDocumentNo}`, async() => {
+    this.intServ.alertFunc(this.js.getAlert('alert', '', `Are you sure you want to delete the Pallet ${item.fields[0].PLULPDocumentNo}?`, async() => {
 
       this.intServ.loadingFunc(true);
       try {

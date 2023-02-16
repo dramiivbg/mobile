@@ -145,7 +145,7 @@ export class WmsMainPage implements OnInit {
       } catch (error) {
 
         this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+        this.intServ.alertFunc(this.js.getAlert('error', '', error.message, () => {this.router.navigate(['page/wms/wmsMain'])}));
 
       }
 
@@ -417,11 +417,6 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `No ${procesos.salesType} were found.`));
     }
-
-
-
-
-
 
   }
 

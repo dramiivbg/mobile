@@ -27,8 +27,10 @@ export class PopoverShowSerialesComponent implements OnInit {
 
          let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(this.lps.PLULPDocumentNo);
 
-         if(lpD.Error) throw Error(lpD.Error.Message);
-
+         if(lpD.Error) throw new Error(lpD.Error.Message);
+         if(lpD.error) throw new  Error(lpD.error.message);
+         if(lpD.message) throw new Error(lpD.message);
+         
          this.popoverController.dismiss({data: 'eliminado'});
          this.intServ.loadingFunc(false);
          this.intServ.alertFunc(this.jsonService.getAlert('success', '', `The license plate ${this.lps.PLULPDocumentNo} has been successfully deleted`, () => {

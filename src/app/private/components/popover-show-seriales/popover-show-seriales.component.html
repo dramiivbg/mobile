@@ -32,7 +32,7 @@
                   <ion-col size="6" class="label-line">
                     UoM: <b>{{item.PLUUnitofMeasureCode}}</b>
                   </ion-col>
-                  <ion-col size="6" class="label-line">
+                  <ion-col size="6" class="label-line" *ngIf="item.PLUVariantCode != null">
                     Variant: <b>{{item.PLUVariantCode}}</b>
                   </ion-col>
                   <ion-col size="6" class="label-line" *ngIf="item.PLUSerialNo != null">

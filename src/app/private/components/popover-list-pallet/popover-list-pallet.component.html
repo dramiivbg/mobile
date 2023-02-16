@@ -77,14 +77,14 @@
 </ion-content>
 
 <ion-row >
-  <ion-col class="buttonscan" size="4">
+  <ion-col  size="3">
     <ion-button shape="round" color="secondary" (click)="onBarCode()">
       Scan
       <ion-icon class="itemfooter" name="barcode-outline"></ion-icon>
       <!-- <div class="itemfooter">Scan</div> -->
     </ion-button>
   </ion-col>
-  <ion-col class="buttonscan" size="4"  (click)="onCancel()">
+  <ion-col  size="3"  (click)="onCancel()">
     <ion-button shape="round" color="danger">
       Cancel
       <ion-icon class="itemfooter" name="close-outline"></ion-icon>
@@ -92,8 +92,8 @@
     </ion-button>
   </ion-col>
 
-  <ion-col class="buttonscan" size="4" >
-    <ion-button shape="round" color="secondary" (click)="BinToBin()" >
+  <ion-col size="4" >
+    <ion-button style="padding-left: 15px;" shape="round" color="secondary" (click)="BinToBin()" >
       Bin to Bin
       <ion-icon class="itemfooter" name="move-outline"></ion-icon>
 

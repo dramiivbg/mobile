@@ -37,7 +37,7 @@ export class PagueInquiriesComponent implements OnInit {
             this.obj = [];
           this.intServ.loadingFunc(true);
           try {
-            let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(),'WMS');
+            let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(),'PLURE');
 
             let resL = await this.wmsService.getLpNo(code.toUpperCase());
 
@@ -210,7 +210,8 @@ export class PagueInquiriesComponent implements OnInit {
                   lpHP['Quantity'] = qty; 
                   childrens.push(lpHP);
                   length++;         
-                  this.quantity+= qty;          
+                  this.quantity+= qty;  
+                  LinesP = [];        
 
                  });
 

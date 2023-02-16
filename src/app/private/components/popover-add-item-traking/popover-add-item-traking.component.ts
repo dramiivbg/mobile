@@ -33,7 +33,7 @@ export class PopoverAddItemTrakingComponent implements OnInit {
   public exp:boolean = false;
   public serial:boolean = false;
   constructor( private formBuilder: FormBuilder, public popoverController: PopoverController, private barcodeScanner: BarcodeScanner,
-    private jsonService: JsonService, private intServ: InterceptService,  private storage: Storage) { 
+    private jsonService: JsonService, private intServ: InterceptService,  private storage: Storage) {
 
       
   }
@@ -48,8 +48,6 @@ export class PopoverAddItemTrakingComponent implements OnInit {
       }
     )
 
-    console.log(this.trakingClose,this.trakingOpen);
-
     this.frm2 = this.formBuilder.group(
       {
         SerialNo: ['', Validators.required],
@@ -57,9 +55,24 @@ export class PopoverAddItemTrakingComponent implements OnInit {
         exp: ['', Validators.required],
         Qty: ['', Validators.required]
 
-
       }
-    )
+    ) 
+
+    console.log(this.code);
+    this.lot = (this.code.lines.LotPurchaseInboundTracking)?true:false;
+    this.serial = (this.code.lines.SNPurchaseInboundTracking)?true:false;
+    this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
+    this.intServ.loadingFunc(false);
+    if(this.lot === false) this.frm2.controls['LotNo'].disable();
+   
+   if(this.serial === false) this.frm2.controls['SerialNo'].disable();
+
+   if(this.exp === false) this.frm2.controls['exp'].disable();
+
+   if(this.serial) this.frm2.controls['Qty'].disable();
+
+    console.log(this.trakingClose,this.trakingOpen);
+
 
      this.obj =  {
       WarhouseReceiptNo: this.item.No,
@@ -74,18 +87,7 @@ export class PopoverAddItemTrakingComponent implements OnInit {
       TrackingInfo: []
     }
 
-    console.log(this.code);
-    this.lot = (this.code.lines.LotPurchaseInboundTracking)?true:false;
-    this.serial = (this.code.lines.SNPurchaseInboundTracking)?true:false;
-    this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
-    this.intServ.loadingFunc(false);
-    if(this.lot === false) this.frm2.controls['LotNo'].disable();
-   
-   if(this.serial === false) this.frm2.controls['SerialNo'].disable();
-
-   if(this.exp === false) this.frm2.controls['exp'].disable();
-
-   if(this.serial) this.frm2.controls['Qty'].disable();
+  
 
    this.intServ.loadingFunc(false);
 

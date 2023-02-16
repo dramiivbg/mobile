@@ -8,16 +8,19 @@
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'edit'" />
       <img src="../../../assets/icon/error.svg" *ngIf="alertObj.type == 'error'" />
       <img src="../../../assets/icon/alert.svg" *ngIf="alertObj.type == 'alert'" />
+      <img src="../../../assets/icon/alert.svg" *ngIf="alertObj.type == 'res'" />
       <img src="../../../assets/icon/alert.svg" *ngIf="alertObj.type == 'alert2'" />
       <img src="../../../assets/icon/dontaccess.svg" *ngIf="alertObj.type == 'noaccess'" />
       <img src="../../../assets/icon/confirm.svg" *ngIf="alertObj.type == 'select'" />
     </div>
     <div class="alert-body">
-  <strong *ngIf="alertObj.type !== 'edit' && alertObj.type !== 'register' && alertObj.type !== 'confirmEdit'" >{{alertObj.title}}</strong><br>
+  <strong *ngIf="alertObj.type !== 'edit' && alertObj.type !== 'register' && alertObj.type !== 'confirmEdit' &&  alertObj.type !== 'res'" >{{alertObj.title}}</strong><br>
 
-      {{alertObj.desc}}
+     <p *ngIf="alertObj.type === 'res'">Remaining products: <a (click)="viewRes()">{{alertObj.desc}}</a></p> 
+     <div *ngIf="alertObj.type !== 'res'">{{alertObj.desc}}</div>
       <div class="alert-btn" *ngIf="alertObj.type != 'confirm' && alertObj.type != 'continue' && alertObj.type != 'edit' 
-        && alertObj.type !== 'select' &&  alertObj.type !== 'register' && alertObj.type !== 'alert2' && alertObj.type !== 'confirmEdit'">
+        && alertObj.type !== 'select' &&  alertObj.type !== 'register' && alertObj.type !== 'alert2' && alertObj.type !== 'confirmEdit'  
+        &&  alertObj.type !== 'res'">
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">OK</ion-button>
       </div>
       <div class="alert-btn" *ngIf="alertObj.type == 'confirm'">
@@ -44,6 +47,12 @@
         <p>{{alertObj.title}}</p>
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
         <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onOk()">No</ion-button>
+      </div>
+
+      <div class="alert-btn" *ngIf="alertObj.type == 'res'">
+        <p>{{alertObj.title}}</p>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="onYes()">Yes</ion-button>
+        <ion-button type="button" class="btn btn-plure" color="plureBlue" (click)="cancel()">Cancel</ion-button>
       </div>
 
     

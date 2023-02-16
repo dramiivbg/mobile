@@ -30,6 +30,8 @@ export class PhysicalInventoryPage implements OnInit {
   public listaCount = [];
   public locate:any;
   public template:any;
+  public listCounted = [];
+  public listBin = [];
   constructor(private storage: Storage ,private intServ: InterceptService
     , private js: JsonService, private barcodeScanner: BarcodeScanner,
     public popoverController: PopoverController,
@@ -118,22 +120,31 @@ export class PhysicalInventoryPage implements OnInit {
 
           case true:
           this.intServ.loadingFunc(true);
-          let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(),'WMS');
+          let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(), this.locate);
           console.log(res);
           
           if(!res.Error && res.length > 0){
             this.bin = code.toUpperCase();
             console.log(this.lists);
-            res.map(async x => {    
-              let obj = this.lists.find(obj => obj.PLULPDocumentNo ===  x.LPHeader || obj.PLUParentLPNo === x.LPHeader);
+            res.map(async x => {   
+              console.log(x); 
+              let obj = this.lists.find(j => j.PLULPDocumentNo ===  x.LPHeader || j.PLUParentLPNo === x.LPHeader);
               console.log(obj);
+             if(obj != undefined){
               if(obj.PLUParentLPNo === null){
+                x.Lines.map(j => {
+                  let find  = this.lists.find(o => o.PLULPDocumentNo === j.LPDocumentNo);
+                  if(find != undefined)j.Quantity = find.QtyPhysInventoryBase;
+                });
+
                 obj['seriales'] = x.Lines;
                 obj.QtyPhysInventory = 0;
                 x.Lines.map(i =>  {this.quantity+= i.Quantity; obj.QtyPhysInventory+=i.Quantity}); 
-                 obj.QtyCalculated = obj.QtyPhysInventory;              
+                 obj.QtyCalculated = obj.QtyPhysInventory;  
+                 obj.QtyPhysInventoryBase = obj.QtyPhysInventory;          
                 let line = this.lps.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);
-                 if(line === null || line === undefined)this.lps.push(obj);          
+                 if(line === null || line === undefined)this.lps.push(obj);
+                        
                
                console.log(obj);
               }else{
@@ -164,10 +175,15 @@ export class PhysicalInventoryPage implements OnInit {
                   console.log(lp);
                   let line = this.lists.find(x => x.PLULPDocumentNo === lp.No);
                   if(line != undefined){
+                    lp.Childs.map(j => {
+                      let find  = this.lists.find(o => o.PLULPDocumentNo === j.LPDocumentNo);
+                     if(find != undefined)j.Quantity = find.QtyPhysInventoryBase;
+                    });
                     line['seriales'] = lp.Childs;
                     line.QtyPhysInventory = 0;
                     lp.Childs.map(i => {this.quantity+= i.Quantity;line.QtyPhysInventory+=i.Quantity });
                     line.QtyCalculated = line.QtyPhysInventory;
+                    obj.QtyPhysInventoryBase = obj.QtyPhysInventory;   
                     pallet.childrens.push(line);
                   }              
                });
@@ -175,7 +191,9 @@ export class PhysicalInventoryPage implements OnInit {
                this.lps.push(pallet);
                console.log(pallet);
 
-              }                     
+              }       
+             } 
+                 
               
             
             });
@@ -197,7 +215,10 @@ export class PhysicalInventoryPage implements OnInit {
           let res1 = await this.wmsService.GetBinContent_LP(this.bin,'WMS');
           let x  = res1.find(x => x.LPHeader === code.toUpperCase());
 
-          if(line != undefined)this.PopoverCounting(line);
+          if(line != undefined){
+            this.PopoverCounting(line);
+            return;
+          }
           console.log(x,this.lists,line);
           if((line === undefined || line === null) && x != undefined){
             this.intServ.loadingFunc(true);
@@ -206,10 +227,15 @@ export class PhysicalInventoryPage implements OnInit {
               let line2 = this.lists.find(obj => obj.PLULPDocumentNo ===  x.LPHeader || obj.PLUParentLPNo === x.LPHeader);
               console.log(line2);
               if(line2.PLUParentLPNo === null){
+                x.Lines.map(j => {
+                  let find  = this.lists.find(o => o.PLULPDocumentNo === j.LPDocumentNo);
+                  if(find != undefined)j.Quantity = find.QtyPhysInventoryBase;
+                });
                 line2['seriales'] = x.Lines;
                 line2.QtyPhysInventory = 0;
                x.Lines.map(i => line2.QtyPhysInventory+=i.Quantity); 
                 line2.QtyCalculated = line2.QtyPhysInventory;
+                line2.QtyPhysInventoryBase = line2.QtyPhysInventory;   
                 
                 this.lps.push(line2);          
                
@@ -243,10 +269,15 @@ export class PhysicalInventoryPage implements OnInit {
                   console.log(lp);
                   let line = this.lists.find(x => x.PLULPDocumentNo === lp.No);
                   if(line != undefined){
+                    lp.Childs.map(j => {
+                      let find  = this.lists.find(o => o.PLULPDocumentNo === j.LPDocumentNo);
+                      if(find != undefined)j.Quantity = find.QtyPhysInventoryBase;
+                    });
                     line['seriales'] = lp.Childs;
                     line.QtyPhysInventory = 0;
                     lp.Childs.map(i => {this.quantity+= i.Quantity;line.QtyPhysInventory+=i.Quantity });
                     line.QtyCalculated = line.QtyPhysInventory;
+                    line.QtyPhysInventoryBase = line.QtyPhysInventory;   
                     pallet.childrens.push(line);
                   }              
                });
@@ -264,6 +295,88 @@ export class PhysicalInventoryPage implements OnInit {
            
             this.intServ.loadingFunc(false);
             
+          }else{
+
+            this.intServ.loadingFunc(true);
+            let find = this.lists.find(obj => obj.PLULPDocumentNo ===  code.toUpperCase() || obj.PLUParentLPNo === code.toUpperCase());
+            
+            switch(find){
+
+              case undefined || null:
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('error','', 'Does not exist in the inventory'));
+                break;
+
+              default:
+            
+              let res = await this.wmsService.getLpNo(code.toUpperCase());
+              let resI = await this.wmsService.GetItem(code.toUpperCase());
+
+              let item = await this.wmsService.listItem(resI);
+              let lp = await this.wmsService.listSetup(res.LicensePlates.LicensePlatesHeaders);
+              if((lp.PLULPDocumentType === "Single" && find.PLUParentLPNo === null)  || lp.PLULPDocumentType === "Pallet"){
+
+                console.log(lp);
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('confirm','',(res.Error)?`The Item ${code.toUpperCase()} is registered in the system in the Bin ${find.BinCode}, Do you want to tell it in this Bin?`
+                :(lp.PLULPDocumentType === "Single")?`The LP ${code.toUpperCase()} is registered in the system in the Bin ${find.BinCode}, Do you want to tell it in this Bin?`
+                :`The Pallet ${code.toUpperCase()} is registered in the system in the Bin ${find.BinCode}, Do you want to tell it in this Bin?` ,async() => {
+  
+                  this.intServ.loadingFunc(true);
+                  try {
+  
+  
+                    if(!res.Error){
+  
+                      let resB = await this.wmsService.MoveBinToBin_LP(lp.PLULPDocumentNo,find.ZoneCode,find.BinCode,this.bin,find.LocationCode);
+  
+                      if(res.Error) throw new Error(res.Error.Message);
+                      if(res.error) throw new Error(res.error.message);
+                      if(res.message) throw new Error(res.message);
+  
+                      let res3 = await this.wmsService.Get_WarehouseInvPhysicalCount(this.locate,this.template,this.batch);
+  
+                      if(res3.Error) throw new Error(res3.Error.Message);
+                      if(res3.error) throw new Error(res3.error.message);
+                      if(res3.message) throw new Error(res3.message);
+                      
+                           
+                    let  items = await this.wmsService.listTraking(res3.Warehouse_Physical_Inventory_Journal);
+                
+                
+                     this.storage.set('inventory',items);
+                
+                     this.lists = await  this.storage.get('inventory');
+  
+                     let i = this.lists.find(obj => obj.PLULPDocumentNo ===  code.toUpperCase() || obj.PLUParentLPNo === code.toUpperCase());
+  
+                     console.log(i);
+  
+  
+                    }
+                
+                             
+                    
+                  } catch (error) {
+                    this.intServ.loadingFunc(false);
+                    this.intServ.alertFunc(this.js.getAlert('error','',error.message));
+                    
+                  }
+                
+  
+  
+                }));
+              }else{
+                this.intServ.loadingFunc(false);
+                this.intServ.alertFunc(this.js.getAlert('alert','',(res.Error)?`The Item ${code.toUpperCase()} belongs to the pallet ${find.PLUParentLPNo}`
+                :(lp.PLULPDocumentType === "Single")?`The LP ${code.toUpperCase()} belongs to the pallet ${find.PLUParentLPNo}`
+                :`The Pallet ${code.toUpperCase()} belongs to the pallet ${find.PLUParentLPNo}`));
+              }
+          
+
+                break;
+            }
+           
           }
             break;
 
@@ -355,10 +468,22 @@ public async popoverNonCount(){
       case 'serial':
         obj.seriales.map(x => {
           let line = this.listPhysical.find(o => x.SerialNo === o.SerialNo);
-          this.listaCount.push(line);
           console.log(line);
           let line2 = seriales.find(k => k.SerialNo === x.SerialNo);
-          if(line2 === undefined || line2 === null)line.QtyPhysInventory = 0;
+          if(line2 === undefined || line2 === null){
+            line.QtyPhysInventory = 0;
+          }else{
+            this.listaCount.map((x,i) => x.LineNo === line.LineNo?this.listaCount.splice(i,1):x);        
+            this.listaCount.push(line);
+          }
+          for (const key in this.listCounted) {
+            if (line.LineNo === Number(key)) {
+              console.log(key);
+              this.counted-= line.QtyPhysInventory;
+              
+            }
+          }
+          this.listCounted[line.LineNo] = line.QtyPhysInventory;
           this.counted += line.QtyPhysInventory;
           listI.push(line);     
        });
@@ -367,14 +492,26 @@ public async popoverNonCount(){
       default:
         obj.seriales.map(x => {
           let line = this.listPhysical.find(o => x.LPDocumentNo === o.PLULPDocumentNo);
+          this.listaCount.map((x,i) => x.LineNo === line.LineNo?this.listaCount.splice(i,1):x); 
           this.listaCount.push(line);
           console.log(line);
+          for (const key in this.listCounted) {
+            console.log('line =>',key)
+            if (line.LineNo === Number(key)) {
+              console.log(key);
+              this.counted-= line.QtyPhysInventory;
+              
+            }
+          }
+          this.listCounted[line.LineNo] = qty;
           line.QtyPhysInventory = qty;
           this.counted += line.QtyPhysInventory;
           listI.push(line);   
         });
         break;
      }
+
+     console.log(this.listCounted);
    
    
      let  list = {
@@ -565,10 +702,11 @@ public async popoverNonCount(){
            
     let  items = await this.wmsService.listTraking(res3.Warehouse_Physical_Inventory_Journal);
 
+    console.log('update =>',items);
 
-     this.storage.set('inventory',items);
+    this.storage.set('inventory',items);
 
-     this.lists = await  this.storage.get('inventory');
+     this.lists = items;
      this.intServ.loadingFunc(false);
 
      this.intServ.alertFunc(this.js.getAlert('success', '', 'Successful'));
@@ -586,19 +724,21 @@ public async popoverNonCount(){
    
    }
      
- async  Register(){
+ async  onRegister(){
 
-  this.intServ.alertFunc(this.js.getAlert('alert','',`Are you sure to finish the count in the bin ${this.bin}?`, async() => {
+  let lists = [];
+  let listNoCount = [];
+  this.lists.map(x => {if(x.BinCode === this.bin){
+  let line = this.listaCount.find(i => x.PLULPDocumentNo === i.PLULPDocumentNo);
+  if(line === null || line === undefined){
+     // x.QtyPhysInventory = 0;
+      listNoCount.push(x);
+    }
+  }});
 
-    let lists = [];
-    let listNoCount = [];
-    this.lists.map(x => {if(x.BinCode === this.bin){
-      let line = this.listaCount.find(i => x.PLULPDocumentNo === i.PLULPDocumentNo);
-      if(line === null || line === undefined){
-        x.QtyPhysInventory = 0;
-        listNoCount.push(x);
-      }
-    }});
+  this.intServ.alertFunc(this.js.getAlert('res', (listNoCount.length > 0)?`Are you sure to finish the count in the bin ${this.bin}?`:'',(listNoCount.length > 0)?String(listNoCount.length):`Are you sure to finish the count in the bin ${this.bin}?`, async() => {
+
+    this.intServ.loadingFunc(true);
 
     
     let  list = {
@@ -608,6 +748,7 @@ public async popoverNonCount(){
         value: "",
       },
       {
+      
         name: "JournalBatchName",
         value: "",
       },
@@ -766,14 +907,19 @@ public async popoverNonCount(){
 
     try {
 
-      let res = await this.wmsService.Write_WarehouseInvPhysicalCount(lists);
+     // let res = await this.wmsService.Write_WarehouseInvPhysicalCount(lists);
    
-      if(res.Error) throw new Error(res.Error.Message);
+   //   if(res.Error) throw new Error(res.Error.Message);
   
        
-      if(res.error) throw new Error(res.error.message);
+     // if(res.error) throw new Error(res.error.message);
 
-      if(res.message) throw new Error(res.message);
+     // if(res.message) throw new Error(res.message);
+
+      listNoCount.filter(async x => {
+       if(x.PLUParentLPNo === null) await this.wmsService.MoveBinToBin_LP(x.PLULPDocumentNo,x.ZoneCode,x.BinCode,"NOCOUNT",x.LocationCode);
+      });
+     
 
       let res2 = await this.wmsService.Register_WarehouseInvPhysicalCount(this.locate);
 
@@ -800,6 +946,10 @@ public async popoverNonCount(){
      this.storage.set('inventory',items);
 
      this.lists = await  this.storage.get('inventory');
+
+     this.intServ.loadingFunc(false);
+     this.bin = '';
+     this.intServ.alertFunc(this.js.getAlert('success', '',`Bin ${this.bin} has been successfully registered`))
       
     } catch (error) {
       this.intServ.loadingFunc(false);

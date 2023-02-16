@@ -193,6 +193,7 @@ export class ListPItemsComponent implements OnInit {
         }
       )
     }
+    break;
 
   default:
 
@@ -202,6 +203,7 @@ export class ListPItemsComponent implements OnInit {
         return (x.PLUNo.toLowerCase().includes(itemNo.toLowerCase()));
       }
     )
+    break;
   }
 
 
@@ -227,6 +229,7 @@ export class ListPItemsComponent implements OnInit {
           }
         )
       }
+      break;
 
     default:
 
@@ -236,6 +239,7 @@ export class ListPItemsComponent implements OnInit {
             return (x.PLUNo.toLowerCase().includes(lpNo.toLowerCase()));
           }
         )
+     break;
       
     }
 
@@ -310,7 +314,7 @@ export class ListPItemsComponent implements OnInit {
   }
 
 
-  selectl(item:any,ev){
+selectl(item:any,ev){
 
 
 switch(ev.detail.checked){
@@ -390,11 +394,9 @@ switch(ev.detail.checked){
 
   });
     this.intServ.loadingFunc(false);
-    this.intServ.alertFunc(this.js.getAlert('success', '', `The licence plate has been removed`));
+    this.intServ.alertFunc(this.js.getAlert('success', '', `The licence plate has been removed`, () => { this.router.navigate(['page/wms/wmsReceipt']);}));
 
     
-
- 
 
       
     } catch (Error) {
@@ -410,6 +412,7 @@ switch(ev.detail.checked){
 
    
 
+    this.intServ.loadingFunc(true);
 
     try {
 
@@ -440,9 +443,9 @@ switch(ev.detail.checked){
     })
     
 
-  })
+  });
     this.intServ.loadingFunc(false);
-    this.intServ.alertFunc(this.js.getAlert('success', '', `The Item has been removed`));
+    this.intServ.alertFunc(this.js.getAlert('success', '', `The Item has been removed`, () => {this.router.navigate(['page/wms/wmsReceipt']);}));
 
     
 

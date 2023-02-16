@@ -59,7 +59,7 @@ const routes: Routes = [
 
     {path: 'physicalInventory', component: PhysicalInventoryPage},
     {path: 'physicalCount', component: PhysicalCountComponent},
-    {path: 'physicalNoCount', component: PhysicalNoCountComponent}
+    {path: 'physicalNoCount', component: PhysicalNoCountComponent},
   ]
 },
 

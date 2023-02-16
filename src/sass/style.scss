@@ -100,6 +100,13 @@
 }
 
 .popoverListPalletComponent{
-    --width: 365px;
+    --width: 375px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverSplitItemComponent{
+
+    --heigth: 400px;
+    --width: 320px;
     border-radius: 23px 0 0 23px;
 }

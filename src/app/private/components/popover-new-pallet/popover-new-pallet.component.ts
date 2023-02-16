@@ -116,6 +116,8 @@ public onBack() {
 
 
    this.wareReceipts = this.wmsService.get();
+   this.itemsTraking = [];
+   this.lpsL = [];
 
 
   }
@@ -201,6 +203,7 @@ async onBarCode(){
   let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
     
   let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
+  console.log(lps,items);
 
   try {
 
@@ -231,7 +234,7 @@ async onBarCode(){
   async  (barCodeData) => {
   let code = barCodeData.text;
 
-   this.intServ.loadingFunc(true);
+  this.intServ.loadingFunc(true);
      
   for (const key in listaL) {
 
@@ -251,7 +254,7 @@ async onBarCode(){
       }
 
     let identifier = await this.wmsService.GetItemIdentifier(code);
-     if(!identifier.Error){
+     if(!identifier.Error && !identifier.error){
         boolean = false;
       for (const key in identifier.ItemIdentifier) {
         
@@ -264,7 +267,7 @@ async onBarCode(){
     if (line === null || line === undefined ) {
 
       this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('error', 'Error', `  The license plate '${code}' is not available `));
+      this.intServ.alertFunc(this.js.getAlert('error', ' ', `  The license plate '${code}' is not available `));
    
     } else {
 
@@ -272,28 +275,10 @@ async onBarCode(){
 
        case true:  
 
-       
-         if(this.lpsL.length < 1){
-      
-
-          this.lpsL.push(line);
-
-            console.log(this.lpsL);
-      
-            this.lpsB = true
-            this.lpsT.push(line)
-      
-            this.listLpsL.push(line);
-            this.intServ.loadingFunc(false);
-          }
-
-        else{
-
-          
           let  find = this.lpsL.find(lp => lp.fields.PLULPDocumentNo === line.fields.PLULPDocumentNo); 
 
 
-          if(find != null ||  find != undefined){
+        if(find != undefined){
 
             this.intServ.loadingFunc(false);
 
@@ -316,41 +301,15 @@ async onBarCode(){
         }
         this.intServ.loadingFunc(false);
 
-      }
-
+    
       break;
       
     case false:
 
-        if(this.itemsL.length < 1){
-          let info = await this.wmsService.GetItemInfo(line.ItemNo);
-          switch(info.Managed_by_PlurE){
-            case true:
+     
+    let  find2 = this.itemsL.find(item => item.ItemNo  === line.ItemNo); 
 
-              if(line.ItemTrackingCode != null){
-                
-                this.traking.push(line);
-                let contador = 0
-                this.trakingItem(contador);
-                
-
-              }else{
-
-                this.itemsL.push(line);
-                this.itemB = true;
-                this.itemsT.push(line);       
-                this.listItemsL.push(line);
-                this.intServ.loadingFunc(false);
-              }
-              break;
-          }
-         
-        }
-
-      else{
-        let  find = this.itemsL.find(item => item.ItemNo  === line.ItemNo); 
-
-        if(find != null ||  find != undefined){
+     if(find2 != undefined){
 
           this.intServ.loadingFunc(false);
           this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Item is already assigned'));
@@ -377,19 +336,22 @@ async onBarCode(){
               this.listItemsL.push(line);
               this.intServ.loadingFunc(false);
             }
+
             break;
+           
         }
       }
 
+      break;
     }
 
     this.intServ.loadingFunc(false);
 
-    break;
+    
      
     }  
     }
-  }
+  
 
   ).catch(
     err => {
@@ -500,9 +462,9 @@ async onBarCode(){
 
          this.intServ.loadingFunc(false);
   
-         this.intServ.alertFunc(this.js.getAlert('success', 'Success', ` `, () =>{ 
+         this.intServ.alertFunc(this.js.getAlert('success', 'Successful', ` `, () =>{ 
+          this.itemsTraking = [];
           this.router.navigate(['page/wms/wmsReceipt']);
-
          }));
      
       
@@ -542,7 +504,8 @@ this.lps = [];
 async listLpOrItem(pallet:any){
 
 this.intServ.loadingFunc(true);
- 
+ this.QtyItem = 0;
+ this.QtyLP = 0;
   this.boolean = false;
 
 let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.PLULPDocumentNo);
@@ -643,6 +606,7 @@ let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.
 
    this.QtyItem = this.items.length;
 
+   console.log(this.testListI,this.testListL);
 
 }
 
@@ -658,7 +622,7 @@ this.lps = [];
   let contador = 0
 
   if(this.traking.length > 0){
-    this.trakingItem(contador);
+    this.trakingItem(contador, true);
   }else{
     this.boolean = true;
   }
@@ -666,7 +630,7 @@ this.lps = [];
 }
 
 
-async trakingItem(contador:number = 0){
+async trakingItem(contador:number = 0, select:boolean = false){
   this.intServ.loadingFunc(true);
   console.log(this.traking);
     let res = (this.traking[contador].ItemTrackingCode != null)?await this.wmsService.configurationTraking(this.traking[contador].ItemTrackingCode):null;
@@ -676,6 +640,7 @@ async trakingItem(contador:number = 0){
     let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationOpen):[];
     let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res3.TrackingSpecificationClose):[];
     let code = (res != null)?await this.wmsService.listCode(res):null;
+    select?this.intServ.loadingFunc(false):this.intServ.loadingFunc(true);
   const popover = await this.popoverController.create({
     component: PopoverAddItemTrakingComponent,
     cssClass: 'popoverAddItemTrakingComponent',
@@ -756,14 +721,14 @@ switch(ev.detail.checked){
 case true:
 
 if(this.booleanL){
-  for(let i =0; i <= this.testListL.length; i++) {
+  for(let i = 0; i <= this.testListL.length; i++) {
     this.testListL[i].checked = true;
  
     }  
     console.log(this.testListL);
   }else{
 
-    for(let i =0; i <= this.testListI.length; i++) {
+    for(let i = 0; i <= this.testListI.length; i++) {
       this.testListI[i].checked = true;
       }     
   }
@@ -774,13 +739,13 @@ if(this.booleanL){
 
     if(this.booleanL){
 
-      for(let i =0; i <= this.testListL.length; i++) {
+      for(let i = 0; i <= this.testListL.length; i++) {
         this.testListL[i].checked = false;
         }
         console.log(this.testListL);
       }else{
     
-        for(let i =0; i <= this.testListI.length; i++) {
+        for(let i = 0; i <= this.testListI.length; i++) {
           this.testListI[i].checked = false;
           }
           console.log(this.testListI);
@@ -808,8 +773,6 @@ switch(ev.detail.checked){
 
   if(line == null || line === undefined){
 
-
-  
    
     this.lpsL.push(lp);
      this.listLpsL.push(lp);
@@ -830,7 +793,7 @@ switch(ev.detail.checked){
           this.listLpsL.splice(index,1)
           this.lpsT.splice(index,1);
         }
-      })
+      });
   
   
    console.log('Delete =>',this.listLpsL,this.lpsL, this.lpsLT);
@@ -864,7 +827,7 @@ case true:
 
     switch(item.ItemTrackingCode){
 
-      case null:
+      case null || '':
         this.itemsL.push(item);
   
         this.itemB = true;
@@ -918,7 +881,7 @@ case false:
 
   delete(){
 
-      this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm',"I'm sure you want to delete everything?", () => {
+      this.intServ.alertFunc(this.js.getAlert('confirm', ' ',"Are you sure to remove everything?", () => {
 
       this.items = [];
       this.lps = [];
@@ -940,7 +903,7 @@ case false:
     
   deleteI(item:any){
 
-    this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm',"you want to delete it", () => {
+    this.intServ.alertFunc(this.js.getAlert('confirm', '',"Are you sure to delete it?", () => {
 
     this.listItemsL.filter((itemI, index) =>{
 
@@ -961,7 +924,7 @@ case false:
 
  deleteL(item:any){
 
-   this.intServ.alertFunc(this.js.getAlert('confirm', 'confirm',"you want to delete it", () => {
+   this.intServ.alertFunc(this.js.getAlert('confirm', ' ',"Are you sure to delete it?", () => {
 
     this.listLpsL.filter((lp, index) =>{
 

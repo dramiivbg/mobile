@@ -44,6 +44,14 @@ export class PopoverSplitItemComponent implements OnInit {
 
 async   ngOnInit() {
     console.log(this.item);
+    if(this.item.Quantity == 1){
+      this.frm.patchValue({
+        Qty: this.item.Quantity
+      });
+
+     document.getElementById('input').setAttribute('disabled','true');
+     }
+     
      this.binCode = this.item.place;
 
      let bin =  await this.wmsService.GetPossiblesBinFromPutAwayV2(this.item.No);

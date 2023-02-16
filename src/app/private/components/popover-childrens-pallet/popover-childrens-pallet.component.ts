@@ -13,10 +13,13 @@ export class PopoverChildrensPalletComponent implements OnInit {
 
   @Input() item:any
   @Input() count:boolean;
+  public children:any;
+  public data = '';
   constructor(public popoverController: PopoverController,private barcodeScanner: BarcodeScanner) { }
 
   ngOnInit() {
     console.log(this.item);
+    this.children =  this.item.childrens;
   }
 
   async show(item:any){
@@ -68,6 +71,58 @@ export class PopoverChildrensPalletComponent implements OnInit {
     this.popoverController.dismiss({});
   }
 
+
+  
+ onFilter(e, data:any = ''){
+
+  switch(data){
+
+  case  '':
+
+    let val = e.target.value;
+
+    if (val === '') {
+      this.item.childrens =  this.children;
+    } else {
+      this.item.childrens =  this.children.filter(
+        x => {
+          return (x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+        }
+      )
+    }
+    break;
+
+  default:
+
+
+  this.item.childrens = this.children.filter(
+      x => {
+        return (x.PLULPDocumentNo.toLowerCase().includes(data.toLowerCase()));
+      }
+    )
+    break;
+  }
+  }
+
+
+ autoComplet(){
+
+     this.barcodeScanner.scan().then(
+       async  (barCodeData) => {
+           let code = barCodeData.text;
+      
+           this.data = code;
+  
+           this.onFilter('', this.data);
+                  
+         }
+       ).catch(
+         err => {
+           console.log(err);
+         }
+       )
+ 
+   }
 
 
 }
