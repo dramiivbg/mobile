@@ -41,8 +41,6 @@ export class WmsReceiptPage implements OnInit {
   private process: Process;
   private routExtras: any;
 
-  private lp: any;
-
   private list: any = [];
 
   private LpL: any = [];
@@ -55,7 +53,6 @@ export class WmsReceiptPage implements OnInit {
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
     , private js: JsonService
-    , private route: ActivatedRoute
     , private router: Router
     , private moduleService: ModuleService
     , private general: GeneralService
@@ -63,10 +60,7 @@ export class WmsReceiptPage implements OnInit {
     , public popoverController: PopoverController
     , private interceptService: InterceptService
     , private jsonService: JsonService
-    , private sqlitePlureService: SqlitePlureService
-    , private alertController: AlertController,
-    private modalCtrl: ModalController,
-    private storage: Storage,
+    ,private storage: Storage,
 
 
   ) {
@@ -161,13 +155,13 @@ export class WmsReceiptPage implements OnInit {
   }
 
 
-  public async onPopoverPl(ev: any, items: any) {
+  public async onPopoverPl(items: any) {
 
     this.intServ.loadingFunc(false);
     const popover = await this.popoverController.create({
       component: PopoverLpsComponent,
       cssClass: 'popoverPls',
-      backdropDismiss: true,
+      backdropDismiss: false,
       componentProps: { lps: items }
 
     });
@@ -393,7 +387,7 @@ export class WmsReceiptPage implements OnInit {
         }
      });
 
-    this.onPopoverPl('event', list);
+    this.onPopoverPl(list);
   }
 
 

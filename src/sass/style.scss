@@ -46,7 +46,8 @@
 
 .popoverConfigurationCodeComponent-modal {
 
-    --heigth: 200px !important;
+    --min-height: 50% !important;
+    --heigth: 20% !important;
     --width: 320px;
     border-radius: 23px 0 0 23px;
 }
@@ -108,5 +109,12 @@
 
     --heigth: 400px;
     --width: 320px;
+    border-radius: 23px 0 0 23px;
+}
+
+.popoverPls{
+    
+    --heigth: 20px !important;
+    --width: 330px;
     border-radius: 23px 0 0 23px;
 }

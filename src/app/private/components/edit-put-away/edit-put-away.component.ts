@@ -32,6 +32,7 @@ export class EditPutAwayComponent implements OnInit {
   public list: any[] = []
   public listT: any[] = []
 
+  public active = false;
   public lps: any[] = [];
   public boolean: boolean = true;
 
@@ -183,6 +184,8 @@ export class EditPutAwayComponent implements OnInit {
     if (bin != undefined) this.bins = bin.Bins;
 
     this.intServ.loadingFunc(false);
+
+   this.active = (this.initItem.length > 0 && this.initV.length === 0) || (this.initItem.length === 0 && this.initV.length > 0)?true:false;
   }
 
   public onBack() {
@@ -1213,6 +1216,7 @@ export class EditPutAwayComponent implements OnInit {
             return (x.fields.PLULPDocumentType === "Single");
           }
         )
+        this.active = true;
 
         break;
 
@@ -1223,15 +1227,18 @@ export class EditPutAwayComponent implements OnInit {
             return (x.fields.PLULPDocumentType === "Pallet");
           }
         )
+        this.active = true;
         break;
       case 3:
         this.listsFilter = [];
         this.listItems = listI;
+        this.active = true;
         break;
 
       case 4:
         this.listItems = listI;
         this.listsFilter = listT;
+        this.active = false;
         break;
 
     }

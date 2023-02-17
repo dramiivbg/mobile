@@ -181,6 +181,10 @@ switch(item.seriales.length === 1){
     };
 
   }
+
+  onClose(){
+    this.popoverController.dismiss({});
+  }
   
 
 

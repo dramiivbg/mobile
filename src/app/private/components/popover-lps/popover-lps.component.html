@@ -4,20 +4,20 @@
   <ion-grid>
 
     <ion-row style="text-align: center;" class="row">
-      <ion-col>LP</ion-col>
-      <ion-col>QTY</ion-col>
-      <ion-col>Date REC</ion-col>
+      <ion-col >LP</ion-col>
+      <ion-col >QTY</ion-col>
+      <ion-col >Date REC</ion-col>
 
 
     </ion-row>
 
-    <div id="taula">
+    <div class="content">
       <ion-row *ngFor="let item of lps; let i = index" style="text-align: center;"
         (click)="option(item,$event)">
 
-        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col>{{item.PLULPDocumentNo}}</ion-col></a>
-        <ion-col>{{item.PLUQuantity}}</ion-col>
-        <ion-col>{{item.SystemCreatedAt | date:'yyyy-dd-MM'}}</ion-col>&nbsp;
+        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col >{{item.PLULPDocumentNo}}</ion-col></a>
+        <ion-col >{{item.PLUQuantity}}</ion-col>
+        <ion-col >{{item.SystemCreatedAt | date:'yyyy-dd-MM'}}</ion-col>&nbsp;
 
 
       </ion-row>
@@ -27,5 +27,11 @@
 
     </div>
   </ion-grid>
+
+  <ion-row class="itemfooter">
+    <ion-col size="12" (click)="onClose()">
+      <ion-button shape="round" color="danger" type="button" (click)="onClose()">Close</ion-button>
+    </ion-col>
+  </ion-row>
 
 </ion-content>

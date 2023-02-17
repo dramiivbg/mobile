@@ -97,7 +97,7 @@
                             <ion-icon name="refresh-outline"></ion-icon>
                         </ion-fab-button>
                     </ion-fab-list>
-                    <ion-fab-list side="start">
+                    <ion-fab-list side="start" *ngIf="active">
                         <ion-fab-button color="warning" (click)="ascendant()">
                             <ion-icon name="arrow-down"></ion-icon>
                         </ion-fab-button>

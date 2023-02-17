@@ -130,4 +130,9 @@ export class PopoverListSNComponent implements OnInit {
 
   }
 
+  onClose(){
+    this.popoverController.dismiss({});
+  }
+  
+
 }

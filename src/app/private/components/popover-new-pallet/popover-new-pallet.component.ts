@@ -204,16 +204,10 @@ async onBarCode(){
     
   let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
   console.log(lps,items);
-
-  try {
-
-    if(lps.Error)throw new Error(lps.Error.Message);
+ 
+  this.lpsNo = (lps.Possible_LPChilds != "")?lps.Possible_LPChilds.split("|"):[];
     
-    if(lps.error)throw new Error(lps.error.message);
-    
-
-    this.lpsNo = lps.Possible_LPChilds.split("|");
-      
+  if(this.lpNo.length > 0){
     this.lpsNo.filter(async(no) => {
   
       let lps = await this.wmsService.getLpNo(no);
@@ -223,10 +217,8 @@ async onBarCode(){
       listaL.push(lp);
       
     });
-    
-  } catch (error) {
-    
   }
+  
   console.log(listaL);
   console.log(items);
   this.intServ.loadingFunc(false);
@@ -234,131 +226,134 @@ async onBarCode(){
   async  (barCodeData) => {
   let code = barCodeData.text;
 
-  this.intServ.loadingFunc(true);
-     
-  for (const key in listaL) {
-
-    if (listaL[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
-      line = listaL[key];    
-      boolean = true;
-    
-    }       
-  }
-
-      for (const key in items.Possible_ItemsChilds) {
-        if (items.Possible_ItemsChilds[key].ItemNo.toUpperCase() === code.toUpperCase()) {
-          line = items.Possible_ItemsChilds[key];
-          boolean = false;
-             
-        }
-      }
-
-    let identifier = await this.wmsService.GetItemIdentifier(code);
-     if(!identifier.Error && !identifier.error){
-        boolean = false;
-      for (const key in identifier.ItemIdentifier) {
-        
-          line = items.Possible_ItemsChilds.find(x =>  x.ItemNo === identifier.ItemIdentifier[key].ItemNo && x.VariantCode === identifier.ItemIdentifier[key].VariantCode);
-        
-       }
-
-      }
-
-    if (line === null || line === undefined ) {
-
-      this.intServ.loadingFunc(false);
-      this.intServ.alertFunc(this.js.getAlert('error', ' ', `  The license plate '${code}' is not available `));
-   
-    } else {
-
-      switch(boolean){
-
-       case true:  
-
-          let  find = this.lpsL.find(lp => lp.fields.PLULPDocumentNo === line.fields.PLULPDocumentNo); 
-
-
-        if(find != undefined){
-
-            this.intServ.loadingFunc(false);
-
-            this.intServ.alertFunc(this.js.getAlert('alert', '', 'The license plate is already assigned'));
-
-
-        }else{
-
-          this.lpsL.push(line);
-
-          console.log(this.lpsL);
-    
-          this.lpsB = true;
-    
-          this.lpsT.push(line)
-          this.listLpsL.push(line);
-
-          this.intServ.loadingFunc(false);
-
-        }
-        this.intServ.loadingFunc(false);
-
-    
+  switch(code){
+    case "":
       break;
+
+   default:
+    this.intServ.loadingFunc(true);
+     
+    for (const key in listaL) {
+  
+      if (listaL[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
+        line = listaL[key];    
+        boolean = true;
       
-    case false:
-
-     
-    let  find2 = this.itemsL.find(item => item.ItemNo  === line.ItemNo); 
-
-     if(find2 != undefined){
-
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Item is already assigned'));
-
-
-      }else{
-
-        let info = await this.wmsService.GetItemInfo(line.ItemNo);
-        switch(info.Managed_by_PlurE){
-          case true:
-
-            if(line.ItemTrackingCode != null){
-              
-              this.traking.push(line);
-              let contador = 0
-              this.trakingItem(contador);
-              
-
-            }else{
-
-              this.itemsL.push(line);
-              this.itemB = true;
-              this.itemsT.push(line);       
-              this.listItemsL.push(line);
-              this.intServ.loadingFunc(false);
-            }
-
-            break;
-           
-        }
-      }
-
-      break;
-    }
-
-    this.intServ.loadingFunc(false);
-
-    
-     
-    }  
+      }       
     }
   
+        for (const key in items.Possible_ItemsChilds) {
+          if (items.Possible_ItemsChilds[key].ItemNo.toUpperCase() === code.toUpperCase()) {
+            line = items.Possible_ItemsChilds[key];
+            boolean = false;
+               
+          }
+        }
+  
+      let identifier = await this.wmsService.GetItemIdentifier(code);
+       if(!identifier.Error && !identifier.error){
+          boolean = false;
+        for (const key in identifier.ItemIdentifier) {
+          
+            line = items.Possible_ItemsChilds.find(x =>  x.ItemNo === identifier.ItemIdentifier[key].ItemNo && x.VariantCode === identifier.ItemIdentifier[key].VariantCode);
+          
+         }
+  
+        }
+  
+      if (line === null || line === undefined ) {
+  
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('error', ' ', `  The license plate '${code}' is not available `));
+     
+      } else {
+  
+        switch(boolean){
+  
+         case true:  
+  
+            let  find = this.lpsL.find(lp => lp.fields.PLULPDocumentNo === line.fields.PLULPDocumentNo); 
+  
+  
+          if(find != undefined){
+  
+              this.intServ.loadingFunc(false);
+  
+              this.intServ.alertFunc(this.js.getAlert('alert', '', 'The license plate is already assigned'));
+  
+  
+          }else{
+  
+            this.lpsL.push(line);
+  
+            console.log(this.lpsL);
+      
+            this.lpsB = true;
+      
+            this.lpsT.push(line)
+            this.listLpsL.push(line);
+  
+            this.intServ.loadingFunc(false);
+  
+          }
+          this.intServ.loadingFunc(false);
+  
+      
+        break;
+        
+      case false:
+  
+       
+      let  find2 = this.itemsL.find(item => item.ItemNo  === line.ItemNo); 
+  
+       if(find2 != undefined){
+  
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('alert', '', 'The Item is already assigned'));
+  
+  
+        }else{
+  
+          let info = await this.wmsService.GetItemInfo(line.ItemNo);
+          switch(info.Managed_by_PlurE){
+            case true:
+  
+              if(line.ItemTrackingCode != null){
+                
+                this.traking.push(line);
+                let contador = 0
+                this.trakingItem(contador);
+                
+  
+              }else{
+  
+                this.itemsL.push(line);
+                this.itemB = true;
+                this.itemsT.push(line);       
+                this.listItemsL.push(line);
+                this.intServ.loadingFunc(false);
+              }
+  
+              break;        
+          }
+        }
+  
+        break;
+      }
+  
+      this.intServ.loadingFunc(false);
+            
+      }  
+    break;
+  }
 
+    }
+  
   ).catch(
     err => {
       console.log(err);
     }
   )
-
 }
 
  async  onSubmit(pallet:any){
@@ -510,7 +505,7 @@ this.intServ.loadingFunc(true);
 
 let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.PLULPDocumentNo);
     
-    let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(pallet.fields.PLULPDocumentNo);
+let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(pallet.fields.PLULPDocumentNo);
 
 
    // console.log( JSON.stringify(items));
@@ -523,17 +518,12 @@ let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.
 
    console.log(this.items);
   
+    console.log('item =>',this.items,lps);
 
-    console.log('item =>',this.items);
+  this.lpsNo = (lps.Possible_LPChilds != "")?lps.Possible_LPChilds.split("|"):[];
 
-  
-   
-  if(!lps.Error && !lps.error){
-
-    this.lpsNo = lps.Possible_LPChilds.split("|");
-
+  if(this.lpsNo.length > 0){
     this.lpsNo.filter(async(no,index) => {
-
       let lps = await this.wmsService.getLpNo(no);
 
       let lp = await this.wmsService.ListLp(lps);
@@ -541,7 +531,6 @@ let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.
       let line = this.lpsL.find(Lp => Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
 
       if(line == undefined || line == null){
-
 
          this.lps.push(lp);
 
@@ -640,7 +629,7 @@ async trakingItem(contador:number = 0, select:boolean = false){
     let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationOpen):[];
     let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res3.TrackingSpecificationClose):[];
     let code = (res != null)?await this.wmsService.listCode(res):null;
-    select?this.intServ.loadingFunc(false):this.intServ.loadingFunc(true);
+    select?this.intServ.loadingFunc(false):false;
   const popover = await this.popoverController.create({
     component: PopoverAddItemTrakingComponent,
     cssClass: 'popoverAddItemTrakingComponent',

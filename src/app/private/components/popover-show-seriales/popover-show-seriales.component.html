@@ -9,50 +9,50 @@
         <ion-icon class="itemfooter" size="large" name="trash-outline"></ion-icon>
       </ion-col>
     </ion-row>
+<div class="content">
+  <ion-list *ngFor="let item of lps.seriales">
 
-    <ion-list *ngFor="let item of lps.seriales">
+    <ion-item>
+      <div class="label-lines" part="item-width">
+        <ion-row>
 
-      <ion-item>
-        <div class="label-lines" part="item-width">
-          <ion-row>
+          <ion-item>
+            <ion-col size="12" class="item">
 
-            <ion-item>
-              <ion-col size="12" class="item">
+              <ion-row size="12" class="titleslist">
 
-                <ion-row size="12" class="titleslist">
+                <ion-col size="6" class="titleblue LPNo">
+                  {{item.PLUNo}}
+                </ion-col>
+                <ion-col size="6" class="label-line-title">
+                  Qty. {{item.PLUQuantity}}
+                </ion-col>
+              </ion-row>
+              <ion-row size="12">
+                <ion-col size="6" class="label-line">
+                  UoM: <b>{{item.PLUUnitofMeasureCode}}</b>
+                </ion-col>
+                <ion-col size="6" class="label-line" *ngIf="item.PLUVariantCode != null">
+                  Variant: <b>{{item.PLUVariantCode}}</b>
+                </ion-col>
+                <ion-col size="6" class="label-line" *ngIf="item.PLUSerialNo != null">
+                  Serial: <b>{{item.PLUSerialNo}}</b>
+                </ion-col>
+                <ion-col size="6" class="label-line" *ngIf="item.PLULotNo != null">
+                  Lot: <b>{{item.PLULotNo}}</b>
+                </ion-col>
+              </ion-row>
+            </ion-col>
 
-                  <ion-col size="6" class="titleblue LPNo">
-                    {{item.PLUNo}}
-                  </ion-col>
-                  <ion-col size="6" class="label-line-title">
-                    Qty. {{item.PLUQuantity}}
-                  </ion-col>
-                </ion-row>
-                <ion-row size="12">
-                  <ion-col size="6" class="label-line">
-                    UoM: <b>{{item.PLUUnitofMeasureCode}}</b>
-                  </ion-col>
-                  <ion-col size="6" class="label-line" *ngIf="item.PLUVariantCode != null">
-                    Variant: <b>{{item.PLUVariantCode}}</b>
-                  </ion-col>
-                  <ion-col size="6" class="label-line" *ngIf="item.PLUSerialNo != null">
-                    Serial: <b>{{item.PLUSerialNo}}</b>
-                  </ion-col>
-                  <ion-col size="6" class="label-line" *ngIf="item.PLULotNo != null">
-                    Lot: <b>{{item.PLULotNo}}</b>
-                  </ion-col>
-                </ion-row>
-              </ion-col>
+          </ion-item>
 
-            </ion-item>
+        </ion-row>
 
-          </ion-row>
+      </div>
 
-        </div>
-
-      </ion-item>
-    </ion-list>
-
+    </ion-item>
+  </ion-list>
+</div>
       <ion-row class="itemfooter">
         <ion-col size="12" (click)="onClose()">
           <ion-button shape="round" color="danger" type="button" (click)="onClose()">Close</ion-button>

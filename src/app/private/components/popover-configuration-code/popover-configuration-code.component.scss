@@ -2,6 +2,7 @@ ion-content {
 
     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
 
+
     ion-row.header {
         background: linear-gradient(to top, #5CABF9, #1A518E) !important;
         color: #ffffff;
@@ -42,5 +43,16 @@ ion-content {
             --background: transparent;
             font-size: 12px;
         }
+    }
+
+    .content{
+
+        overflow-y: scroll;
+        height: 40vh !important;
+    }
+
+    .itemfooter {
+        text-align: center;
+        font-size: 15px;
     }
 }

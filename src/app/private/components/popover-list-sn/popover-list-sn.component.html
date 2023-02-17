@@ -13,7 +13,7 @@
     
       </ion-row>
 
-      <div id="taula"  > 
+      <div class="content"  > 
         <ion-row *ngFor="let item of list; let i = index" style="text-align: center;" >
           <ion-col size="6" *ngIf="boolean">{{item.No}}</ion-col>
           <ion-col size="3" *ngIf="item.proceded === false && !boolean" >{{item.SerialNo}}</ion-col>
@@ -28,6 +28,10 @@
         </ion-row>
    
       </div>  
+      <ion-row class="itemfooter">
+        <ion-col size="12" (click)="onClose()">
+          <ion-button shape="round" color="danger" type="button" (click)="onClose()">Close</ion-button>
+        </ion-col>
+      </ion-row>
     </ion-grid>
-
 </ion-content>

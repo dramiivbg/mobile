@@ -116,14 +116,15 @@ export class PhysicalInventoryPage implements OnInit {
     this.barcodeScanner.scan().then(
      async barCodeData => {
         let code = barCodeData.text;
-        switch(this.bin === ''){
+        let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(), this.locate);
+  
+        switch(this.bin === '' || !res.Error){
 
           case true:
           this.intServ.loadingFunc(true);
-          let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(), this.locate);
           console.log(res);
           
-          if(!res.Error && res.length > 0){
+          if(!res.Error){
             this.bin = code.toUpperCase();
             console.log(this.lists);
             res.map(async x => {   
@@ -192,9 +193,7 @@ export class PhysicalInventoryPage implements OnInit {
                console.log(pallet);
 
               }       
-             } 
-                 
-              
+             }           
             
             });
 
@@ -202,8 +201,10 @@ export class PhysicalInventoryPage implements OnInit {
            
             this.intServ.loadingFunc(false);
           }else{
+            let res = await this.wmsService.getLpNo(code.toUpperCase());
+            let resI = await this.wmsService.GetItem(code.toUpperCase());
             this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error','', `The bin ${code.toUpperCase()}  does not exist`));
+            this.intServ.alertFunc(this.js.getAlert('error','', (res.Error && resI.Error)?`The bin ${code.toUpperCase()}  does not exist`:`Please scan a bin!` ));
           }
           break;
 
@@ -212,7 +213,7 @@ export class PhysicalInventoryPage implements OnInit {
 
           let line = this.lps.find(x => x.PLULPDocumentNo === code.toUpperCase() || x.ItemNo === code.toUpperCase());
         
-          let res1 = await this.wmsService.GetBinContent_LP(this.bin,'WMS');
+          let res1 = await this.wmsService.GetBinContent_LP(this.bin,this.locate);
           let x  = res1.find(x => x.LPHeader === code.toUpperCase());
 
           if(line != undefined){
@@ -362,9 +363,7 @@ export class PhysicalInventoryPage implements OnInit {
                     this.intServ.alertFunc(this.js.getAlert('error','',error.message));
                     
                   }
-                
-  
-  
+            
                 }));
               }else{
                 this.intServ.loadingFunc(false);
@@ -373,27 +372,20 @@ export class PhysicalInventoryPage implements OnInit {
                 :`The Pallet ${code.toUpperCase()} belongs to the pallet ${find.PLUParentLPNo}`));
               }
           
-
                 break;
             }
            
           }
-            break;
-
-            
+            break;     
 
         }
-      
-       
-        
+             
       }
     ).catch(
       err => {
         console.log(err);
       }
     )
-
-
   }
 
 async show(item:any){
@@ -439,7 +431,7 @@ async show(item:any){
 
 public async popoverCount(){
   this.intServ.loadingFunc(true);
-  let  resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount('WMS',this.template,this.batch);
+  let  resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.locate,this.template,this.batch);
 
   let count = await this.wmsService.listTraking(resR.Warehouse_Physical_Inventory_Counted);
   this.storage.set('count', count);
@@ -929,18 +921,26 @@ public async popoverNonCount(){
       if(res2.error) throw new Error(res2.error.message);
 
       if(res2.message) throw new Error(res2.message);
+
+      let res = new Date();
+      
+      let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1;
   
+      let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
+  
+      let fecha = res.getFullYear()+'-'+month+'-'+day;
+
+      let res4 = await this.wmsService.Create_WarehouseInvPhysicalCount("STO","",this.locate,fecha,"TOO",this.template,this.batch);
+
+      if(res4.Error) throw new Error(res4.Error.Message);
+      if(res4.error) throw new Error(res4.error.message);
+      if(res4.message) throw new Error(res4.message);
+        
       this.lps = [];
       this.listaCount = [];
       this.bin = '';
-      let res3 = await this.wmsService.Get_WarehouseInvPhysicalCount(this.locate,this.template,this.batch);
-
-      if(res3.Error) throw new Error(res3.Error.Message);
-      if(res3.error) throw new Error(res3.error.message);
-      if(res3.message) throw new Error(res3.message);
-      
-           
-    let  items = await this.wmsService.listTraking(res3.Warehouse_Physical_Inventory_Journal);
+  
+    let  items = await this.wmsService.listTraking(res4.Warehouse_Physical_Inventory_Journal);
 
 
      this.storage.set('inventory',items);

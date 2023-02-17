@@ -1,9 +1,6 @@
 <ng-container>
   <ion-content>
-      <ion-row class="header">
-        <ion-col size="1" (click)="close()">
-          <ion-icon class="itemfooter" name="close-outline"></ion-icon>
-        </ion-col>    
+      <ion-row class="header">  
         <ion-col class="title" size="11">
           Tracking Code Configuration
         </ion-col>
@@ -29,6 +26,7 @@
         </ion-col>
       </ion-row>
 
+      <div class="content">
       <ion-row>
         <ion-col class="Title2">
           Serial No.
@@ -264,6 +262,12 @@
 
       </ion-list>
 
+    </div>
+    <ion-row class="itemfooter">
+      <ion-col size="12" (click)="close()">
+        <ion-button shape="round" color="danger" type="button" (click)="close()">Close</ion-button>
+      </ion-col>
+    </ion-row>
 
-    </ion-content>
+  </ion-content>
 </ng-container>
