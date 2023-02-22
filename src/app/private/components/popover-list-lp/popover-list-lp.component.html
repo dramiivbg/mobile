@@ -2,10 +2,10 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-col size="1" (click)="close()">
+        <ion-col size="2" (click)="close()">
           <ion-icon class="itemfooter" name="close-outline"></ion-icon>
         </ion-col>
-        <ion-col class="title" size="11">
+        <ion-col class="title" size="10">
           LP No: {{lp.PLULPDocumentNo}}
         </ion-col>
       </ion-row>
@@ -30,10 +30,10 @@
 
 
             <ion-row>
-              <ion-col size="6" class="label-line-title" *ngIf="item.SerialNo != ''">
+              <ion-col size="6" class="label-line" *ngIf="item.SerialNo != null && item.SerialNo != ''">
                 Serial No: <b>{{item.SerialNo}}</b>
               </ion-col>
-              <ion-col size="6" class="label-line-title" *ngIf="item.LotNo != ''">
+              <ion-col size="6" class="label-line" *ngIf="item.LotNo != null && item.LotNo != ''">
                 Lot No: <b>{{item.LotNo}}</b>
               </ion-col>
 
@@ -41,10 +41,10 @@
             </ion-row>
 
             <ion-row>
-              <ion-col size="7" class="label-line-title" *ngIf="item.ExpirationDate != ''">
+              <ion-col size="7" class="label-line" *ngIf="item.ExpirationDate != null && item.ExpirationDate != '' && item.ExpirationDate.charAt(0) > 0 ">
                 Exp Date: <b>{{item.ExpirationDate}}</b>
               </ion-col>
-              <ion-col size="5" class="label-line-title" *ngIf="item.VariantCode != ''">
+              <ion-col size="5" class="label-line" *ngIf="item.VariantCode != ''">
                 Variant Code: <b>{{item.VariantCode}}</b>
               </ion-col>
 

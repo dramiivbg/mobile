@@ -15,11 +15,11 @@
 
       <ion-row class="delivery newColor2">
         <ion-col size="10">
-          <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" 
+          <ion-searchbar [(ngModel)]="data" [ngModelOptions]="{standalone: true}"  (ionInput)="onFilter($event)"
             show-clear-button="always" clear-icon="close-outline" placeholder="Filter"></ion-searchbar>
         </ion-col>
         <ion-col size="2" class="barcodebtn">
-          <ion-icon size="large" name="barcode-outline" ></ion-icon>
+          <ion-icon size="large" name="barcode-outline" (click)="autoComplet()" ></ion-icon>
         </ion-col>
       </ion-row>
 
@@ -58,13 +58,13 @@
                          
 
                           <ion-row >
-                            <ion-col size="4" class="label-line-title" *ngIf="item.PLULPDocumentType != 'Pallet'">
+                            <ion-col size="4" class="label-line" *ngIf="item.PLULPDocumentType != 'Pallet'">
                               Item No: <b>{{item.PLUItemNo}}</b>
                             </ion-col>
-                            <ion-col size="4" class="label-line-title" *ngIf="item.PLULPDocumentType != 'Pallet'" >
+                            <ion-col size="4" class="label-line" *ngIf="item.PLULPDocumentType != 'Pallet'" >
                               UoM: <b>{{item.PLUUnitofMeasure}}</b>
                             </ion-col>
-                            <ion-col size="4" class="label-line-title" *ngIf="item.PLULPDocumentType != 'Pallet'">
+                            <ion-col size="4" class="label-line" *ngIf="item.PLULPDocumentType != 'Pallet'">
                               type: <b>{{item.PLULPDocumentType}}</b>
                             </ion-col>
                            
@@ -74,13 +74,6 @@
 
                       </ion-item>
 
-                      <!-- <ion-item-options>
-                        <ion-item-option color="danger" (click)="remove(item)">
-                          <ion-icon slot="icon-only" name="trash"></ion-icon>
-                        </ion-item-option>
-                      </ion-item-options>
-
-                    </ion-item-sliding> -->
                   </ion-row>
 
                 </div>

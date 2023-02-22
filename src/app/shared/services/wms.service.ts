@@ -1293,7 +1293,34 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
    }
 
 
-   public async Register_WarehouseInvPhysicalCount(LocationCode:any){
+   public async Delete_WarehouseInvPhysicalCount(list:any){
+
+       
+    try {
+
+    
+        let obj: any = [{
+            Delete_WarehouseInvPhysicalCount: list
+    
+    
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Delete_WarehouseInvPhysicalCount', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+   
+   }
+
+
+   public async Register_WarehouseInvPhysicalCount(LocationCode:any, JournalTemplateName:any,JournalBatchName:any){
 
 
  
@@ -1301,6 +1328,8 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
 
     
         let obj: any = [{
+          JournalTemplateName,
+           JournalBatchName,
             LocationCode
 
 

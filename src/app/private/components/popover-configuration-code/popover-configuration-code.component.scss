@@ -1,17 +1,5 @@
-ion-content {
+@import "~src/sass/popover-wms";
 
-    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
-
-
-    ion-row.header {
-        background: linear-gradient(to top, #5CABF9, #1A518E) !important;
-        color: #ffffff;
-        font-size: 15px;
-        padding: 10px 10px;
-        text-align: center;
-        font-weight: bold;
-        border-radius: 0 0 70% 0;
-    }
 
     .Title2{
         text-align: center;
@@ -36,15 +24,7 @@ ion-content {
         padding-left: 10px;
     }
 
-    ion-list{
-        background: transparent;
-
-        ion-item{
-            --background: transparent;
-            font-size: 12px;
-        }
-    }
-
+   
     .content{
 
         overflow-y: scroll;
@@ -55,4 +35,3 @@ ion-content {
         text-align: center;
         font-size: 15px;
     }
-}

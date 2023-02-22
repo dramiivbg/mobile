@@ -1,40 +1,13 @@
+@import "~src/sass/popover-wms";
+
 ion-content {
-    ion-row.header{
-        background: var(--ion-color-plureBlue);
-        color: #ffffff;
-        font-size: 20px;
-        padding: 10px 0;
-    }
+  
     ion-list {
-        border-bottom: 1px solid #999;
-        padding: 0;
-
-        ion-row {
-            ion-col {
-                ion-icon {
-                    font-size: 25px;
-                    color: var(--ion-color-plureBlue);
-                }
-                ion-label {
-                    margin-top: 4px;
-                    width: 100%;
-                    position: absolute;
-                    margin-left: 13px;
-                }
-            }
-        }
-
-        ion-item{
+    
+       ion-item{
             font-family: var(--ion-font-familly);
             font-size: 16px;
         }
     }
 
-
-    ion-button{
-
-        color: #ffffff;
-        --border-radius: 23px !important;
-
-    }
 }

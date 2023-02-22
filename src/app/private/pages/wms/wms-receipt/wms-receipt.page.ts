@@ -343,7 +343,7 @@ export class WmsReceiptPage implements OnInit {
           }
         }
         
-        this.list[key]['seriales'] = temp;
+        this.list[key]['seriales'] = (temp[0].PLULotNo != null || temp[0].PLUSerialNo != null)?temp: [];
         this.list[key].PLUQuantity = qty;
         temp = [];
         qty = 0;

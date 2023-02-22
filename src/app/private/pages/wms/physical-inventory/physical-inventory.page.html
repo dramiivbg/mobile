@@ -1,10 +1,11 @@
 <PlureHeader type="1" title="Physical Inventory Journal" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
-<ion-fab horizontal="start" vertical="bottom" slot="fixed">
+<!--
+<ion-fab slot="fixed" vertical="top" horizontal="end" >
   <ion-fab-button color="secondary">
     <ion-icon md="checkmark-done-outline" ios="checkmark-done-outline"></ion-icon>
   </ion-fab-button>
-  <ion-fab-list side="top">
+  <ion-fab-list side="bottom">
     <ion-fab-button color="secondary" (click)="popoverCount()" data-desc="Count">
       <ion-icon name="checkmark-circle-outline"></ion-icon>
     </ion-fab-button>
@@ -14,7 +15,7 @@
     </ion-fab-button>
 
   </ion-fab-list>
-</ion-fab>
+</ion-fab> -->
 
 
 
@@ -42,11 +43,11 @@
 
       <ion-row class="delivery newColor2">
         <ion-col size="10">
-          <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" 
+          <ion-searchbar [(ngModel)]="data" [ngModelOptions]="{standalone: true}"  (ionInput)="onFilter($event)"
             show-clear-button="always" clear-icon="close-outline" placeholder="Filter"></ion-searchbar>
         </ion-col>
         <ion-col size="2" class="barcodebtn">
-          <ion-icon size="large" name="barcode-outline" ></ion-icon>
+          <ion-icon size="large" name="barcode-outline" (click)="autoComplet()" ></ion-icon>
         </ion-col>
       </ion-row>
 
@@ -60,7 +61,7 @@
             <div>
 
               <ion-item>
-                <div class="label-lines" part="item-width">
+                <div  class="label-lines " part="item-width">
                   <ion-row *ngFor="let item of lps">
 
                     <!-- <ion-item-sliding> -->
@@ -150,13 +151,18 @@
 
 <PlureVersion class="footerputaway" showVersion="0">
   <ion-row>
-    <ion-col size="10" (click)="onBarCode()" >
+    <ion-col size="4" (click)="onBarCode()" >
       <ion-icon class="itemfooter" size="large" name="barcode-outline" style="padding-left: 50px;"></ion-icon>
       <div class="itemfooter" style="padding-left: 50px;">Bar code</div>
   </ion-col>
-  <ion-col size="2" (click)="onRegister()">
-    <ion-icon class="itemfooter" size="large"  name="checkbox-outline"></ion-icon>
+  <ion-col size="4" (click)="onRegister()">
+    <ion-icon class="itemfooter" size="large"  name="checkmark-outline"></ion-icon>
     <div class="itemfooter">Register</div>
 </ion-col>
+  <ion-col size="4" (click)="onSyncTemp()">
+    <ion-icon class="itemfooter" size="large" name="sync-circle"></ion-icon>
+    <div class="itemfooter" >Sync</div>
+  </ion-col>
+  
   </ion-row>
 </PlureVersion>

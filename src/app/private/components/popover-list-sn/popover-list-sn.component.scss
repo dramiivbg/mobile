@@ -1,4 +1,4 @@
-
+@import "~src/sass/variables";
 .content {
 
 
@@ -31,27 +31,14 @@
   
     }
   }
-  
-  
-  .row{
-  
-    
-      background: var(--ion-color-plureheader);
-      font-weight: bold;
-      color: var(--ion-color-plureBlue);
-  
-      ion-col {
-        // border: 1px solid black;
-        border-bottom: 0;
-        border-right: 0;
-        
-     
-     
-      }
-  
-  }
 
-  .itemfooter {
+  .row{
+    color: var(--ion-color-plureBlue);
+  }
+  
+
+
+  .buttonClose {
     text-align: center;
     font-size: 15px;
   }

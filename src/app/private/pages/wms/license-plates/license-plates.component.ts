@@ -487,9 +487,12 @@ async  save(){
       const { data } = await popover.onDidDismiss();
 
        this.list = data.list;
+       this.Quantity = 0;
 
-      this.storage.set(`lists ${this.item.LineNo}` ,this.list);
-
+       this.list.length > 0?this.list.map(x => this.Quantity += x.Qty):this.Quantity;
+    
+       this.storage.set(`lists ${this.item.LineNo}` ,this.list);
+       this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
    
     }
 

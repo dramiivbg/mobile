@@ -30,6 +30,16 @@
 @import "./design";
 
 
+
+
+.popoverSplitComponent{
+
+    --heigth: 400px;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+
+}
+
 .transparent-modal {
 
     --width: 320px;
@@ -117,4 +127,23 @@
     --heigth: 20px !important;
     --width: 330px;
     border-radius: 23px 0 0 23px;
+}
+
+.popoverMergeComponent{
+
+    --heigth: 400px;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+
+
+
+}
+
+.popoverListLpComponent{
+
+    --min-height: 50% !important;
+    --heigth: 20% !important;
+    --width: 320px;
+    border-radius: 23px 0 0 23px;
+
 }

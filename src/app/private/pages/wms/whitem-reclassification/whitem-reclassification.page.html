@@ -170,7 +170,7 @@
 
   <div class="accorn-body">
     <div class="lines"  style="text-align: center;">   
-    <div class="div">
+    
           <ion-grid class="ion-margin">
             <ion-row class="titletable">
               <ion-col >Item</ion-col>
@@ -182,6 +182,7 @@
               <ion-col>Qty</ion-col>
             </ion-row>
            
+            <div class="div">
             <ion-row class="datatable" *ngFor="let item of listItem" style="overflow-y:auto;">
               <ion-col >{{item.fields.PLUNo}}</ion-col>
               <ion-col >{{item.fields.PLUDescription}}</ion-col>
@@ -191,8 +192,8 @@
               <ion-col>{{item.fields.PLUUnitofMeasureCode}}</ion-col>
               <ion-col>{{item.fields.PLUQuantity}}</ion-col>
             </ion-row>
+          </div>
           </ion-grid>
-    </div>
     </div>
   </div>
 

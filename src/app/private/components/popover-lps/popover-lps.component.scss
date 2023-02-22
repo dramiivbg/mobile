@@ -4,13 +4,7 @@
     overflow-y: scroll;
     height: 20vh !important;
  
-  ion-row{
-
-    width: 100%;
-   
-  }
  
-  
  
   ion-col {
     // border: 1px solid black;
@@ -21,13 +15,6 @@
  
   }
 
-
-  .col{
-
-    width: 100px;
-    
-
-  }
 }
 
 
@@ -49,7 +36,7 @@
 
 }
 
-.itemfooter {
+.buttonCancel {
   text-align: center;
   font-size: 15px;
 }

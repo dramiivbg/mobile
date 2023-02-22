@@ -52,7 +52,7 @@ export class PopoverLpsComponent implements OnInit {
 
 async option(item:any,ev){
 
-switch(item.seriales.length === 1){
+switch(item.seriales.length === 0){
 
    case true:
       this.intServ.loadingFunc(true);
@@ -79,7 +79,7 @@ switch(item.seriales.length === 1){
     
          case 'Delete':
     
-            let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Surely you want to eliminate it?', async() => {
+            let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Are you sure you want to remove it?', async() => {
     
     
               this.intServ.loadingFunc(true);

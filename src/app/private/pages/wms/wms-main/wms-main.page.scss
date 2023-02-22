@@ -62,7 +62,7 @@ ion-list.list {
 }
 
 ion-content{
-    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
+    --background: linear-gradient(to bottom, rgb(var(--ion-color-plureMain-rgba-content)), #ffff) !important;
 }
 
 .footerMain{

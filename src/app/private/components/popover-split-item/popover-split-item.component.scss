@@ -1,48 +1,7 @@
-ion-content {
-
-    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
-
-    ion-row.header {
-        background: linear-gradient(to top, #5CABF9, #1A518E) !important;
-        color: #ffffff;
-        font-size: 16px;
-        padding: 10px 0;
-        text-align: center;
-        font-weight: bold;
-        border-radius: 0 0 70% 0;
-    }
-
-    ion-list {
-        border-bottom: 1px solid #999;
-        padding: 0;
-
-        ion-row {
-            ion-col {
-                ion-icon {
-                    font-size: 25px;
-                    color: var(--ion-color-plureBlue);
-                }
-
-                ion-label {
-                    margin-top: 4px;
-                    width: 100%;
-                    position: absolute;
-                    margin-left: 13px;
-                }
-            }
-        }
-    }
-}
-
-ion-button {
-    color: white;
-    --backround: var(--ion-color-plureBlue) !important;
-    border-radius: 23px;
-}
+@import "~src/sass/popover-wms";
+@import "~src/sass/wms";
 
 .qtytoreceive {
-    display: flex;
-    align-items: center;
     font-weight: bold;
 }
 
@@ -50,14 +9,9 @@ ion-button {
 .newColor2 {
     width: 100%;
     margin: 0px 0 1px 0px;
-    --ion-color-base: var(--ion-color-plureHeader)
+
 }
 
-
-.barcodebtn {
-    margin: auto;
-    text-align: start;
-}
 
 .barcoideicon {
     font-size: 30px;
@@ -75,9 +29,6 @@ ion-button {
     text-align: left;
 }
 
-// .inputqty {
-//     border-bottom: 1px black !important;
-// }
 
 .contentbody {
     padding: 0 0 0 10px;
@@ -89,11 +40,6 @@ ion-button {
 }
 
 ion-input.inputqty {
-    --background: rgba(92, 171, 249, 0.08);
-    --color: black;
-    border-radius: 23px;
-
-
     --padding-bottom: 10px;
     --padding-end: 10px;
     --padding-start: 10px;

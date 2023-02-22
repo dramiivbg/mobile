@@ -266,8 +266,7 @@ export class WmsSplitMergePage implements OnInit {
     const popover = await this.popoverController.create({
       component: PopoverSplitComponent,
       cssClass: 'popoverSplitComponent',
-      event: ev,
-      translucent: true,
+      backdropDismiss: false,
       componentProps: { lp }
     });
     await popover.present();
@@ -351,8 +350,7 @@ export class WmsSplitMergePage implements OnInit {
     const popover = await this.popoverController.create({
       component: PopoverMergeComponent,
       cssClass: 'popoverMergeComponent',
-      event: ev,
-      translucent: true,
+      backdropDismiss: false,
       componentProps: { lp }
     });
     await popover.present();

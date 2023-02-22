@@ -2,7 +2,7 @@
 
 ion-content.main {
 
-    --background: linear-gradient(to top, #5CABF9, #1A518E) !important;
+    --background: linear-gradient(to top, var(--ion-color-primary), var( --ion-color-primary-background)) !important;
 
     div.main-menu {
         width: 100%;

@@ -22,6 +22,8 @@ export class PagueInquiriesComponent implements OnInit {
   public obj:any[] = [];
   public listBin:any;
   public viewBin = false;
+  public data = '';
+  public objT:any[] = [];
   constructor(private barcodeScanner: BarcodeScanner,private intServ: InterceptService
     , private js: JsonService,private wmsService: WmsService, public popoverController: PopoverController) { }
 
@@ -245,7 +247,9 @@ export class PagueInquiriesComponent implements OnInit {
             
           }
         
-      
+          this.objT = this.obj;
+
+          console.log(this.objT);
         
       }
     ).catch(
@@ -263,7 +267,7 @@ export class PagueInquiriesComponent implements OnInit {
       case 'Single':
         const popover = await this.popoverController.create({
           component: PopoverListLpComponent,
-          cssClass: 'popoverCountingComponent',
+          cssClass: 'popoverListLpComponent',
           componentProps: {lp:obj},
           backdropDismiss: false
           
@@ -409,6 +413,69 @@ export class PagueInquiriesComponent implements OnInit {
 
           break;
       }
+  }
+
+
+  
+  autoComplet() {
+
+    this.barcodeScanner.scan().then(
+      async (barCodeData) => {
+
+
+        let code = barCodeData.text;
+
+        this.data = code.toUpperCase();
+
+
+        this.onFilter('', this.data);
+
+
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+
+  onFilter(e, data: any = '') {
+
+    switch (data) {
+      case '':
+        let val = e.target.value;
+
+        console.log(val);
+
+        if (val === '') {
+          this.obj = this.objT;
+        } else {
+          this.obj = this.objT.filter(
+            x => {
+              return (x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+            }
+          )
+
+      
+        }
+        break;
+
+      default:
+
+
+        this.obj = this.objT.filter(
+          x => {
+            return (x.PLULPDocumentNo.toLowerCase().includes(data.toLowerCase()));
+          }
+        )
+
+
+        break;
+    }
+
   }
 
 }
