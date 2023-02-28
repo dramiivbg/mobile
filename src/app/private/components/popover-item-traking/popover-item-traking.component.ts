@@ -77,12 +77,8 @@ export class PopoverItemTrakingComponent implements OnInit {
      this.frm.controls['requestedDeliveryDate'].disable();
  
    this.frm.controls['QtyBase'].disable();
-
-    this.receive  = this.item.QtytoReceive;
   
-    this.storage.set(`${this.item.LineNo} receive`, this.item.QtytoReceive);
-
- 
+   this.receive =  (await this.storage.get(`${this.item.LineNo} receive`) != undefined && await this.storage.get(`${this.item.LineNo} receive`) != null)?await this.storage.get(`${this.item.LineNo} receive`):0;
 
     console.log(this.code);
     console.log(this.item);

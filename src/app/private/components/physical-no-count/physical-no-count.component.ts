@@ -18,6 +18,7 @@ export class PhysicalNoCountComponent implements OnInit {
   public obj = [];
   public data = '';
   public objT = [];
+  public counted = 0;
   constructor(private storage: Storage,private intServ: InterceptService, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner) { }
 
   async ngOnInit() {
@@ -112,6 +113,10 @@ export class PhysicalNoCountComponent implements OnInit {
       break;
   
      } 
+  }
+  
+  onBarCode(){
+    
   }
 
 }

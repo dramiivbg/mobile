@@ -47,6 +47,8 @@ export class WmsReceiptPage implements OnInit {
 
   public seriales:any[] = [];
 
+  public items:any[] = [];
+
 
   public cantidades: number[] = [];
 
@@ -307,6 +309,7 @@ export class WmsReceiptPage implements OnInit {
   async GetLicencesPlateInWR(wareReceipts: any = {},items:any) {
     this.list = [];
     this.LpL = [];
+    this.items = items;
 
     try {
 
@@ -578,6 +581,7 @@ export class WmsReceiptPage implements OnInit {
 
           this.wmsService.setPutAway(postWR);
 
+          this.items.map(x =>  this.storage.set(`${x.LineNo} receive`, 0));
           console.log('postWR', postWR);
 
           this.intServ.loadingFunc(false);

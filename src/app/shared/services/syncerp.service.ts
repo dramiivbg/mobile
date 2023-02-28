@@ -82,6 +82,7 @@ export class SyncerpService {
             obj = rsl;
 
           } else {
+            console.log(rsl);
             obj = JSON.parse(rsl.value);
           }
           value = obj;

@@ -136,27 +136,27 @@ export class EditPutAwayComponent implements OnInit {
     console.log(this.whsePutAway, this.listPwL);
     this.warePY = await this.wmsService.ListPutAwayH(this.warePW);
     this.pallet = await this.storage.get(`pallet ${this.pallet}`);
-    this.take = (await this.storage.get(`take ${this.whsePutAway.fields.No}`) != undefined ||
+    this.take = (await this.storage.get(`take ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`take ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`take ${this.whsePutAway.fields.No}`) : null;
 
-    this.binItem = (await this.storage.get(`bin Item ${this.whsePutAway.fields.No}`) != undefined ||
+    this.binItem = (await this.storage.get(`bin Item ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`bin Item ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin Item ${this.whsePutAway.fields.No}`) : [];
 
-    this.listI = (await this.storage.get(`listI ${this.whsePutAway.fields.No}`) != undefined ||
+    this.listI = (await this.storage.get(`listI ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`listI ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`listI ${this.whsePutAway.fields.No}`) : []
-    this.itemsL = (await this.storage.get(`itemsL ${this.whsePutAway.fields.No}`) != undefined ||
+    this.itemsL = (await this.storage.get(`itemsL ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`itemsL ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`itemsL ${this.whsePutAway.fields.No}`) : [];
 
-    this.listItems = (await this.storage.get(`items ${this.whsePutAway.fields.No}`) != undefined ||
+    this.listItems = (await this.storage.get(`items ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`items ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`items ${this.whsePutAway.fields.No}`) : [];
 
-    this.initItem = (await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != undefined ||
+    this.initItem = (await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init item ${this.whsePutAway.fields.No}`) : [];
 
     this.initV = [];
 
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
-      || await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
+      && await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
 
    // if (this.initV.length === 0) this.init();
 
@@ -166,26 +166,26 @@ export class EditPutAwayComponent implements OnInit {
     if (this.initV.length > 0) {
       this.QtyTotal = this.initV.length;
     }
-    this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
+    this.listsFilter = (await this.storage.get(this.whsePutAway.fields.No) != undefined && await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
     console.log(await this.storage.get(this.whsePutAway.fields.No));
-    this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined || await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
-    this.lps = (await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != undefined ||
+    this.listT = (await this.storage.get(this.whsePutAway.fields.No) != undefined && await this.storage.get(this.whsePutAway.fields.No) != null) ? await this.storage.get(this.whsePutAway.fields.No) : [];
+    this.lps = (await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`confirm ${this.whsePutAway.fields.No}`) : [];
 
-    this.listBins = (await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != undefined ||
+    this.listBins = (await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`bins ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bins ${this.whsePutAway.fields.No}`) : [];
 
     console.log(this.lps);
 
     if (this.listsFilter.length > 0) this.QtyTake = this.lps.length + this.listsFilter.length;
 
-    let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined || await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin ${this.whsePutAway.fields.No}`) : null;
+    let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined && await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin ${this.whsePutAway.fields.No}`) : null;
 
     if (bin != undefined) this.bins = bin.Bins;
 
     this.intServ.loadingFunc(false);
 
-   this.active = (this.initItem.length > 0 && this.initV.length === 0) || (this.initItem.length === 0 && this.initV.length > 0)?true:false;
+   this.active = (this.initItem.length > 0 && this.initV.length === 0) && (this.initItem.length === 0 && this.initV.length > 0)?true:false;
   }
 
   public onBack() {

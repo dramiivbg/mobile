@@ -47,7 +47,7 @@ export class PopoverListSNComponent implements OnInit {
           try {
 
             let res = await this.wmsService.DeleteItemTrackingSpecificationOpen(item);
-
+             console.log(res);
             if(res.Error) throw new Error(res.Error.Message);
             if(res.error) throw new Error(res.error.message);
 

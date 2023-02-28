@@ -147,5 +147,18 @@ ion-fab-button {
     justify-content: flex-start;
 }
 
-
+.row{
+    background: var(--ion-color-plureheader);
+    font-weight: bold;
+    color: var(--ion-color-plureBlue);
+  
+    ion-col {
+      // border: 1px solid black;
+      border-bottom: 0;
+      border-right: 0;
+      
+   
+   
+    }
+  }
 

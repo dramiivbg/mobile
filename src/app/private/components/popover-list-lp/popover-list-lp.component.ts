@@ -27,13 +27,6 @@ export class PopoverListLpComponent implements OnInit {
 
     this.size = this.active?"6":"12";
 
-    console.log(this.lp);
-    this.frm = this.formBuilder.group(
-      {
-        qty: ['', Validators.required],
-       
-      }
-    )
   }
 
   close(){
