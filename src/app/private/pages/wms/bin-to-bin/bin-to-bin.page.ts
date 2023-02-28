@@ -50,12 +50,12 @@ export class BinToBinPage implements OnInit {
           
 
          let lp = await this.wmsService.ListLp(res);
+         this.lpH = await this.wmsService.ListLpH(res);
 
-         if(lp.fields.PLULicensePlateStatus !== "Stored") throw new Error(`LP ${lp.fields.PLULPDocumentNo} is not in Storage`);
+         if(this.lpH.fields.PLULicensePlateStatus !== "Stored") throw new Error(`LP ${lp.fields.PLULPDocumentNo} is not in Storage`);
          
          this.lp = lp;
 
-         this.lpH = await this.wmsService.ListLpH(res);
 
         this.binOrigi =  this.lpH.fields.PLUBinCode; 
 
@@ -153,8 +153,13 @@ export class BinToBinPage implements OnInit {
         this.intServ.loadingFunc(true);
       
        let line =   this.listBin.Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
-   
-    this.lpH.fields.PLUBinCode = line.BinCode;
+  
+       if(line != undefined){
+        this.lpH.fields.PLUBinCode = line.BinCode;
+       }else{
+        this.intServ.alertFunc(this.js.getAlert('error', '', `Bin Code ${code.toUpperCase()} does not exist`));
+       }
+    
 
 
     this.intServ.loadingFunc(false);

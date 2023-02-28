@@ -740,7 +740,6 @@ public async popoverNonCount(){
   this.lists.map(x => {if(x.BinCode === this.bin){
   let line = this.listaCount.find(i => x.PLULPDocumentNo === i.PLULPDocumentNo);
   if(line === null || line === undefined){
-     // x.QtyPhysInventory = 0;
       listNoCount.push(x);
       QtyNoCount += x.QtyPhysInventoryBase;
     }
@@ -776,80 +775,19 @@ public async popoverNonCount(){
         value: "",      
       }]
     };
-    
-    let  list = {
-      name: "WarehouseJournalLine",
-      fields: [ {
-        name: "JournalTemplateName",
-        value: "",
-      },
-      {
-      
-        name: "JournalBatchName",
-        value: "",
-      },
-      {
-        name: "LineNo",
-        value: "",
-      },
-      {
-        name: "RegisteringDate",
-        value: "",
-      },
-      {
-        name: "LocationCode",
-        value: "",   
-      },
-      {
-        name: "ItemNo",
-        value: "",
-      },
-      {
-        name: "Qty(PhysInventory)",
-        value: "",
-      },
-      {
-        name: "UserID",
-        value: "",    
-      },
-      {
-        name: "VariantCode",
-        value: "",
-      },
-      {
-        name: "SerialNo",
-        value: "",      
-      },
-      {
-        name: "LotNo",
-        value: "",     
-      },   
-      {
-        name: "PLULicensePlates",
-        value: "",      
-      }]
-    };
+
+ 
  
     
-    listNoCount.filter(inv => {
 
-  
-  
-    });
+       listNoCount.filter(async x => {
+       if(x.PLUParentLPNo === null && x.PLULPDocumentNo != null){
 
-    try {
+        try {
 
-     // let res = await this.wmsService.Write_WarehouseInvPhysicalCount(lists);
-   
-   //   if(res.Error) throw new Error(res.Error.Message);
-  
+          let res =  await this.wmsService.MoveBinToBin_LP(x.PLULPDocumentNo,x.ZoneCode,x.BinCode,"NOCOUNT",x.LocationCode);
        
-     // if(res.error) throw new Error(res.error.message);
-
-     // if(res.message) throw new Error(res.message);
-
-      listNoCount.filter(async x => {
-       let res = (x.PLUParentLPNo === null && x.PLULPDocumentNo != null)?await this.wmsService.MoveBinToBin_LP(x.PLULPDocumentNo,x.ZoneCode,x.BinCode,"NOCOUNT",x.LocationCode):null;
+       console.log(res);
 
        if(res.Error) throw new Error(res.Error.Message);
       
@@ -922,10 +860,17 @@ public async popoverNonCount(){
             value: "",      
           }]
         };
-       
+          
+        } catch (error) {
+          this.intServ.loadingFunc(false);
+          this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+        }
+      
+      }
     
       });
      
+    try {
 
       let res2 = await this.wmsService.Register_WarehouseInvPhysicalCount(this.locate, this.template,this.batch);
 

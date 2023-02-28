@@ -15,6 +15,10 @@
 
       <div class="content"  > 
         <ion-row *ngFor="let item of list; let i = index" style="text-align: center;" >
+        
+      <ion-item-sliding>
+
+        <ion-item>
           <ion-col size="6" *ngIf="boolean">{{item.No}}</ion-col>
           <ion-col size="3" *ngIf="item.proceded === false && !boolean" >{{item.SerialNo}}</ion-col>
           <ion-col size="3" *ngIf="item.proceded === true && !boolean" (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
@@ -24,6 +28,13 @@
           <ion-col size="3" *ngIf="item.Quantity !== undefined && item.Quantity !== null">{{item.Quantity}}</ion-col> 
           <ion-col size="3" *ngIf="item.QtyPhysInventory !== undefined">{{item.QtyPhysInventory}}</ion-col>
           
+        </ion-item>
+          <ion-item-options *ngIf="item.proceded === false && item.QtyPhysInventory === undefined && item.Quantity === undefined"  (click)="delete(i)">
+          <ion-item-option color="danger">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
       
         </ion-row>
    

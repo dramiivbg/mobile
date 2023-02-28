@@ -18,11 +18,15 @@ export class PopoverListLpComponent implements OnInit {
   @Input() lp:any;
   @Input() active:boolean = true;
   public listBin:any;
+  public size = '';
   constructor(private formBuilder: FormBuilder,private barcodeScanner: BarcodeScanner, 
     private popoverController: PopoverController,private intServ: InterceptService
     , private js: JsonService,private wmsService: WmsService) { }
 
   ngOnInit() {
+
+    this.size = this.active?"6":"12";
+
     console.log(this.lp);
     this.frm = this.formBuilder.group(
       {

@@ -34,7 +34,7 @@ ion-content.modules {
     }
 
     ion-icon {
-        color: #1A518F;
+        color: var(--ion-color-primary-background);
     }
 
     ion-grid {
@@ -43,7 +43,7 @@ ion-content.modules {
                 padding: 15px;
 
                 div.module-item {
-                    background: rgba(21, 73, 131, 0.4);
+                    background: rgba(var(--ion-color-plure-content-section-card));
                     // border: 0.6px solid rgba(85, 85, 105, 0.35);
                     box-sizing: border-box;
                     box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.07);

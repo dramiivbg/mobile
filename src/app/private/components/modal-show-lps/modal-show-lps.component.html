@@ -63,20 +63,15 @@
                                                     Qty. {{item.PLUQuantity}}
 
                                                 </ion-col>
+
+                                                <ion-col size="6" class="label-line-title"
+                                                *ngIf="item.fields != undefined">
+                                                Qty. {{item.fields.PLUQuantity}}
+
+                                               </ion-col>
                                                 </ion-row>
 
-                                                <ion-row *ngIf="item.fields != undefined">
-                                                    <ion-col size="5" style="overflow: hidden;"
-                                                        class="label-line-title blue">
-                                                        {{item.company}}
-                                                    </ion-col>
-                                                    <ion-col size="3" class="label-line-title"
-                                                        style="text-align: right;" >
-                                                        Qty. {{item.fields.PLUQuantity}}
-
-                                                    </ion-col>
-                                                  
-                                                </ion-row>
+                                             
                                                 <ion-row *ngIf="item.fields != undefined ">
                                                     <ion-col size="4" class="label-line">
                                                         Item No: {{item.fields.PLUNo}}
@@ -89,18 +84,13 @@
 
 
                                                 <ion-row *ngIf="item.fields != undefined ">
-                                                    <ion-col size="3" class="label-line">
+                                                    <ion-col size="4" class="label-line">
                                                         Take: {{item.fields.PLUBinCode}}
-                                                    </ion-col>
-
-
-                                                    <ion-col size="5" class="label-line">
-                                                        Document Type:{{item.fields.PLULPDocumentType}}
                                                     </ion-col>
                                                     
                                                 
-                                                    <ion-col size="3" class="label-line-ligth"
-                                                        style="text-align: right;">
+                                                    <ion-col size="4" class="label-line-ligth"
+                                                        >
                                                         Place: {{item.fields.place}}
 
                                                     </ion-col>
@@ -108,18 +98,13 @@
                                                 </ion-row>
 
                                                 <ion-row *ngIf="item.fields === undefined ">
-                                                    <ion-col size="3" class="label-line">
+                                                    <ion-col size="4" class="label-line">
                                                         Take: {{item.PLUBinCode}}
-                                                    </ion-col>
-
-
-                                                    <ion-col size="5" class="label-line">
-                                                        Document Type:{{item.PLUType}}
                                                     </ion-col>
                                                 
 
-                                                    <ion-col size="3" class="label-line-ligth"
-                                                        style="text-align: right;">
+                                                    <ion-col size="4" class="label-line-ligth"
+                                                        >
                                                         Place: {{item.place}}
 
                                                     </ion-col>

@@ -104,13 +104,14 @@ export class SalesFormPage implements OnInit {
     });
   }
 
-  async ngOnInit() {}
+  async ngOnInit() {
+  }
 
   async ionViewWillEnter() {
     let offline = await this.storage.get(SK_OFFLINE);
     this.onReset();
     if (this.extras) {
-      this.intServ.loadingFunc(true);
+     this.intServ.loadingFunc(true);
       await this.getBC();
       if (!this.new) await this.initSalesOrder();
       this.editSales();

@@ -92,7 +92,6 @@
     --ion-color-plureMain-contrast-rgb: 255,255,255;
     --ion-color-plureMain-shade: #555569;
     --ion-color-plureMain-tint: #555569;
-    --ion-color-plureMain-rgba-content: 220, 241, 255, 0.5;
 
   /** plure**/
   --ion-color-plure: #5CABF9;
@@ -108,10 +107,28 @@
 
     /**plure content **/
   --ion-color-plure-ion-content-background-rgb: 220, 241, 255, 0.5;
-
+  --ion-color-plure-content-rgb: 255, 255, 255, 0.25;
    /**plure color text **/
 
    --ion-color-plure-text:#ffffff;
+
+   /** plure sale page **/
+
+   --ion-color-plure-content-section-card: 21, 73, 131, 0.2;
+   --ion-color-plure-div-rgb: 72, 74, 81, 0.1;
+
+   /** plure payment **/
+
+   --ion-color-plure-background: #ffffff;
+   --ion-color-plure-search-all-rgb: 85, 85, 105, 0.1;
+
+    /** plure change password **/
+
+    --ion-color-plure-card-content: 72, 74, 81, 0.06;
+
+    /** plure sales form  **/
+
+  --ion-color-plure-row-rgb: 21, 73, 131, 1;
   
   /**plure color fab-button **/
 

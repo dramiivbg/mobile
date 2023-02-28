@@ -84,8 +84,9 @@ export class PopoverListSNComponent implements OnInit {
   
             this.storage.set(`${this.item.LineNo} receive`,receive);
   
+            this.list.splice(Number(index),1);
 
-              this.popoverController.dismiss({data: "Delete", index});
+              this.popoverController.dismiss({data: "Delete", list:this.list});
 
             }));
             
@@ -123,6 +124,12 @@ export class PopoverListSNComponent implements OnInit {
             name: 'Delete',
             icon: 'trash-outline',
             obj: {}
+          },
+          { 
+            id: 3, 
+            name: 'Close', 
+            icon: 'close-circle-outline' ,
+            obj: {}
           }
         ]
       }
@@ -131,8 +138,17 @@ export class PopoverListSNComponent implements OnInit {
   }
 
   onClose(){
-    this.popoverController.dismiss({});
+    this.popoverController.dismiss({list:this.list});
   }
+
+  
+  delete(index:any){
+
+    let con = this.list.splice(Number(index),1);
+    console.log(con);
+    console.log(this.list);
+  
+    }
   
 
 }

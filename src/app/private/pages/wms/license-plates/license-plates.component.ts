@@ -34,6 +34,7 @@ export class LicensePlatesComponent implements OnInit {
   public Boolean:boolean = true;
   public total:number = 0;
   public Quantity = 0;
+  public approved = false;
   @Input() options: any = {};
 
   constructor(private intServ: InterceptService
@@ -89,6 +90,9 @@ export class LicensePlatesComponent implements OnInit {
     this.trakingOpen = this.options.trakingOpen;
 
     console.log(this.code);
+
+    console.log('trakingOpen => ', this.trakingOpen);
+    console.log('trakingClose => ', this.trakingClose);
     
     if(this.code != null){
       this.lot = (this.code.lines.LotPurchaseInboundTracking)?true:false;
@@ -276,6 +280,7 @@ public async onSubmit() {
   }
 
 
+
   public async scanLOT(){
 
     this.barcodeScanner.scan().then(
@@ -320,11 +325,25 @@ public async onSubmit() {
 
 async  save(){
 
+  let obj = await this.jsonService.formToJson(this.frm2);
+
+  let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+  let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+  let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+  if(line != undefined || line2 != undefined || line3 != undefined){
+    this.approved = false;
+    this.frm2.controls.SerialNo.setValue('');
+
+    this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${obj.SerialNo.toUpperCase()} already exists`));
+
+  }else{
+    this.approved = true;
+  }
+
+if(this.approved){
   switch(this.Quantity === this.total){
     case false:
       if (this.frm2.valid) {
-
-        let obj = await this.jsonService.formToJson(this.frm2);
   
         let res = new Date(obj.exp);
   
@@ -338,7 +357,7 @@ async  save(){
         
      let  json =   {
         LotNo: obj.LotNo,
-        SerialNo: obj.SerialNo,
+        SerialNo: obj.SerialNo.toUpperCase(),
         ExperationDate: fecha,
         Qty: 1,
         proceded:false
@@ -378,7 +397,7 @@ async  save(){
           case undefined:
             let  json =   {
               LotNo: obj.LotNo,
-              SerialNo: obj.SerialNo,
+              SerialNo: obj.SerialNo.toUpperCase(),
               ExperationDate: fecha,
               Qty: obj.Qty,
               proceded: false
@@ -436,6 +455,8 @@ async  save(){
     
   }
 
+}  
+  
 
   }
 
@@ -459,6 +480,7 @@ async  save(){
           SerialNo: code.toUpperCase()
         });
 
+        this.approved = true;
       }else{
 
         this.intServ.alertFunc(this.jsonService.getAlert('alert','',`The serial ${code.toUpperCase()} already exists`));
@@ -476,6 +498,26 @@ async  save(){
   
     async lists(){
 
+      for (const key in this.trakingOpen) {
+
+        let  obj =   {
+            Qty: 0,
+            SerialNo: "",
+            LotNo: "",
+            ExperationDate: "",
+            proceded: true
+          }
+      
+          obj.Qty = this.trakingOpen[key].Quantity;
+          obj.SerialNo = this.trakingOpen[key].SerialNo;
+          obj.LotNo = this.trakingOpen[key].LotNo;
+          obj.ExperationDate = this.trakingOpen[key].ExpirationDate;
+      
+          let line = this.list.find(x => x.SerialNo === obj.SerialNo);
+      
+          if(line === undefined || line === null)this.list.push(obj);
+        }
+    
       const popover = await this.popoverController.create({
         component: PopoverListSerialLpComponent,
         cssClass: 'popoverListSerialLpComponent-modal',
@@ -489,7 +531,7 @@ async  save(){
        this.list = data.list;
        this.Quantity = 0;
 
-       this.list.length > 0?this.list.map(x => this.Quantity += x.Qty):this.Quantity;
+       this.list.length > 0?this.list.map(x => {if(x.proceded === false){this.Quantity += x.Qty}}):this.Quantity;
     
        this.storage.set(`lists ${this.item.LineNo}` ,this.list);
        this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);

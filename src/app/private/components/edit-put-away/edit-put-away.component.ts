@@ -215,16 +215,13 @@ export class EditPutAwayComponent implements OnInit {
 
         } else {
 
-          if (this.pallet != undefined && this.listsFilter.length != this.initV.length) {
-            this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error', ' ', `Please scan all license plate and pallet`));
-            return;
-          }
-
+      
           this.listsFilter.filter(lp => {
-            lp.fields.place = code.toUpperCase();
-            lp.seriales.map(x => x.fields.place = code.toUpperCase());
-
+            if(lp.fields.PLULPDocumentType != 'Pallet'){
+              lp.fields.place = code.toUpperCase();
+              lp.seriales.map(x => x.fields.place = code.toUpperCase());
+            }
+           
           });
 
 
@@ -1669,6 +1666,9 @@ export class EditPutAwayComponent implements OnInit {
                 this.intServ.alertFunc(this.js.getAlert('error', '', `The bin ${code.toUpperCase()} does not exist in the list`));
               }
 
+            }else{
+              this.intServ.loadingFunc(false);
+              this.intServ.alertFunc(this.js.getAlert('alert', '', `Bin ${code.toUpperCase()} does not exist in the list`));
             }
           }
         }

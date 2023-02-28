@@ -9,6 +9,8 @@ import { PopoverConfigurationCodeComponent } from '../popover-configuration-code
 import { PopoverListSNComponent } from '../popover-list-sn/popover-list-sn.component';
 import { Storage } from '@ionic/storage';
 import { TypeCheckCompiler } from '@angular/compiler/src/view_compiler/type_check_compiler';
+import { PopoverListSerialLpComponent } from '../popover-list-serial-lp/popover-list-serial-lp.component';
+import { reverse } from 'dns';
 
 @Component({
   selector: 'app-popover-item-traking',
@@ -32,7 +34,7 @@ export class PopoverItemTrakingComponent implements OnInit {
   public list:any[] = [];
 
   public item: any;
-
+  public approved = true;
   public frm: FormGroup;
   constructor(private formBuilder: FormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner, 
     private jsonService: JsonService,  private intServ: InterceptService, private wmsService: WmsService,  private storage: Storage) {
@@ -41,7 +43,7 @@ export class PopoverItemTrakingComponent implements OnInit {
     this.frm = this.formBuilder.group(
       {
         requestedDeliveryDate: ['', Validators.required],
-        TotalToReceive: [0, Validators.required],
+        TotalToReceive: ['', Validators.required],
         SerialNo: ['', Validators.required],
         LotNo: ['', Validators.required],
         QtyBase: ['', Validators.required],
@@ -80,12 +82,7 @@ export class PopoverItemTrakingComponent implements OnInit {
   
     this.storage.set(`${this.item.LineNo} receive`, this.item.QtytoReceive);
 
-    this.frm.patchValue({
-
-      TotalToReceive: this.receive
-    });
-   
-   
+ 
 
     console.log(this.code);
     console.log(this.item);
@@ -97,8 +94,6 @@ export class PopoverItemTrakingComponent implements OnInit {
      
 
   }
-
- 
 
   scanSN(){
 
@@ -113,7 +108,7 @@ export class PopoverItemTrakingComponent implements OnInit {
         line2 = this.trakingOpen.find(x => x.SerialNo === code.toUpperCase());
         line3 = this.trakingClose.find(x => x.SerialNo === code.toUpperCase());
         if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
-
+          this.approved = true;
           this.frm.patchValue({
             SerialNo: code.toUpperCase(),
         
@@ -227,7 +222,7 @@ async  view(){
     obj.LotNo = this.trakingOpen[key].LotNo;
     obj.ExperationDate = this.trakingOpen[key].ExpirationDate;
 
-    let line = this.list.find(x => x.SerialNo === obj.SerialNo);
+    let line = (this.list.length > 0)?this.list.find(x => x.SerialNo === obj.SerialNo):undefined;
 
     if(line === undefined || line === null)this.list.push(obj);
   }
@@ -243,6 +238,11 @@ async  view(){
   await popover.present();
   const { data } = await popover.onDidDismiss();
 
+  this.list = data.list;
+  this.Quantity = 0;
+  this.list.length > 0?this.list.map(x => {if(x.proceded === false){this.Quantity += x.Qty}}):this.Quantity;
+    
+
   if(data != undefined){
 
     switch(data.data){
@@ -251,13 +251,8 @@ async  view(){
         let res = await this.wmsService.GetItemTrackingSpecificationOpen(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
         this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
         console.log(this.trakingOpen);
-        this.receive = await this.storage.get(`${this.item.LineNo} receive`);
-        this.frm.patchValue({
-          TotalToReceive: this.receive
-        });
 
-       this.list.splice(data.index,1);
-          
+        this.receive = await this.storage.get(`${this.item.LineNo} receive`);
 
         break;
   
@@ -302,6 +297,12 @@ async  view(){
 
          let res = await this.wmsService.GetItemTrackingSpecificationOpen(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
          this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
+         
+         this.receive = await this.storage.get(`${this.item.LineNo} receive`);
+
+         this.receive+= this.Quantity;
+         
+        this.storage.set(`${this.item.LineNo} receive`, this.receive);
 
          let list = [
            {
@@ -314,24 +315,24 @@ async  view(){
                  ZoneCode: this.item.ZoneCode,
                  LocationCode: this.item.LocationCode,
                  BinCode: this.item.BinCode,
-                 QtyToReceive: this.frm.get('TotalToReceive').value
+                 QtyToReceive: this.receive
                }
              ]
            }
          ]
          
        
+       
 
           await this.wmsService.Update_WsheReceiveLine(list); 
 
-        this.storage.set(`${this.item.LineNo} receive`,this.frm.get('TotalToReceive').value);
 
          this.list = [];  
          
          this.intServ.loadingFunc(false);
          this.intServ.alertFunc(this.jsonService.getAlert('success','','The operation was successfully performed',async() => {        
             
-           this.popoverController.dismiss({receive:this.frm.get('TotalToReceive').value});   
+           this.popoverController.dismiss({receive: this.receive});   
          }));
 
          
@@ -349,6 +350,23 @@ async  view(){
   }
 
   save(){
+
+    let line = this.list.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
+    let line2 = this.trakingOpen.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
+    let line3 = this.trakingClose.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
+
+    if(line != undefined || line2 != undefined || line3 != undefined){
+      this.approved = false;
+      this.frm.controls.SerialNo.setValue('');
+
+      this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${this.frm.get('SerialNo').value.toUpperCase()} already exists`));
+
+    }else{
+      this.approved = true;
+    }
+
+
+    if(this.approved){
 
       if(this.frm.valid && this.Quantity != this.total){
 
@@ -379,7 +397,7 @@ async  view(){
           obj.SourceNo = this.item.SourceNo;
           obj.SourceRefNo = this.item.SourceLineNo;
           obj.Qty = 1;
-          obj.SerialNo = this.frm.get('SerialNo').value;
+          obj.SerialNo = this.frm.get('SerialNo').value.toUpperCase();
           obj.LotNo = this.frm.get('LotNo').value;
           obj.ExperationDate = fecha;
         }else{
@@ -388,7 +406,7 @@ async  view(){
           obj.SourceNo = this.item.SourceNo;
           obj.SourceRefNo = this.item.SourceLineNo;
           obj.Qty = this.frm.get('QtyBase').value;
-          obj.SerialNo = this.frm.get('SerialNo').value;
+          obj.SerialNo = this.frm.get('SerialNo').value.toUpperCase();
           obj.LotNo = this.frm.get('LotNo').value;
           obj.ExperationDate = fecha;
         }
@@ -408,8 +426,8 @@ async  view(){
         console.log(this.list);
       }
     }
-
-   
+      
+    }
 
   }
 

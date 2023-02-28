@@ -17,7 +17,7 @@ ion-content {
         background: transparent;
 
         ion-row {
-            background: rgb(255, 255, 255, 0.25);
+            background: rgb(var(--ion-color-plure-content-rgb));
             border-radius: 23px;
             box-shadow: 0px 1px 4px rgb(0 0 0 / 9%);
             margin: 0 20px;
