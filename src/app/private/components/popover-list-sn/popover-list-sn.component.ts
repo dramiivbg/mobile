@@ -61,6 +61,8 @@ export class PopoverListSNComponent implements OnInit {
 
             receive -= item.Qty;
 
+            this.storage.set(`${this.item.LineNo} receive`, receive);
+
             let list = [
               {
                 WarehouseReceiptLines: [

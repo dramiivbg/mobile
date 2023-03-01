@@ -776,16 +776,21 @@ public async popoverNonCount(){
       }]
     };
 
- 
- 
-    
+    let obj = [];
 
-       listNoCount.filter(async x => {
-       if(x.PLUParentLPNo === null && x.PLULPDocumentNo != null){
+    for (const key in listNoCount) {
+
+      let line = obj.find(x => x.PLULPDocumentNo === listNoCount[key].PLULPDocumentNo);
+      if(line === undefined || line === null)obj.push(listNoCount[key]);
+ 
+    }
+    for (const key in obj) {
+  
+      if(obj[key].PLUParentLPNo === null && obj[key].PLULPDocumentNo != null){
 
         try {
 
-          let res =  await this.wmsService.MoveBinToBin_LP(x.PLULPDocumentNo,x.ZoneCode,x.BinCode,"NOCOUNT",x.LocationCode);
+          let res =  await this.wmsService.MoveBinToBin_LP(obj[key].PLULPDocumentNo,obj[key].ZoneCode,obj[key].BinCode,"NOCOUNT",obj[key].LocationCode);
        
        console.log(res);
 
@@ -796,70 +801,81 @@ public async popoverNonCount(){
        if(res.message) throw new Error(res.message);
        
 
-        listD = {
-          name: "WarehouseJournalLine",
-          fields: [ {
-            name: "JournalTemplateName",
-            value: x.JournalTemplateName,
-          },
-          {
-          
-            name: "JournalBatchName",
-            value: x.JournalBatchName,
-          },
-          {
-            name: "LineNo",
-            value: x.LineNo,
-          },
-         
-          {
-            name: "LocationCode",
-            value: x.LocationCode,   
-          },
-      
-          {
-            name: "LPDocumentNo",
-            value: x.PLULPDocumentNo,      
-          }]
-        };
-  
-  
-     let res2 =  await this.wmsService.Delete_WarehouseInvPhysicalCount(listD);
+    
 
+        for (const i in listNoCount) {
+
+          if(listNoCount[i].PLULPDocumentNo === obj[key].PLULPDocumentNo){
+
+            listD = {
+              name: "WarehouseJournalLine",
+              fields: [ {
+                name: "JournalTemplateName",
+                value: listNoCount[i].JournalTemplateName,
+              },
+              {
+              
+                name: "JournalBatchName",
+                value: listNoCount[i].JournalBatchName,
+              },
+              {
+                name: "LineNo",
+                value: listNoCount[i].LineNo,
+              },
+             
+              {
+                name: "LocationCode",
+                value: listNoCount[i].LocationCode,   
+              },
+          
+              {
+                name: "LPDocumentNo",
+                value: listNoCount[i].PLULPDocumentNo,      
+              }]
+            };
+      
         
-       if(res2.Error) throw new Error(res2.Error.Message);
-      
-       if(res2.error) throw new Error(res2.error.message);
-
-       if(res2.message) throw new Error(res2.message);
-       
+            let res2 =  await this.wmsService.Delete_WarehouseInvPhysicalCount(listD);
   
-        listD = {
-          name: "WarehouseJournalLine",
-          fields: [ {
-            name: "JournalTemplateName",
-            value: "",
-          },
-          {
           
-            name: "JournalBatchName",
-            value: "",
-          },
-          {
-            name: "LineNo",
-            value: "",
-          },
-         
-          {
-            name: "LocationCode",
-            value: "",   
-          },
-      
-          {
-            name: "LPDocumentNo",
-            value: "",      
-          }]
-        };
+            if(res2.Error) throw new Error(res2.Error.Message);
+           
+           // if(res2.error) throw new Error(res2.error.message);
+     
+           // if(res2.message) throw new Error(res2.message);
+            
+       
+             listD = {
+               name: "WarehouseJournalLine",
+               fields: [ {
+                 name: "JournalTemplateName",
+                 value: "",
+               },
+               {
+               
+                 name: "JournalBatchName",
+                 value: "",
+               },
+               {
+                 name: "LineNo",
+                 value: "",
+               },
+              
+               {
+                 name: "LocationCode",
+                 value: "",   
+               },
+           
+               {
+                 name: "LPDocumentNo",
+                 value: "",      
+               }]
+             };
+          }
+          
+        }
+  
+    
           
         } catch (error) {
           this.intServ.loadingFunc(false);
@@ -867,8 +883,8 @@ public async popoverNonCount(){
         }
       
       }
-    
-      });
+    }
+
      
     try {
 
@@ -908,6 +924,7 @@ public async popoverNonCount(){
 
      this.intServ.loadingFunc(false);
      this.bin = '';
+     this.quantity = 0;
      this.intServ.alertFunc(this.js.getAlert('success', '',`Bin ${this.bin} has been successfully registered`))
       
     } catch (error) {

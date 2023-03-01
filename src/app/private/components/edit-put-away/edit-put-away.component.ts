@@ -107,25 +107,12 @@ export class EditPutAwayComponent implements OnInit {
     , private intServ: InterceptService, private barcodeScanner: BarcodeScanner, private js: JsonService, private wmsService: WmsService,
     private general: GeneralService, private storage: Storage, private modalCtrl: ModalController, public popoverController: PopoverController) {
 
-    let objFunc = {
-      func: () => {
-        this.onBack();
-      }
-    };
-    this.intServ.appBackFunc(objFunc);
-
-    this.barcodeScannerOptions = {
-      showTorchButton: true,
-      showFlipCameraButton: true
-    };
 
   }
 
-  ngAfterViewInit() {
-
-  }
   async ngOnInit() {
 
+    this.intServ.loadingFunc(true);
     this.whsePutAway = await this.storage.get('whsePutAway');
 
     this.warePW = await this.storage.get('setPutAway');
@@ -160,8 +147,11 @@ export class EditPutAwayComponent implements OnInit {
 
    // if (this.initV.length === 0) this.init();
 
-   this.init();
-    if (this.listItems.length === 0) this.initI();
+   if(this.initV.length === 0)this.init();
+  
+    if (this.initItem != null) this.initI();
+
+    console.log(this.initItem);
 
     if (this.initV.length > 0) {
       this.QtyTotal = this.initV.length;
@@ -182,12 +172,14 @@ export class EditPutAwayComponent implements OnInit {
     let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined && await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin ${this.whsePutAway.fields.No}`) : null;
 
     if (bin != undefined) this.bins = bin.Bins;
-
-    this.intServ.loadingFunc(false);
+ 
 
    this.active = (this.initItem.length > 0 && this.initV.length === 0) && (this.initItem.length === 0 && this.initV.length > 0)?true:false;
+  
+   this.intServ.loadingFunc(true);
   }
 
+  
   public onBack() {
 
 

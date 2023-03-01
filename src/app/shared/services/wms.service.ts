@@ -1300,7 +1300,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
 
     
         let obj: any = [{
-            Delete_WarehouseInvPhysicalCount: list
+            Delete_WarehouseInvPhysicalCount: [list]
     
     
           }];

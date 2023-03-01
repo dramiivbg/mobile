@@ -82,7 +82,7 @@ export class PopoverItemTrakingComponent implements OnInit {
 
     console.log(this.code);
     console.log(this.item);
- 
+    console.log(this.receive);
 
     console.log(this.item);
 
