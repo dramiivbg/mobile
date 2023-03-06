@@ -57,11 +57,11 @@ export class PopoverListSNComponent implements OnInit {
 
             this.intServ.alertFunc(this.jsonService.getAlert('success','', `Serial ${item.SerialNo} has been successfully deleted`, async() => {
 
-            let receive =  await this.storage.get(`${this.item.LineNo} receive`);
+            let receive =  await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
 
             receive -= item.Qty;
 
-            this.storage.set(`${this.item.LineNo} receive`, receive);
+            this.storage.set(`${this.item.No} ${this.item.LineNo}`, receive);
 
             let list = [
               {
@@ -84,7 +84,7 @@ export class PopoverListSNComponent implements OnInit {
   
              await this.wmsService.Update_WsheReceiveLine(list); 
   
-            this.storage.set(`${this.item.LineNo} receive`,receive);
+            this.storage.set(`${this.item.No} ${this.item.LineNo}`,receive);
   
             this.list.splice(Number(index),1);
 

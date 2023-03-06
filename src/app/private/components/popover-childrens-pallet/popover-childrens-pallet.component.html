@@ -28,13 +28,9 @@
         <div class="lines">
 
           <ion-list>
-            <div>
-
-              <ion-item>
+           
                 <div class="label-lines content" part="item-width">
                   <ion-row *ngFor="let item of item.childrens">
-
-                    <!-- <ion-item-sliding> -->
 
                     <ion-item style="width: 100%;">
                       <ion-col size="12" class="item" (click)="show(item)">
@@ -87,20 +83,11 @@
 
                     </ion-item>
 
-                    <!-- <ion-item-options>
-                        <ion-item-option color="danger" (click)="remove(item)">
-                          <ion-icon slot="icon-only" name="trash"></ion-icon>
-                        </ion-item-option>
-                      </ion-item-options>
-
-                    </ion-item-sliding> -->
+                  
                   </ion-row>
 
                 </div>
 
-              </ion-item>
-
-            </div>
           </ion-list>
         </div>
       </div>

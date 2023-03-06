@@ -37,21 +37,17 @@
             <div class="accorn-body">
                 <div class="lines">
                     <ion-list>
-                        <div>
-
-                            <ion-item-sliding>
-
-
+                     
                                 <ion-item>
                                     <div class="label-lines" part="item-width">
                                         <ion-row class="row1" *ngIf="lp !== undefined">
                                             <ion-col class="contentcol" size="12" *ngFor="let item of lps; let i=index">
                                                 <ion-row class="titlerow">
-                                                    <ion-col size="5" style="overflow: hidden;"
+                                                    <ion-col size="6" style="overflow: hidden;"
                                                         class="label-line-title blue">
-                                                        {{item.company}}
+                                                        {{lp.fields.PLULPDocumentNo}}
                                                     </ion-col>
-                                                    <ion-col size="3" class="label-line-title">
+                                                    <ion-col size="6" class="label-line-title">
                                                         Qty. {{item.fields.PLUQuantity
                                                         }}
 
@@ -246,16 +242,8 @@
                                         </ion-row>
                                     </div>
 
+                        </ion-item>
 
-
-                                </ion-item>
-
-
-                            </ion-item-sliding>
-
-
-
-                        </div>
                     </ion-list>
                 </div>
             </div>

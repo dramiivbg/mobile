@@ -581,7 +581,9 @@ export class WmsReceiptPage implements OnInit {
 
           this.wmsService.setPutAway(postWR);
 
-          this.items.map(x =>  this.storage.set(`${x.LineNo} receive`, 0));
+          this.getReceipt();
+
+          this.items.map(x =>  this.storage.set(`${x.No} ${x.LineNo}`, 0));
           console.log('postWR', postWR);
 
           this.intServ.loadingFunc(false);
@@ -637,7 +639,6 @@ export class WmsReceiptPage implements OnInit {
 
           }));
 
-          this.getReceipt();
 
         } catch (error) {
 

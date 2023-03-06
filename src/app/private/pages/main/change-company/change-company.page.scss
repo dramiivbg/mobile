@@ -21,8 +21,9 @@ ion-content {
 }
 
 ion-list{
-    background: transparent;
+    --background: linear-gradient(to bottom, rgb(var(--ion-color-plure-ion-content-background-rgb)), #ffff);
 }
+
 
 .Footersales{
     height: 76px;

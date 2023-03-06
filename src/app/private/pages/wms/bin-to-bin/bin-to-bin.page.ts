@@ -103,9 +103,15 @@ export class BinToBinPage implements OnInit {
 
    try {
 
+   let obj = {
+      LPNo: this.lpH.fields.PLULPDocumentNo,
+      Zone:this.lpH.fields.PLUZoneCode,
+      FromBin:this.binOrigi,
+      ToBin:this.lpH.fields.PLUBinCode,
+      LocationCode:this.lpH.fields.PLULocationCode
+      }
     
-   let res = await this.wmsService.MoveBinToBin_LP(this.lpH.fields.PLULPDocumentNo,this.lpH.fields.PLUZoneCode,this.binOrigi,this.lpH.fields.PLUBinCode,
-    this.lpH.fields.PLULocationCode);
+   let res = await this.wmsService.MoveBinToBinArray_LP([obj]);
 
 
 
@@ -121,6 +127,14 @@ export class BinToBinPage implements OnInit {
       this.lp = undefined;
 
       this.lpH = undefined;
+
+      let obj = {
+        LPNo: " ",
+        Zone:"",
+        FromBin:"",
+        ToBin:"",
+        LocationCode:""
+        }
   
     
     }));
@@ -157,6 +171,7 @@ export class BinToBinPage implements OnInit {
        if(line != undefined){
         this.lpH.fields.PLUBinCode = line.BinCode;
        }else{
+        this
         this.intServ.alertFunc(this.js.getAlert('error', '', `Bin Code ${code.toUpperCase()} does not exist`));
        }
     
@@ -169,6 +184,9 @@ export class BinToBinPage implements OnInit {
     ).catch(
       err => {
         console.log(err);
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('alert', '','Please scan an LP or item'));
+
       }
     )
 

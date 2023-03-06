@@ -26,28 +26,13 @@
             </ion-row>
         </div>
         <div class="accorn">
-            <div class="order-details">
-                <ion-row>
-                    <ion-col size="3" class="txt">
-                        <ion-label>Lines</ion-label>
-                    </ion-col>
-                    
-                    <!-- <ion-col *ngIf="new || edit">
-                  <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
-                </ion-col> -->
-                </ion-row>
-            </div>
+         
             <div class="accorn-body">
                 <div class="lines">
                     <ion-list *ngFor="let item of wareReceipts.lines; let i=index">
-                        <div>
 
-                            <ion-item-sliding>
-
-
-                                <ion-item>
                                     <div class="label-lines" part="item-width">
-                                        <ion-row>
+                                        <ion-item style="width: 100%;">
                                             <ion-col size="12">
                                                 <ion-row>
                                                     <ion-col size="8" style="overflow: hidden;"
@@ -101,14 +86,8 @@
                                                 </ion-row>
                                               
                                             </ion-col>
-                                        </ion-row>
+                                        </ion-item>
                                     </div>
-
-                                </ion-item>
-
-
-                            </ion-item-sliding>
-                        </div>
                     </ion-list>
                 </div>
             </div>

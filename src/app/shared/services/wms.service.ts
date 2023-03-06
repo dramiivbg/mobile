@@ -1144,18 +1144,14 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
    }
 
 
-   public async MoveBinToBin_LP(LPNo:any,Zone:any,FromBin:any,ToBin:any,LocationCode:any){
+   public async MoveBinToBinArray_LP(list:any){
 
     try {
 
     
         let obj: any = [{
 
-            LPNo,
-            Zone,
-            FromBin,
-            ToBin,
-            LocationCode,
+            ArrayToMove: list
            
           }];
     
@@ -1163,7 +1159,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('MoveBinToBin_LP', obj);
+        let p = await this.syncErp.processRequestParams('MoveBinToBinArray_LP', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1300,7 +1296,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
 
     
         let obj: any = [{
-            Delete_WarehouseInvPhysicalCount: [list]
+            Delete_WarehouseInvPhysicalCount: list
     
     
           }];

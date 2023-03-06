@@ -157,7 +157,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   onSubmit() {
 
-   // if (this.lps.length > 0 || this.itemsL.length > 0) {
+   if (this.lps.length > 0 || this.itemsL.length > 0) {
       let items: any[] = [];
       for (const key in this.itemsL) {
 
@@ -189,7 +189,7 @@ export class ModalLpsConfirmComponent implements OnInit {
       console.log(groupItems);
 
       this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: groupItems });
- //   }
+    }
 
   }
 

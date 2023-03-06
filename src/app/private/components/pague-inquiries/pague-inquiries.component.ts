@@ -300,15 +300,32 @@ export class PagueInquiriesComponent implements OnInit {
            let line =   this.listBin.Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase());
  
            if(line != undefined){
+
+            let objMove =  {
+              LPNo: data.lp.PLULPDocumentNo,
+              Zone: data.lp.PLUZoneCode,
+              FromBin:data.lp.PLUBinCode,
+              ToBin:line.BinCode,
+              LocationCode: data.lp.PLULocationCode
+              }
+
+            
  
-             let res = await this.wmsService.MoveBinToBin_LP(data.lp.PLULPDocumentNo,data.lp.PLUZoneCode,data.lp.PLUBinCode,line.BinCode,
-              data.lp.PLULocationCode);
+             let res = await this.wmsService.MoveBinToBinArray_LP([objMove]);
  
              if(res.Error) throw new Error(res.Error.Message);
  
              this.intServ.loadingFunc(false);
              this.intServ.alertFunc(this.js.getAlert('success','',`License plate ${data.lp.PLULPDocumentNo} moved from bin ${data.lp.PLUZoneCode} 
-             to ${line.BinCode}`));         
+             to ${line.BinCode}`));
+             
+             objMove =  {
+              LPNo: "",
+              Zone: "",
+              FromBin: "",
+              ToBin: "",
+              LocationCode: ""
+              }
  
            }else{
             // this.intServ.alertFunc(this.js.getAlert('error','',''))
@@ -378,9 +395,17 @@ export class PagueInquiriesComponent implements OnInit {
 
          if(line != undefined){
 
-           let res = await this.wmsService.MoveBinToBin_LP(data.lp.PLULPDocumentNo,data.lp.PLUZoneCode,data.lp.PLUBinCode,line.BinCode,
-            data.lp.PLULocationCode);
-            console.log(res);
+          let objMove =  {
+            LPNo: data.lp.PLULPDocumentNo,
+            Zone: data.lp.PLUZoneCode,
+            FromBin:data.lp.PLUBinCode,
+            ToBin:line.BinCode,
+            LocationCode: data.lp.PLULocationCode
+            }
+
+        
+           let res = await this.wmsService.MoveBinToBinArray_LP([objMove]);
+
            if(res.Error) throw new Error(res.Error.Message);
            if(res.error) throw new Error(res.error.message);
            if(res.message) throw new Error(res.message);
@@ -395,6 +420,13 @@ export class PagueInquiriesComponent implements OnInit {
            this.intServ.alertFunc(this.js.getAlert('success','',`License plate ${data.lp.PLULPDocumentNo} moved from bin ${data.lp.PLUBinCode} 
            to ${line.BinCode}`));   
          
+           objMove =  {
+            LPNo: "",
+            Zone: "",
+            FromBin: "",
+            ToBin: "",
+            LocationCode: ""
+            }
     
          }else{
           // this.intServ.alertFunc(this.js.getAlert('error','',''))

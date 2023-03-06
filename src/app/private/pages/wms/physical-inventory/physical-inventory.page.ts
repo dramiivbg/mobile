@@ -41,7 +41,12 @@ export class PhysicalInventoryPage implements OnInit {
 
  async ngOnInit() {
   this.lists = await  this.storage.get('inventory');
-  this.listPhysical = await this.storage.get('inventory');
+  this.listPhysical = await  this.storage.get('inventory');
+  
+  this.lists.map(x => {
+    let line = this.bins.find(b => b === x.BinCode);
+    if(line === null || line === undefined)this.bins.push(x.BinCode);
+  });
 
   console.log(this.lists);
 
@@ -120,9 +125,12 @@ export class PhysicalInventoryPage implements OnInit {
         let code = barCodeData.text;
         let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(), this.locate);
   
-        switch(this.bin === '' || !res.Error){
+      switch(this.bin === '' || !res.Error){
 
-          case true:
+        case true:
+          
+          let bin = this.bins.find(x => x === code.toUpperCase());
+         if(bin !=  undefined){
           this.lps = [];
           this.intServ.loadingFunc(true);
           console.log(res);
@@ -219,7 +227,16 @@ export class PhysicalInventoryPage implements OnInit {
             this.intServ.loadingFunc(false);
             this.intServ.alertFunc(this.js.getAlert('error','', (res.Error && resI.Error)?`The bin ${code.toUpperCase()}  does not exist`:`Please scan a bin!` ));
           }
-          break;
+         
+
+         } else{
+
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('alert',' ', `The bin ${code.toUpperCase()} is not in your inventory`));
+         }
+
+         break;
+         
 
           case false:
             console.log(code)
@@ -316,7 +333,7 @@ export class PhysicalInventoryPage implements OnInit {
             
             switch(find){
 
-              case undefined || null:
+              case undefined:
                 this.intServ.loadingFunc(false);
                 this.intServ.alertFunc(this.js.getAlert('error','', 'Does not exist in the inventory'));
                 break;
@@ -337,9 +354,9 @@ export class PhysicalInventoryPage implements OnInit {
                 :`The Pallet ${code.toUpperCase()} is registered in the system in the Bin ${find.BinCode}, Do you want to tell it in this Bin?` ,async() => {
   
                   this.intServ.loadingFunc(true);
-                  try {
+                 
   
-  
+               /*
                     if(!res.Error){
   
                       let resB = await this.wmsService.MoveBinToBin_LP(lp.PLULPDocumentNo,find.ZoneCode,find.BinCode,this.bin,find.LocationCode);
@@ -369,13 +386,10 @@ export class PhysicalInventoryPage implements OnInit {
   
                     }
                 
-                             
+                          
                     
-                  } catch (error) {
-                    this.intServ.loadingFunc(false);
-                    this.intServ.alertFunc(this.js.getAlert('error','',error.message));
-                    
-                  }
+                    */
+                  
             
                 }));
               }else{
@@ -411,7 +425,7 @@ async show(item:any){
       let boolean = false;
       if(item.seriales.length > 0){
 
-        item.seriales.map(x => {x['proceded'] = false; list.push(x); boolean = x.Quantity > 1?true:false });
+        item.seriales.map(x => {x['proceded'] = false; list.push(x); boolean = x.SerialNo === "" ?true:false });
     
         const popover = await this.popoverController.create({
           component: PopoverListSNComponent,
@@ -477,9 +491,8 @@ public async popoverNonCount(){
           let line = this.listPhysical.find(o => x.SerialNo === o.SerialNo);
           console.log(line);
           let line2 = seriales.find(k => k.SerialNo === x.SerialNo);
-          if(line2 === undefined || line2 === null){
-            line.QtyPhysInventory = 0;
-          }else{
+          if(line2 !== undefined){
+          
             this.listaCount.map((x,i) => x.LineNo === line.LineNo?this.listaCount.splice(i,1):x);        
             this.listaCount.push(line);
           }
@@ -749,33 +762,6 @@ public async popoverNonCount(){
 
     this.intServ.loadingFunc(true);
 
-    let  listD = {
-      name: "WarehouseJournalLine",
-      fields: [ {
-        name: "JournalTemplateName",
-        value: "",
-      },
-      {
-      
-        name: "JournalBatchName",
-        value: "",
-      },
-      {
-        name: "LineNo",
-        value: "",
-      },
-     
-      {
-        name: "LocationCode",
-        value: "",   
-      },
-  
-      {
-        name: "LPDocumentNo",
-        value: "",      
-      }]
-    };
-
     let obj = [];
 
     for (const key in listNoCount) {
@@ -784,110 +770,128 @@ public async popoverNonCount(){
       if(line === undefined || line === null)obj.push(listNoCount[key]);
  
     }
+    
+    let listMoveBin = []
+
+    let listDelet = [];
+
     for (const key in obj) {
   
       if(obj[key].PLUParentLPNo === null && obj[key].PLULPDocumentNo != null){
 
-        try {
+      let objL =   {
+          LPNo: obj[key].PLULPDocumentNo,
+          Zone:obj[key].ZoneCode,
+          FromBin:obj[key].BinCode,
+          ToBin:"NOCOUNT",
+          LocationCode:obj[key].LocationCode
+          }  
 
-          let res =  await this.wmsService.MoveBinToBin_LP(obj[key].PLULPDocumentNo,obj[key].ZoneCode,obj[key].BinCode,"NOCOUNT",obj[key].LocationCode);
-       
-       console.log(res);
+          listMoveBin.push(objL);
 
-       if(res.Error) throw new Error(res.Error.Message);
-      
-       if(res.error) throw new Error(res.error.message);
+          objL =   {
+            LPNo: "",
+            Zone:"",
+            FromBin:"",
+            ToBin:"",
+            LocationCode:""
+            }
 
-       if(res.message) throw new Error(res.message);
-       
-
-    
-
-        for (const i in listNoCount) {
-
-          if(listNoCount[i].PLULPDocumentNo === obj[key].PLULPDocumentNo){
-
-            listD = {
-              name: "WarehouseJournalLine",
-              fields: [ {
-                name: "JournalTemplateName",
-                value: listNoCount[i].JournalTemplateName,
-              },
-              {
-              
-                name: "JournalBatchName",
-                value: listNoCount[i].JournalBatchName,
-              },
-              {
-                name: "LineNo",
-                value: listNoCount[i].LineNo,
-              },
-             
-              {
-                name: "LocationCode",
-                value: listNoCount[i].LocationCode,   
-              },
-          
-              {
-                name: "LPDocumentNo",
-                value: listNoCount[i].PLULPDocumentNo,      
-              }]
-            };
-      
         
-            let res2 =  await this.wmsService.Delete_WarehouseInvPhysicalCount(listD);
-  
-          
-            if(res2.Error) throw new Error(res2.Error.Message);
-           
-           // if(res2.error) throw new Error(res2.error.message);
+    for (const i in listNoCount) {
+
+      if(listNoCount[i].PLULPDocumentNo === obj[key].PLULPDocumentNo){
      
-           // if(res2.message) throw new Error(res2.message);
-            
-       
-             listD = {
-               name: "WarehouseJournalLine",
-               fields: [ {
-                 name: "JournalTemplateName",
-                 value: "",
-               },
-               {
-               
-                 name: "JournalBatchName",
-                 value: "",
-               },
-               {
-                 name: "LineNo",
-                 value: "",
-               },
-              
-               {
-                 name: "LocationCode",
-                 value: "",   
-               },
-           
-               {
-                 name: "LPDocumentNo",
-                 value: "",      
-               }]
-             };
-          }
+       let listD = {
+          name: "WarehouseJournalLine",
+          fields: [ {
+            name: "JournalTemplateName",
+            value: listNoCount[i].JournalTemplateName,
+          },
+          {
           
-        }
-  
-    
-          
-        } catch (error) {
-          this.intServ.loadingFunc(false);
-          this.intServ.alertFunc(this.js.getAlert('error','', error.message));
-        }
+            name: "JournalBatchName",
+            value: listNoCount[i].JournalBatchName,
+          },
+          {
+            name: "LineNo",
+            value: listNoCount[i].LineNo,
+          },
+         
+          {
+            name: "LocationCode",
+            value: listNoCount[i].LocationCode,   
+          },
       
+          {
+            name: "LPDocumentNo",
+            value: listNoCount[i].PLULPDocumentNo,      
+          }]
+        };
+
+        listDelet.push(listD);
+
+
+        listD = {
+          name: "WarehouseJournalLine",
+          fields: [ {
+            name: "JournalTemplateName",
+            value: "",
+          },
+          {
+          
+            name: "JournalBatchName",
+            value: "",
+          },
+          {
+            name: "LineNo",
+            value: "",
+          },
+         
+          {
+            name: "LocationCode",
+            value: "",   
+          },
+      
+          {
+            name: "LPDocumentNo",
+            value: "",      
+          }]
+        };
+
+         }
+    
+      }
+    
       }
     }
-
+        
      
     try {
 
+
+    if(listNoCount.length > 0){
+
+              
+    let res5 =  await this.wmsService.MoveBinToBinArray_LP(listMoveBin);
+       
+    console.log(res5);
+
+    if(res5.Error) throw new Error(res5.Error.Message);
+   
+    if(res5.error) throw new Error(res5.error.message);
+
+
+
+        let res3 =  await this.wmsService.Delete_WarehouseInvPhysicalCount(listDelet);
+
+      
+        if(res3.Error) throw new Error(res3.Error.Message);
+
+        if(res3.error) throw new Error(res3.error.message);
+
+    }  
+ 
       let res2 = await this.wmsService.Register_WarehouseInvPhysicalCount(this.locate, this.template,this.batch);
 
       if(res2.Error) throw new Error(res2.Error.Message);
@@ -897,6 +901,7 @@ public async popoverNonCount(){
 
       if(res2.message) throw new Error(res2.message);
 
+      let lists = [];
       let res = new Date();
       
       let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1;
@@ -905,22 +910,23 @@ public async popoverNonCount(){
   
       let fecha = res.getFullYear()+'-'+month+'-'+day;
 
-      let res4 = await this.wmsService.Create_WarehouseInvPhysicalCount("STO","",this.locate,fecha,"TOO",this.template,this.batch);
+       this.bins.map(async x => {
 
-      if(res4.Error) throw new Error(res4.Error.Message);
-      if(res4.error) throw new Error(res4.error.message);
-      if(res4.message) throw new Error(res4.message);
+        let res4 = await this.wmsService.Create_WarehouseInvPhysicalCount("STO",x,this.locate,fecha,"TOO",this.template,this.batch);
+
+        let  items = await this.wmsService.listTraking(res4.Warehouse_Physical_Inventory_Journal);
+        lists.push(...items);
         
+       });
+
+       
       this.lps = [];
       this.listaCount = [];
       this.bin = '';
-  
-    let  items = await this.wmsService.listTraking(res4.Warehouse_Physical_Inventory_Journal);
+      this.counted = 0;
+     this.storage.set('inventory', lists);
 
-
-     this.storage.set('inventory',items);
-
-     this.lists = await  this.storage.get('inventory');
+     this.lists = lists;
 
      this.intServ.loadingFunc(false);
      this.bin = '';
@@ -935,6 +941,8 @@ public async popoverNonCount(){
    
 
    }
+
+  
 
   async onSyncTemp(){
 
@@ -957,6 +965,13 @@ public async popoverNonCount(){
     this.lists = items;
 
     console.log(this.lists);
+
+    this.bins = [];
+
+    this.lists.map(x => {
+      let line = this.bins.find(b => b === x.BinCode);
+      if(line === null || line === undefined)this.bins.push(x.BinCode);
+    });
 
     this.intServ.loadingFunc(false);
 

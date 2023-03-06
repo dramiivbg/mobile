@@ -78,7 +78,7 @@ export class PopoverItemTrakingComponent implements OnInit {
  
    this.frm.controls['QtyBase'].disable();
   
-   this.receive =  (await this.storage.get(`${this.item.LineNo} receive`) != undefined && await this.storage.get(`${this.item.LineNo} receive`) != null)?await this.storage.get(`${this.item.LineNo} receive`):0;
+   this.receive =  (await this.storage.get(`${this.item.No} ${this.item.LineNo}`) != undefined && await this.storage.get(`${this.item.No} ${this.item.LineNo}`) != null)?await this.storage.get(`${this.item.No} ${this.item.LineNo}`):0;
 
     console.log(this.code);
     console.log(this.item);
@@ -248,7 +248,7 @@ async  view(){
         this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
         console.log(this.trakingOpen);
 
-        this.receive = await this.storage.get(`${this.item.LineNo} receive`);
+        this.receive = await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
 
         break;
   
@@ -294,11 +294,11 @@ async  view(){
          let res = await this.wmsService.GetItemTrackingSpecificationOpen(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
          this.trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):this.trakingOpen;
          
-         this.receive = await this.storage.get(`${this.item.LineNo} receive`);
+         this.receive = await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
 
          this.receive+= this.Quantity;
          
-        this.storage.set(`${this.item.LineNo} receive`, this.receive);
+        this.storage.set(`${this.item.No} ${this.item.LineNo}`, this.receive);
 
          let list = [
            {

@@ -56,7 +56,7 @@
 
 
 <ng-container *ngIf="!Boolean">
-  <ion-content (click)="save()">
+  <ion-content (ionBlur)="save()">
     <form [formGroup]="frm2" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col size="2">
