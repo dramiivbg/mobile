@@ -100,11 +100,12 @@ export class PhysicalInventoryPage implements OnInit {
 
   const { data } = await popover.onDidDismiss();
 
-     if(data.line != undefined)this.counting(data.line);
+
+     if(data.line != undefined)this.counting(data.line, obj);
  }
 
- async counting(obj){
-
+ async counting(obj, pallet:any = undefined){
+  console.log('pallet',pallet);
   const popover = await this.popoverController.create({
     component: PopoverCountingComponent,
     cssClass: 'popoverCountingComponent',
@@ -115,7 +116,7 @@ export class PhysicalInventoryPage implements OnInit {
   await popover.present();
   const { data } = await popover.onDidDismiss();
 
-  if(data.qty != undefined) this.WritePI(data.obj,data.qty,data.seriales,data.type);
+  if(data.qty != undefined) this.WritePI(data.obj,data.qty,data.seriales,data.type, pallet);
 }
 
   async onBarCode(){
@@ -449,7 +450,7 @@ async show(item:any){
 
       const { data } = await popover.onDidDismiss();
 
-      if(data.line != undefined)this.counting(data.line);
+      if(data.line != undefined)this.counting(data.line, item);
 
       console.log(data);
 
@@ -477,7 +478,7 @@ public async popoverNonCount(){
   this.router.navigate(['page/wms/physicalNoCount']);
 }
 
-  async WritePI(obj:any,qty:any,seriales:any,type:any){
+  async WritePI(obj:any,qty:any,seriales:any,type:any, pallet:any = undefined){
 
     this.intServ.loadingFunc(true);
 
@@ -485,35 +486,93 @@ public async popoverNonCount(){
   
      let lists:any[] = [];
 
-     switch(type){
+    switch(type){
       case 'serial':
+
+      if(pallet == undefined){
+
+     
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+       
+       if(find === undefined) this.listaCount.push(obj);
+         
+          
+      }else{
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === pallet.PLULPDocumentNo);  
+        let find2  = this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+
+       if(find === undefined)this.listaCount.push(pallet);
+       if(find2 === undefined) this.listaCount.push(obj);
+      }
+
+      console.log(seriales);
         obj.seriales.map(x => {
           let line = this.listPhysical.find(o => x.SerialNo === o.SerialNo);
           console.log(line);
           let line2 = seriales.find(k => k.SerialNo === x.SerialNo);
-          if(line2 !== undefined){
+          if(line2 == undefined){
           
-            this.listaCount.map((x,i) => x.LineNo === line.LineNo?this.listaCount.splice(i,1):x);        
-            this.listaCount.push(line);
-          }
-          for (const key in this.listCounted) {
-            if (line.LineNo === Number(key)) {
-              console.log(key);
-              this.counted-= line.QtyPhysInventory;
-              
+             line.QtyPhysInventory = 0;
+
+          }else{
+            line.QtyPhysInventory = 1;
+
+            for (const key in this.listCounted) {
+              if (line.LineNo === Number(key)) {
+                console.log(key);
+                this.counted-= line.QtyPhysInventory;
+                
+              }
             }
+            this.listCounted[line.LineNo] = line.QtyPhysInventory;
+            this.counted += line.QtyPhysInventory;
+            
           }
-          this.listCounted[line.LineNo] = line.QtyPhysInventory;
-          this.counted += line.QtyPhysInventory;
+        
           listI.push(line);     
        });
+
+       console.log('pallet =>',pallet);
+
+       if(pallet != undefined){
+
+         for (const key in pallet.childrens) {
+          let line = this.listaCount.find(x => x.PLULPDocumentNo === pallet.childrens[key].PLULPDocumentNo);
+          if(line === undefined){
+            this.listPhysical.map(o => {
+              if(pallet.childrens[key].PLULPDocumentNo === o.PLULPDocumentNo){
+                o.QtyPhysInventory = 0;
+                listI.push(o);
+              }
+            });
+
+          }
+        
+         }
+      
+       }
+
         break;
 
       default:
+
+      if(pallet === undefined){
+
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+
+        if(find === undefined)this.listaCount.push(obj);
+
+      }else{
+
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === pallet.PLULPDocumentNo);  
+         let find2  = this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+
+        if(find === undefined)this.listaCount.push(pallet);
+        if(find2 === undefined) this.listaCount.push(obj);
+          
+      }
         obj.seriales.map(x => {
           let line = this.listPhysical.find(o => x.LPDocumentNo === o.PLULPDocumentNo);
-          this.listaCount.map((x,i) => x.LineNo === line.LineNo?this.listaCount.splice(i,1):x); 
-          this.listaCount.push(line);
           console.log(line);
           for (const key in this.listCounted) {
             console.log('line =>',key)
@@ -528,8 +587,31 @@ public async popoverNonCount(){
           this.counted += line.QtyPhysInventory;
           listI.push(line);   
         });
+
+        console.log('pallet =>',pallet);
+        
+       if(pallet != undefined){
+
+        for (const key in pallet.childrens) {
+
+          let line = this.listaCount.find(x => x.PLULPDocumentNo === pallet.childrens[key].PLULPDocumentNo);
+         if(line === undefined){
+          this.listPhysical.map(o => {
+            if(pallet.childrens[key].PLULPDocumentNo === o.PLULPDocumentNo){
+              o.QtyPhysInventory = 0;
+              listI.push(o);
+            }
+          });
+
+         }
+       
+        }
+
+      }
         break;
      }
+   
+   
 
      console.log(this.listCounted);
    
@@ -705,7 +787,7 @@ public async popoverNonCount(){
    
        if(res.Error) throw new Error(res.Error.Message);
           
-     //  if(res.error) throw new Error(res.error.message);
+       if(res.error) throw new Error(res.error.message);
 
      //  if(res.message) throw new Error(res.message);
    
@@ -727,12 +809,11 @@ public async popoverNonCount(){
     this.storage.set('inventory',items);
 
      this.lists = items;
+     this.listPhysical = items;
      this.intServ.loadingFunc(false);
 
      this.intServ.alertFunc(this.js.getAlert('success', '', 'Successful'));
    
-     //  console.log(resR);
-       
        
      } catch (error) {
    
@@ -751,7 +832,7 @@ public async popoverNonCount(){
   let QtyNoCount = 0;
   let listDelet = [];
   this.lists.map(x => {if(x.BinCode === this.bin){
-  let line = this.listaCount.find(i => x.PLULPDocumentNo === i.PLULPDocumentNo);
+  let line = this.listaCount.find(i => x.PLULPDocumentNo === i.PLULPDocumentNo || x.PLUParentLPNo === i.PLULPDocumentNo);
   if(line === null || line === undefined){
       listNoCount.push(x);
       QtyNoCount += x.QtyPhysInventoryBase;
@@ -863,9 +944,91 @@ public async popoverNonCount(){
     
       }
     
-      }
+      }else 
+         if(obj[key].PLUParentLPNo !== null && obj[key].PLULPDocumentNo != null){
+          let objL =   {
+            LPNo: obj[key].PLUParentLPNo,
+            Zone:obj[key].ZoneCode,
+            FromBin:obj[key].BinCode,
+            ToBin:"NOCOUNT",
+            LocationCode:obj[key].LocationCode
+            }  
+  
+            listMoveBin.push(objL);
+  
+            objL =   {
+              LPNo: "",
+              Zone:"",
+              FromBin:"",
+              ToBin:"",
+              LocationCode:""
+              }
+
+              for (const i in listNoCount) {
+
+                if(listNoCount[i].PLUParentLPNo === obj[key].PLUParentLPNo){
+               
+                 let listD = {
+                    name: "WarehouseJournalLine",
+                    fields: [ {
+                      name: "JournalTemplateName",
+                      value: listNoCount[i].JournalTemplateName,
+                    },
+                    {
+                    
+                      name: "JournalBatchName",
+                      value: listNoCount[i].JournalBatchName,
+                    },
+                    {
+                      name: "LineNo",
+                      value: listNoCount[i].LineNo,
+                    },
+                   
+                    {
+                      name: "LocationCode",
+                      value: listNoCount[i].LocationCode,   
+                    },
+                
+                    {
+                      name: "LPDocumentNo",
+                      value: listNoCount[i].PLULPDocumentNo,      
+                    }]
+                  };
+          
+                  listDelet.push(listD);
+          
+          
+                  listD = {
+                    name: "WarehouseJournalLine",
+                    fields: [ {
+                      name: "JournalTemplateName",
+                      value: "",
+                    },
+                    {
+                    
+                      name: "JournalBatchName",
+                      value: "",
+                    },
+                    {
+                      name: "LineNo",
+                      value: "",
+                    },
+                   
+                    {
+                      name: "LocationCode",
+                      value: "",   
+                    },
+                
+                    {
+                      name: "LPDocumentNo",
+                      value: "",      
+                    }]
+                  };
+                }
+         }
     }
         
+  }
      
     try {
 
@@ -919,7 +1082,7 @@ public async popoverNonCount(){
         
        });
 
-       
+       console.log(lists);    
       this.lps = [];
       this.listaCount = [];
       this.bin = '';
@@ -927,21 +1090,24 @@ public async popoverNonCount(){
      this.storage.set('inventory', lists);
 
      this.lists = lists;
-
+     this.listPhysical = lists;
      this.intServ.loadingFunc(false);
      this.bin = '';
      this.quantity = 0;
+     this.listaCount = [];
+     this.listCounted = [];
+     
      this.intServ.alertFunc(this.js.getAlert('success', '',`Bin ${this.bin} has been successfully registered`))
       
     } catch (error) {
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.js.getAlert('error','', error.message));
     }
-  }));
+  
+}));
    
 
-   }
-
+}
   
 
   async onSyncTemp(){
@@ -963,7 +1129,8 @@ public async popoverNonCount(){
     this.storage.set('inventory',items);
   
     this.lists = items;
-
+    this.listPhysical = items;
+  
     console.log(this.lists);
 
     this.bins = [];

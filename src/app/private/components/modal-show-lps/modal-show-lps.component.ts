@@ -28,6 +28,9 @@ export class ModalShowLpsComponent implements OnInit {
 
    this.lpsT = this.lps; 
   this.boolean = true;
+
+  console.log(this.lps);
+  
   }
 
 

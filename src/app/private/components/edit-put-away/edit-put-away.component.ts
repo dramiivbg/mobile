@@ -1308,9 +1308,11 @@ export class EditPutAwayComponent implements OnInit {
         this.intServ.loadingFunc(true);
         let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
         let lps: any[] = [];
-        pallet.fields.filter(async (lp, index) => {
+        for (const key in pallet.fields) {
+        
           let p;
           let img;
+          let lp = pallet.fields[key];
           let res = await this.wmsService.getLpNo(lp.PLUNo);
           if(!res.Error){
              p = await this.wmsService.ListLp(res);
@@ -1355,8 +1357,10 @@ export class EditPutAwayComponent implements OnInit {
             )
             lps.push(lp);
           }      
+            
+          }
 
-        });
+
         this.intServ.loadingFunc(false);
         const modal = await this.modalCtrl.create({
           component: ModalShowLpsComponent,
