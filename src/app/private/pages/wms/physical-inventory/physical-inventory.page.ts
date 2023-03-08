@@ -34,6 +34,20 @@ export class PhysicalInventoryPage implements OnInit {
   public listBin = [];
   public data = '';
   public lpsT:any[] = [];
+  public resActive = false;
+  public resLp = [];
+  public resLpT = [];
+  public resBins = [];
+  public resListT = [];
+  public resList = [];
+  public resListPhysical = [];
+  public resListaCount = [];
+  public resListCounted = [];
+  public resListBin = [];
+
+
+
+
   constructor(private storage: Storage ,private intServ: InterceptService
     , private js: JsonService, private barcodeScanner: BarcodeScanner,
     public popoverController: PopoverController,
@@ -953,8 +967,10 @@ public async popoverNonCount(){
             ToBin:"NOCOUNT",
             LocationCode:obj[key].LocationCode
             }  
-  
-            listMoveBin.push(objL);
+              
+            let line = listMoveBin.find(x => x.LPNo === obj[key].PLUParentLPNo);
+
+            if(line === undefined)listMoveBin.push(objL);
   
             objL =   {
               LPNo: "",
@@ -995,7 +1011,8 @@ public async popoverNonCount(){
                     }]
                   };
           
-                  listDelet.push(listD);
+                  let line = listDelet.find(x => x.fields[4].value === listD.fields[4].value);
+                  if(line === undefined)listDelet.push(listD);
           
           
                   listD = {
@@ -1106,6 +1123,48 @@ public async popoverNonCount(){
   
 }));
    
+
+}
+
+clean(){
+
+  this.resActive = true;
+
+   this.resLp = this.lps;
+  this.resLpT = this.lpsT
+  this.resBins = this.bins;
+  this.resListT = this.listT;
+  this.resList = this.list;
+  this.resListPhysical = this.listPhysical;
+  this.resListaCount = this.listaCount;
+  this.resListCounted = this.listCounted;
+  this.resListBin = this.listBin;
+
+  this.lps = [];
+  this.lpsT = []
+  this.bins = [];
+  this.listT = [];
+  this.list = [];
+  this.listPhysical = [];
+  this.listaCount = [];
+  this.listCounted = [];
+  this.listBin = [];
+
+}
+
+restore(){
+
+  this.resActive = false;
+
+  this.lps =  this.resLp;
+  this.lpsT =  this.resLpT;
+  this.bins = this.resBins;
+  this.listT = this.resListT;
+  this.list = this.resList;
+  this.listPhysical = this.resListPhysical;
+  this.listaCount = this.resListaCount;
+  this.listCounted = this.resListCounted;
+  this.listBin = this.resListBin;
 
 }
   

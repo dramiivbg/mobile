@@ -12,4 +12,9 @@ ion-fab-button[data-desc] {
     position: relative;
 }
 
+ion-fab-button{
+    --background: linear-gradient(to bottom, var(--ion-color-primary), var(--ion-color-primary-background));
+}
+
+
 

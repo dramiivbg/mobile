@@ -1,21 +1,6 @@
 <PlureHeader type="1" title="Physical Inventory Journal" url="page/wms/wmsMain" notify="0"></PlureHeader>
 
-<!--
-<ion-fab slot="fixed" vertical="top" horizontal="end" >
-  <ion-fab-button color="secondary">
-    <ion-icon md="checkmark-done-outline" ios="checkmark-done-outline"></ion-icon>
-  </ion-fab-button>
-  <ion-fab-list side="bottom">
-    <ion-fab-button color="secondary" (click)="popoverCount()" data-desc="Count">
-      <ion-icon name="checkmark-circle-outline"></ion-icon>
-    </ion-fab-button>
 
-    <ion-fab-button color="danger" (click)="popoverNonCount()" data-desc="Non Count">
-      <ion-icon name="close-circle-outline"></ion-icon>
-    </ion-fab-button>
-
-  </ion-fab-list>
-</ion-fab> -->
 
 
 
@@ -54,6 +39,20 @@
     </div>
 
     <div class="accorn">
+      <ion-fab horizontal="end">
+        <ion-fab-button>
+          <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-list side="start">
+          <ion-fab-button (click)="clean()">
+            <img  src="../../../../assets/img/broom.svg" alt="">
+          </ion-fab-button>
+          <ion-fab-button (click)="restore()" *ngIf="resActive">
+            <img  src="../../../../assets/img/restore.svg" alt="">
+          </ion-fab-button>
+        </ion-fab-list>
+      </ion-fab>
+      
       <div class="accorn-body">
         <div class="lines">
 
