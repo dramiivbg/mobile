@@ -51,6 +51,7 @@ export class EditPutAwayComponent implements OnInit {
   public scanLP: boolean = true;
   public scanBin: boolean = false;
 
+  public confirm: boolean;
   public itemsG: any[];
   public groupItems: any[] = [];
 
@@ -140,19 +141,16 @@ export class EditPutAwayComponent implements OnInit {
     this.initItem = (await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != undefined &&
       await this.storage.get(`init item ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init item ${this.whsePutAway.fields.No}`) : [];
 
-    this.initV = [];
-
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
       && await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
 
-   // if (this.initV.length === 0) this.init();
+   console.log(this.initV);
 
    if(this.initV.length === 0)this.init();
   
     if (this.initItem != null) this.initI();
 
-    console.log(this.initItem);
-
+    
     if (this.initV.length > 0) {
       this.QtyTotal = this.initV.length;
     }
@@ -406,54 +404,30 @@ export class EditPutAwayComponent implements OnInit {
       let cantidad = 0;
       let res: any[] = [];
       let qtyR = this.QtyTotal - this.lps.length;
-      let qtyI = this.itemsL.length - this.listI.length;
+      let qtyI = this.listI.length - this.itemsL.length;
       cantidad = qtyR + qtyI;
 
       let lpR: any[] = [];
 
-      this.initV.filter(lp => {
-
-        let find = this.lps.filter(lpC => lpC.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-        let line = res.find(bin => bin === lp.fields.place);
-
+      for (const key in this.initV) {               
+        let find = this.lps.find(lpC => lpC.fields.PLULPDocumentNo === this.initV[key].fields.PLULPDocumentNo);
+        let line = res.find(bin => bin === this.initV[key].fields.place);
         if ((find === null || find === undefined) && (line === null || line === undefined)) {
-
-          res.push(lp.fields.place);
+          res.push(this.initV[key].fields.place);
 
         }
-      });
-
-      this.listI.filter(item => {
-
-        let find = this.itemsL.filter(itemC => itemC.LineNo === item.LineNo);
-
-        let line = res.find(bin => bin === item.place);
-
-        if ((find === null || find === undefined) && (line === null || line === undefined)) {
-
-          res.push(item.place);
-
-        }
-
-      });
-
-      let update = {
-
-        ActivityType: 1,
-        No: "",
-        ItemNo: "",
-        LineNo: "",
-        ZoneCode: "",
-        LocationCode: "",
-        BinCode: "",
-        Quantity: 0
       }
 
+      for (const key in this.listI) {
+        let find = this.itemsL.find(itemC => itemC.LineNo === this.listI[key].LineNo);
+        let line = res.find(bin => bin === this.listI[key].place);
+        if ((find === null || find === undefined) && (line === null || line === undefined)) {
+         res.push(this.listI[key].place);
 
+        }
+      }
 
-
-
+   
       console.log(res);
       console.log(this.initV);
 

@@ -335,7 +335,7 @@ export class WmsReceiptPage implements OnInit {
 
      let qty = 0
 
-     
+     // unifica los item con seriales  con su respectivo LP 
   for (const key in this.list) {
         for (const j in res2) {
           if (res2[j].PLULPDocumentNo === this.list[key].PLULPDocumentNo) {
@@ -348,30 +348,11 @@ export class WmsReceiptPage implements OnInit {
         
         this.list[key]['seriales'] = (temp[0].PLULotNo != null || temp[0].PLUSerialNo != null)?temp: [];
         this.list[key].PLUQuantity = qty;
+        this.LpL.push(this.list[key]);
         temp = [];
         qty = 0;
       }
      
-  
-
-      let contador = 0;
-      this.cantidades = [];
-
-      this.LpL = [];
-
-      for (const key in items) {
-        for (const i in this.list) {
-          if (this.list[i].PLUWhseLineNo  === items[key].LineNo) {
-
-            contador++;
-            this.LpL.push(this.list[i]);
-          }
-        }
-
-        console.log(this.LpL);
-    
-   }   
-   console.log(this.cantidades);
     this.intServ.loadingFunc(false);
     } catch (error) {
       this.intServ.loadingFunc(false);
@@ -380,7 +361,7 @@ export class WmsReceiptPage implements OnInit {
   }
 
 
-
+//muestra el contenido del  LP
   showLPs(item: any) {
     this.intServ.loadingFunc(true);
     let list = [];
@@ -475,6 +456,7 @@ export class WmsReceiptPage implements OnInit {
 
       if (pallet.length > 0 || pallet != undefined) {
 
+        // crea  un vector con pallet sin repetir
         for (const i in pallet) {
 
           for (const j in pallet2) {
@@ -510,6 +492,7 @@ export class WmsReceiptPage implements OnInit {
         console.log('despues =>', pallet);
         console.log('despues =>', pallet2);
 
+        // agregar todos los hijos con sus respectivos pallet
         for (const i in pallet) {
           pallet[i].fields = [];
           let res = pallet[i].recordId.split(' ');
@@ -524,19 +507,22 @@ export class WmsReceiptPage implements OnInit {
           }
         }
 
+        //eliminar todos los pallet repetidos
+        for (const key in pallet) {
+
+          pallet.map((x,i) => (Number(key) != Number(i) && 
+          pallet[key].fields[0].PLULPDocumentNo === x.fields[0].PLULPDocumentNo)? pallet.splice(i,1):null);
+        
+        }
+
         console.log('final =>', pallet);
 
         let wareReceipts = this.wareReceipts;
 
-        let navigationExtras: NavigationExtras = {
-          state: {
-            pallet,
-            wareReceipts,
-            new: false
-          },
-          replaceUrl: true
-        };
-        this.router.navigate(['page/wms/listPallet'], navigationExtras);
+        this.storage.set(`${this.wareReceipts.No}, pallet`, pallet);
+        this.storage.set(`wareReceipt`, wareReceipts);
+
+        this.router.navigate(['page/wms/listPallet']);
 
       }
       else {
@@ -572,6 +558,7 @@ export class WmsReceiptPage implements OnInit {
 
         try {
 
+          //postea el wareshouse receipt
           let postWR = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
 
           console.log(postWR);
@@ -581,13 +568,17 @@ export class WmsReceiptPage implements OnInit {
 
           this.wmsService.setPutAway(postWR);
 
-          this.getReceipt();
+          if(postWR.Partial){
+            this.getReceipt();
+          }else{
+            this.router.navigate(['/page/wms/wmsMain']);
+          }
 
-          this.items.map(x =>  this.storage.set(`${x.No} ${x.LineNo}`, 0));
+          if(postWR.Partial)this.items.map(x =>  this.storage.set(`${x.No} ${x.LineNo}`, 0));
+
           console.log('postWR', postWR);
 
           this.intServ.loadingFunc(false);
-
 
           this.intServ.alertFunc(this.js.getAlert('continue', '', 'Continue Process Put-Away?', () => {
 
@@ -605,12 +596,10 @@ export class WmsReceiptPage implements OnInit {
 
                   let dataPw = this.wmsService.getPutAway();
 
-
+                  //postea el wareshouse put away por default
                   let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
 
-
                   console.log('postWP', data);
-
 
                   if (data.Error) throw new  Error(data.Error.Message);
                   if (data.error) throw new  Error(data.error.message);
@@ -619,8 +608,11 @@ export class WmsReceiptPage implements OnInit {
                   this.intServ.loadingFunc(false);
                   this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
 
-
+                   if(postWR.Partial){
                     this.router.navigate(['/page/wms/wmsReceipt']);
+                   }else{
+                    this.router.navigate(['/page/wms/wmsMain']);
+                   }
                   }))
 
 

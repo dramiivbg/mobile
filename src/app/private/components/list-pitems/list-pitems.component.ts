@@ -6,7 +6,7 @@ import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
-import { error } from 'console';
+import { Storage } from '@ionic/storage';
 import { ListPalletComponent } from '../list-pallet/list-pallet.component';
 import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
 
@@ -46,119 +46,44 @@ export class ListPItemsComponent implements OnInit {
     , private intServ: InterceptService
     , private js: JsonService
     , private route: ActivatedRoute
-    , private router: Router,  public popoverController: PopoverController,   private general: GeneralService, private barcodeScanner: BarcodeScanner,
-    private modalCtrl: ModalController) { 
+    , private router: Router,  
+    public popoverController: PopoverController,   
+    private general: GeneralService, 
+    private barcodeScanner: BarcodeScanner,
+    private modalCtrl: ModalController,
+    private storage: Storage) { 
 
-      let objFunc = {
-        func: () => {
-          this.onBack();
-        }
-      };
-      this.intServ.appBackFunc(objFunc);
-      this.route.queryParams.subscribe(async params => {
-        if (this.router.getCurrentNavigation().extras.state) {
-          this.routExtras = this.router.getCurrentNavigation().extras.state;
-  
-        
-          
-        } else {
-          this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
-        }
-
-      });
+    
     }
 
  async  ngOnInit() {
-
-
-    let items: any[] = [];
-
-
-    if(this.routExtras.listItem != undefined && this.routExtras.listLp != undefined && this.routExtras.pallet != undefined && this.routExtras.wareReceipts != undefined
-       && this.routExtras.pallets != undefined && this.routExtras.listLp != undefined && this.routExtras.listItem != undefined){
-
-
-      localStorage.setItem('listItem', this.routExtras.listItem);
-      localStorage.setItem('listLp', this.routExtras.listLp);
-      localStorage.setItem('pallet',  this.routExtras.pallet);
-      localStorage.setItem('wareReceipts', this.routExtras.wareReceipts);
-      localStorage.setItem('pallets', this.routExtras.pallets);
-      localStorage.setItem('lists ', this.routExtras.listLp);
-      localStorage.setItem('listsI', this.routExtras.listItem);
-      localStorage.setItem('listP ',this.routExtras.listP);
-
-
-    }
-  
-    this.listItem = (this.routExtras.listItem != undefined) ? this.routExtras.listItem : localStorage.getItem('listItem') ;
-
-
-
-    this.listLp  = (this.routExtras.listLp != undefined) ? this.routExtras.listLp : localStorage.getItem('listLp');
-
-
-    this.pallet  = (this.routExtras.pallet != undefined) ? this.routExtras.pallet : localStorage.getItem('pallet');
-
-    this.wareReceipts  = (this.routExtras.wareReceipts != undefined) ? this.routExtras.wareReceipts : localStorage.getItem('wareReceipts');
-
-   
-    this.pallets  = (this.routExtras.pallets != undefined) ? this.routExtras.pallets : localStorage.getItem('pallets');
-
-    this.lists  =  (this.routExtras.listLp != undefined) ? this.routExtras.listLp : localStorage.getItem('lists');
- 
-    this.listsI = (this.routExtras.listItem != undefined) ? this.routExtras.listItem : localStorage.getItem('listsI');
-
-    //console.log(listL);
-
-    
-    this.listP  = (this.routExtras.listP != undefined) ? this.routExtras.listP : localStorage.getItem('listP');
-
-   console.log(this.listItem, this.listLp, this.listP);
-
-
-   
-   
-
+  this.pallet =  await this.storage.get(`pallet`);
+    this.listItem =  await this.storage.get(`${this.pallet.fields[0].PLULPDocumentNo} listItem`);
+  this.listLp = await  this.storage.get(`${this.pallet.fields[0].PLULPDocumentNo} listLp`);
    let checkboxL = {testID: 0, testName: "", checked: false}
 
    let checkboxI = {testID: 0, testName: "", checked: false}
 
-
-   this.listLp.filter((lp, index) => {
-
-     this.QtyLP++;
+   for (const index in  this.listLp) {
+    this.QtyLP++;
     checkboxL.testID = Number(index),
     checkboxL.testName = `test${index}`
     checkboxL.checked = false;
-
     this.testListL.push(checkboxL);
    checkboxL = {testID: 0, testName: "", checked: false};
+   }
 
-   });
-
-
-   this.listItem.filter((item,index) =>{
-
+   for (const index in this.listItem) {
     this.QtyItem++;
     checkboxI.testID = Number(index),
     checkboxI.testName = `test${index}`
     checkboxI.checked = false;
-
     this.testListI.push(checkboxI);
    checkboxI = {testID: 0, testName: "", checked: false};
-   })
-
-
-
+   }
+  
 
    }
-
-
-  public onBack() {
-    this.router.navigate(['page/wms/listPallet'], { replaceUrl: true });
-  }
-
-
 
 
   enableLP(){
@@ -350,135 +275,82 @@ switch(ev.detail.checked){
 
 
   delect(){
-
-
     
     this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure to remove?`, async() =>{
 
-
-  if(this.boolean){
-
-    let Delete:any;
-
-
     this.intServ.loadingFunc(true);
 
+      if(this.listL.length > 0){
+        this.listL.forEach(async(item) => {
 
-    try {
+          try {
 
-
-
-      this.listL.forEach(async(item) => {
+            let res  =    await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
         
+             if(res.Error) throw new Error(res.Error.Message);
+             if(res.error) throw new Error(res.error.message);
+             
+             
+            this.listLp.forEach((lp,index) => {
 
-         await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
-
-      });
-
-   
+            if(lp.PLUNo === item.PLUNo){
+      
+             this.listLp.splice(index,1);
+             this.QtyLP-=1;
+            }
+            });
+              
+            } catch (error) {
+              this.intServ.loadingFunc(false);
+              return  this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+              
+            }
   
-  this.listL.forEach(async(item) =>{
-
-    this.listLp.forEach((lp,index) => {
-
-
-      if(lp.PLUNo === item.PLUNo){
-
-       this.listLp.splice(index,1);
-       this.QtyLP-=1;
-
+       });
 
       }
-    })
-    
 
+
+
+ if(this.listI.length > 0){
+  this.listI.filter(async(item) => {
+    try {
+
+    let res  =   await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
+
+     if(res.Error) throw new Error(res.Error.Message);
+     if(res.error) throw new Error(res.error.message);
+     
+      this.listItem.filter((item,index) => {
+  
+        if(item.PLUNo === item.PLUNo){
+      
+        this.listItem.splice(index,1);
+      
+        this.QtyItem-=1;
+    
+        }
+      });
+      
+    } catch (error) {
+      this.intServ.loadingFunc(false);
+      return  this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+      
+    }
+   
   });
+ } 
+  
+
     this.intServ.loadingFunc(false);
     this.intServ.alertFunc(this.js.getAlert('success', '', `The licence plate has been removed`, () => { this.router.navigate(['page/wms/wmsReceipt']);}));
 
     
-
-      
-    } catch (Error) {
-      
-      this.intServ.loadingFunc(false);
-
-      this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
-    }
   
+  }));
 
-    
-  }else{
+}
 
-   
-
-    this.intServ.loadingFunc(true);
-
-    try {
-
-      this.intServ.loadingFunc(true);
-
-
-      this.listI.filter(async(item) => {
-        await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
-
-      });
-
-   
-    
-
-  this.listI.filter(async(Item) =>{
-
-    this.listItem.filter((item,index) => {
-
-
-      if(item.PLUNo === Item.PLUNo){
-
-      this.listItem.splice(index,1);
-
-      this.QtyItem-=1;
-
-
-      }
-    })
-    
-
-  });
-    this.intServ.loadingFunc(false);
-    this.intServ.alertFunc(this.js.getAlert('success', '', `The Item has been removed`, () => {this.router.navigate(['page/wms/wmsReceipt']);}));
-
-    
-
- 
-
-      
-    } catch (Error) {
-      
-      this.intServ.loadingFunc(false);
-
-      this.intServ.alertFunc(this.js.getAlert('error', '', Error.message));
-    }
-  
-
-  }
-    
-    }))
-
-  }
-
-
- async back(){
-
-  let navigationExtras: NavigationExtras = {
-    state: {
-      pallet:this.pallets,
-      wareReceipts:this.wareReceipts,
-      new: false
-    },
-    replaceUrl: true
-  };
-  this.router.navigate(['page/wms/listPallet'], navigationExtras);
-  }
 
 
   removel(item:any,ev){
@@ -538,11 +410,6 @@ switch(ev.detail.checked){
     this.boolean = true;
   }
 
-
-
-
-
-  
 
 
   remove(){

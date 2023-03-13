@@ -45,7 +45,7 @@ export class PhysicalInventoryPage implements OnInit {
   public resListCounted = [];
   public resListBin = [];
 
-
+ 
 
 
   constructor(private storage: Storage ,private intServ: InterceptService
@@ -54,6 +54,7 @@ export class PhysicalInventoryPage implements OnInit {
     private wmsService: WmsService, public router: Router) { }
 
  async ngOnInit() {
+
   this.lists = await  this.storage.get('inventory');
   this.listPhysical = await  this.storage.get('inventory');
   
@@ -1128,27 +1129,31 @@ public async popoverNonCount(){
 
 clean(){
 
-  this.resActive = true;
+  if(this.lps.length === 0){
+    this.intServ.alertFunc(this.js.getAlert('alert','','There is nothing to clean'));
+  }else{
 
-   this.resLp = this.lps;
-  this.resLpT = this.lpsT
-  this.resBins = this.bins;
-  this.resListT = this.listT;
-  this.resList = this.list;
-  this.resListPhysical = this.listPhysical;
-  this.resListaCount = this.listaCount;
-  this.resListCounted = this.listCounted;
-  this.resListBin = this.listBin;
-
-  this.lps = [];
-  this.lpsT = []
-  this.bins = [];
-  this.listT = [];
-  this.list = [];
-  this.listPhysical = [];
-  this.listaCount = [];
-  this.listCounted = [];
-  this.listBin = [];
+    this.resActive = true;
+    this.resLp = this.lps;
+   this.resLpT = this.lpsT
+   this.resBins = this.bins;
+   this.resListT = this.listT;
+   this.resList = this.list;
+   this.resListPhysical = this.listPhysical;
+   this.resListaCount = this.listaCount;
+   this.resListCounted = this.listCounted;
+   this.resListBin = this.listBin;
+ 
+   this.lps = [];
+   this.lpsT = []
+   this.bins = [];
+   this.listT = [];
+   this.list = [];
+   this.listPhysical = [];
+   this.listaCount = [];
+   this.listCounted = [];
+   this.listBin = [];
+  }
 
 }
 

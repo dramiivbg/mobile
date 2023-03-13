@@ -199,17 +199,12 @@
 
 
 
-<PlureHeader type="1" title="New Pallet" url="page/wms/newPallet" notify="0" *ngIf="!boolean" (click)="exit()">
-</PlureHeader>
-
-
-
 <ion-content *ngIf="!boolean">
 
-  <ion-row>
+  <ion-row *ngIf="booleanL">
     <ion-col size="10">
       <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event)"
-        show-clear-button="always" clear-icon="close-outline" placeholder="Search LP" *ngIf="booleanL">
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search LP" >
       </ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
@@ -282,7 +277,7 @@
   <ion-row *ngIf="!booleanL">
     <ion-col size="10">
       <ion-searchbar [(ngModel)]="itemNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeI($event)"
-        show-clear-button="always" clear-icon="close-outline" placeholder="Search Item" *ngIf="!booleanL">
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search Item" >
       </ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
@@ -325,7 +320,7 @@
 
 
 
-        <ion-col *ngIf="item.Qty > 0  &&  testListI.length > 0">
+        <ion-col *ngIf="item.Qty > 0  && testListI.length > 0 && testListI[i].checked != undefined">
 
 
           <ion-checkbox  (ionChange)="applyItem(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
@@ -334,13 +329,13 @@
         </ion-col>
 
 
-        <ion-col size="3" *ngIf="item.Qty > 0">
+        <ion-col size="3" *ngIf="item.Qty > 0 && testListI[i].checked != undefined">
           <div>{{item.ItemNo}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.Qty > 0">
+        <ion-col size="4" *ngIf="item.Qty > 0 && testListI[i].checked != undefined">
           <div>{{item.Qty}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.Qty > 0">
+        <ion-col size="4" *ngIf="item.Qty > 0 && testListI[i].checked != undefined">
           <div>{{item.LineNo}}</div>
         </ion-col>
 
@@ -366,8 +361,8 @@
     <ion-badge>{{QtyItem}}</ion-badge>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)="disable()">
-    <ion-label class="itemfooterSave">Add</ion-label>
-    <ion-icon class="itemfooterSave" size="large" name="checkmark-done-circle-outline"></ion-icon>
+    <ion-label class="itemfooterSave">Home</ion-label>
+    <ion-icon class="itemfooterSave" size="large" name="home-outline"></ion-icon>
   </ion-tab-button>
 
 </ion-tab-bar>

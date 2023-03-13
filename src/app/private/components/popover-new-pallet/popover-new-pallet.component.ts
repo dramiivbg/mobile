@@ -7,6 +7,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 
+import { Storage } from '@ionic/storage';
 import { SqlitePlureService} from '@svc/sqlite-plure.service';
 import { AsyncLocalStorage } from 'async_hooks';
 import { ifError } from 'assert';
@@ -79,7 +80,7 @@ export class PopoverNewPalletComponent implements OnInit {
   
   constructor(public intServ: InterceptService, public generalService:GeneralService, public wmsService:WmsService,
     public router: Router,public popoverController: PopoverController , private barcodeScanner: BarcodeScanner, private js: JsonService
-    , private route: ActivatedRoute, private sqliteService: SqlitePlureService,
+    , private route: ActivatedRoute, private sqliteService: SqlitePlureService,private storage: Storage,
    ) { 
 
 
@@ -193,34 +194,50 @@ public onBack() {
 
 async onBarCode(){
 
-
-  this.intServ.loadingFunc(true);
   let listaL: any[] = [];
 
+  let items;
   let line:any = undefined;
   let boolean:Boolean = false;
 
+  listaL =  (await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} lps`) != null &&
+  await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} lps`) != undefined)? await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} lps`): [];
+  
+  items =  (await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} items`) != null &&
+  await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} items`) != undefined)? await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} items`): [];
+  
+if(listaL.length == 0){
+
+  this.intServ.loadingFunc(true);
+ 
+
   let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
     
-  let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
+  items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
   console.log(lps,items);
  
   this.lpsNo = (lps.Possible_LPChilds != "")?lps.Possible_LPChilds.split("|"):[];
+
+  console.log(this.lpsNo);
     
-  if(this.lpNo.length > 0){
-    this.lpsNo.filter(async(no) => {
-  
-      let lps = await this.wmsService.getLpNo(no);
+  if(this.lpsNo.length > 0){
+    for (const key in this.lpsNo) {
+      let lps = await this.wmsService.getLpNo(this.lpsNo[key]);
   
       let lp = await this.wmsService.ListLp(lps);
     
       listaL.push(lp);
-      
-    });
+    }
+    
   }
+
   
+  this.storage.set(`${this.pallet.fields.PLULPDocumentNo} lps`, listaL);
+  this.storage.set(`${this.pallet.fields.PLULPDocumentNo} items`, items);
   console.log(listaL);
   console.log(items);
+
+}
   this.intServ.loadingFunc(false);
   this.barcodeScanner.scan().then(
   async  (barCodeData) => {
@@ -476,26 +493,6 @@ async onBarCode(){
 
 
 
-exit(){
-
-
-  this.boolean = true;
-
-  this.items = [];
-this.lps = [];
-
-  this.testListI = [];
-
-  this.testListL = [];
-
-  this.traking = [];
-  this.QtyItem = 0;
-
-  this.QtyLP = 0;
-
-
-}
-
 async listLpOrItem(pallet:any){
 
 this.intServ.loadingFunc(true);
@@ -607,6 +604,9 @@ this.lps = [];
   this.testListI = [];
 
   this.testListL = []; 
+  this.QtyItem = 0;
+
+  this.QtyLP = 0;
 
   let contador = 0
 

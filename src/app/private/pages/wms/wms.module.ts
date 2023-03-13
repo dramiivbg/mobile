@@ -139,7 +139,6 @@ import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-i
     OptionsLpsOrItemsComponent,
     SplitItemComponent,
     CreatePhysicalInventoryComponent,
-    ListPalletComponent,
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
     ModalShowLpsComponent,

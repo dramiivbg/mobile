@@ -621,7 +621,7 @@ public async GetItemInfo(ItemNo:any){
     
     let p = await this.syncErp.processRequestParams('Delete_LPChild_to_LP_Pallet_From_WR', obj);
     let rsl = await this.syncErp.setRequest(p);
-  //  return rsl;
+    return rsl;
    
 } catch (error) {
     throw error;
@@ -711,7 +711,7 @@ public async GetItemInfo(ItemNo:any){
         
         let p = await this.syncErp.processRequestParams('Delete_ItemChild_to_LP_Pallet_From_WR', obj);
         let rsl = await this.syncErp.setRequest(p);
-      //  return rsl;
+        return rsl;
        
     } catch (error) {
         throw error;

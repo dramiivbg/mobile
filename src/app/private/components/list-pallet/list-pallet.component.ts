@@ -6,7 +6,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
-import Swal from 'sweetalert2';
+import { Storage } from '@ionic/storage';
 import { parse } from 'path';
 
 @Component({
@@ -39,56 +39,24 @@ export class ListPalletComponent implements OnInit {
     , private intServ: InterceptService
     , private js: JsonService
     , private route: ActivatedRoute
-    , private router: Router, private popoverController: PopoverController,private barcodeScanner: BarcodeScanner,private modalCtrl: ModalController) {
+    , private router: Router, private popoverController: PopoverController
+    ,private barcodeScanner: BarcodeScanner,private modalCtrl: ModalController,
+    private storage: Storage) {
 
-    let objFunc = {
-      func: () => {
-        this.onBack();
-      }
-    };
-    this.intServ.appBackFunc(objFunc);
-    this.route.queryParams.subscribe(async params => {
-      if (this.router.getCurrentNavigation().extras.state) {
-        this.routExtras = this.router.getCurrentNavigation().extras;
-
-
-      } else {
-        this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
-      }
-    });
-
+   
    }
 
   async ngOnInit() {
 
-   
-    
+    this.wareReceipts = await this.storage.get(`wareReceipt`);
 
-    this.wareReceipts = this.routExtras.state.wareReceipts; 
-
-    this.listPallet = this.routExtras.state.pallet;
+    this.listPallet = await this.storage.get(`${this.wareReceipts.No}, pallet`); 
 
     console.log('pallet =>',this.listPallet);
-
-
-    this.listPallet.filter(lp => {
-
-
-
-      let f  = new  Date(lp.fields[0].SystemCreatedAt);
-
-      let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
-      
-      
-    lp.fields[0].SystemCreatedAt = fecha;
-   
-  
-    });
 
     
     this.intServ.loadingFunc(false);
     
-
   }
 
 
@@ -144,19 +112,11 @@ export class ListPalletComponent implements OnInit {
 
    this.modalCtrl.dismiss({});
 
-    let navigationExtras: NavigationExtras = {
-      state: {
-        listItem, 
-        listLp,
-        listP,
-        pallet,
-        wareReceipts,
-        pallets,
-        new: false
-      },
-      replaceUrl: true
-    };
-    this.router.navigate(['page/wms/lists'], navigationExtras);
+   this.storage.set(`${pallet.fields[0].PLULPDocumentNo} listItem`, listItem);
+   this.storage.set(`${pallet.fields[0].PLULPDocumentNo} listLp`, listLp);
+   this.storage.set(`pallet`, pallet);
+
+    this.router.navigate(['page/wms/lists']);
 
   }
 
