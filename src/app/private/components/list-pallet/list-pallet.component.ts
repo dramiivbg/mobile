@@ -16,23 +16,14 @@ import { parse } from 'path';
 })
 export class ListPalletComponent implements OnInit {
 
- 
-
- // @Input() Pallet: any;
-
   public lpsNo: any[] = [];
 
   public boolean:Boolean = true;
   public lps: any[] = [];
 
- // @Input() WareReceipts: any;
-
-  private routExtras: any;
   public listPallet:any;
 
   public wareReceipts: any;
-
-  
 
 
   constructor(private wmsService: WmsService
@@ -60,9 +51,6 @@ export class ListPalletComponent implements OnInit {
   }
 
 
-  public onBack() {
-    this.router.navigate(['page/wms/wmsReceipt'], { replaceUrl: true });
-  }
 
 
   listLpOrItems(item:any){
@@ -83,32 +71,20 @@ export class ListPalletComponent implements OnInit {
 
    item.fields.filter((lp, index) => {
 
+    switch(lp.PLUType){
+      case 'LP':
+        listLp.push(item.fields[index]);
+        break
 
-    if(lp.PLUType == 'LP'){
-
-      listLp.push(item.fields[index]);
-
-
-    }else if(lp.PLUType == 'Item'){
-
-
-      listItem.push(item.fields[index]);
-
-
-    }else{
-
-
-      listP.push( item.fields[index]);
-
+      case 'Item':
+        listItem.push(item.fields[index]);
+        break;
     }
-   })
+
+   });
 
 
    let pallet = item;
-
-   let pallets = this.listPallet;
-
-   let wareReceipts = this.wareReceipts;
 
    this.modalCtrl.dismiss({});
 

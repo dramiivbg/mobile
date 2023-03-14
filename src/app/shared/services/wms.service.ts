@@ -63,6 +63,24 @@ export class WmsService {
 
  }
 
+ public async GetLPArrayByStatus(IsPallet:boolean,LicensePlateStatus:number){
+
+    
+    try {
+        let obj: any = [{
+            IsPallet,
+            LicensePlateStatus
+          }]; 
+        
+        let p = await this.syncErp.processRequestParams('GetLPArrayByStatus', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+
+ }
+
 
 
  public async GetLicencesPlateInPW(No: string, boolean: boolean){
@@ -1656,6 +1674,26 @@ public async Get_WarehouseJournalBatch(JournalTemplateName:string,UserID:string)
     }
 
     return array;
+}
+
+
+public async listPalletVoid(list):Promise<any>{
+
+    let obj = {}
+
+    let array = [];
+
+    for (const key in list) {
+      
+    obj = await this.fields(list[key].LicensePlatesHeaders.fields);
+
+    array.push(obj);
+
+    obj = {};
+
+}
+
+return array;
 }
 
     private async fields(fields:any): Promise<any>{

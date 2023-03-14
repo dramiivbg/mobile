@@ -1,0 +1,64 @@
+@import "~src/sass/popover-wms";
+@import "~src/sass/wms";
+
+.qtytoreceive {
+    font-weight: bold;
+}
+
+
+.newColor2 {
+    width: 100%;
+    margin: 0px 0 1px 0px;
+
+}
+
+
+.barcoideicon {
+    font-size: 30px;
+}
+
+.Title {
+    font-size: 16px;
+    text-align: center;
+    color: var(--ion-color-plureBlue);
+    font-weight: bold;
+}
+
+.subTitle {
+    font-size: 12px;
+    text-align: left;
+}
+
+
+.contentbody {
+    padding: 4px 0 4px 0;
+}
+
+.selectpopupitem {
+    border-bottom: none !important;
+    padding: 0 0 10px 0 !important;
+}
+
+ion-input.inputqty {
+    --padding-bottom: 10px;
+    --padding-end: 10px;
+    --padding-start: 10px;
+    --padding-top: 10px;
+}
+
+
+
+ion-searchbar.custom {
+    --border-radius: 23px;
+    max-width: 100%;
+}
+
+.dataitem{
+    font-size: 14px;
+    background-color: rgba(92, 171, 249, 0.08);
+    border-radius: 23px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: capitalize !important;
+  }
+
