@@ -63,6 +63,25 @@ export class WmsService {
 
  }
 
+ public async GetLicencesPlateByStatusGeneral(No:any,LicensePlateStatus:any){
+
+    
+    try {
+        let obj: any = [{
+            No,
+            LicensePlateStatus
+          
+        }]; 
+        
+        let p = await this.syncErp.processRequestParams('GetLicencesPlateByStatusGeneral', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+
+ }
+
  public async GetLPArrayByStatus(IsPallet:boolean,LicensePlateStatus:number){
 
     
@@ -238,7 +257,8 @@ public async GetItemInfo(ItemNo:any){
             let obj: any = [{
                 No: no
             }];
-            let p = await this.syncErp.processRequestParams('GetWarehouseReceipt', obj);
+            
+            let p = await this.syncErp.processRequestParams('GetWarehouseReceiptV3', obj);
             let rsl = await this.syncErp.setRequest(p);
             return rsl;
         } catch (error) {
@@ -558,7 +578,9 @@ public async GetItemInfo(ItemNo:any){
    }
 
 
-   public async Calcule_Possible_LPChilds_From_WR(LP_Pallet_No:any){
+   
+
+   public async Calcule_Possible_LPChilds_From_WR_V3(LP_Pallet_No:any){
 
 
     
@@ -573,7 +595,34 @@ public async GetItemInfo(ItemNo:any){
 
 
         
-        let p = await this.syncErp.processRequestParams('Calcule_Possible_LPChilds_From_WR', obj);
+        let p = await this.syncErp.processRequestParams('Calcule_Possible_LPChilds_From_WR_V3', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
+
+
+
+   public async Calcule_Possible_LPChilds_From_WR_V2(LP_Pallet_No:any){
+
+
+    
+    try {
+
+        let obj: any = [{
+
+            LP_Pallet_No
+            
+        }];
+
+
+
+        
+        let p = await this.syncErp.processRequestParams('Calcule_Possible_LPChilds_From_WR_V2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -962,7 +1011,7 @@ public async Get_LPLedgerEntries(No:any){
 }
 
 
-public async SplitLPSingle(objS:any){
+public async SplitLPSingle_Item(objS:any){
 
 
     try {
@@ -980,7 +1029,7 @@ public async SplitLPSingle(objS:any){
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('SplitLPSingle', obj);
+        let p = await this.syncErp.processRequestParams('SplitLPSingle_Item', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1392,7 +1441,11 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     }
    }
 
-   public async GetItemTrackingSpecificationOpen(ItemNo:any,SourceNo:any,SourceRefNo:any){
+
+
+
+    
+   public async GetItemTrackingSpecificationV2(ItemNo:any,SourceNo:any,SourceRefNo:any){
 
     try {
 
@@ -1408,7 +1461,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationOpen', obj);
+        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationV2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1419,31 +1472,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
    }
 
    
-   public async GetItemTrackingSpecificationClosed(ItemNo:any,SourceNo:any,SourceRefNo:any){
-
-    try {
-
-    
-        let obj: any = [{
-
-            ItemNo,
-            SourceNo,
-            SourceRefNo
-        }];
-    
-
-        console.log(JSON.stringify(obj));
-    
-        
-        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationClosed', obj);
-        let rsl = await this.syncErp.setRequest(p);
-        return rsl;
-       
-    } catch (error) {
-        throw error;
-    }
-
-   }
+ 
 
    
    

@@ -202,58 +202,9 @@ export class GeneralService {
     let contador = 0;
     for (let i in fields) {
       obj[fields[i].name] = fields[i].value
-      if(fields[i].name === "ItemNo"){
-        let plure = await this.wmsService.GetItemInfo(fields[i].value);
-        obj['plure'] =  plure.Managed_by_PlurE;
-        obj['Auto_Generate_SN'] = plure.Auto_Generate_SN;
-        obj['Auto_Generate_LOT'] = plure.Auto_Generate_LOT;
-
-        let res = await this.wmsService.GetItem(fields[i].value);
-        let traking = await this.wmsService.listItem(res);
-
-       obj['trakingCode'] = traking.fields.ItemTrackingCode;
-      }
      
     }
 
-    if(data === 'line'){
-
-      const lps = await this.wmsService.GetLicencesPlateInWR(obj['No'], false);
-
-    if(!lps.Error){
-
-      console.log(lps);
-      console.log(obj);
-
-      let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
-
-      console.log(res);
-      let lp = [];
-      res.map(x => {
-        let line = lp.find(i => i.PLULPDocumentNo === x.PLULPDocumentNo);
-        if(line === undefined || line === null)lp.push(x);
-      });
-      console.log(lp);
-     
-      for (const key in lp) {
-        
-          if (obj['LineNo']  === lp[key].PLUWhseLineNo) {
-  
-            contador++;
-            
-          }   
-   } 
-   
-    }
-
-    obj['QtyLp'] = contador;
-   contador = 0;  
-
-    }
-    
-    // fields.forEach(field => {
-    //   obj[field.name] = field.value
-    // });
     return obj;
   }
 
@@ -362,14 +313,10 @@ export class GeneralService {
   public async ReceiptHeaderAndLines(item: any) : Promise<any> {
     let lines = [];
     let obj = {};
-    obj = await this.fieldsToJson(item.WarehouseReceiptHeader.fields);
-    item.WarehouseReceiptLines.forEach(async line => {
-      lines.push(await this.fieldsToJson(line.fields,'line'));
-    });
-   
-    obj['lines'] = lines;
-   
-    
+    obj = await this.fieldsToJson(item.WarehouseReceiptHeader.fields); 
+    item.WarehouseReceiptLines.map(x =>  x.LPArray.LicensePlates['serial']  =  x.ItemTrackingCode !== ""?true:false);
+    obj['lines'] = item.WarehouseReceiptLines;
+     
     return obj;
   }
 

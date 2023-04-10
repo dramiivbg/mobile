@@ -29,9 +29,9 @@
          
             <div class="accorn-body">
                 <div class="lines">
-                    <ion-list *ngFor="let item of wareReceipts.lines; let i=index">
+                    <ion-list  *ngFor="let item of wareReceipts.lines; let i=index">
 
-                                    <div class="label-lines" part="item-width">
+                                    <div class="label-lines" >
                                         <ion-item style="width: 100%;">
                                             <ion-col size="12">
                                                 <ion-row>
@@ -57,13 +57,18 @@
                                                         {{item.VariantCode}}
                                                     </ion-col>
 
-                                                    <div (click)="showLPs(item)" *ngIf="item.plure === true">
+                                                    <div (click)="showLPs(item)" *ngIf="item.Managed_by_PlurE">
 
                                                         <ion-col size="4" class="label-count-lp">
 
                                                             <a  class="PL" 
-                                                                target="_blank" rel="noopener noreferrer">LP
-                                                                {{item.QtyLp}}</a>
+                                                                target="_blank" rel="noopener noreferrer" *ngIf="item.LPArray != undefined">LP
+                                                                {{item.LPArray.LicensePlates.length}}</a>
+
+                                                        
+                                                                <a  class="PL" 
+                                                                target="_blank" rel="noopener noreferrer" *ngIf="item.LPArray === undefined">LP
+                                                                 </a>                                                                                                                                                    
                                                             
 
                                                         </ion-col>
@@ -74,9 +79,14 @@
                                                     <!-- <ion-col size="4" class="label-line">
                                                         <b>Item No:</b> {{item.ItemNo}}
                                                     </ion-col> -->
-                                                    <ion-col class="label-line" size="4">
-                                                        <b>Line:</b> {{item.LineNo}}
+                                                    <ion-col class="label-line" size="4" *ngIf="item.ItemTrackingCode != ''">
+                                                        <b>Traking:</b> true
                                                     </ion-col>
+
+                                                    <ion-col class="label-line" size="4" *ngIf="item.ItemTrackingCode === ''">
+                                                        <b>Traking:</b> false
+                                                    </ion-col>
+
                                                     <ion-col size="4" class="label-line">
                                                         <b>Measure:</b> {{item.UnitofMeasureCode}}
                                                     </ion-col>
@@ -88,7 +98,7 @@
                                             </ion-col>
                                         </ion-item>
                                     </div>
-                    </ion-list>
+                                </ion-list>
                 </div>
             </div>
         </div>
@@ -109,9 +119,13 @@
             <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
             <div class="itemfooter">Save</div>
         </ion-col>
-        <ion-col size="4" (click)="newPallet()">
-            <img  src="../../../../assets/img/pallet-_1_.svg"   alt="">
-            <div class="itemfooter">New Pallet</div>
-        </ion-col>
+
+        <picture class="img" (click)="newPallet()">
+            
+            <img  src="../../../../assets/img/pallet-_2_.svg" width="100px" height="30px"  alt="">
+            <div  class="itemfooter">New pallet</div>
+            
+          </picture>
+         
     </ion-row>
 </PlureVersion>

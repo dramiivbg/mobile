@@ -58,8 +58,13 @@ export class ListPItemsComponent implements OnInit {
 
  async  ngOnInit() {
   this.pallet =  await this.storage.get(`pallet`);
-    this.listItem =  await this.storage.get(`${this.pallet.fields[0].PLULPDocumentNo} listItem`);
-  this.listLp = await  this.storage.get(`${this.pallet.fields[0].PLULPDocumentNo} listLp`);
+    this.listItem =  await this.storage.get(`${this.pallet.LPDocumentNo} listItem`);
+  this.listLp = await  this.storage.get(`${this.pallet.LPDocumentNo} listLp`);
+  this.lists = await  this.storage.get(`${this.pallet.LPDocumentNo} listLp`);
+  this.listsI =   await this.storage.get(`${this.pallet.LPDocumentNo} listItem`);
+
+  console.log('duplicado',this.lists,this.listsI);
+
    let checkboxL = {testID: 0, testName: "", checked: false}
 
    let checkboxI = {testID: 0, testName: "", checked: false}
@@ -114,7 +119,7 @@ export class ListPItemsComponent implements OnInit {
     } else {
       this.listItem = this.listsI.filter(
         x => {
-          return (x.PLUNo.toLowerCase().includes(val.toLowerCase()));
+          return (x.PLUNo.toLowerCase().includes(val.toLowerCase()) || x.PLUSerialNo.toLowerCase().includes(val.toLowerCase()));
         }
       )
     }
@@ -150,7 +155,7 @@ export class ListPItemsComponent implements OnInit {
       } else {
         this.listLp = this.lists.filter(
           x => {
-            return (x.PLUNo.toLowerCase().includes(val.toLowerCase()));
+            return (x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
           }
         )
       }
@@ -161,7 +166,7 @@ export class ListPItemsComponent implements OnInit {
 
         this.listLp = this.lists.filter(
           x => {
-            return (x.PLUNo.toLowerCase().includes(lpNo.toLowerCase()));
+            return (x.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
           }
         )
      break;
@@ -285,7 +290,7 @@ switch(ev.detail.checked){
 
           try {
 
-            let res  =    await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo,item.PLUNo);
+            let res  =    await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(this.pallet.LPDocumentNo,item.PLUWhseDocumentNo,item.PLULPDocumentNo);
         
              if(res.Error) throw new Error(res.Error.Message);
              if(res.error) throw new Error(res.error.message);
@@ -293,7 +298,7 @@ switch(ev.detail.checked){
              
             this.listLp.forEach((lp,index) => {
 
-            if(lp.PLUNo === item.PLUNo){
+            if(lp.PLULPDocumentNo === item.PLULPDocumentNo){
       
              this.listLp.splice(index,1);
              this.QtyLP-=1;
@@ -362,14 +367,14 @@ switch(ev.detail.checked){
       this.listL.filter((lp, index) =>{
 
 
-        if(lp.PLUNo === item.PLUNo){
+        if(lp.PLULPDocumentNo === item.PLULPDocumentNo){
 
 
           this.listL.splice(index,1);
         }
         
        
-      })
+      });
 
     
         console.log(this.listL);
@@ -388,7 +393,7 @@ switch(ev.detail.checked){
           this.listI.splice(index,1);
         }
         
-      })
+      });
 
      
         console.log(this.listI);
@@ -412,28 +417,6 @@ switch(ev.detail.checked){
 
 
 
-  remove(){
-
-    if(this.boolean){
-
-      this.listL = [];
-
-      console.log(this.listL);
-
-
-      this.visibilityL = true;
-
-    }else{
-
-
-      this.listI = [];
-
-      console.log(this.listI);
-
-      this.visibilityI = true;
-
-    }
-  }
 
 
 

@@ -28,25 +28,18 @@ ion-item ion-input {
     font-size: 12px;
 }
 
-.lines {
-    ion-item::class(item-inner) {
-        background-color: #f00;
-        padding: 0 !important;
-    }
-}
+
 
 .label-lines {
     width: 100%;
     font-size: 13px;
-
+     
     .label-line-title {
         font-size: 14px;
         font-weight: bold;
         display: flex;
         align-items: center;
-        img.noImage {
-            padding-top: 20px;
-        }
+      
 
    .label-count-lp{
     font-size: 14px; 
@@ -233,7 +226,8 @@ ion-content{
 
 ion-list{
     background: transparent;
-    padding: 20px 0 0 20px;
+    padding: 20px 0 0 0;
+    
 }
 
 ion-item{

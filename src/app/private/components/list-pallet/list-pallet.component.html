@@ -44,43 +44,22 @@
                                           <ion-col size="15" class="item" (click)="listLpOrItems(item)">
                      
                                             <ion-row >
-                                                <ion-col size="6" style="overflow: hidden;"
+                                                <ion-col size="6" 
                                                     class="label-line-title blue">
-                                                    {{item.fields[0].PLULPDocumentNo}}
+                                                    {{item.LPDocumentNo}}
                                                 </ion-col>
-                                               
 
-                                            </ion-row>
-
-                                            <ion-row>
-                                                <ion-col size="5" style="overflow: hidden;"
-                                                    class="label-line-title blue">
-                                                    {{item.company}}
-                                                </ion-col>
-                                         
-                                                <ion-col size="6" class="label-line-title">
-                                                    {{item.fields[0].PLUWhseDocumentNo}}
+                                                <ion-col size="6" class="label-line">
+                                                    DateC: {{item.LPLines[0].SystemCreatedAt | date:'dd-MM-yyyy'
+                                                    }}
                                                   </ion-col>
                                                
 
                                             </ion-row>
 
+
                                          
-                                            <ion-row>
-                                                <ion-col size="3" class="label-line">
-                                                  Status: {{item.fields[0].PLULicensePlateStatus}}
-                                                </ion-col>
-                                                <ion-col size="6" class="label-line">
-                                                  fechaC: {{item.fields[0].SystemCreatedAt | date:'dd-MM-yyyy'
-                                                  }}
-                                                </ion-col>
-                                                
-                                            </ion-row>
-                                            <ion-row>
-                                                <ion-col class="label-line" size="3">
-                                                <!--     Line: {{item.LineNo}}-->
-                                                </ion-col>
-                                            </ion-row>
+                                         
                                         </ion-col>
 
                                     </ion-item>    

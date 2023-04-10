@@ -33,7 +33,7 @@ export class PopoverShowSerialesComponent implements OnInit {
          
          this.popoverController.dismiss({data: 'eliminado'});
          this.intServ.loadingFunc(false);
-         this.intServ.alertFunc(this.jsonService.getAlert('success', '', `The license plate ${this.lps.PLULPDocumentNo} has been successfully deleted`, () => {
+         this.intServ.alertFunc(this.jsonService.getAlert('success', '', `The license plate ${this.lps.LPDocumentNo} has been successfully deleted`, () => {
 
           this.popoverController.dismiss({data:'eliminado'});
          }));

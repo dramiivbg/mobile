@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
-import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
-import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
@@ -13,10 +11,8 @@ import { WmsService } from '@svc/wms.service';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { SqlitePlureService } from '@svc/sqlite-plure.service';
-
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
-import { WSAEWOULDBLOCK } from 'constants';
+
 
 
 @Component({
@@ -68,6 +64,7 @@ export class WmsMainPage implements OnInit {
   public async ionViewWillEnter() {
 
     this.processes = [];
+
     let session = (await this.js.getSession()).login;
     this.http.get(environment.api + session.userId).subscribe(res => {
 
@@ -90,12 +87,8 @@ export class WmsMainPage implements OnInit {
         }
       });
 
-
-      this.session = (await this.js.getSession()).login;
+  
       console.log('session =>', this.session)
-
-
-
 
       this.intServ.loadingFunc(false);
     } catch (error) {
@@ -426,8 +419,6 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
       console.log(process);
 
       let obj = this.general.structSearch(receipts, `Search ${process.description}`, 'Receipts', async (wms) => {
-
-        // console.log('data =>',wms);
 
         this.storage.set('wms', wms);
 

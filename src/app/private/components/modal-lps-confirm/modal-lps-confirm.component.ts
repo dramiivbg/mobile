@@ -24,6 +24,8 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   public deleteI: any[] = [];
 
+  public qtyR = 0;
+
   public listB: any[] = [];
   @Input() whsePutAway: any;
 
@@ -62,7 +64,7 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   back() {
 
-    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins, items: this.itemsL, delete: this.deleteI });
+    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins, items: this.itemsL, delete: this.deleteI, qtyR: this.qtyR });
 
   }
   autoComplet() {
@@ -104,7 +106,7 @@ export class ModalLpsConfirmComponent implements OnInit {
         } else {
           this.lps = this.lpsT.filter(
             x => {
-              return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+              return (x.LPDocumentNo.toLowerCase().includes(val.toLowerCase()));
             }
           )
 
@@ -123,13 +125,14 @@ export class ModalLpsConfirmComponent implements OnInit {
 
         this.lps = this.lpsT.filter(
           x => {
-            return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
+            return (x.LPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
           }
         )
 
         this.itemsL = this.itemLT.filter(
           x => {
-            return (x.ItemNo.toLowerCase().includes(lpNo.toLowerCase()));
+            return (x.ItemNo.toLowerCase().includes(lpNo.toLowerCase()) || x.SerialNo.toLowerCase().includes(lpNo.toLowerCase())
+            || x.LotNo.toLowerCase().includes(lpNo.toLowerCase()));
           }
         )
 
@@ -187,18 +190,21 @@ export class ModalLpsConfirmComponent implements OnInit {
   
         console.log(groupItems);
   
-        this.modalCtrl.dismiss({ data: this.lps, action: 'register', items: groupItems });
+        this.modalCtrl.dismiss({ data: this.lps, bin: this.bins, items: this.itemsL, action: 'register', itemsG: groupItems , delete: this.deleteI, qtyR: this.qtyR});
       
   }
 
   remove(item: any) {
 
     this.lps.filter((lp, index) => {
-      if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lps.splice(index, 1);
+      if (lp.LPDocumentNo === item.LPDocumentNo){
+      this.lps.splice(index, 1);
+      this.qtyR++;
+      }
     });
 
     this.lpsT.filter((lp, index) => {
-      if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) this.lpsT.splice(index, 1);
+      if (lp.LPDocumentNo === item.LPDocumentNo) this.lpsT.splice(index, 1);
     });
 
     this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
@@ -211,6 +217,7 @@ export class ModalLpsConfirmComponent implements OnInit {
       if (item.LineNo === Item.LineNo) {
         this.deleteI.push(item);
         this.itemsL.splice(index, 1);
+        this.qtyR++;
       }
     });
 
@@ -223,6 +230,7 @@ export class ModalLpsConfirmComponent implements OnInit {
   }
   removeAll() {
     if (this.Bin === '') {
+      this.qtyR += this.lps.length + this.itemsL.length;
       this.deleteI = this.itemsL;
       this.lps = [];
       this.lpsT = [];
@@ -240,13 +248,12 @@ export class ModalLpsConfirmComponent implements OnInit {
 
       for (const i in this.lps) {
 
-        if (this.lps[Number(i)].fields.place !== this.Bin) Lps.push(this.lps[Number(i)]);
-
+        if (this.lps[Number(i)].place !== this.Bin)Lps.push(this.lps[Number(i)]);
       }
-      for (const j in this.lpsT) {
 
-        if (this.lpsT[Number(j)].fields.place !== this.Bin) LpsT.push(this.lpsT[Number(j)]);
-      }
+
+      this.qtyR += this.lps.length - Lps.length;
+
 
       for (const j in this.itemsL) {
 
@@ -254,9 +261,12 @@ export class ModalLpsConfirmComponent implements OnInit {
         if (this.itemsL[Number(j)].place === this.Bin) this.deleteI.push(this.itemsL[Number(j)]);
       }
 
+      this.qtyR += this.itemsL.length - items.length;
+
       this.lps = Lps;
-      this.lpsT = LpsT;
+      this.lpsT = Lps;
       this.itemsL = items;
+      this.itemLT = items;
 
       this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
       // this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);

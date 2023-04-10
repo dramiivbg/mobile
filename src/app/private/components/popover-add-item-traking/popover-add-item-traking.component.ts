@@ -84,7 +84,7 @@ export class PopoverAddItemTrakingComponent implements OnInit {
       SourceRefNo: this.item.SourceRefNo,
       LineNo: this.item.LineNo,
       UnitofMeasureCode: this.item.UnitofMeasureCode,
-      Qty: this.item.Qty,
+      TotalToReceive: this.item.Qty,
       TrackingInfo: []
     }
 
@@ -188,7 +188,7 @@ async  save(){
             }
       
             this.list.push(json);
-            this.obj.Qty = this.total;
+            this.obj.TotalToReceive = this.total;
             this.obj.TrackingInfo.push(json2);
       
       
@@ -241,7 +241,7 @@ async  save(){
               }
         
               this.list.push(json);
-              this.obj.Qty = this.total;
+              this.obj.TotalToReceive = this.total;
               this.obj.TrackingInfo.push(json2);
         
         

@@ -6,7 +6,7 @@
     <ion-icon md="add" ios="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
-    <ion-fab-button color="secondary" (click)="listLpOrItem(pallet)" data-desc2="Add new Pallet">
+    <ion-fab-button color="secondary" (click)="listLpOrItem()" data-desc2="Add new Pallet">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
 
@@ -133,52 +133,40 @@
                       <ion-col size="15" class="item border">
 
                         <ion-row>
-                          <ion-col size="5" style="overflow: hidden;" class="label-line-title blue">
-                            {{item.fields.PLULPDocumentNo}}
+                          <ion-col size="12" style="overflow: hidden;" class="label-line-title blue">
+                            {{item.LPDocumentNo}}
                           </ion-col>
-
-
-
 
                         </ion-row>
 
                         <ion-row>
                         
                           <ion-col size="6" class="label-line-title">
-                            Qty. {{item.fields.PLUQuantity}}
+                            Qty. {{item.Quantity}}
 
 
 
                           </ion-col>
-                          <ion-col size="6" class="label-line-title" style="text-align: right;">
-                            {{item.fields.PLUDescription
+                          <ion-col size="6" class="label-line">
+                            UoM: {{item.UnitofMeasure
                             }}
-
-
-
                           </ion-col>
 
                         </ion-row>
 
 
-                        <ion-row>
-                          <ion-col size="4" class="label-line">
-                            Item No: {{item.fields.PLUNo
+                     <ion-row>
+                          <ion-col size="6" class="label-line">
+                            Item No: {{item.ItemNo
                             }}
                           </ion-col>
-                          <ion-col size="2" class="label-line">
-                            UoM: {{item.fields.PLUUnitofMeasureCode
+                         
+                          <ion-col size="6" class="label-line">
+                            Bin Code: {{item.BinCode
                             }}
                           </ion-col>
-                          <ion-col size="5" class="label-line">
-                            PO: {{item.fields.PLUSourceDocumentNo}}
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col class="label-line" size="3">
-                            <!--     Line: {{item.LineNo}}-->
-                          </ion-col>
-                        </ion-row>
+                        </ion-row> 
+                      
                       </ion-col><br>
                     </ion-item>
 
@@ -261,13 +249,14 @@
 
 
         <ion-col size="3" *ngIf="testListL[i].checked != undefined">
-          <div>{{item.fields.PLULPDocumentNo}}</div>
+          <div>{{item.LPDocumentNo}}</div>
         </ion-col>
         <ion-col size="4" *ngIf="testListL[i].checked != undefined">
-          <div>{{item.fields.PLUQuantity}}</div>
+          <div>{{item.Quantity}}</div>
         </ion-col>
         <ion-col size="4" *ngIf="testListL[i].checked != undefined">
-          <div>{{item.fields.PLUUnitofMeasureCode}}</div>
+          <div>{{item.UnitofMeasure
+          }}</div>
         </ion-col>
       </ion-row>
     </ion-grid>

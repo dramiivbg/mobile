@@ -53,10 +53,10 @@
 
                                                     <ion-row class="titleslist">
                                                         <ion-col size="6" class="titleblue">
-                                                            {{item.fields.PLULPDocumentNo}}
+                                                            {{item.LPDocumentNo}}
                                                         </ion-col>
                                                         <ion-col size="6" class="label-line-title">
-                                                            Qty: {{item.fields.PLUQuantity}}
+                                                            Qty: {{item.LPTotalQuantities}}
                                                         </ion-col>
 
 
@@ -64,11 +64,11 @@
 
                                                     <ion-row size="12" class="subtitlelist">
                                                         <ion-col size="6" class="label-line-title">
-                                                            Take: {{item.fields.PLUBinCode}}
+                                                            Take: {{item.take}}
                                                         </ion-col>
 
                                                         <ion-col size="6" class="label-line-title">
-                                                            Place: {{item.fields.place}}
+                                                            Place: {{item.place}}
                                                         </ion-col>
 
                                                     </ion-row>
@@ -76,13 +76,13 @@
 
                                                     <ion-row>
                                                         <ion-col size="4" class="label-line">
-                                                            Item No: {{item.fields.PLUItemNo}}
+                                                            Item No: {{item.ItemNo}}
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            UoM: {{item.fields.PLUUnitofMeasureCode}}
+                                                            UoM: {{item.UnitofMeasure}}
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            LP Type: {{item.fields.PLULPDocumentType}}
+                                                            LP Type: {{item.LPDocumentType}}
                                                         </ion-col>
 
                                                     </ion-row>

@@ -139,7 +139,7 @@ public async onSubmit() {
     console.log(this.frm);
 
     let obj = await this.jsonService.formToJson(this.frm);
-    switch(this.item.trakingCode){
+    switch(this.code){
 
     case null:
       if (this.frm.valid) {

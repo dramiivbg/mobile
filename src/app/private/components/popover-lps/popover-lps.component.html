@@ -15,8 +15,8 @@
       <ion-row *ngFor="let item of lps; let i = index" style="text-align: center;"
         (click)="option(item,$event)">
 
-        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col >{{item.PLULPDocumentNo}}</ion-col></a>
-        <ion-col >{{item.PLUQuantity}}</ion-col>
+        <a routerLink="/page/wms/wmsReceipt" routerLinkActive=""><ion-col >{{item.LPDocumentNo}}</ion-col></a>
+        <ion-col >{{item.LPTotalQuantities}}</ion-col>
         <ion-col >{{item.SystemCreatedAt | date:'yyyy-dd-MM'}}</ion-col>&nbsp;
 
 

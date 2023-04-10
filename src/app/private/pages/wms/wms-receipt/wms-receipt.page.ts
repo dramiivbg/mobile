@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { ActionSheetController, AlertController, ModalController, PopoverController } from '@ionic/angular';
+import { ActionSheetController, AlertController, IonThumbnail, ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
 import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { GeneralService } from '@svc/general.service';
@@ -72,23 +72,16 @@ export class WmsReceiptPage implements OnInit {
       }
     };
     this.intServ.appBackFunc(objFunc);
-
-    this.getReceipt();
+   
 
   }
 
   public async ngOnInit() {
 
+    this.getReceipt();
   }
 
-  public async ionViewWillEnter() {
-    try {
-      this.module = await this.moduleService.getSelectedModule();
-      this.process = await this.moduleService.getSelectedProcess();
-    } catch (error) {
-      this.intServ.loadingFunc(false);
-    }
-  }
+
 
   /**
   * Return to the modules.
@@ -120,8 +113,8 @@ export class WmsReceiptPage implements OnInit {
 
   public async onPopoverMenu(ev: any, item: any) {
     this.intServ.loadingFunc(true);
-   // let plure = await this.wmsService.GetItemInfo(item.ItemNo);
-    switch (item.plure) {
+   
+    switch (item.Managed_by_PlurE) {
       case true:
         this.intServ.loadingFunc(false);    
           this.onPopLicensePlates(ev, item);
@@ -131,7 +124,7 @@ export class WmsReceiptPage implements OnInit {
         let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
         let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
 
-      if(item.trakingCode === null){
+      if(item.ItemTrackingCode === ""){
 
         console.log('Bincode =>', item.BinCode);
         this.intServ.loadingFunc(false);
@@ -181,24 +174,22 @@ export class WmsReceiptPage implements OnInit {
 
 
   public async popoverItemTraking(item:any,lp:any){
+    let res = await this.wmsService.GetItemTrackingSpecificationV2(item.ItemNo,item.SourceNo,item.SourceLineNo);
 
-    let res = await this.wmsService.GetItemTrackingSpecificationOpen(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let res2 = await this.wmsService.GetItemTrackingSpecificationClosed(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):null;
-    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationClose):null;
-
+      console.log(res);
+    
+    let trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
+    let trakingClose = (res.ItemTrackinCloseJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackinCloseJO.TrackingSpecificationClose):[];
     console.log('item =>',item);
 
-   // console.log(trakingOpen);
-   // console.log(res);
-   // console.log(trakingClose);
+    let code = (res.ItemTrackingJO.Error === undefined)? await this.wmsService.listCode(res.ItemTrackingJO): null;
 
       if(item.Auto_Generate_LOT === false && item.Auto_Generate_SN === false){
 
         const popover = await this.popoverController.create({
           component: PopoverItemTrakingComponent,
           cssClass: 'transparent-modal',
-          componentProps: {options: { item, lp, trakingOpen, trakingClose} },
+          componentProps: {options: { item, lp, code,trakingOpen, trakingClose} },
           backdropDismiss: false
         });
         await popover.present();
@@ -208,23 +199,26 @@ export class WmsReceiptPage implements OnInit {
         this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('alert','','Lots/serials  will be generated automatically'));
       }
+      
   }
 
 
   public async onPopLicensePlates(ev: any, item: any) {
     this.intServ.loadingFunc(true);
+
+    try {
+      
+      let res = await this.wmsService.GetItemTrackingSpecificationV2(item.ItemNo,item.SourceNo,item.SourceLineNo);
+
+      console.log(res);
+ 
     
-    let res = await this.wmsService.GetItemTrackingSpecificationOpen(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let res2 = await this.wmsService.GetItemTrackingSpecificationClosed(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):[];
-    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationClose):[];
+    let trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
+    let trakingClose = (res.ItemTrackinCloseJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackinCloseJO.TrackingSpecificationClose):[];
     let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
-   // console.log('Bincode =>', item.BinCode);
+    let code = (res.ItemTrackingJO.Error === undefined)?await this.wmsService.listCode(res.ItemTrackingJO):null;
     let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
 
-    
-    let resC = (item.trakingCode != null)?await this.wmsService.configurationTraking(item.trakingCode):null;
-    let code = (resC != null)?await this.wmsService.listCode(resC):null;
 
     console.log(lp);
     console.log(item);
@@ -248,6 +242,11 @@ export class WmsReceiptPage implements OnInit {
       this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', 'You have created all the LP Pending To Receive'))
     }
 
+    } catch (error) {
+   
+    }
+    
+    
   }
 
   private async getReceipt() {
@@ -261,13 +260,17 @@ export class WmsReceiptPage implements OnInit {
       if(receipt.error) throw new Error(receipt.error.message);
       if(receipt.message) throw new Error(receipt.message);
     
+      console.log('receiptc =>', receipt);
       this.mappingReceipt(receipt);
 
     } catch (error) {
       this.intServ.loadingFunc(false);
-
-      this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
+      this.intServ.alertFunc(this.js.getAlert('error', '', error.message, () => {
+        return this.router.navigate(['page/wms/wmsMain']);
+      }));
     }
+
+    
 
   }
   /**
@@ -276,9 +279,10 @@ export class WmsReceiptPage implements OnInit {
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
-    console.log(this.wareReceipts);
-    let items = await this.wmsService.listTraking(receipt.WarehouseReceipt.WarehouseReceiptLines);
-    this.GetLicencesPlateInWR(this.wareReceipts,items);
+    console.log('receipt =>', this.wareReceipts);
+     this.items = receipt.WarehouseReceipt.WarehouseReceiptLines;
+    this.intServ.loadingFunc(false);
+ 
 
   }
 
@@ -306,72 +310,11 @@ export class WmsReceiptPage implements OnInit {
   }
 
 
-  async GetLicencesPlateInWR(wareReceipts: any = {},items:any) {
-    this.list = [];
-    this.LpL = [];
-    this.items = items;
-
-    try {
-
-      const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, false);
-
-      console.log(lps);
-
-      if (lps.Error) throw new Error(lps.Error.Message);
-
-      let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
-      let res2 = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
-      console.log('res =>',res);
-      res.filter(lp => {
-
-        let line = this.list.find(x => x.PLULPDocumentNo === lp.PLULPDocumentNo);
-
-        if(line === undefined || line === null)this.list.push(lp);
-      });
-
-      
-     console.log('lps =>',this.list);
-     let temp = [];
-
-     let qty = 0
-
-     // unifica los item con seriales  con su respectivo LP 
-  for (const key in this.list) {
-        for (const j in res2) {
-          if (res2[j].PLULPDocumentNo === this.list[key].PLULPDocumentNo) {
-            console.log('x =>',res2[j]);
-            temp.push(res2[j]);
-            qty+= res2[j].PLUQuantity;
-            
-          }
-        }
-        
-        this.list[key]['seriales'] = (temp[0].PLULotNo != null || temp[0].PLUSerialNo != null)?temp: [];
-        this.list[key].PLUQuantity = qty;
-        this.LpL.push(this.list[key]);
-        temp = [];
-        qty = 0;
-      }
-     
-    this.intServ.loadingFunc(false);
-    } catch (error) {
-      this.intServ.loadingFunc(false);
-    }
-
-  }
-
-
 //muestra el contenido del  LP
   showLPs(item: any) {
     this.intServ.loadingFunc(true);
-    let list = [];
-    this.LpL.filter(lp => {
-        if (lp.PLUWhseLineNo === item.LineNo) {
-          list.push(lp);
-        }
-     });
-
-    this.onPopoverPl(list);
+   
+    this.onPopoverPl(item.LPArray.LicensePlates);
   }
 
 
@@ -425,6 +368,7 @@ export class WmsReceiptPage implements OnInit {
   async listPallet() {
 
     this.intServ.loadingFunc(true);
+    let pallets = [];
 
     try {
 
@@ -436,102 +380,27 @@ export class WmsReceiptPage implements OnInit {
       if (lpsP.Error) throw Error(lpsP.Error.Message);
 
 
-      console.log(lpsP.length);
+      for (const key in lpsP.LicensePlates) {
 
-
-
-      console.log('license plate pallet =>', lpsP);
-
-      let pallet = await this.wmsService.ListPallet(lpsP);
-
-
-      let pallet2 = await this.wmsService.ListPallet(lpsP);
-
-
-
-
-      console.log('antes =>', pallet);
-      console.log('antes =>', pallet2);
-
-
-      if (pallet.length > 0 || pallet != undefined) {
-
-        // crea  un vector con pallet sin repetir
-        for (const i in pallet) {
-
-          for (const j in pallet2) {
-
-
-            if (pallet[i] != undefined) {
-
-              if (pallet[i].fields[0].PLUQuantity != null) {
-
-                if (pallet[i].fields[0].PLULPDocumentNo === pallet2[j].fields[0].PLULPDocumentNo) {
-
-                  if (j != i) {
-
-
-
-                    let con = pallet.splice(Number(j), 1);
-                    console.log(i, j);
-                    console.log(con)
-
-                  }
-
-
-                }
-              } else {
-
-                pallet.splice(Number(i), 1);
-
-              }
-            }
-          }
-        }
-
-        console.log('despues =>', pallet);
-        console.log('despues =>', pallet2);
-
-        // agregar todos los hijos con sus respectivos pallet
-        for (const i in pallet) {
-          pallet[i].fields = [];
-          let res = pallet[i].recordId.split(' ');
-          let No = res[3].split(',');
-          console.log(No);
-          for (const j in pallet2) {
-            if (No[0] === pallet2[j].fields[0].PLULPDocumentNo) {
-                console.log(pallet2[j].fields[0])
-                pallet[i].fields.push(pallet2[j].fields[0]);
-
-            }
-          }
-        }
-
-        //eliminar todos los pallet repetidos
-        for (const key in pallet) {
-
-          pallet.map((x,i) => (Number(key) != Number(i) && 
-          pallet[key].fields[0].PLULPDocumentNo === x.fields[0].PLULPDocumentNo)? pallet.splice(i,1):null);
+        let pallet = await this.wmsService.listTraking(lpsP.LicensePlates[key].LPLines);
+        lpsP.LicensePlates[key].LPLines = pallet
         
-        }
+        if(pallet.length > 0)pallets.push(lpsP.LicensePlates[key]);
+      }
 
-        console.log('final =>', pallet);
+
+
+      console.log('license plate pallet =>', pallets);
 
         let wareReceipts = this.wareReceipts;
 
-        this.storage.set(`${this.wareReceipts.No}, pallet`, pallet);
+        this.storage.set(`${this.wareReceipts.No}, pallet`, pallets);
         this.storage.set(`wareReceipt`, wareReceipts);
 
         this.router.navigate(['page/wms/listPallet']);
 
-      }
-      else {
-
-        this.intServ.loadingFunc(false);
-
-
-        this.intServ.loadingFunc(this.js.getAlert('alert', '', 'You do not have license plate created'))
-      }
+      
+      
 
     } catch (error) {
 

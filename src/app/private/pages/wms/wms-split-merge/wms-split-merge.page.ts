@@ -155,7 +155,7 @@ export class WmsSplitMergePage implements OnInit {
           let lpH = await this.wmsService.ListLpH(lp);
           this.lp = await this.wmsService.ListLp(lp);
 
-          if (this.lp.fields.PLULicensePlateStatus !== "Stored") throw Error('The license plate to scan must be in storage');
+          if (lpH.fields.PLULicensePlateStatus !== "Stored") throw Error('The license plate to scan must be in storage');
 
           this.lps = [];
           this.pallets = [];
@@ -284,8 +284,19 @@ export class WmsSplitMergePage implements OnInit {
 
   async popoverSplit(lp: any, ev) {
 
-    let resP = await this.wmsService.GetLPArrayByStatus(false,0);
-    let listSingleVoid = await this.wmsService.listPalletVoid(resP.LicensePlates.LPHeaders);
+    let resS;
+    try {
+       resS = await this.wmsService.GetLPArrayByStatus(false,0);
+      if(resS.Error) throw new Error(resS.Error.Message);
+      if(resS.error) throw new Error(resS.error.message);
+      
+      
+    } catch (error) {
+      return this.intServ.alertFunc(this.js.getAlert('alert', error.message,'Please create an empty LP single in the drop-down button below. '));
+    
+    }
+   
+    let listSingleVoid = await this.wmsService.listPalletVoid(resS.LicensePlates.LPHeaders);
   
 
     const popover = await this.popoverController.create({
@@ -316,7 +327,7 @@ export class WmsSplitMergePage implements OnInit {
         };
   
   
-        let res = await this.wmsService.SplitLPSingle(objP);
+        let res = await this.wmsService.SplitLPSingle_Item(objP);
 
         console.log(res);
 
@@ -366,51 +377,33 @@ export class WmsSplitMergePage implements OnInit {
     const { data } = await popover.onDidDismiss();
 
 
-    if (data.action === 'join') {
+    if (data.lpNo !== undefined) {
 
       this.intServ.loadingFunc(true);
 
-      lp = await this.wmsService.getLpNo(data.data.toUpperCase());
+      try {
 
-      if (!lp.Error) {
-
-        let lpH = await this.wmsService.ListLpH(lp);
-        this.lp = await this.wmsService.ListLp(lp);
-
-        this.lp.fields.PLUBinCode = lpH.fields.PLUBinCode;
-        this.lp.fields.PLUZoneCode = lpH.fields.PLUZoneCode;
-        this.lp.fields.PLULocationCode = lpH.fields.PLULocationCode;
-
-        this.lp.fields.PLUReferenceDocument = lpH.fields.PLUReferenceDocument
-        this.lp.fields.PLUUnitofMeasure = lpH.fields.PLUUnitofMeasure;
-
-        this.lps.filter(lp => {
-
-
-          if (lp.fields.PLULPDocumentNo === this.lp.fields.PLULPDocumentNo) {
-
-
-            lp.fields.PLUQuantity = this.lp.fields.PLUQuantity;
-          }
-
-        });
-
+        let res = await this.wmsService.MergeLPSingle(data.lpNo,lp.fields.PLULPDocumentNo);
+      
+        if(res.Error) throw new Error(res.Error.Message);
+      
+        if(res.error) throw new Error(res.error.message);
+        
+  
         this.intServ.loadingFunc(false);
-      } else {
-
-
-        this.lps.filter((lp, index) => {
-
-
-          if (lp.fields.PLULPDocumentNo === data.data.toUpperCase()) {
-
-
-            this.lps.splice(index, 1);
-          }
-
-        });
-
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The license plate single ${data.lpNo} has been successfully joined to the LP single ${this.lp.fields.PLULPDocumentNo}`, () => {
+          this.lps = [];
+          this.lp = undefined;
+        }));
+     
+        
+      } catch (error) {
+      
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error','', error.message));
+        
       }
+   
     }
 
   }
@@ -464,7 +457,21 @@ try {
 
       case 'LP':
 
-      let resP = await this.wmsService.GetLPArrayByStatus(true,0);
+      let resP;
+
+      try {
+        resP = await this.wmsService.GetLPArrayByStatus(true,0);
+        if(resP.Error) throw new Error(resP.Error.Message);
+        if(resP.error) throw new Error(resP.error.message);
+        
+        
+      } catch (error) {
+        
+       return this.intServ.alertFunc(this.js.getAlert('alert', error.message,'Please create an empty Pallet in the drop-down button below. '));
+        
+      }
+    
+    
       let listPalletVoid = await this.wmsService.listPalletVoid(resP.LicensePlates.LPHeaders);
       const popover = await this.popoverController.create({
         component: PopoverSelectPalletComponent,

@@ -19,6 +19,35 @@
     </ion-fab-list>
 </ion-fab>
 
+
+
+<ion-fab horizontal="center" vertical="bottom" slot="fixed">
+    <ion-fab-button class="custom">
+        <ion-icon name="cog-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+        <ion-fab-button color="success" data-desc2="Filter by LP" (click)="filter(1)">
+            <img  src="../../../../assets/img/barcode-lines.svg"  alt="">
+        </ion-fab-button>
+        <ion-fab-button color="tertiary" data-desc2="Filter by PL" (click)="filter(2)">
+            <img  src="../../../../assets/img/pallet-_2_.svg" width="90px" alt="">
+        </ion-fab-button>
+        <ion-fab-button color="secondary" data-desc2="Filter by Item" (click)="filter(3)">
+            <ion-icon name="cube-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="secondary" data-desc2="All" (click)="filter(4)">
+            <ion-icon name="refresh-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab-list>
+    <ion-fab-list side="start" *ngIf="active">
+        <ion-fab-button color="warning" (click)="order()">
+            <ion-icon name="arrow-up"></ion-icon>
+            <ion-icon name="arrow-down"></ion-icon>
+        </ion-fab-button>
+       
+    </ion-fab-list>
+</ion-fab>
+
 <ion-fab horizontal="start" vertical="bottom" slot="fixed">
     <ion-fab-button color="secondary">
         <ion-icon md="barcode-outline" ios="add"></ion-icon>
@@ -73,41 +102,9 @@
                     <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
                 </ion-col>
             </ion-row>
-
+               
         </div>
-        <ion-row>
-
-            <ion-col style="padding-left: 300px;">
-
-                <ion-fab>
-                    <ion-fab-button class="custom">
-                        <ion-icon name="cog-outline"></ion-icon>
-                    </ion-fab-button>
-                    <ion-fab-list side="bottom">
-                        <ion-fab-button color="success" data-desc2="Filter by LP" (click)="filter(1)">
-                            <ion-icon name="barcode-outline"></ion-icon>
-                        </ion-fab-button>
-                        <ion-fab-button color="tertiary" data-desc2="Filter by PL" (click)="filter(2)">
-                            <ion-icon name="cube-outline"></ion-icon>
-                        </ion-fab-button>
-                        <ion-fab-button color="secondary" data-desc2="Filter by Item" (click)="filter(3)">
-                            <ion-icon name="receipt-outline"></ion-icon>
-                        </ion-fab-button>
-                        <ion-fab-button color="secondary" data-desc2="All" (click)="filter(4)">
-                            <ion-icon name="refresh-outline"></ion-icon>
-                        </ion-fab-button>
-                    </ion-fab-list>
-                    <ion-fab-list side="start" *ngIf="active">
-                        <ion-fab-button color="warning" (click)="ascendant()">
-                            <ion-icon name="arrow-down"></ion-icon>
-                        </ion-fab-button>
-                        <ion-fab-button color="primary" (click)="descendent()">
-                            <ion-icon name="arrow-up"></ion-icon>
-                        </ion-fab-button>
-                    </ion-fab-list>
-                </ion-fab>
-            </ion-col>
-        </ion-row>
+     
         <div class="accorn">
        
             <div class="accorn-body">
@@ -125,7 +122,7 @@
 
                                                     <ion-row class="titleslist">
                                                         <ion-col size="7" class="titleblue" (click)="show(item)">
-                                                            {{item.fields.PLULPDocumentNo}}
+                                                            {{item.LPDocumentNo}}
                                                         </ion-col>
                                                         <ion-col size="5" class="select">
                                                             <ion-select interface="popover" #bin
@@ -138,52 +135,52 @@
                                                         </ion-col>
                                                     </ion-row>
 
-                                                    <ion-row size="12" class="subtitlelist" *ngIf="item.fields.PLULPDocumentType != 'Pallet'">
+                                                    <ion-row size="12" class="subtitlelist" *ngIf="item.LPDocumentType != 'Pallet'">
                                                         <ion-col size="2" class="label-line-title" >
-                                                            Qty: {{item.fields.PLUQuantity}}
+                                                            Qty: {{item.LPTotalQuantities}}
                                                         </ion-col>
                                     
                                                         <ion-col size="5" class="label-line-title"
                                                             style="text-align: right;">
-                                                            Take: {{item.fields.PLUBinCode}}
+                                                            Take: {{item.take}}
                                                         </ion-col>
 
                                                         <ion-col size="5" class="label-line-title"
                                                             style="text-align: right;">
-                                                            Place: {{item.fields.place}}
+                                                            Place: {{item.place}}
                                                         </ion-col>
 
                                                     </ion-row>
 
-                                                    <ion-row size="12" class="subtitlelist" *ngIf="item.fields.PLULPDocumentType === 'Pallet'">
+                                                    <ion-row size="12" class="subtitlelist" *ngIf="item.LPDocumentType === 'Pallet'">
                                                         <ion-col size="4"  class="label-line">
-                                                            LP Type: <b>{{item.fields.PLULPDocumentType}}</b>
+                                                            LP Type: <b>{{item.LPDocumentType}}</b>
                                                         </ion-col>
     
                                     
                                                         <ion-col size="4" class="label-line-title"
                                                             style="text-align: right;">
-                                                            Take: {{item.fields.PLUBinCode}}
+                                                            Take: {{item.take}}
                                                         </ion-col>
 
                                                         <ion-col size="4" class="label-line-title"
                                                             style="text-align: right;">
-                                                            Place: {{item.fields.place}}
+                                                            Place: {{item.place}}
                                                         </ion-col>
 
                                                     </ion-row>
 
                         
 
-                                                    <ion-row *ngIf="item.fields.PLULPDocumentType === 'Single'">
+                                                    <ion-row *ngIf="item.LPDocumentType === 'Single'">
                                                         <ion-col size="4" class="label-line">
-                                                            Item No: <b>{{item.fields.PLUItemNo}}</b>
+                                                            Item No: <b>{{item.ItemNo}}</b>
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            UoM: <b>{{item.fields.PLUUnitofMeasureCode}}</b>
+                                                            UoM: <b>{{item.UnitofMeasure}}</b>
                                                         </ion-col>
                                                         <ion-col size="4" class="label-line">
-                                                            LP Type: <b>{{item.fields.PLULPDocumentType}}</b>
+                                                            LP Type: <b>{{item.LPDocumentType}}</b>
                                                         </ion-col>
 
                                                     </ion-row>
@@ -221,37 +218,18 @@
 
                                                     <ion-row size="12" class="subtitlelist" >
 
-                                                        <ion-col size="6" class="label-line-title" *ngIf="item.take !== '' ">
-                                                            Take: {{item.take}}
-                                                        </ion-col>
-
-                                                        <ion-col size="6" class="label-line-title" *ngIf="item.place !== '' ">
-                                                            Place: {{item.place}}
-                                                        </ion-col>
-
-                                                    </ion-row>
-
-                                                    <ion-row size="12" >
-
-                                                        <ion-col size="6" class="label-line" *ngIf="item.ExpirationDate != null">
-                                                            Exp Date: {{item.ExpirationDate}}
-                                                        </ion-col>
-                                                        <ion-col size="6" class="label-line" *ngIf="item.LotNo != null">
-                                                            Lot No: {{item.LotNo}}
-                                                        </ion-col>
-
-                                                    </ion-row>
-
-                                                    <ion-row size="12" >
-
-                                                        
-                                                        <ion-col size="6" class="label-line" *ngIf="item.VariantCode != null">
+                                                        <ion-col size="4" class="label-line" *ngIf="item.VariantCode != '' ">
                                                             Variant Code: {{item.VariantCode}}
                                                         </ion-col> 
 
-                                                        <ion-col size="6" class="label-line" *ngIf="item.SerialNo != null">
-                                                            Serial No: {{item.SerialNo}}
+                                                        <ion-col size="4" class="label-line-title" >
+                                                            Take: {{item.take}}
                                                         </ion-col>
+
+                                                        <ion-col size="4" class="label-line-title">
+                                                            Place: {{item.place}}
+                                                        </ion-col>
+
 
                                                     </ion-row>
 
@@ -279,8 +257,5 @@
 </ion-content>
 
 <PlureVersion class="footerputaway" showVersion="0">
-    <ion-row>
-        <ion-col size="4"></ion-col>
-        <ion-col size="4"></ion-col>
-    </ion-row>
+  
 </PlureVersion>

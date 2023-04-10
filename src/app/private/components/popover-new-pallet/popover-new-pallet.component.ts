@@ -66,6 +66,10 @@ export class PopoverNewPalletComponent implements OnInit {
   public lpsLT: any[];
   public pallet: any;
 
+  public listItems:any;
+
+  public listLps:any;
+
   public listLp: any[] = [];
 
   public wareReceipts:any;
@@ -103,6 +107,15 @@ export class PopoverNewPalletComponent implements OnInit {
       }
 
     this.intServ.loadingFunc(false);
+
+    this.listLps = await this.wmsService.Calcule_Possible_LPChilds_From_WR_V3(this.pallet.fields.PLULPDocumentNo);
+
+
+    console.log('lp disponibles2 =>',this.listLps);
+
+    
+    this.listItems = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
+
   });
 
 }
@@ -172,7 +185,7 @@ public onBack() {
       } else {
         this.lps = this.lpsT.filter(
           x => {
-            return (x.fields.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+            return (x.LPDocumentNo.toLowerCase().includes(val.toLowerCase()));
           }
         )
       }
@@ -182,7 +195,7 @@ public onBack() {
 
         this.lps = this.lpsT.filter(
           x => {
-            return (x.fields.PLULPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
+            return (x.LPDocumentNo.toLowerCase().includes(lpNo.toLowerCase()));
           }
         )
       
@@ -200,44 +213,15 @@ async onBarCode(){
   let line:any = undefined;
   let boolean:Boolean = false;
 
-  listaL =  (await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} lps`) != null &&
-  await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} lps`) != undefined)? await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} lps`): [];
-  
-  items =  (await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} items`) != null &&
-  await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} items`) != undefined)? await this.storage.get(`${this.pallet.fields.PLULPDocumentNo} items`): [];
-  
-if(listaL.length == 0){
-
+  items =   this.listItems;
   this.intServ.loadingFunc(true);
+     
+  items =  this.listItems;
  
+  listaL = this.listLps;
 
-  let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
-    
-  items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo);
-  console.log(lps,items);
- 
-  this.lpsNo = (lps.Possible_LPChilds != "")?lps.Possible_LPChilds.split("|"):[];
+  console.log(listaL,items);
 
-  console.log(this.lpsNo);
-    
-  if(this.lpsNo.length > 0){
-    for (const key in this.lpsNo) {
-      let lps = await this.wmsService.getLpNo(this.lpsNo[key]);
-  
-      let lp = await this.wmsService.ListLp(lps);
-    
-      listaL.push(lp);
-    }
-    
-  }
-
-  
-  this.storage.set(`${this.pallet.fields.PLULPDocumentNo} lps`, listaL);
-  this.storage.set(`${this.pallet.fields.PLULPDocumentNo} items`, items);
-  console.log(listaL);
-  console.log(items);
-
-}
   this.intServ.loadingFunc(false);
   this.barcodeScanner.scan().then(
   async  (barCodeData) => {
@@ -252,7 +236,7 @@ if(listaL.length == 0){
      
     for (const key in listaL) {
   
-      if (listaL[key].fields.PLULPDocumentNo.toUpperCase() === code.toUpperCase()) {
+      if (listaL[key].LPDocumentNo.toUpperCase() === code.toUpperCase()) {
         line = listaL[key];    
         boolean = true;
       
@@ -289,9 +273,8 @@ if(listaL.length == 0){
   
          case true:  
   
-            let  find = this.lpsL.find(lp => lp.fields.PLULPDocumentNo === line.fields.PLULPDocumentNo); 
-  
-  
+            let  find = this.lpsL.find(lp => lp.LPDocumentNo === line.LPDocumentNo); 
+   
           if(find != undefined){
   
               this.intServ.loadingFunc(false);
@@ -331,28 +314,27 @@ if(listaL.length == 0){
   
         }else{
   
-          let info = await this.wmsService.GetItemInfo(line.ItemNo);
-          switch(info.Managed_by_PlurE){
-            case true:
-  
-              if(line.ItemTrackingCode != null){
-                
-                this.traking.push(line);
+          switch(line.ItemTrackingCode){
+
+            case null || '':
+              this.itemsL.push(line);
+        
+              this.itemB = true;
+              this.itemsT.push(line)
+            
+              this.listItemsL.push(line);
+            
+             console.log(this.itemsL);
+             this.intServ.loadingFunc(false);
+             break;
+      
+             default:
+              this.traking.push(line);
                 let contador = 0
                 this.trakingItem(contador);
-                
-  
-              }else{
-  
-                this.itemsL.push(line);
-                this.itemB = true;
-                this.itemsT.push(line);       
-                this.listItemsL.push(line);
-                this.intServ.loadingFunc(false);
-              }
-  
-              break;        
+               break;
           }
+                                                              
         }
   
         break;
@@ -410,7 +392,7 @@ if(listaL.length == 0){
     this.lpsL.filter(lp =>{
 
 
-      objL.LP_Pallet_Child_No = lp.fields.PLULPDocumentNo;
+      objL.LP_Pallet_Child_No = lp.LPDocumentNo;
   
       listLP.push(objL);
   
@@ -493,19 +475,22 @@ if(listaL.length == 0){
 
 
 
-async listLpOrItem(pallet:any){
+async listLpOrItem(){
 
 this.intServ.loadingFunc(true);
  this.QtyItem = 0;
  this.QtyLP = 0;
   this.boolean = false;
 
-let lps = await this.wmsService.Calcule_Possible_LPChilds_From_WR(pallet.fields.PLULPDocumentNo);
-    
-let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(pallet.fields.PLULPDocumentNo);
+
+  this.listLps.map(x => {
+
+    let line = this.lpsL.find(i => x.LPDocumentNo === i.LPDocumentNo);
+    if(line === undefined)this.lps.push(x);
+  });
 
 
-   // console.log( JSON.stringify(items));
+  let items = this.listItems;
 
     this.items = items.Possible_ItemsChilds;
 
@@ -513,59 +498,40 @@ let items = await this.wmsService.Calcule_Possible_ItemChilds_From_WR(pallet.fie
 
    let checkboxI = {testID: 0, testName: "", checked: false}
 
-   console.log(this.items);
-  
-    console.log('item =>',this.items,lps);
-
-  this.lpsNo = (lps.Possible_LPChilds != "")?lps.Possible_LPChilds.split("|"):[];
-
-  if(this.lpsNo.length > 0){
-    this.lpsNo.filter(async(no,index) => {
-      let lps = await this.wmsService.getLpNo(no);
-
-      let lp = await this.wmsService.ListLp(lps);
-
-      let line = this.lpsL.find(Lp => Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
-
-      if(line == undefined || line == null){
-
-         this.lps.push(lp);
-
-         this.QtyLP++;
-
-         checkboxL.testID = Number(index),
-         checkboxL.testName = `test${index}`
-         checkboxL.checked = false;
-   
-         this.testListL.push(checkboxL);
-        checkboxL = {testID: 0, testName: "", checked: false};
-
-      }      
-
-    });
-
-  }
-
-    this.items.filter((item, index) =>{
-
-      if(item.Qty === 0){
-  
-  
-        this.items.splice(index,1);
-
-      }
-
+ 
+            
+      for (const index in this.lps) {
+          
+          this.QtyLP++;
       
-      let line = this.itemsL.find(Item => Item.ItemNo === item.ItemNo);
+          checkboxL.testID = Number(index),
+          checkboxL.testName = `test${index}`
+          checkboxL.checked = false;
+    
+          this.testListL.push(checkboxL);
+         checkboxL = {testID: 0, testName: "", checked: false};
+         }
+           
+      
+          
 
-      if(line != undefined || line != null){
+         for (const index in this.items) {
+          if(this.items[index].Qty === 0){
 
-          this.items.splice(index,1);
+            this.items.splice(Number(index),1);
+    
+          }
+    
+          let line = this.itemsL.find(Item => Item.ItemNo === this.items[index].ItemNo);
+    
+          if(line != undefined){
+    
+              this.items.splice(Number(index),1);
+    
+               }   
+         }
+  
 
-           }
-
-     
-    })
 
     for (const i  in this.items) {
 
@@ -621,81 +587,90 @@ this.lps = [];
 
 async trakingItem(contador:number = 0, select:boolean = false){
   this.intServ.loadingFunc(true);
-  console.log(this.traking);
-    let res = (this.traking[contador].ItemTrackingCode != null)?await this.wmsService.configurationTraking(this.traking[contador].ItemTrackingCode):null;
-    console.log(res);
-    let res2 = await this.wmsService.GetItemTrackingSpecificationOpen(this.traking[contador].ItemNo,this.traking[contador].SourceNo,this.traking[contador].SourceRefNo);
-    let res3 = await this.wmsService.GetItemTrackingSpecificationClosed(this.traking[contador].ItemNo,this.traking[contador].SourceNo,this.traking[contador].SourceRefNo);
-    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationOpen):[];
-    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res3.TrackingSpecificationClose):[];
-    let code = (res != null)?await this.wmsService.listCode(res):null;
-    select?this.intServ.loadingFunc(false):false;
-  const popover = await this.popoverController.create({
-    component: PopoverAddItemTrakingComponent,
-    cssClass: 'popoverAddItemTrakingComponent',
-    backdropDismiss: false,
-    componentProps: { item:this.traking[contador], code, palletNo:this.pallet.fields.PLULPDocumentNo,trakingClose,trakingOpen}
+ 
+    try {
+
+      let res = await this.wmsService.GetItemTrackingSpecificationV2(this.traking[contador].ItemNo,this.traking[contador].SourceNo,this.traking[contador].SourceRefNo);
+
+      console.log(res);
     
-  });
+    let trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
+    let trakingClose = (res.ItemTrackinCloseJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackinCloseJO.TrackingSpecificationClose):[];
 
-  await popover.present();
-
-  const { data } = await popover.onDidDismiss();
-
-  switch(data.obj){
-
-    case undefined:
+      let code = (res.ItemTrackingJO.Error === undefined)?await this.wmsService.listCode(res.ItemTrackingJO.ItemTracking):null;
+      select?this.intServ.loadingFunc(false):false;
+    const popover = await this.popoverController.create({
+      component: PopoverAddItemTrakingComponent,
+      cssClass: 'popoverAddItemTrakingComponent',
+      backdropDismiss: false,
+      componentProps: { item:this.traking[contador], code, palletNo:this.pallet.fields.PLULPDocumentNo,trakingClose,trakingOpen}
+      
+    });
+  
+    await popover.present();
+  
+    const { data } = await popover.onDidDismiss();
+  
+    switch(data.obj){
+  
+      case undefined:
+        contador++;
+        if(contador < this.traking.length){
+          this.trakingItem(contador);
+        }else{
+          this.traking = [];
+          this.intServ.loadingFunc(false);
+          this.boolean = true;
+        }
+        break;
+  
+     default:
+      console.log(data.obj.TrackingInfo);
+  
+     for (const key in data.obj.TrackingInfo) {
+     
+      let item = {
+        ItemNo: this.traking[contador].ItemNo,
+        Qty: data.obj.TrackingInfo[key].Qty,
+        LineNo: this.traking[contador].LineNo,
+        SerialNo: data.obj.TrackingInfo[key].SerialNo,
+        LotNo: data.obj.TrackingInfo[key].LotNo,
+        ExperationDate: data.obj.TrackingInfo[key].ExperationDate
+      }
+  
+      this.itemB = true;
+      this.itemsL.push(item); 
+      this.listItemsL.push(item);
+      this.itemsT.push(item);
+      item = {
+        ItemNo: "",
+        Qty: 0,
+        LineNo: "",
+        SerialNo: "",
+        LotNo: "",
+        ExperationDate: ""
+      }
+  
+     }
+      
+      this.itemsTraking.push(data.obj);
+  
       contador++;
       if(contador < this.traking.length){
         this.trakingItem(contador);
       }else{
-        this.traking = [];
         this.intServ.loadingFunc(false);
         this.boolean = true;
+        this.traking = [];
       }
       break;
+    }
 
-   default:
-    console.log(data.obj.TrackingInfo);
-
-   for (const key in data.obj.TrackingInfo) {
+    } catch (error) {
+      
    
-    let item = {
-      ItemNo: this.traking[contador].ItemNo,
-      Qty: data.obj.TrackingInfo[key].Qty,
-      LineNo: this.traking[contador].LineNo,
-      SerialNo: data.obj.TrackingInfo[key].SerialNo,
-      LotNo: data.obj.TrackingInfo[key].LotNo,
-      ExperationDate: data.obj.TrackingInfo[key].ExperationDate
     }
-
-    this.itemB = true;
-    this.itemsL.push(item); 
-    this.listItemsL.push(item);
-    this.itemsT.push(item);
-    item = {
-      ItemNo: "",
-      Qty: 0,
-      LineNo: "",
-      SerialNo: "",
-      LotNo: "",
-      ExperationDate: ""
-    }
-
-   }
-    
-    this.itemsTraking.push(data.obj);
-
-    contador++;
-    if(contador < this.traking.length){
-      this.trakingItem(contador);
-    }else{
-      this.intServ.loadingFunc(false);
-      this.boolean = true;
-      this.traking = [];
-    }
-    break;
-  }
+  
 
 }
 
@@ -757,10 +732,10 @@ switch(ev.detail.checked){
 
 
 
-  line = this.lpsL.find(Lp =>  Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo);
+  line = this.lpsL.find(Lp =>  Lp.LPDocumentNo === lp.LPDocumentNo);
 
 
-  if(line == null || line === undefined){
+  if(line === undefined){
 
    
     this.lpsL.push(lp);
@@ -777,7 +752,7 @@ switch(ev.detail.checked){
   
      this.lpsL.filter( (Lp, index) => {
   
-        if(Lp.fields.PLULPDocumentNo === lp.fields.PLULPDocumentNo){
+        if(Lp.LPDocumentNo === lp.LPDocumentNo){
            this.lpsL.splice(index,1)
           this.listLpsL.splice(index,1)
           this.lpsT.splice(index,1);
@@ -805,14 +780,13 @@ case true:
   line = this.itemsL.find(Item =>  Item.ItemNo ===  item.ItemNo);
 
 
-  if(line == null || line === undefined){
+  if(line === undefined){
 
   this.itemsLT = [];
   this.intServ.loadingFunc(true);
   let info = await this.wmsService.GetItemInfo(item.ItemNo);
   console.log(info);
 
-  if(info.Managed_by_PlurE){
 
     switch(item.ItemTrackingCode){
 
@@ -835,7 +809,7 @@ case true:
          break;
     }
    
-  }
+  
 
   }
   break;
@@ -917,7 +891,7 @@ case false:
 
     this.listLpsL.filter((lp, index) =>{
 
-      if(item.fields.PLULPDocumentNo == lp.fields.PLULPDocumentNo){
+      if(item.LPDocumentNo == lp.LPDocumentNo){
 
         this.listLpsL.splice(index,1);
 

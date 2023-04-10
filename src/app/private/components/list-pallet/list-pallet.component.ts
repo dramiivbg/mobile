@@ -69,15 +69,16 @@ export class ListPalletComponent implements OnInit {
    console.log('LP =>',item)
 
 
-   item.fields.filter((lp, index) => {
+   item.LPLines.filter((lp, index) => {
 
-    switch(lp.PLUType){
-      case 'LP':
-        listLp.push(item.fields[index]);
+    switch(lp.PLULPDocumentType){
+      case 'Single':
+        let find  = listLp.find(x => x.PLULPDocumentNo === lp.PLULPDocumentNo);
+        (find === undefined)?listLp.push(lp): find.PLUQuantity += lp.PLUQuantity;
         break
 
-      case 'Item':
-        listItem.push(item.fields[index]);
+      default:
+        listItem.push(lp);
         break;
     }
 
@@ -86,10 +87,9 @@ export class ListPalletComponent implements OnInit {
 
    let pallet = item;
 
-   this.modalCtrl.dismiss({});
-
-   this.storage.set(`${pallet.fields[0].PLULPDocumentNo} listItem`, listItem);
-   this.storage.set(`${pallet.fields[0].PLULPDocumentNo} listLp`, listLp);
+ 
+   this.storage.set(`${pallet.LPDocumentNo} listItem`, listItem);
+   this.storage.set(`${pallet.LPDocumentNo} listLp`, listLp);
    this.storage.set(`pallet`, pallet);
 
     this.router.navigate(['page/wms/lists']);
@@ -99,7 +99,7 @@ export class ListPalletComponent implements OnInit {
 
  delete(item:any){
 
-    this.intServ.alertFunc(this.js.getAlert('alert', '', `Are you sure you want to delete the Pallet ${item.fields[0].PLULPDocumentNo}?`, async() => {
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure you want to delete the Pallet ${item.fields[0].PLULPDocumentNo}?`, async() => {
 
       this.intServ.loadingFunc(true);
       try {

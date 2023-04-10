@@ -33,7 +33,6 @@ import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-
 import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-log-lp.component';
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
-import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
 import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inventory/popover-show-inventory.component';
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
@@ -87,7 +86,6 @@ import { PopoverSelectPalletComponent } from '@prv/components/popover-select-pal
     PopoverLogLpComponent,
     SplitItemComponent,
     BinToBinPage,
-    CreatePhysicalInventoryComponent,
     ListPalletComponent,
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
@@ -140,7 +138,6 @@ import { PopoverSelectPalletComponent } from '@prv/components/popover-select-pal
     PopoverLogLpComponent,
     OptionsLpsOrItemsComponent,
     SplitItemComponent,
-    CreatePhysicalInventoryComponent,
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
     ModalShowLpsComponent,

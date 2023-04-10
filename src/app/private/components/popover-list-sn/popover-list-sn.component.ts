@@ -49,8 +49,7 @@ export class PopoverListSNComponent implements OnInit {
             let res = await this.wmsService.DeleteItemTrackingSpecificationOpen(item);
              console.log(res);
             if(res.Error) throw new Error(res.Error.Message);
-            if(res.error) throw new Error(res.error.message);
-
+            
             if(res.message) throw new Error(res.message);
 
             this.intServ.loadingFunc(false);
@@ -61,7 +60,6 @@ export class PopoverListSNComponent implements OnInit {
 
             receive -= item.Qty;
 
-            this.storage.set(`${this.item.No} ${this.item.LineNo}`, receive);
 
             let list = [
               {

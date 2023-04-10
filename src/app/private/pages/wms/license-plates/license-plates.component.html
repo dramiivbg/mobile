@@ -2,7 +2,7 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline"
+        <ion-icon *ngIf="code !== null" class="itemfooter" name="help-circle-outline"
           (click)="popoverConfigCode()"></ion-icon>
         <ion-col>
           <ion-label>Receive LP</ion-label>
