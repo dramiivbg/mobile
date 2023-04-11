@@ -378,6 +378,7 @@ export class WmsReceiptPage implements OnInit {
 
 
       if (lpsP.Error) throw Error(lpsP.Error.Message);
+      if (lpsP.error) throw Error(lpsP.error.message);
 
 
       for (const key in lpsP.LicensePlates) {

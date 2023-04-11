@@ -286,24 +286,34 @@ switch(ev.detail.checked){
     this.intServ.loadingFunc(true);
 
       if(this.listL.length > 0){
+
+        let obj = {
+          LP_Pallet_Child_No: ""
+        }
+        let lpNo = [];
+        let No;
+        
         this.listL.forEach(async(item) => {
+
+          obj.LP_Pallet_Child_No = item.PLULPDocumentNo;
+          lpNo.push(obj);
+          No = item.PLUWhseDocumentNo;
+
+          obj = {
+            LP_Pallet_Child_No: ""
+          }
+
+        });
+
 
           try {
 
-            let res  =    await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WR(this.pallet.LPDocumentNo,item.PLUWhseDocumentNo,item.PLULPDocumentNo);
+            let res  =    await this.wmsService.Delete_LPChild_to_LP_Pallet_From_WRV2(this.pallet.LPDocumentNo,No,lpNo);
         
              if(res.Error) throw new Error(res.Error.Message);
              if(res.error) throw new Error(res.error.message);
              
              
-            this.listLp.forEach((lp,index) => {
-
-            if(lp.PLULPDocumentNo === item.PLULPDocumentNo){
-      
-             this.listLp.splice(index,1);
-             this.QtyLP-=1;
-            }
-            });
               
             } catch (error) {
               this.intServ.loadingFunc(false);
@@ -311,31 +321,46 @@ switch(ev.detail.checked){
               
             }
   
-       });
+      
 
       }
 
 
 
  if(this.listI.length > 0){
+
+  let No;
+  let lineNo;
+  let obj = {
+    WarehouseReceipt_LineNo: "",
+    ItemNo: "",
+    LineNo: "",
+  }
+
+  let listItems = [];
   this.listI.filter(async(item) => {
+
+    obj.ItemNo = item.PLUNo;
+    obj.LineNo = item.PLULineNo;
+    obj.WarehouseReceipt_LineNo = item.PLUWhseLineNo;
+    listItems.push(obj);
+    No = item.PLUWhseDocumentNo;
+    obj = {
+      WarehouseReceipt_LineNo: "",
+      ItemNo: "",
+      LineNo: ""
+    }
+
+  });
+
     try {
 
-    let res  =   await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR(item.PLULPDocumentNo,item.PLUWhseDocumentNo, item.PLUWhseLineNo, item.PLUQuantity,item.PLUNo);
+    let res  =   await this.wmsService.Delete_ItemChild_to_LP_Pallet_From_WR2(this.pallet.LPDocumentNo,No,listItems);
 
      if(res.Error) throw new Error(res.Error.Message);
      if(res.error) throw new Error(res.error.message);
      
-      this.listItem.filter((item,index) => {
-  
-        if(item.PLUNo === item.PLUNo){
-      
-        this.listItem.splice(index,1);
-      
-        this.QtyItem-=1;
-    
-        }
-      });
+
       
     } catch (error) {
       this.intServ.loadingFunc(false);
@@ -343,7 +368,7 @@ switch(ev.detail.checked){
       
     }
    
-  });
+
  } 
   
 

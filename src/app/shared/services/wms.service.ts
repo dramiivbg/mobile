@@ -665,7 +665,7 @@ public async GetItemInfo(ItemNo:any){
    }
 
 
-   public async Delete_LPChild_to_LP_Pallet_From_WR(LP_Pallet_No:any, WarehouseReceipt_No:any, LP_Pallet_Child_No:any){
+   public async Delete_LPChild_to_LP_Pallet_From_WRV2(LP_Pallet_No:any, WarehouseReceipt_No:any, LP_Pallet_Child:any){
 
 
     try {
@@ -675,7 +675,7 @@ public async GetItemInfo(ItemNo:any){
 
         LP_Pallet_No,
         WarehouseReceipt_No,
-        LP_Pallet_Child_No
+        LP_Pallet_Child
         
     }];
 
@@ -686,7 +686,7 @@ public async GetItemInfo(ItemNo:any){
 
 
     
-    let p = await this.syncErp.processRequestParams('Delete_LPChild_to_LP_Pallet_From_WR', obj);
+    let p = await this.syncErp.processRequestParams('Delete_LPChild_to_LP_Pallet_From_WRV2', obj);
     let rsl = await this.syncErp.setRequest(p);
     return rsl;
    
@@ -751,7 +751,7 @@ public async GetItemInfo(ItemNo:any){
    }
 
 
-   public async Delete_ItemChild_to_LP_Pallet_From_WR(LP_Pallet_No:any,  WarehouseReceipt_No:any,  WarehouseReceipt_LineNo:any, Qty:any,Item_Child_No:any ){
+   public async Delete_ItemChild_to_LP_Pallet_From_WR2(LP_Pallet_No:any,  WarehouseReceipt_No:any,Item_Child:any ){
 
 
     
@@ -764,11 +764,7 @@ public async GetItemInfo(ItemNo:any){
 
             WarehouseReceipt_No,
 
-            WarehouseReceipt_LineNo,
-
-            Qty,
-
-            Item_Child_No,
+            Item_Child,
             
         }];
 
@@ -776,7 +772,7 @@ public async GetItemInfo(ItemNo:any){
     
     
         
-        let p = await this.syncErp.processRequestParams('Delete_ItemChild_to_LP_Pallet_From_WR', obj);
+        let p = await this.syncErp.processRequestParams('Delete_ItemChild_to_LP_Pallet_From_WR2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        

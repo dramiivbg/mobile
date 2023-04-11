@@ -99,13 +99,13 @@ export class ListPalletComponent implements OnInit {
 
  delete(item:any){
 
-    this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure you want to delete the Pallet ${item.fields[0].PLULPDocumentNo}?`, async() => {
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure you want to delete the Pallet ${item.LPDocumentNo}?`, async() => {
 
       this.intServ.loadingFunc(true);
       try {
 
           
-        let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.fields[0].PLULPDocumentNo);
+        let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.LPDocumentNo);
 
          if(res.Error) throw new Error(res.Error.Message);
          
@@ -113,7 +113,7 @@ export class ListPalletComponent implements OnInit {
          this.listPallet.filter((pallet,index) => {
   
   
-          if(pallet.fields[0].PLULPDocumentNo === item.fields[0].PLULPDocumentNo){
+          if(pallet.LPDocumentNo === item.LPDocumentNo){
   
              this.listPallet.splice(index,1);
   
@@ -122,7 +122,7 @@ export class ListPalletComponent implements OnInit {
   
         this.intServ.loadingFunc(false);
      
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.fields[0].PLULPDocumentNo} has been removed correctly`));
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.LPDocumentNo} has been removed correctly`));
     
   
   
