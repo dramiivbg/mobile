@@ -698,21 +698,25 @@ public async GetItemInfo(ItemNo:any){
 
    }
 
-   public async Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT(list:any){
+   public async Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT_V2(WarhouseReceiptNo:any,LP_Pallet_No:any,BinCode:any,Item_Child:any){
 
     try {
 
     
-        let obj: any = [
+        let obj: any = [{
     
-           list
-            
-        ];
+
+            WarhouseReceiptNo, 
+            LP_Pallet_No, 
+            BinCode,
+            Item_Child
+
+        }];
     
         console.log(JSON.stringify(obj));
 
         
-        let p = await this.syncErp.processRequestParams('Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT', obj);
+        let p = await this.syncErp.processRequestParams('Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT_V2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        

@@ -11,6 +11,7 @@ import { Storage } from '@ionic/storage';
 import { TypeCheckCompiler } from '@angular/compiler/src/view_compiler/type_check_compiler';
 import { PopoverListSerialLpComponent } from '../popover-list-serial-lp/popover-list-serial-lp.component';
 import { reverse } from 'dns';
+import { throws } from 'assert';
 
 @Component({
   selector: 'app-popover-item-traking',
@@ -78,13 +79,18 @@ export class PopoverItemTrakingComponent implements OnInit {
  
      this.frm.controls['QtyBase'].disable();
  
+
    //  this.storage.remove(`${this.item.No} ${this.item.LineNo}`);
 
-   this.receive =  (await this.storage.get(`${this.item.No} ${this.item.LineNo}`) != undefined && await this.storage.get(`${this.item.No} ${this.item.LineNo}`) != null)?await this.storage.get(`${this.item.No} ${this.item.LineNo}`):0;
+   this.receive = this.item.QtytoReceive;
+
+   this.storage.set(`${this.item.No} ${this.item.LineNo}`, this.receive);
+
+
 
     console.log(this.code);
     console.log(this.item);
-    console.log(this.receive);
+    console.log('receive',this.receive);
 
     console.log(this.item);
 
@@ -323,11 +329,11 @@ async  view(){
        
        
 
-          await this.wmsService.Update_WsheReceiveLine(list); 
+       let resU =  await this.wmsService.Update_WsheReceiveLine(list); 
 
-
-         this.list = [];  
-         
+       if(resU.Error) throw new Error(resU.Error.Message);
+       
+        
          this.intServ.loadingFunc(false);
          this.intServ.alertFunc(this.jsonService.getAlert('success','','The operation was successfully performed',async() => {        
             

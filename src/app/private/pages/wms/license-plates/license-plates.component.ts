@@ -100,12 +100,7 @@ export class LicensePlatesComponent implements OnInit {
       this.exp = (this.code.lines.ManExpirDateEntryReqd)?true:false;
     }
 
-    this.storage.remove(`lists ${this.item.LineNo}`);
-    this.storage.remove(`Qty ${this.item.LineNo}`);
 
-    this.list = (await this.storage.get(`lists ${this.item.LineNo}`) != null || await this.storage.get(`lists ${this.item.LineNo}`) != undefined)?await this.storage.get(`lists ${this.item.LineNo}`):[];
-
-    this.Quantity = (await this.storage.get(`Qty ${this.item.LineNo}`) != null || await this.storage.get(`Qty ${this.item.LineNo}`) != undefined)?await this.storage.get(`Qty ${this.item.LineNo}`):0;
     if(this.lot === false) this.frm2.controls['LotNo'].disable();
    
     if(this.serial === false) this.frm2.controls['SerialNo'].disable();
@@ -197,6 +192,7 @@ public async onSubmit() {
     if(this.frm.valid && this.Boolean){
 
       this.total =  obj.TotalToReceive * obj.NoofPackLP;
+      this.storage.set(`total ${this.item.LineNo}`, this.total);
        this.Boolean = false;
     }
 
@@ -258,8 +254,7 @@ public async onSubmit() {
  
            this.interceptService.alertFunc(this.jsonService.getAlert('success', ' ', 'License plates have been created successfully'));
 
-           this.storage.remove(`lists ${this.item.LineNo}`);
-           this.storage.remove(`Qty ${this.item.LineNo}`);
+      
            this.popoverController.dismiss({ data: 'creado' });
 
          
@@ -367,8 +362,6 @@ if(this.approved){
       
       this.list.push(json);
 
-      this.storage.set(`lists ${this.item.LineNo}` ,this.list);
-      this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
 
       console.log(this.list);
 
@@ -404,9 +397,9 @@ if(this.approved){
             }
                  
           this.list.push(json);
-          this.storage.set(`lists ${this.item.LineNo}` ,this.list);
+
             this.Quantity += json.Qty;
-           this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
+ 
             console.log(this.list);
       
             this.frm2.patchValue({
@@ -431,8 +424,7 @@ if(this.approved){
   
           line.Qty += obj.Qty;
           this.Quantity += obj.Qty; 
-          this.storage.set(`lists ${this.item.LineNo}` ,this.list);
-          this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
+
           this.frm2.patchValue({
       
             SerialNo: "",
@@ -533,8 +525,7 @@ if(this.approved){
 
        this.list.length > 0?this.list.map(x => {if(x.proceded === false){this.Quantity += x.Qty}}):this.Quantity;
     
-       this.storage.set(`lists ${this.item.LineNo}` ,this.list);
-       this.storage.set(`Qty ${this.item.LineNo}`, this.Quantity);
+     
    
     }
 

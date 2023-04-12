@@ -346,6 +346,7 @@ export class WmsReceiptPage implements OnInit {
       let navigationExtras: NavigationExtras = {
         state: {
           pallet: palletN,
+          wareReceipts: this.wareReceipts,
           new: false
         },
         replaceUrl: true

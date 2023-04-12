@@ -77,10 +77,6 @@ export class PopoverNewPalletComponent implements OnInit {
   public listsFilter: any[] = [];
   public listT: any[] = []; 
   public list:any[] = [];
-
-
-  public lp:any;
-  public item:any;
   
   constructor(public intServ: InterceptService, public generalService:GeneralService, public wmsService:WmsService,
     public router: Router,public popoverController: PopoverController , private barcodeScanner: BarcodeScanner, private js: JsonService
@@ -97,16 +93,13 @@ export class PopoverNewPalletComponent implements OnInit {
     this.route.queryParams.subscribe(async params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.pallet = this.router.getCurrentNavigation().extras.state.pallet;
-
-        this.lp = this.router.getCurrentNavigation().extras.state.lp;
         
-        this.item = this.router.getCurrentNavigation().extras.state.item;      
+        this.wareReceipts = this.router.getCurrentNavigation().extras.state.wareReceipts;      
      
       } else {
         this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
       }
 
-    this.intServ.loadingFunc(false);
 
     this.listLps = await this.wmsService.Calcule_Possible_LPChilds_From_WR_V3(this.pallet.fields.PLULPDocumentNo);
 
@@ -117,7 +110,11 @@ export class PopoverNewPalletComponent implements OnInit {
     this.listItems = (await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo)).Possible_ItemsChilds;
 
     console.log('items disponibles =>',this.listItems);
+
+    this.intServ.loadingFunc(false);
   });
+
+
 
 }
 
@@ -445,21 +442,28 @@ async onBarCode(){
     if(this.itemsL.length > 0){
 
        resI = await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR(pallet.fields.PLULPDocumentNo,this.wareReceipts.No,listsI);
+
+       if(resI.Error) throw new Error(resI.Error.Message);
+       if(resI.error) throw new Error(resI.error.message);
+       
     
     }
 
     if(this.itemsTraking.length > 0){
       
-      for (const key in this.itemsTraking) {
-
-        await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT(this.itemsTraking[key]);
+ 
+      let resS =   await this.wmsService.Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT_V2(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,pallet.fields.PLUBinCode,this.itemsTraking);
        
-      }
+      if(resS.Error) throw new Error(resS.Error.Message);
+      if(resS.error) throw new Error(resS.error.message);
+      
     }
         if(this.lpsL.length > 0){
 
           let resL = await this.wmsService.Assign_LPChild_to_LP_Pallet_From_WR(this.wareReceipts.No,pallet.fields.PLULPDocumentNo,listLP);
 
+          if(resL.Error) throw new Error(resL.Error.Message);
+          if(resL.error) throw new Error(resL.error.message);
        }
     
 

@@ -76,15 +76,12 @@ export class PopoverAddItemTrakingComponent implements OnInit {
 
 
      this.obj =  {
-      WarhouseReceiptNo: this.item.No,
-      LP_Pallet_No: this.palletNo,
-      Item_Child_No: this.item.ItemNo,
-      BinCode: this.item.BinCode,
+      ItemNo: this.item.ItemNo,
+      TotalToReceive: this.item.Qty,
+      UnitofMeasureCode: this.item.UnitofMeasureCode,
       SourceNo: this.item.SourceNo,
       SourceRefNo: this.item.SourceRefNo,
       LineNo: this.item.LineNo,
-      UnitofMeasureCode: this.item.UnitofMeasureCode,
-      TotalToReceive: this.item.Qty,
       TrackingInfo: []
     }
 
