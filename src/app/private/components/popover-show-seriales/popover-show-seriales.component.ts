@@ -25,7 +25,7 @@ export class PopoverShowSerialesComponent implements OnInit {
     
       try {
 
-         let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(this.lps.PLULPDocumentNo);
+         let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(this.lps.LPDocumentNo);
 
          if(lpD.Error) throw new Error(lpD.Error.Message);
          if(lpD.error) throw new  Error(lpD.error.message);

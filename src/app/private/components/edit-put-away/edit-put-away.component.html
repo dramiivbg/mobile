@@ -121,10 +121,15 @@
                                                 <ion-col size="12" class="item" >
 
                                                     <ion-row class="titleslist">
-                                                        <ion-col size="7" class="titleblue" (click)="show(item)">
+
+                                                        <ion-col size="12" class="titleblue" (click)="show(item)" *ngIf="item.LPDocumentType === 'Pallet'">
                                                             {{item.LPDocumentNo}}
                                                         </ion-col>
-                                                        <ion-col size="5" class="select">
+
+                                                        <ion-col size="7" class="titleblue" (click)="show(item)" *ngIf="item.LPDocumentType !== 'Pallet'">
+                                                            {{item.LPDocumentNo}}
+                                                        </ion-col>
+                                                        <ion-col size="5" class="select" *ngIf="item.LPDocumentType !== 'Pallet'">
                                                             <ion-select interface="popover" #bin
                                                                 (ionChange)="onChangeBinOne(item,bin.value)"
                                                                 placeholder="Edit Bincode" class="thebinselect">

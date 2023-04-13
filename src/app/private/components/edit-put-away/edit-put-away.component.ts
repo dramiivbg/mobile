@@ -118,7 +118,6 @@ export class EditPutAwayComponent implements OnInit {
  
     this.warePW = await this.storage.get('setPutAway');
 
-    this.storage.remove(`init ${this.whsePutAway.fields.No}`) 
     this.listPwL = this.warePW.WarehousePutAways.WarehousePutAwayLines;
 
     this.listPut = this.warePW.WarehousePutAways.WarehousePutAwayLines;
@@ -143,9 +142,9 @@ export class EditPutAwayComponent implements OnInit {
     this.initV = (await this.storage.get(`init ${this.whsePutAway.fields.No}`) != undefined
       && await this.storage.get(`init ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`init ${this.whsePutAway.fields.No}`) : [];
 
-   console.log(this.initV);
+   console.log('init =>',this.initV);
 
-   if(this.initV.length === 0)this.init();
+   if(this.initV.length === 0){this.init()};
     
     if (this.initV.length > 0) {
       this.QtyTotal = this.initV.length;
@@ -163,13 +162,11 @@ export class EditPutAwayComponent implements OnInit {
 
     if (this.listsFilter.length > 0) this.QtyTake = this.lps.length + this.listsFilter.length;
 
-    let bin = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined && await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin ${this.whsePutAway.fields.No}`) : null;
+    this.bins = (await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != undefined && await this.storage.get(`bin ${this.whsePutAway.fields.No}`) != null) ? await this.storage.get(`bin ${this.whsePutAway.fields.No}`) : [];
 
-    if (bin != null) this.bins = bin.Bins;
- 
    this.active = (this.listItems.length > 0 && this.listsFilter.length === 0) || (this.listItems.length === 0 && this.listsFilter.length > 0)?true:false;
   
-   this.intServ.loadingFunc(true);
+   this.intServ.loadingFunc(false);
   }
 
   
@@ -678,24 +675,24 @@ export class EditPutAwayComponent implements OnInit {
         if (this.initV.length > 0) {
           this.initV.filter(Lp => {
 
-            if (Lp.fields.PLULPDocumentType !== "Pallet") {
+            if (Lp.LPDocumentType !== "Pallet") {
 
-              let l = this.lps.find(lp => lp.fields.PLULPDocumentNo === Lp.fields.PLULPDocumentNo);
+              let l = this.lps.find(lp => lp.LPDocumentNo === Lp.LPDocumentNo);
 
               if (l !== undefined) {
-                Lp.fields.place = l.fields.place;
-                Lp.seriales = l.seriales;
+                Lp.place = l.place;
+                Lp.LPLines = l.LPLines;
               }
               console.log(Lp);
 
               this.split.WarehousePutAwayLines.filter(lp => {
 
 
-                if (Lp.fields.PLULPDocumentNo === lp.LP) {
+                if (Lp.LPDocumentNo === lp.LP) {
 
-                  if(Lp.seriales.length > 0){
+                  if(Lp.LPLines.length > 0){
                     Lp.seriales.map(x => {
-                      lp.BinCode = x.fields.place;
+                      lp.BinCode = x.place;
                       request.ActivityType = 1;
                       request.BinCode = lp.BinCode;
                       request.ItemNo = lp.ItemNo;
@@ -723,7 +720,7 @@ export class EditPutAwayComponent implements OnInit {
                     }
                     });
                   }else{
-                    lp.BinCode = Lp.fields.place;
+                    lp.BinCode = Lp.place;
 
                     request.ActivityType = 1;
                     request.BinCode = lp.BinCode;
@@ -758,8 +755,8 @@ export class EditPutAwayComponent implements OnInit {
 
           });
         }
-        const binPallet = await this.wmsService.GetDefaultBin1();
-
+       // const binPallet = await this.wmsService.GetDefaultBin1();
+/*
       if(this.split != undefined ){
         for (const i in this.pallet) {
           for (const j in this.pallet[i].fields) {
@@ -799,6 +796,8 @@ export class EditPutAwayComponent implements OnInit {
          }
  
       }
+
+      */
        
         
 
@@ -864,8 +863,14 @@ export class EditPutAwayComponent implements OnInit {
 
               x.LPArray.LicensePlates.map(lp => {
                 lp['take'] = y.BinCode; 
-                lp['place'] = x.BinCode
-                let find = this.initV.find(i => i.LPDocumentNo === lp.LPDocumentNo);
+                lp['place'] = x.BinCode;
+                lp.LPLines.map(i => {
+                  i['place'] = x.BinCode;
+                  i['take'] = y.BinCode;
+                });
+                
+                lp['serial']  =  (x.ItemTrackingCode != "")? true:false;
+               let find = this.initV.find(i => i.LPDocumentNo === lp.LPDocumentNo);
                 if(find === undefined)this.initV.push(lp);
               });
 
@@ -896,15 +901,16 @@ export class EditPutAwayComponent implements OnInit {
 
      });
 
-      let bin = await this.wmsService.GetPossiblesBinFromWR(this.whsePutAway.fields.No);
+      this.bins = (await this.wmsService.GetPossiblesBinFromPutAway(this.whsePutAway.fields.No)).Bins;
+
+      console.log('bins =>',this.bins);
 
       this.storage.set(`init ${this.whsePutAway.fields.No}`, this.initV);
 
-      this.storage.set(`bin ${this.whsePutAway.fields.No}`, bin);
+      this.storage.set(`bin ${this.whsePutAway.fields.No}`, this.bins);
 
       this.storage.set(`pallet ${this.pallet}`, this.pallet);
 
-      this.bins = bin.Bins;
 
  
       const lpsP = await this.wmsService.GetLicencesPlateInPW(this.whsePutAway.fields.No, true);
@@ -915,7 +921,15 @@ export class EditPutAwayComponent implements OnInit {
        
         let LpLines =  await this.wmsService.listTraking(lpsP.LicensePlates[key].LPLines);
 
+        LpLines.map(x => {
+          x['take'] = lpsP.LicensePlates[key].BinCode;
+          x['place'] = "FLOOR";
+      
+        });
+
         lpsP.LicensePlates[key].LPLines = LpLines;
+        lpsP.LicensePlates[key]['take'] = lpsP.LicensePlates[key].BinCode;
+        lpsP.LicensePlates[key]['place'] = "FLOOR";
 
         this.initV.push(lpsP.LicensePlates[key]);
         }
@@ -988,6 +1002,8 @@ export class EditPutAwayComponent implements OnInit {
     this.initItem = (this.initItem.length === 0) ? await this.storage.get(`init item ${this.whsePutAway.fields.No}`) : this.initItem;
 
     this.intServ.loadingFunc(true);
+  if(this.initV.length > 0){
+
     this.initV.filter(lp => {
       let find = this.listsFilter.find(lpE => lpE.LPDocumentNo === lp.LPDocumentNo);
 
@@ -1002,9 +1018,12 @@ export class EditPutAwayComponent implements OnInit {
       }
 
     });
+  }
+  
 
 
     
+    if(this.init.length > 0){
 
       this.initItem.filter(item => {
 
@@ -1019,6 +1038,9 @@ export class EditPutAwayComponent implements OnInit {
 
 
       });
+    }
+
+  
 
 
     this.active = (this.listItems.length > 0 && this.listsFilter.length === 0) || (this.listItems.length === 0 && this.listsFilter.length > 0)?true:false;
@@ -1046,90 +1068,53 @@ export class EditPutAwayComponent implements OnInit {
 
   async show(lp: any) {
 
-    switch (lp.fields.PLULPDocumentType) {
+    switch (lp.LPDocumentType) {
 
       case "Pallet":
 
-        this.intServ.loadingFunc(true);
-        let pallet = this.pallet.find(pallet => pallet.fields[0].PLULPDocumentNo === lp.fields.PLULPDocumentNo);
         let lps: any[] = [];
-        for (const key in pallet.fields) {
+        for (const key in lp.LPLines) {
         
           let p;
           let img;
-          let lp = pallet.fields[key];
-          let res = await this.wmsService.getLpNo(lp.PLUNo);
-          if(!res.Error){
-             p = await this.wmsService.ListLp(res);
-
-            let pH = await this.wmsService.ListLpH(res);
+          let l = lp.LPLines[key];
+      
+          //  let resI = await this.wmsService.GetItem(l.PLUNo);
   
-            let resI = await this.wmsService.GetItem(p.fields.PLUNo);
-  
-            img = await this.wmsService.listItem(resI);
+          //  img = await this.wmsService.listItem(resI);
 
-            p.fields['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
-            p.fields.PLUBinCode = pH.fields.PLUBinCode;
-            p.fields.PLULocationCode = pH.fields.PLULocationCode;
-            this.listPwL.filter(
-              x => {
-                switch (x.fields.ActionType) {
-                  case "Place":
-                    if (p.fields.PLUNo === x.fields.ItemNo) {
-                      p.fields.place = x.fields.BinCode;
-                      break;
-                    }
-                }
-              }
-            )
-            lps.push(p);
+         //   l['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;          
+         
+            lps.push(l);
 
-          }else{
-            let resI = await this.wmsService.GetItem(lp.PLUNo);  
-            img = await this.wmsService.listItem(resI);
-            lp['image'] = `data:image/jpeg;base64,${img.fields.Picture}`;
-
-            this.listPwL.filter(
-              x => {
-                switch (x.fields.ActionType) {
-                  case "Place":
-                    if (img.fields.No === x.fields.ItemNo) {
-                      lp['place'] = x.fields.BinCode;
-                      break;
-                    }
-                }
-              }
-            )
-            lps.push(lp);
-          }      
+          }    
             
-          }
-
+        
 
         this.intServ.loadingFunc(false);
         const modal = await this.modalCtrl.create({
           component: ModalShowLpsComponent,
-          componentProps: { lps, No: pallet.fields[0].PLULPDocumentNo }
+          componentProps: { lps:lp.LPLines, No: lp.LPDocumentNo }
         });
         modal.present();
 
-        const { data, role } = await modal.onWillDismiss();
+         break;
 
         case "Single":
 
-              if(lp.seriales.length > 0){
+              if(lp.serial){
 
                 const popoverI = await this.popoverController.create({
                   component: PopoverSerialesLpComponent,
                   cssClass: 'popoverSerialesLpComponent',
                   backdropDismiss: false,
-                  componentProps: {seriales:lp.seriales},
+                  componentProps: {seriales:lp.LPLines},
                 });
                 await popoverI.present();
             
-                const { data } = await popoverI.onWillDismiss();
-
               }
+              
+              
              break
     }
 
@@ -1456,114 +1441,24 @@ export class EditPutAwayComponent implements OnInit {
 
   onChangeBinOne(item: any, bin: any) {
 
-    switch (item.fields.PLULPDocumentType) {
-
-      case 'Single':
-
-
-        console.log('single.....');
-
-        if (this.pallet != undefined) {
-
-          for (const key in this.pallet) {
-            let line = this.pallet[key].fields.find(lp => lp.PLUNo === item.fields.PLULPDocumentNo);
-
-            if (line != undefined || line != null) {
-
-              this.intServ.alertFunc(this.js.getAlert('error', '', `To change the bin must be done on the pallet ${this.pallet[key].fields[0].PLULPDocumentNo} `))
-
-              return;
-
-            }
-
-          }
 
           this.listsFilter.filter(lp => {
 
-            if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) {
+            if (lp.LPDocumentNo === item.LPDocumentNo) {
 
-              lp.fields.place = bin.toUpperCase();
-              lp.seriales.map(x => x.fields.place = bin.toUpperCase());
-
-            }
-          });
-
-
-
-
-
-        } else {
-
-          this.listsFilter.filter(lp => {
-
-            if (lp.fields.PLULPDocumentNo === item.fields.PLULPDocumentNo) {
-
-              lp.fields.place = bin.toUpperCase();
-              lp.seriales.map(x => x.fields.place = bin.toUpperCase());
+              lp.place = bin.toUpperCase();
+              lp.LPLines.map(x => x['place'] = bin.toUpperCase());
               console.log(lp);
 
             }
           });
-
-
-        }
+  
 
         this.listT = this.listsFilter;
 
         this.storage.set(this.whsePutAway.fields.No, this.listsFilter);
 
-
-        break;
-
-
-
-      case 'Pallet':
-
-
-
-        for (const key in this.pallet) {
-
-          let line = this.pallet[key].fields.find(lp => lp.PLULPDocumentNo === item.fields.PLULPDocumentNo);
-
-          if (line != undefined || line != null) {
-
-
-            let tempory: any[] = [];
-
-            let indice: any;
-
-            this.pallet[key].fields.filter(async (Lp) => {
-
-              let line = this.pallet[key].fields.find(lp => lp.PLUWhseLineNo != Lp.PLUWhseLineNo);
-
-              if (line === null || line === undefined) {
-
-                Lp.PLUBinCode = bin.toUpperCase();
-                this.listsFilter.filter(lp => {
-
-                  if (lp.fields.PLULPDocumentNo === Lp.PLUNo) {
-
-                    lp.fields.place = bin.toUpperCase();
-                  }
-                });
-
-
-                let res = await this.wmsService.getLpNo(Lp.PLUNo);
-
-                let lpL = await this.wmsService.ListLp(res);
-
-                lpL.fields.place = bin.toUpperCase();
-
-
-              }
-
-            });
-
-          }
-        }
-
-
-    }
+              
 
   }
 

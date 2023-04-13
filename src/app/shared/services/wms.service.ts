@@ -820,7 +820,7 @@ public async GetItemInfo(ItemNo:any){
 
 
 
-public async GetPossiblesBinFromPutAwayV2(No:any){
+public async GetPossiblesBinFromPutAway(No:any){
 
     try {
 
@@ -831,7 +831,7 @@ public async GetPossiblesBinFromPutAwayV2(No:any){
 
         console.log(JSON.stringify(obj));
         
-        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAwayV2', obj);
+        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAway', obj);
         let rsl = await this.syncErp.setRequest(p);
        return rsl;
        
@@ -900,33 +900,6 @@ public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
 }
 
 
-
-
-
-public async GetPossiblesBinFromPutAway(No:any){
-
-
-    try {
-
-    
-        let obj: any = [{
-    
-          No
-        }];
-    
-
-        console.log(JSON.stringify(obj));
-    
-        
-        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAway', obj);
-        let rsl = await this.syncErp.setRequest(p);
-        return rsl;
-       
-    } catch (error) {
-        throw error;
-    }
-
-}
 
 
 public async Prepare_WarehousePutAway(No:any){

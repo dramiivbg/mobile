@@ -54,9 +54,8 @@ async   ngOnInit() {
      
      this.binCode = this.item.place;
 
-     let bin =  await this.wmsService.GetPossiblesBinFromPutAwayV2(this.item.No);
+     this.bins =  (await this.wmsService.GetPossiblesBinFromPutAway(this.item.No)).Bins;
 
-     this.bins = bin.Bins;
   }
 
   async onSubmit(){

@@ -50,7 +50,7 @@ export class ModalLpsConfirmComponent implements OnInit {
       this.Bin = bin.toUpperCase();
       this.lps = this.lpsT.filter(
         x => {
-          return (x.fields.place.toLowerCase().includes(bin.toLowerCase()));
+          return (x.place.toLowerCase().includes(bin.toLowerCase()));
         }
       );
 
@@ -112,7 +112,8 @@ export class ModalLpsConfirmComponent implements OnInit {
 
           this.itemsL = this.itemLT.filter(
             x => {
-              return (x.ItemNo.toLowerCase().includes(val.toLowerCase()));
+              return (x.ItemNo.toLowerCase().includes(val.toLowerCase()) || x.SerialNo.toLowerCase().includes(val.toLowerCase())
+              || x.LotNo.toLowerCase().includes(val.toLowerCase()));
             }
           )
 
@@ -143,13 +144,13 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   async show(lp:any){
 
-    if(lp.seriales.length > 1){
+    if(lp.serial){
 
       const popoverI = await this.popoverController.create({
         component: PopoverSerialesLpComponent,
         cssClass: 'popoverSerialesLpComponent',
         backdropDismiss: false,
-        componentProps: {seriales:lp.seriales},
+        componentProps: {seriales:lp.LPLines},
       });
       await popoverI.present();
   

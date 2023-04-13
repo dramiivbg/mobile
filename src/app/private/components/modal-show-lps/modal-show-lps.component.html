@@ -32,92 +32,78 @@
                     <ion-list>
                                 
                                 <div class="label-lines" part="item-width">
-                                
-                                            <ion-col size="15" *ngFor="let item of lps; let i=index">
-                                                <ion-row>
+                            
+                                       <ion-row *ngFor="let item of lps; let i=index">
 
-                                                    <ion-col size="6" class="label-line-title blue" *ngIf="item.fields != undefined">
-                                                        {{item.fields.PLULPDocumentNo}}
+                                         <ion-item  style="width: 100%;">
+
+                                            <ion-col size="12" class="item">
+
+                                                <ion-row class="titleslist">
+
+                                                    <ion-col size="6" class="label-line-title blue" *ngIf="item.PLULPDocumentType === 'Single'">
+                                                        {{item.PLULPDocumentNo}}
                                                     </ion-col>
-                                                    <ion-col size="4" class="label-line-title blue" *ngIf="item.fields === undefined">
+                                                    <ion-col size="6" class="label-line-title blue" *ngIf="item.PLULPDocumentType !== 'Single'">
                                                         {{item.PLUNo}}
                                                     </ion-col>
-                                                    <ion-col  size="4" class="label-line-title" *ngIf="item.fields === undefined">
+                                                                                                 
+
+                                                    <ion-col size="6" class="label-line-title">
+                                                    Qty. {{item.PLUQuantity}}
+
+                                                   </ion-col>
+
+                                                </ion-row>
+
+                                                <ion-row class="titleslist">
+
+
+                                                    <ion-col  size="6" class="label-line" >
                                                         UoM: {{item.PLUUnitofMeasureCode}}
                                                     </ion-col>
 
-                                                    <ion-col size="4" class="label-line-title"
-                                                     *ngIf="item.fields === undefined">
-                                                    Qty. {{item.PLUQuantity}}
-
-                                                </ion-col>
-
-                                                <ion-col size="6" class="label-line-title"
-                                                *ngIf="item.fields != undefined">
-                                                Qty. {{item.fields.PLUQuantity}}
-
-                                               </ion-col>
-                                                </ion-row>
-
-                                             
-                                                <ion-row *ngIf="item.fields != undefined ">
-                                                    <ion-col size="4" class="label-line">
-                                                        Item No: {{item.fields.PLUNo}}
-                                                    </ion-col>
-                                                    <ion-col style="padding-right: 30px;" size="4" class="label-line">
-                                                        Measure: {{item.fields.PLUUnitofMeasureCode}}
+                                                    <ion-col size="6" class="label-line">
+                                                        Item No: {{item.PLUNo}}
                                                     </ion-col>
 
                                                 </ion-row>
 
 
-                                                <ion-row *ngIf="item.fields != undefined ">
+
+                                                <ion-row class="titleslist">
                                                     <ion-col size="4" class="label-line">
-                                                        Take: {{item.fields.PLUBinCode}}
+                                                        Take: {{item.take}}
                                                     </ion-col>
                                                     
                                                 
-                                                    <ion-col size="4" class="label-line-ligth"
-                                                        >
-                                                        Place: {{item.fields.place}}
-
-                                                    </ion-col>
-
-                                                </ion-row>
-
-                                                <ion-row *ngIf="item.fields === undefined ">
                                                     <ion-col size="4" class="label-line">
-                                                        Take: {{item.PLUBinCode}}
-                                                    </ion-col>
-                                                
-
-                                                    <ion-col size="4" class="label-line-ligth"
-                                                        >
                                                         Place: {{item.place}}
 
                                                     </ion-col>
 
                                                 </ion-row>
 
-                                            <ion-row *ngIf="item.fields === undefined">
-                                                <ion-col size="4" *ngIf="item.PLUSerialNo != null">
+                                                <ion-row class="titleslist">
+                                                    <ion-col size="4" class="label-line" *ngIf="item.PLUExpirationDate !== null">
+                                                        Exp Date : {{item.PLUExpirationDate}}
+                                                    </ion-col>
+                                                
 
-                                                    Serial No:{{item.PLUSerialNo}}
-                                                </ion-col>
+                                                    <ion-col size="4" class="label-line" *ngIf="item.PLUSerialNo !== null">
+                                                        Serial No: {{item.PLUSerialNo}}
 
-                                                <ion-col size="4"  *ngIf="item.PLULotNo != null">
-                                                    Lot No:{{item.PLULotNo}}
-                                                    
-                                                </ion-col>
+                                                    </ion-col>
 
-                                                <ion-col size="4"   *ngIf="item.PLUExpirationDate != null">
-                                                    
-                                                    Exp Date:{{item.PLUExpirationDate}}
-                                                </ion-col>
+                                                    <ion-col size="4" class="label-line" *ngIf="item.PLULotNo !== null">
+                                                    Lot No: {{item.PLULotNo}}
 
-                                            </ion-row>
+                                                   </ion-col>
 
-                                                <ion-item-sliding>
+                                                </ion-row>
+
+
+                                        <!--        <ion-item-sliding>
 
                                                     <ion-item style="width: 100%;">
                                                         <ion-row *ngIf="item.fields != undefined">
@@ -149,10 +135,11 @@
                                                     </ion-item>
 
 
-                                                </ion-item-sliding>
+                                                </ion-item-sliding> -->
 
                                             </ion-col>
-
+                                         </ion-item>
+                                        </ion-row>
 
                                     </div>
 
