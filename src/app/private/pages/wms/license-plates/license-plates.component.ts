@@ -322,22 +322,35 @@ async  save(){
 
   let obj = await this.jsonService.formToJson(this.frm2);
 
-  let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-  let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-  let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-  if(line != undefined || line2 != undefined || line3 != undefined){
-    this.approved = false;
-    this.frm2.controls.SerialNo.setValue('');
+  switch(this.serial){
 
-    this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${obj.SerialNo.toUpperCase()} already exists`));
+    case true:
+      let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+      let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+      let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+      if(line != undefined || line2 != undefined || line3 != undefined){
+        this.approved = false;
+        this.frm2.controls.SerialNo.setValue('');
+    
+        this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${obj.SerialNo.toUpperCase()} already exists`));
+    
+      }else{
+        this.approved = true;
+      }
+       break;
+ 
+    case false:
+        this.approved = true;
+     break;
+    } 
 
-  }else{
-    this.approved = true;
-  }
+
+
+  let Qty = (this.serial)?1:obj.Qty;
 
 if(this.approved){
-  switch(this.Quantity === this.total){
-    case false:
+  switch(this.Quantity+Qty <= this.total){
+    case true:
       if (this.frm2.valid) {
   
         let res = new Date(obj.exp);

@@ -1,5 +1,6 @@
 @import "~src/sass/popover-wms";
 
+
 .content {
 
 
@@ -39,5 +40,20 @@
     text-align: center;
     font-size: 15px;
   }
+
   
+ion-row.newH {
+  background: linear-gradient(to top, var( --ion-color-primary), var(--ion-color-primary-background)) !important;
+ // margin: 0 0 0;
+  font-weight: bold;
+  color: var(--ion-color-plure-text);;
+  width: 100%;
+}
+
+
+ion-checkbox{
+  --border-radius: 50%;
+}
+
+
   

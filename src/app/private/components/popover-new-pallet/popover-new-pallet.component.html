@@ -239,7 +239,7 @@
       <ion-row class=" delivery ContentTable" *ngFor="let item of lps; let i= index">
 
 
-        <ion-col *ngIf="testListL.length > 0 && testListL[i].checked != undefined">
+        <ion-col *ngIf="testListL.length > 0">
 
 
           <ion-checkbox (ionChange)="applyLP(item,$event)" [(ngModel)]="testListL[i].checked"></ion-checkbox>
@@ -248,13 +248,13 @@
         </ion-col>
 
 
-        <ion-col size="3" *ngIf="testListL[i].checked != undefined">
+        <ion-col size="3" >
           <div>{{item.LPDocumentNo}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="testListL[i].checked != undefined">
+        <ion-col size="4">
           <div>{{item.Quantity}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="testListL[i].checked != undefined">
+        <ion-col size="4">
           <div>{{item.UnitofMeasure
           }}</div>
         </ion-col>
@@ -309,7 +309,7 @@
 
 
 
-        <ion-col *ngIf="item.Qty > 0  && testListI.length > 0 && testListI[i].checked != undefined">
+        <ion-col *ngIf="item.Qty > 0  && testListI.length > 0 ">
 
 
           <ion-checkbox  (ionChange)="applyItem(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
@@ -318,13 +318,13 @@
         </ion-col>
 
 
-        <ion-col size="3" *ngIf="item.Qty > 0 && testListI[i].checked != undefined">
+        <ion-col size="3" *ngIf="item.Qty > 0">
           <div>{{item.ItemNo}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.Qty > 0 && testListI[i].checked != undefined">
+        <ion-col size="4" *ngIf="item.Qty > 0 ">
           <div>{{item.Qty}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.Qty > 0 && testListI[i].checked != undefined">
+        <ion-col size="4" *ngIf="item.Qty > 0 ">
           <div>{{item.LineNo}}</div>
         </ion-col>
 

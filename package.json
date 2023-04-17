@@ -58,6 +58,7 @@
     "jetifier": "^2.0.0",
     "js-sha512": "^0.8.0",
     "localforage": "^1.9.0",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "reinstall-node-modules": "^2.0.0",

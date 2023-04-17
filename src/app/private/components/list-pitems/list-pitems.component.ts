@@ -192,7 +192,7 @@ export class ListPItemsComponent implements OnInit {
   
   if(this.boolean){
   
-    for(let i =0; i <= this.testListL.length; i++) {
+    for(let i =0; i < this.testListL.length; i++) {
   
   
       this.testListL[i].checked = true;
@@ -203,7 +203,7 @@ export class ListPItemsComponent implements OnInit {
       console.log(this.testListL);
     }else{
   
-      for(let i =0; i <= this.testListI.length; i++) {
+      for(let i =0; i < this.testListI.length; i++) {
         this.testListI[i].checked = true;
   
   
@@ -217,7 +217,7 @@ export class ListPItemsComponent implements OnInit {
   
       if(this.boolean){
   
-        for(let i =0; i <= this.testListL.length; i++) {
+        for(let i =0; i < this.testListL.length; i++) {
           this.testListL[i].checked = false;
   
   
@@ -225,7 +225,7 @@ export class ListPItemsComponent implements OnInit {
           console.log(this.testListL);
         }else{
       
-          for(let i =0; i <= this.testListI.length; i++) {
+          for(let i =0; i < this.testListI.length; i++) {
             this.testListI[i].checked = false;
   
         

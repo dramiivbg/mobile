@@ -13,6 +13,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { ifError } from 'assert';
 import { PopoverAddItemTrakingComponent } from '../popover-add-item-traking/popover-add-item-traking.component';
 
+import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
   selector: 'app-popover-new-pallet',
@@ -68,6 +69,9 @@ export class PopoverNewPalletComponent implements OnInit {
 
   public listItems:any;
 
+  public dataI:any;
+  public dataL:any;
+
   public listLps:any;
 
   public listLp: any[] = [];
@@ -101,13 +105,12 @@ export class PopoverNewPalletComponent implements OnInit {
       }
 
 
-    this.listLps = await this.wmsService.Calcule_Possible_LPChilds_From_WR_V3(this.pallet.fields.PLULPDocumentNo);
-
+    this.dataL = await this.wmsService.Calcule_Possible_LPChilds_From_WR_V3(this.pallet.fields.PLULPDocumentNo);
 
     console.log('lp disponibles2 =>',this.listLps);
 
     
-    this.listItems = (await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo)).Possible_ItemsChilds;
+    this.dataI = (await this.wmsService.Calcule_Possible_ItemChilds_From_WR(this.pallet.fields.PLULPDocumentNo)).Possible_ItemsChilds;
 
     console.log('items disponibles =>',this.listItems);
 
@@ -211,12 +214,11 @@ async onBarCode(){
   let line:any = undefined;
   let boolean:Boolean = false;
 
-  items =   this.listItems;
   this.intServ.loadingFunc(true);
      
-  items =  this.listItems;
+  items =  cloneDeep(this.dataI);
  
-  listaL = this.listLps;
+  listaL = cloneDeep(this.listLps);
 
   console.log(listaL,items);
 
@@ -495,13 +497,17 @@ this.intServ.loadingFunc(true);
  this.QtyLP = 0;
   this.boolean = false;
 
+  this.listLps = cloneDeep(this.dataL);
+  this.listItems = cloneDeep(this.dataI);
+
 
   if(this.listLps.length > 0){
 
     this.listLps.map(x => {
 
       let line = this.lpsL.find(i => x.LPDocumentNo === i.LPDocumentNo);
-      if(line === undefined)this.lps.push(x);
+      let line2 = this.lps.find(i => x.LPDocumentNo === i.LPDocumentNo)
+      if(line === undefined && line2 === undefined)this.lps.push(x);
     });
   }
 
@@ -511,14 +517,11 @@ this.intServ.loadingFunc(true);
     for (const index in this.listItems) {
       if(this.listItems[index].Qty !== 0){
   
-      let line = this.itemsL.find(Item => Item.ItemNo === this.listItems[index].ItemNo);
+            let line = this.itemsL.find(Item => Item.ItemNo === this.listItems[index].ItemNo);
+            let line2 = this.items.find(Item => Item.ItemNo === this.listItems[index].ItemNo);
   
-      if(line === undefined){
-  
-          this.items.push(this.listItems[index]);
-          
-     }
-  
+            if(line === undefined && line2 === undefined)this.items.push(this.listItems[index]);
+                      
     }
      
   }
@@ -581,8 +584,6 @@ this.intServ.loadingFunc(true);
 
 disable(){
 
-this.items = [];
-this.lps = [];
   this.testListI = [];
 
   this.testListL = []; 
@@ -593,7 +594,7 @@ this.lps = [];
   let contador = 0
 
   if(this.traking.length > 0){
-    this.trakingItem(contador, true);
+    this.trakingItem(contador);
   }else{
     this.boolean = true;
   }
@@ -601,20 +602,18 @@ this.lps = [];
 }
 
 
-async trakingItem(contador:number = 0, select:boolean = false){
+async trakingItem(contador:number = 0){
   this.intServ.loadingFunc(true);
- 
-    try {
 
-      let res = await this.wmsService.GetItemTrackingSpecificationV2(this.traking[contador].ItemNo,this.traking[contador].SourceNo,this.traking[contador].SourceRefNo);
+  let res = await this.wmsService.GetItemTrackingSpecificationV2(this.traking[contador].ItemNo,this.traking[contador].SourceNo,this.traking[contador].SourceRefNo);
 
-      console.log(res);
+    console.log(res);
     
     let trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
     let trakingClose = (res.ItemTrackinCloseJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackinCloseJO.TrackingSpecificationClose):[];
 
       let code = (res.ItemTrackingJO.Error === undefined)?await this.wmsService.listCode(res.ItemTrackingJO):null;
-      select?this.intServ.loadingFunc(false):false;
+    this.intServ.loadingFunc(false);
     const popover = await this.popoverController.create({
       component: PopoverAddItemTrakingComponent,
       cssClass: 'popoverAddItemTrakingComponent',
@@ -657,7 +656,11 @@ async trakingItem(contador:number = 0, select:boolean = false){
       this.itemB = true;
       this.itemsL.push(item); 
       this.listItemsL.push(item);
-      this.itemsT.push(item);
+      let line = this.items.find(x => x.ItemNo === item.ItemNo);
+      line.Qty -= item.Qty;
+
+      console.log(this.items);
+      
       item = {
         ItemNo: "",
         Qty: 0,
@@ -682,11 +685,6 @@ async trakingItem(contador:number = 0, select:boolean = false){
       break;
     }
 
-    } catch (error) {
-      
-   
-    }
-  
 
 }
 
@@ -701,14 +699,14 @@ switch(ev.detail.checked){
 case true:
 
 if(this.booleanL){
-  for(let i = 0; i <= this.testListL.length; i++) {
+  for(let i = 0; i < this.testListL.length; i++) {
     this.testListL[i].checked = true;
  
     }  
     console.log(this.testListL);
   }else{
 
-    for(let i = 0; i <= this.testListI.length; i++) {
+    for(let i = 0; i < this.testListI.length; i++) {
       this.testListI[i].checked = true;
       }     
   }
@@ -719,13 +717,13 @@ if(this.booleanL){
 
     if(this.booleanL){
 
-      for(let i = 0; i <= this.testListL.length; i++) {
+      for(let i = 0; i < this.testListL.length; i++) {
         this.testListL[i].checked = false;
         }
         console.log(this.testListL);
       }else{
     
-        for(let i = 0; i <= this.testListI.length; i++) {
+        for(let i = 0; i < this.testListI.length; i++) {
           this.testListI[i].checked = false;
           }
           console.log(this.testListI);
@@ -859,12 +857,17 @@ case false:
       this.items = [];
       this.lps = [];
         this.itemsL = [];
+        this.itemsT = [];
         this.lpsL = [];
         this.itemsLT = undefined;
         this.lpsLT = undefined;
         this.lpsT = [];
 
+        console.log(this.dataI,this.dataL);
+
+
       }
+
 
       ));
   
@@ -880,16 +883,27 @@ case false:
 
     this.listItemsL.filter((itemI, index) =>{
 
-
       if(item.ItemNo == itemI.ItemNo){
-
 
         this.listItemsL.splice(index,1);
 
         this.itemsL.splice(index,1);
-        this.itemsT.splice(index,1);
+
       }
     });
+
+    if(item.ItemTrackingCode === undefined){
+
+      console.log(this.items);
+
+      let line = this.items.find(x => x.ItemNo === item.ItemNo);
+      line.Qty += item.Qty;
+
+      
+      console.log(item,line);
+
+    }
+
     }));
 
 

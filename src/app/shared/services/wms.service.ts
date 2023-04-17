@@ -1511,7 +1511,9 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
    }
 
 
-   public async UpdateItemTrackingSpecificationOpen(list:any){
+
+
+   public async UpdateItemTrackingSpecificationOpenV2(item:any, TrackingInfo:any,QtyToReceive:any){
 
          
     try {
@@ -1519,23 +1521,22 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     
         let obj: any = [{
 
-            WarhouseReceiptNo: list.WarhouseReceiptNo,
-            ItemNo: list.ItemNo,
-            SourceNo: list.SourceNo,
-            SourceRefNo: list.SourceRefNo,
-            Qty: list.Qty,
-            SerialNo: list.SerialNo,
-            LotNo: list.LotNo,
-            ExperationDate: list.ExperationDate
-          
-
+            WarhouseReceiptNo: item.No,
+            ItemNo: item.ItemNo,
+            QtyToReceive,
+            UnitofMeasureCode: item.UnitofMeasureCode,
+            SourceNo: item.SourceNo,
+            SourceRefNo: item.SourceLineNo,
+            LineNo:item.LineNo,
+            TrackingInfo
+              
         }];
     
 
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('UpdateItemTrackingSpecificationOpen', obj);
+        let p = await this.syncErp.processRequestParams('UpdateItemTrackingSpecificationOpenV2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1558,32 +1559,30 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     }
 
 
-public async DeleteItemTrackingSpecificationOpen(list:any){
+public async DeleteItemTrackingSpecificationOpenV2(item:any,TrackingInfo:any){
 
         
          
     try {
 
     
+      
         let obj: any = [{
 
-            WarhouseReceiptNo: list.WarhouseReceiptNo,
-            ItemNo: list.ItemNo,
-            SourceNo: list.SourceNo,
-            SourceRefNo: list.SourceRefNo,
-            Qty: list.Qty,
-            SerialNo: list.SerialNo,
-            LotNo: list.LotNo,
-            ExperationDate: list.ExperationDate
-          
-
+            WarhouseReceiptNo: item.No,
+            ItemNo: item.ItemNo,
+            SourceNo: item.SourceNo,
+            SourceRefNo: item.SourceLineNo,
+            TrackingInfo
+              
         }];
+    
     
 
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('DeleteItemTrackingSpecificationOpen', obj);
+        let p = await this.syncErp.processRequestParams('DeleteItemTrackingSpecificationOpenV2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        

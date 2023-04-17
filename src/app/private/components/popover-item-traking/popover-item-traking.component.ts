@@ -206,10 +206,7 @@ async  view(){
   for (const key in this.trakingOpen) {
 
   let  obj =   {
-      WarhouseReceiptNo: "",
-      ItemNo: "",
-      SourceNo: "",
-      SourceRefNo: "",
+  
       Qty: 0,
       SerialNo: "",
       LotNo: "",
@@ -217,18 +214,14 @@ async  view(){
       proceded: true
     }
 
-    obj.WarhouseReceiptNo = this.item.No;
-    obj.ItemNo = this.item.ItemNo;
-    obj.SourceNo = this.item.SourceNo;
-    obj.SourceRefNo = this.item.SourceLineNo;
     obj.Qty = this.trakingOpen[key].Quantity;
     obj.SerialNo = this.trakingOpen[key].SerialNo;
     obj.LotNo = this.trakingOpen[key].LotNo;
     obj.ExperationDate = this.trakingOpen[key].ExpirationDate;
 
-    let line = (this.list.length > 0)?this.list.find(x => x.SerialNo === obj.SerialNo):undefined;
+    let line = this.list.find(x => x.SerialNo === obj.SerialNo);
 
-    if(line === undefined || line === null)this.list.push(obj);
+    if(line === undefined)this.list.push(obj);
   }
 
   console.log(this.trakingOpen);
@@ -236,7 +229,7 @@ async  view(){
   const popover = await this.popoverController.create({
     component: PopoverListSNComponent,
     cssClass: 'popoverListSNComponent-modal',
-    componentProps: {list:this.list, item:this.item},
+    componentProps: {list:this.list, item:this.item,checkbox:true},
     
   });
   await popover.present();
@@ -292,52 +285,29 @@ async  view(){
       if(line !== undefined){
        this.intServ.loadingFunc(true);  
        try {
+
+        let traking = [];
          for (const key in this.list) {
            if(this.list[key].proceded === false){
- 
-             await this.wmsService.UpdateItemTrackingSpecificationOpen(this.list[key]);   
-           }
-            
+           traking.push(this.list[key]);
          }
+             
+      }
 
-         let res = await this.wmsService.GetItemTrackingSpecificationV2(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
-         this.trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):this.trakingOpen;
-         
+      this.total+= await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
+       
+       let res =   await this.wmsService.UpdateItemTrackingSpecificationOpenV2(this.item,traking,this.total);   
+
+        if(res.Error) throw new Error(res.Error.Message);
+
+        if(res.error) throw new Error(res.error.message);
+               
          this.receive = await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
-
-         this.receive+= this.Quantity;
-         
-        this.storage.set(`${this.item.No} ${this.item.LineNo}`, this.receive);
-
-         let list = [
-           {
-             WarehouseReceiptLines: [
-               {
-                 No: this.item.No,
-                 SourceNo: this.item.SourceNo,
-                 ItemNo: this.item.ItemNo,
-                 LineNo: this.item.LineNo,
-                 ZoneCode: this.item.ZoneCode,
-                 LocationCode: this.item.LocationCode,
-                 BinCode: this.item.BinCode,
-                 QtyToReceive: this.receive
-               }
-             ]
-           }
-         ]
-         
-       
-       
-
-       let resU =  await this.wmsService.Update_WsheReceiveLine(list); 
-
-       if(resU.Error) throw new Error(resU.Error.Message);
-       
         
          this.intServ.loadingFunc(false);
          this.intServ.alertFunc(this.jsonService.getAlert('success','','The operation was successfully performed',async() => {        
             
-           this.popoverController.dismiss({receive: this.receive});   
+           this.popoverController.dismiss({receive: this.total});   
          }));
 
          
@@ -356,6 +326,9 @@ async  view(){
 
   save(){
 
+   switch(this.serial){
+
+   case true:
     let line = this.list.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
     let line2 = this.trakingOpen.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
     let line3 = this.trakingClose.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
@@ -370,10 +343,19 @@ async  view(){
       this.approved = true;
     }
 
+      break;
 
+   case false:
+       this.approved = true;
+    break;
+   } 
+
+    
+  let Qty = (this.serial)?1:this.frm.get('QtyBase').value;
+ 
     if(this.approved){
 
-      if(this.frm.valid && this.Quantity != this.total){
+      if(this.frm.valid && this.Quantity+Qty <= this.total){
 
         let res = new Date(this.frm.get('requestedDeliveryDate').value);
   
@@ -384,41 +366,43 @@ async  view(){
         let fecha = (this.frm.get('requestedDeliveryDate').value.includes(':'))?res.getFullYear()+'-'+month+'-'+day:this.frm.get('requestedDeliveryDate').value;
   
         let obj =   {
-          WarhouseReceiptNo: "",
-          ItemNo: "",
-          SourceNo: "",
-          SourceRefNo: "",
-          Qty: 0,
-          SerialNo: "",
           LotNo: "",
+          SerialNo: "",
           ExperationDate: "",
+          Qty: 0,
           proceded: false
         }
         
         if(this.serial){
 
-          obj.WarhouseReceiptNo = this.item.No;
-          obj.ItemNo = this.item.ItemNo;
-          obj.SourceNo = this.item.SourceNo;
-          obj.SourceRefNo = this.item.SourceLineNo;
           obj.Qty = 1;
           obj.SerialNo = this.frm.get('SerialNo').value.toUpperCase();
           obj.LotNo = this.frm.get('LotNo').value;
           obj.ExperationDate = fecha;
+
+          this.Quantity += obj.Qty;  
+          this.list.push(obj);
+
         }else{
-          obj.WarhouseReceiptNo = this.item.No;
-          obj.ItemNo = this.item.ItemNo;
-          obj.SourceNo = this.item.SourceNo;
-          obj.SourceRefNo = this.item.SourceLineNo;
-          obj.Qty = this.frm.get('QtyBase').value;
-          obj.SerialNo = this.frm.get('SerialNo').value.toUpperCase();
-          obj.LotNo = this.frm.get('LotNo').value;
-          obj.ExperationDate = fecha;
+       
+          let find = this.list.find(x => x.LotNo === this.frm.get('LotNo').value);
+          if(find === undefined){
+            obj.Qty = this.frm.get('QtyBase').value;
+            obj.SerialNo = this.frm.get('SerialNo').value.toUpperCase();
+            obj.LotNo = this.frm.get('LotNo').value;
+            obj.ExperationDate = fecha;
+
+            this.Quantity += obj.Qty;
+  
+            this.list.push(obj);
+
+          }else{
+            find.Qty = this.frm.get('QtyBase').value;
+            this.Quantity+= this.frm.get('QtyBase').value;
+          }        
         }
        
-        this.Quantity += obj.Qty;
-  
-        this.list.push(obj);
+       
   
         this.frm.patchValue({
   

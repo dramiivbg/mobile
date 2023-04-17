@@ -17,74 +17,72 @@ export class PopoverListSNComponent implements OnInit {
   @Input() list:any;
   @Input() item:any;
   @Input() boolean = false;
+  @Input() checkbox = false;
+  public del = true;
+  public select = [];
+  public testListL: any[] = [];
   constructor(public popoverController: PopoverController,private wmsService: WmsService, 
     private jsonService: JsonService,  private intServ: InterceptService,private storage: Storage) { }
 
   ngOnInit() {
 
     console.log(this.list);
+
+    let checkboxL = {testID: 0, testName: "", checked: false}
+
+    for (const index in  this.list) {
+      checkboxL.testID = Number(index),
+      checkboxL.testName = `test${index}`
+      checkboxL.checked = false;
+      this.testListL.push(checkboxL);
+     checkboxL = {testID: 0, testName: "", checked: false};
+     }
+
   }
 
- async opcions(item:any,index:any){
+ 
 
-    const popover = await this.popoverController.create({
-      component: PopoverOptionsComponent,
-      cssClass: 'PopoverOptionsComponent',
-      backdropDismiss: true,
-      componentProps: this.listMenu(item)
+  onClose(){
+    this.popoverController.dismiss({list:this.list});
+  }
 
-    });
-    await popover.present();
 
-    const { data } = await popover.onDidDismiss();
+    onDelete(){
 
-    switch(data.action){
+      let process = [];
 
-      case 'Delete':
+      this.select.map((x,index) => x.proceded == false?this.list.splice(Number(index),1): process.push(x));
+
+      if(process.length > 0){
+
         this.intServ.alertFunc(this.jsonService.getAlert('alert', '','Are you sure?', async() => {
 
           this.intServ.loadingFunc(true);
           try {
 
-            let res = await this.wmsService.DeleteItemTrackingSpecificationOpen(item);
-             console.log(res);
-            if(res.Error) throw new Error(res.Error.Message);
-            
-            if(res.message) throw new Error(res.message);
-
-            this.intServ.loadingFunc(false);
-
-            this.intServ.alertFunc(this.jsonService.getAlert('success','', `Serial ${item.SerialNo} has been successfully deleted`, async() => {
 
             let receive =  await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
 
-            receive -= item.Qty;
-
-
-            let list = [
-              {
-                WarehouseReceiptLines: [
-                  {
-                    No: this.item.No,
-                    SourceNo: this.item.SourceNo,
-                    ItemNo: this.item.ItemNo,
-                    LineNo: this.item.LineNo,
-                    ZoneCode: this.item.ZoneCode,
-                    LocationCode: this.item.LocationCode,
-                    BinCode: this.item.BinCode,
-                    QtyToReceive: receive
-                  }
-                ]
-              }
-            ]
-            
-          
-  
-             await this.wmsService.Update_WsheReceiveLine(list); 
-  
+            process.map(x => receive-= x.Qty);
+           
             this.storage.set(`${this.item.No} ${this.item.LineNo}`,receive);
+
+            let res = await this.wmsService.DeleteItemTrackingSpecificationOpenV2(this.item,process);
+             console.log(res);
+            if(res.Error) throw new Error(res.Error.Message);
+            
+            if(res.error) throw new Error(res.error.message);
+
+            this.intServ.loadingFunc(false);
+
+            this.intServ.alertFunc(this.jsonService.getAlert('success','', `Has been successfully deleted`, async() => {
   
-            this.list.splice(Number(index),1);
+            process.map(p => {
+
+              this.list.map((x,index) => x.SerialNo == p.SerialNo && x.LotNo == p.LotNo?this.list.splice(Number(index),1):x);
+
+            });
+       
 
               this.popoverController.dismiss({data: "Delete", list:this.list});
 
@@ -99,56 +97,91 @@ export class PopoverListSNComponent implements OnInit {
             
           }
         }));
-
-        
-       break;
-
-    }
-
-  }
-
-  
-  private listMenu(item: any): any {
-    return {
-      options: {
-        name: `Serial No. ${item.SerialNo}`,
-        menu: [
-          {
-            id: 1,
-            name: 'Update',
-            icon: 'refresh-outline',
-            obj: item
-          },
-          {
-            id: 2,
-            name: 'Delete',
-            icon: 'trash-outline',
-            obj: {}
-          },
-          { 
-            id: 3, 
-            name: 'Close', 
-            icon: 'close-circle-outline' ,
-            obj: {}
-          }
-        ]
       }
-    };
 
-  }
-
-  onClose(){
-    this.popoverController.dismiss({list:this.list});
-  }
-
-  
-  delete(index:any){
-
-    let con = this.list.splice(Number(index),1);
-    console.log(con);
-    console.log(this.list);
-  
     }
-  
 
+
+    
+  checkAll(ev){
+
+    console.log(ev);
+
+  switch(ev.detail.checked){
+  
+  case true:
+ 
+    for(let i = 0; i < this.testListL.length; i++) {
+  
+  
+      this.testListL[i].checked = true;
+
+      }  
+      this.del = false; 
+      console.log(this.testListL);
+       
+    break;
+  
+    
+    case false:
+    
+        for(let i =0; i < this.testListL.length; i++) {
+          this.testListL[i].checked = false;
+  
+          }
+          this.del = true; 
+          console.log(this.testListL);
+      
+  
+        break;
+  
+  }
+  
+  }
+
+
+  selectl(item:any,ev){
+
+
+    switch(ev.detail.checked){
+    
+     case true:
+      
+   
+          this.select.push(item);
+    
+          console.log(this.select);
+   
+          this.del = false; 
+       
+        break;
+    
+        case false:
+    
+          this.removel(item);
+
+          this.del = true; 
+    
+          break;
+        }
+          //console.log(item);
+      }
+
+
+    removel(item:any){    
+    
+          this.select.filter((i, index) =>{
+     
+            if(i.SerialNo === item.SerialNo && i.LotNo === item.LotNo){
+    
+    
+              this.select.splice(index,1);
+            }
+                     
+          });
+        
+            console.log(this.select);
+               
+      }
+  
 }

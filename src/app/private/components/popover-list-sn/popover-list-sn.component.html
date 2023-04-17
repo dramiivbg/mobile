@@ -4,19 +4,25 @@
     
   <ion-grid>
 
-      <ion-row style="text-align: center;" class="row">
-        <ion-col size="6" *ngIf="boolean">Item No</ion-col>
-        <ion-col size="3" *ngIf="!boolean">Serial No</ion-col>
-        <ion-col size="3" *ngIf="!boolean">Lot No</ion-col>
-        <ion-col size="3" *ngIf="!boolean">Exp Date</ion-col>
-        <ion-col size="3">Qty</ion-col>
     
-      </ion-row>
+    <ion-row class=" newH">
+      <ion-col size="1" *ngIf="checkbox">
+        <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
+
+      </ion-col>
+
+      <ion-col size="6" *ngIf="boolean">Item No</ion-col>
+      <ion-col size="3" *ngIf="!boolean">Serial No</ion-col>
+      <ion-col size="3" *ngIf="!boolean">Lot No</ion-col>
+      <ion-col size="3" *ngIf="!boolean">Exp Date</ion-col>
+      <ion-col size="2" >Qty</ion-col>
+     
+    </ion-row>
 
       
 
       <div class="content"  > 
-        <ion-row *ngFor="let item of list; let i = index" style="text-align: center;" >
+        <ion-row class=" delivery ContentTable field" *ngFor="let item of list; let i = index" >
 
           <ion-row *ngIf="item.QtyPhysInventory !== undefined || item.Quantity !== undefined">
             <ion-col size="6" *ngIf="boolean" >{{item.No}}</ion-col>
@@ -29,34 +35,47 @@
             <ion-col size="3" *ngIf="item.QtyPhysInventory !== undefined">{{item.QtyPhysInventory}}</ion-col>
             
           </ion-row>
-        
-      <ion-item-sliding *ngIf="item.QtyPhysInventory === undefined && item.Quantity === undefined" >
 
-        <ion-item>
+        
+        
+      <ion-row *ngIf="item.QtyPhysInventory === undefined && item.Quantity === undefined" >
+
+        <ion-col *ngIf="testListL.length > 0 && checkbox" size="1">
+
+
+
+
+          <ion-checkbox (ionChange)="selectl(item,$event)" [(ngModel)]=" testListL[i].checked"></ion-checkbox>
+
+
+
+        </ion-col>
+       
           <ion-col size="6" *ngIf="boolean">{{item.No}}</ion-col>
           <ion-col size="3" *ngIf="item.proceded === false && !boolean" >{{item.SerialNo}}</ion-col>
-          <ion-col size="3" *ngIf="item.proceded === true && !boolean" (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
+          <ion-col size="3" *ngIf="item.proceded === true && !boolean"><a>{{item.SerialNo}}</a></ion-col>
           <ion-col size="3" *ngIf="!boolean">{{item.LotNo}}</ion-col>
           <ion-col size="3" *ngIf="!boolean">{{item.ExperationDate}}</ion-col>
-          <ion-col size="3" *ngIf="item.Qty !== undefined">{{item.Qty}}</ion-col>
+          <ion-col size="2" *ngIf="item.Qty !== undefined">{{item.Qty}}</ion-col>
           <ion-col size="3" *ngIf="item.Quantity !== undefined && item.Quantity !== null">{{item.Quantity}}</ion-col> 
           <ion-col size="3" *ngIf="item.QtyPhysInventory !== undefined">{{item.QtyPhysInventory}}</ion-col>
           
-        </ion-item>
-          <ion-item-options *ngIf="item.proceded === false" (click)="delete(i)">
-          <ion-item-option color="danger">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
+     
+      </ion-row>
       
         </ion-row>
    
       </div>  
       <ion-row class="buttonClose">
-        <ion-col size="12" (click)="onClose()">
-          <ion-button shape="round" color="danger" type="button" (click)="onClose()">Close</ion-button>
+       
+        <ion-col size="12" (click)="onClose()" *ngIf="del">
+          <ion-button shape="round" color="danger"  type="button">Close</ion-button>
         </ion-col>
+
+        <ion-col size="12" (click)="onDelete()" *ngIf="!del">
+          <ion-button shape="round" color="danger" type="button">Delete <ion-icon class="itemfooter"  name="trash-outline"></ion-icon></ion-button>
+        </ion-col>
+
       </ion-row>
     </ion-grid>
 </ion-content>

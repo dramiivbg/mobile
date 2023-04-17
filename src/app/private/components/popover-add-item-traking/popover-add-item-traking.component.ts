@@ -139,27 +139,37 @@ export class PopoverAddItemTrakingComponent implements OnInit {
   }
 
 async  save(){
-  let obj = await this.jsonService.formToJson(this.frm2);
 
+  let obj = await this.jsonService.formToJson(this.frm2); 
+ switch(this.serial){
+  case true:
+    let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+    let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+    let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
   
-  let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-  let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-  let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+    if(line != undefined || line2 != undefined || line3 != undefined){
+      this.approved = false;
+      this.frm2.controls.SerialNo.setValue('');
+  
+      this.mensaje = `The serial ${obj.SerialNo.toUpperCase()} already exists`;
+  
+    }else{
+      this.approved = true;
+    }
+    
+    break;
 
-  if(line != undefined || line2 != undefined || line3 != undefined){
-    this.approved = false;
-    this.frm2.controls.SerialNo.setValue('');
-
-    this.mensaje = `The serial ${obj.SerialNo.toUpperCase()} already exists`;
-
-  }else{
+  case false:
     this.approved = true;
-  }
-  
-
+    break;
+ }
+ 
+let Qty = (this.serial)?1:obj.Qty;
+ 
   if(this.approved){
-    switch(this.Quantity === this.total){
-      case false:
+    console.log('qty =>',Qty);
+    switch(this.Quantity+Qty <= this.total){
+      case true:
         if (this.frm2.valid) {    
           let res = new Date(obj.exp);
     
@@ -174,14 +184,14 @@ async  save(){
               LotNo: obj.LotNo,
               SerialNo: obj.SerialNo.toUpperCase(),
               ExperationDate: fecha,
-              Qty: (obj.Qty > 1)?obj.Qty:1,
+              Qty: 1,
               proceded: false
             }
             let  json2 =   {
               LotNo: obj.LotNo,
               SerialNo: obj.SerialNo.toUpperCase(),
               ExperationDate: fecha,
-              Qty: (obj.Qty > 1)?obj.Qty:1
+              Qty: 1
             }
       
             this.list.push(json);
