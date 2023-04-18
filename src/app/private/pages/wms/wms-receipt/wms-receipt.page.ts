@@ -253,6 +253,8 @@ export class WmsReceiptPage implements OnInit {
     this.intServ.loadingFunc(true);
     let wms = await this.storage.get('wms');
     console.log('data =>', wms);
+
+   
     try {
       let receipt = await this.wmsService.getReceiptByNo(wms.id);
 
@@ -282,7 +284,16 @@ export class WmsReceiptPage implements OnInit {
     console.log('receipt =>', this.wareReceipts);
      this.items = receipt.WarehouseReceipt.WarehouseReceiptLines;
     this.intServ.loadingFunc(false);
- 
+
+    let traking =   await this.storage.get(`traking item ${this.wareReceipts.No}`);
+
+    let update =   await this.storage.get(`update item ${this.wareReceipts.No}`);
+
+    if(traking === undefined || traking === null) this.storage.set(`traking item ${this.wareReceipts.No}`, false);
+    
+
+    if(update === undefined || update === null) this.storage.set(`update item ${this.wareReceipts.No}`, false);
+    
 
   }
 
@@ -435,9 +446,46 @@ export class WmsReceiptPage implements OnInit {
           console.log(postWR);
           if (postWR.Error) throw new Error(postWR.Error.Message);
           if (postWR.error) throw new  Error(postWR.error.message);
-          if (postWR.message) throw new  Error(postWR.message);
+         // if (postWR.message) throw new  Error(postWR.message);
 
           this.wmsService.setPutAway(postWR);
+
+          let lp = [];
+
+          let edit = false;
+
+          const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
+
+          let traking = await this.storage.get(`traking item ${this.wareReceipts.No}`);
+
+          let update = await this.storage.get(`update item ${this.wareReceipts.No}`);
+
+          if (lpsP.Error === undefined && lpsP.error === undefined && traking === false && update === false){
+
+            this.storage.remove(`traking item ${this.wareReceipts.No}`);
+
+            this.storage.remove(`update item ${this.wareReceipts.No}`);
+            
+
+         for (const key in this.items){
+
+          lp.push(this.items[key].LPArray.LicensePlates);
+         }
+
+      
+         edit = (lp.length > 0)?true:false;
+
+
+          }else{
+
+            edit = true;
+            this.storage.remove(`traking item ${this.wareReceipts.No}`);
+
+            this.storage.remove(`update item ${this.wareReceipts.No}`);
+          } 
+
+    
+    
 
           if(postWR.Partial){
             this.getReceipt();
@@ -449,58 +497,89 @@ export class WmsReceiptPage implements OnInit {
 
           console.log('postWR', postWR);
 
-          this.intServ.loadingFunc(false);
-
-          this.intServ.alertFunc(this.js.getAlert('continue', '', 'Continue Process Put-Away?', () => {
-
-            this.intServ.loadingFunc(true);
-
-            var alert = setTimeout(() => {
-
+          switch (edit) {
+            case  true:
               this.intServ.loadingFunc(false);
 
-              this.intServ.alertFunc(this.js.getAlert('edit', 'If you press "No" the Put-Away will be processed by default on the floor!', 'Do you want to edit the default Put-Away?', async () => {
+              this.intServ.alertFunc(this.js.getAlert('continue', '', 'Continue Process Put-Away?', () => {
+      
+                  this.intServ.loadingFunc(true);
+      
+                  var alert = setTimeout(() => {
+      
+                    this.intServ.loadingFunc(false);
+      
+                    this.intServ.alertFunc(this.js.getAlert('edit', 'If you press "No" the Put-Away will be processed by default on the floor!', 'Do you want to edit the default Put-Away?', async () => {
+      
+                      this.intServ.loadingFunc(true);
+      
+                      try {
+      
+                        let dataPw = this.wmsService.getPutAway();
+      
+                        //postea el wareshouse put away por default
+                        let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
+      
+                        console.log('postWP', data);
+      
+                        if (data.Error) throw new  Error(data.Error.Message);
+                        if (data.error) throw new  Error(data.error.message);
+                      //  if (data.message) throw new  Error(data.message);
+      
+                        this.intServ.loadingFunc(false);
+                        this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
+      
+                         if(postWR.Partial){
+                          this.router.navigate(['/page/wms/wmsReceipt']);
+                         }else{
+                          this.router.navigate(['/page/wms/wmsMain']);
+                         }
+                        }));
+      
+      
+                      } catch (error) {
+      
+                        this.intServ.loadingFunc(false);
+                        this.intServ.alertFunc(this.js.getAlert('error', '', error.message))
+      
+                      }
+      
+                    }));
+      
+                    clearTimeout(alert);
+                  }, 100)
+      
+      
+                }));
+              
+              break;
+          
+            default:
+              
+            let dataPw = this.wmsService.getPutAway();
+      
+            //postea el wareshouse put away por default
+            let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
 
-                this.intServ.loadingFunc(true);
+            console.log('postWP', data);
 
-                try {
+            if (data.Error) throw new  Error(data.Error.Message);
+            if (data.error) throw new  Error(data.error.message);
+           // if (data.message) throw new  Error(data.message);
 
-                  let dataPw = this.wmsService.getPutAway();
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
 
-                  //postea el wareshouse put away por default
-                  let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
+             if(postWR.Partial){
+              this.router.navigate(['/page/wms/wmsReceipt']);
+             }else{
+              this.router.navigate(['/page/wms/wmsMain']);
+             }
+            }));
 
-                  console.log('postWP', data);
+           break;
 
-                  if (data.Error) throw new  Error(data.Error.Message);
-                  if (data.error) throw new  Error(data.error.message);
-                  if (data.message) throw new  Error(data.message);
-
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
-
-                   if(postWR.Partial){
-                    this.router.navigate(['/page/wms/wmsReceipt']);
-                   }else{
-                    this.router.navigate(['/page/wms/wmsMain']);
-                   }
-                  }))
-
-
-                } catch (error) {
-
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('error', '', error.message))
-
-                }
-
-              }));
-
-              clearTimeout(alert);
-            }, 100)
-
-
-          }));
+          }
 
 
         } catch (error) {

@@ -21,6 +21,8 @@ import { time, timeEnd } from 'console';
 import { EROFS } from 'constants';
 import { PopoverSerialesLpComponent } from '../popover-seriales-lp/popover-seriales-lp.component';
 
+import * as cloneDeep from 'lodash/cloneDeep';
+
 
 @Component({
   selector: 'app-edit-put-away',
@@ -44,6 +46,7 @@ export class EditPutAwayComponent implements OnInit {
   public QtyI: number = 0;
   public whsePutAway: any;
 
+ 
   public binDefault: any;
   public listPwL: any[] = [];
   public contador: number = 0;
@@ -940,6 +943,7 @@ export class EditPutAwayComponent implements OnInit {
       console.log(this.initV);
       console.log(this.initItem);
 
+  
 
     this.intServ.loadingFunc(false);
 
@@ -998,8 +1002,6 @@ export class EditPutAwayComponent implements OnInit {
   }
 
   async onScanAll() {
-
-    this.initItem = (this.initItem.length === 0) ? await this.storage.get(`init item ${this.whsePutAway.fields.No}`) : this.initItem;
 
     this.intServ.loadingFunc(true);
   if(this.initV.length > 0){
@@ -1313,7 +1315,7 @@ export class EditPutAwayComponent implements OnInit {
   }
 
 
-  onRemoveAll() {
+ async onRemoveAll() {
 
 
     this.listsFilter = [];
@@ -1326,6 +1328,11 @@ export class EditPutAwayComponent implements OnInit {
     this.storage.remove(this.whsePutAway.fields.No);
     // this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
     this.storage.remove(`listI ${this.whsePutAway.fields.No}`)
+
+    this.initItem = await this.storage.get(`init item ${this.whsePutAway.fields.No}`);
+
+    this.initV =  await this.storage.get(`init ${this.whsePutAway.fields.No}`);
+
 
   }
 

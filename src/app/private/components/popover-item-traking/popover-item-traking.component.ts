@@ -34,6 +34,8 @@ export class PopoverItemTrakingComponent implements OnInit {
   public code:any;
   public list:any[] = [];
 
+  public traking = false;
+
   public item: any;
   public approved = true;
   public frm: FormGroup;
@@ -85,7 +87,6 @@ export class PopoverItemTrakingComponent implements OnInit {
    this.receive = this.item.QtytoReceive;
 
    this.storage.set(`${this.item.No} ${this.item.LineNo}`, this.receive);
-
 
 
     console.log(this.code);
@@ -247,10 +248,10 @@ async  view(){
       case "Delete":
         let res = await this.wmsService.GetItemTrackingSpecificationV2(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
         this.trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
- 
+        if(this.trakingOpen.length == 0) this.storage.remove(`traking item ${this.item.No}`);
         console.log(this.trakingOpen);
 
-        this.receive = await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
+        this.receive = await this.storage.set(`${this.item.No} ${this.item.LineNo}`, false);
 
         break;
   
@@ -263,7 +264,8 @@ async  view(){
   
   switch(this.Boolean){
     case true:
-      if(this.frm.valid){
+      console.log(this.frm.controls['TotalToReceive'].value, this.lp.LP_Pending_To_Receive);
+      if(this.frm.valid && this.frm.controls['TotalToReceive'].value <= this.lp.LP_Pending_To_Receive){
         this.total = this.frm.controls['TotalToReceive'].value;
         this.frm.controls['TotalToReceive'].disable();
        if(this.lot)this.frm.controls['LotNo'].enable();
@@ -305,6 +307,8 @@ async  view(){
          this.receive = await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
         
          this.intServ.loadingFunc(false);
+         this.traking = true;
+         this.storage.set(`traking item ${this.item.No}`, this.traking);
          this.intServ.alertFunc(this.jsonService.getAlert('success','','The operation was successfully performed',async() => {        
             
            this.popoverController.dismiss({receive: this.total});   
@@ -409,7 +413,7 @@ async  view(){
           SerialNo: "",
           LotNo: "",
           requestedDeliveryDate: "",
-          QtyBase: 0
+          QtyBase: ""
         });
   
         console.log(this.list);
