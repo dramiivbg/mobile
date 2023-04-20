@@ -66,7 +66,7 @@ export class LicensePlatesComponent implements OnInit {
         PackUnitUoM: ['', Validators.required],
        
       }
-    )
+    );
 
     this.frm2 = this.formBuilder.group(
       {
@@ -189,83 +189,95 @@ public async onSubmit() {
     default:
 
 
-    if(this.frm.valid && this.Boolean){
-
-      this.total =  obj.TotalToReceive * obj.NoofPackLP;
-      this.storage.set(`total ${this.item.LineNo}`, this.total);
-       this.Boolean = false;
-    }
-
-    if(this.Boolean === false && this.Quantity === this.total){
-
-      this.interceptService.loadingFunc(true);
- 
-      let listTraking = [];
-      for (const key in this.list) {
- 
-        if(this.list[key].proceded === false){
-
-          
-       let j =   {
-        LotNo: this.list[key].LotNo,
-        SerialNo: this.list[key].SerialNo,
-        ExperationDate: this.list[key].ExperationDate,
-        Qty:this.list[key].Qty
-      }
-
-      listTraking.push(j);
-
-       j =   {
-        LotNo: '',
-        SerialNo: '',
-        ExperationDate: '',
-        Qty: 0
-      }
-
-        }
- 
-      }
- 
-    let json2 = {
-       WarhouseReceiptNo: this.item.No,
-       ItemNo: this.item.ItemNo,
-       BinCode: this.item.BinCode,
-       SourceNo: this.item.SourceNo,
-       SourceRefNo: this.item.SourceLineNo,
-       LineNo: this.item.LineNo,
-       UnitofMeasureCode: this.item.UnitofMeasureCode,
-       TotalToReceive: obj.TotalToReceive * obj.NoofPackLP,
-       PackUnitUoM: obj.PackUnitUoM,
-       TrackingInfo: listTraking
-     }
-
-     
-       try {
-
-         let rsl = await this.wmsService.CreateLP_FromWarehouseReceiptLine_With_SNLOT([json2]);
-
-         console.log(rsl);
- 
-         if (rsl.Error) throw new Error(rsl.Error.Message);
-         if (rsl.error) throw new Error(rsl.error.message);
-         if (rsl.message) throw new Error(rsl.message);
-       
-           this.interceptService.loadingFunc(false);
- 
-           this.interceptService.alertFunc(this.jsonService.getAlert('success', ' ', 'License plates have been created successfully'));
-
-      
-           this.popoverController.dismiss({ data: 'creado' });
-
-         
-       } catch (error) {
-         
-         this.interceptService.loadingFunc(false);
-           this.interceptService.alertFunc(this.jsonService.getAlert('error', ' ', error.message));
-       }
-              
   
-    }
+  switch(obj.TotalToReceive * obj.NoofPackLP <= this.lp.LP_Pending_To_Receive){
+    case true:
+      if(this.frm.valid && this.Boolean){
+
+        this.total =  obj.TotalToReceive * obj.NoofPackLP;
+        this.storage.set(`total ${this.item.LineNo}`, this.total);
+         this.Boolean = false;
+      }
+  
+      if(this.Boolean === false && this.Quantity === this.total){
+  
+        this.interceptService.loadingFunc(true);
+   
+        let listTraking = [];
+        for (const key in this.list) {
+   
+          if(this.list[key].proceded === false){
+  
+            
+         let j =   {
+          LotNo: this.list[key].LotNo,
+          SerialNo: this.list[key].SerialNo,
+          ExperationDate: this.list[key].ExperationDate,
+          Qty:this.list[key].Qty
+        }
+  
+        listTraking.push(j);
+  
+         j =   {
+          LotNo: '',
+          SerialNo: '',
+          ExperationDate: '',
+          Qty: 0
+        }
+  
+          }
+   
+        }
+   
+      let json2 = {
+         WarhouseReceiptNo: this.item.No,
+         ItemNo: this.item.ItemNo,
+         BinCode: this.item.BinCode,
+         SourceNo: this.item.SourceNo,
+         SourceRefNo: this.item.SourceLineNo,
+         LineNo: this.item.LineNo,
+         UnitofMeasureCode: this.item.UnitofMeasureCode,
+         TotalToReceive: obj.TotalToReceive * obj.NoofPackLP,
+         PackUnitUoM: obj.PackUnitUoM,
+         TrackingInfo: listTraking
+       }
+  
+       
+         try {
+  
+           let rsl = await this.wmsService.CreateLP_FromWarehouseReceiptLine_With_SNLOT([json2]);
+  
+           console.log(rsl);
+   
+           if (rsl.Error) throw new Error(rsl.Error.Message);
+           if (rsl.error) throw new Error(rsl.error.message);
+           if (rsl.message) throw new Error(rsl.message);
+         
+             this.interceptService.loadingFunc(false);
+   
+             this.interceptService.alertFunc(this.jsonService.getAlert('success', ' ', 'License plates have been created successfully'));
+  
+        
+             this.popoverController.dismiss({ data: 'creado' });
+  
+           
+         } catch (error) {
+           
+           this.interceptService.loadingFunc(false);
+             this.interceptService.alertFunc(this.jsonService.getAlert('error', ' ', error.message));
+         }
+                
+    
+      }
+      break;
+
+    default:
+
+    this.intServ.alertFunc(this.jsonService.getAlert('alert', '',`You can't take back more than you have`));
+
+      break;
+  }
+    
 
     break;
 
@@ -348,11 +360,10 @@ async  save(){
 
   let Qty = (this.serial)?1:obj.Qty;
 
-if(this.approved){
+if(this.approved && this.frm2.valid){
   switch(this.Quantity+Qty <= this.total){
     case true:
-      if (this.frm2.valid) {
-  
+ 
         let res = new Date(obj.exp);
   
         let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1
@@ -451,11 +462,18 @@ if(this.approved){
   
         }
   
-      }
       break
 
      default:
-    //  this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
+      
+      this.frm2.patchValue({
+
+        SerialNo: "",
+        LotNo: "",
+        exp: ""
+      });
+
+     this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
       break;
     
   }

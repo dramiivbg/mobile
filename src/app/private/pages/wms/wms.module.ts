@@ -56,6 +56,7 @@ import { PopoverListLpComponent } from '@prv/components/popover-list-lp/popover-
 import { PopoverListPalletComponent } from '@prv/components/popover-list-pallet/popover-list-pallet.component';
 import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-inquiries.component';
 import { PopoverSelectPalletComponent } from '@prv/components/popover-select-pallet/popover-select-pallet.component';
+import { PopoverSettingComponent } from '@prv/components/popover-setting/popover-setting.component';
 
 
 
@@ -108,7 +109,8 @@ import { PopoverSelectPalletComponent } from '@prv/components/popover-select-pal
     PopoverListLpComponent,
     PopoverListPalletComponent,
     PagueInquiriesComponent,
-    PopoverSelectPalletComponent
+    PopoverSelectPalletComponent,
+    PopoverSettingComponent
    
     
   
@@ -156,7 +158,8 @@ import { PopoverSelectPalletComponent } from '@prv/components/popover-select-pal
     PopoverListLpComponent,
     PopoverListPalletComponent,
     PagueInquiriesComponent,
-    PopoverSelectPalletComponent
+    PopoverSelectPalletComponent,
+    PopoverSettingComponent
    
    
   

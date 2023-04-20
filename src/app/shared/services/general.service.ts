@@ -314,7 +314,11 @@ export class GeneralService {
     let lines = [];
     let obj = {};
     obj = await this.fieldsToJson(item.WarehouseReceiptHeader.fields); 
-    item.WarehouseReceiptLines.map(x =>  x.LPArray.LicensePlates['serial']  =  x.ItemTrackingCode !== ""?true:false);
+    item.WarehouseReceiptLines.map(x => {
+      if(x.LPArray.LicensePlates.length > 0) {
+      x.LPArray.LicensePlates['serial']  =  x.ItemTrackingCode !== ""?true:false;
+  }});
+
     obj['lines'] = item.WarehouseReceiptLines;
      
     return obj;

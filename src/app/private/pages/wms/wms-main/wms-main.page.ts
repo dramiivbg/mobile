@@ -12,6 +12,7 @@ import { Storage } from '@ionic/storage';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
+import { PopoverSettingComponent } from '@prv/components/popover-setting/popover-setting.component';
 
 
 
@@ -28,6 +29,8 @@ export class WmsMainPage implements OnInit {
 
   public booleanM: Boolean = false;
   public booleanInQ: Boolean = false;
+
+  public configured = false;
 
   public locale: any = '';
   public listsLocate: any;
@@ -71,7 +74,10 @@ export class WmsMainPage implements OnInit {
       this.listsLocate = res;
     });
 
-    this.locale = (await this.storage.get('locale') != undefined || await this.storage.get('locale') != null) ? await this.storage.get('locale') : this.locale;
+    this.locale = (await this.storage.get('locale') != undefined && await this.storage.get('locale') != null) ? await this.storage.get('locale') : this.locale;
+
+    this.configured = (await this.storage.get(`configured ${session.userId}`) != undefined && 
+                  await this.storage.get(`configured ${session.userId}`) != null)? await this.storage.get(`configured ${session.userId}`): false;
 
     try {
       this.intServ.loadingFunc(true);
@@ -341,6 +347,21 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
       this.intServ.searchShowFunc(obj);
 
     } 
+
+
+  async NewSettingPrint(){
+    
+    const popover = await this.popoverController.create({
+      component: PopoverSettingComponent,
+      cssClass: 'popoverSettingComponent',
+      backdropDismiss: false,
+      componentProps: { listLocale: this.listsLocate }
+    });
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+
+    }
 
 
   async popoverLocate(ev) {

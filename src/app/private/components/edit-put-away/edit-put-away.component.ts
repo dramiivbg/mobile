@@ -115,11 +115,13 @@ export class EditPutAwayComponent implements OnInit {
   }
 
   async ngOnInit() {
-    
+
     this.intServ.loadingFunc(true);
     this.whsePutAway = await this.storage.get('whsePutAway');
  
     this.warePW = await this.storage.get('setPutAway');
+
+   // this.storage.remove(`init ${this.whsePutAway.fields.No}`);
 
     this.listPwL = this.warePW.WarehousePutAways.WarehousePutAwayLines;
 
@@ -429,10 +431,10 @@ export class EditPutAwayComponent implements OnInit {
       let lpR: any[] = [];
 
       for (const key in this.initV) {               
-        let find = this.lps.find(lpC => lpC.fields.PLULPDocumentNo === this.initV[key].fields.PLULPDocumentNo);
-        let line = res.find(bin => bin === this.initV[key].fields.place);
+        let find = this.lps.find(lpC => lpC.LPDocumentNo === this.initV[key].LPDocumentNo);
+        let line = res.find(bin => bin === this.initV[key].place);
         if ((find === null || find === undefined) && (line === null || line === undefined)) {
-          res.push(this.initV[key].fields.place);
+          res.push(this.initV[key].place);
 
         }
       }
@@ -490,7 +492,7 @@ export class EditPutAwayComponent implements OnInit {
       console.log(this.initV);
       
       this.intServ.loadingFunc(true);
-      this.split = (this.initV.length > 0) ? await this.wmsService.Prepare_WarehousePutAway(this.warePY.fields.No) : this.split;
+      this.split = (this.initV.length > 0) ? await this.wmsService.Prepare_WarehousePutAway(this.whsePutAway.fields.No) : this.split;
       let contador = 0;
 
       console.log(this.split);
@@ -678,26 +680,58 @@ export class EditPutAwayComponent implements OnInit {
         if (this.initV.length > 0) {
           this.initV.filter(Lp => {
 
-            if (Lp.LPDocumentType !== "Pallet") {
+          //  if (Lp.LPDocumentType !== "Pallet") {
 
               let l = this.lps.find(lp => lp.LPDocumentNo === Lp.LPDocumentNo);
 
               if (l !== undefined) {
-                Lp.place = l.place;
                 Lp.LPLines = l.LPLines;
               }
               console.log(Lp);
 
               this.split.WarehousePutAwayLines.filter(lp => {
 
+                switch(Lp.LPDocumentType){
+                  case "Single":
+                    if (Lp.LPDocumentNo === lp.LP) {
 
-                if (Lp.LPDocumentNo === lp.LP) {
+                      Lp.LPLines.map(x => {
+                        request.ActivityType = 1;
+                        request.BinCode = x.place;
+                        request.ItemNo = lp.ItemNo;
+                        request.LP = lp.LP;
+                        request.LineNo = lp.LineNo;
+                        request.LocationCode = lp.LocationCode;
+                        request.No = lp.No;
+                        request.Quantity = lp.Quantity;
+                        request.ZoneCode = lp.ZoneCode;
+    
+                        list.push(request);
+                        console.log(list);
+                        
+                      request = {
+    
+                        ActivityType: 1,
+                        No: "",
+                        ItemNo: "",
+                        LineNo: "",
+                        ZoneCode: "",
+                        LocationCode: "",
+                        BinCode: "",
+                        Quantity: 0,
+                        LP: ""
+                      }
+                      });
+                         
+                  }
+                    break;
 
-                  if(Lp.LPLines.length > 0){
-                    Lp.seriales.map(x => {
-                      lp.BinCode = x.place;
+                  default:
+
+                  Lp.LPLines.map(x => {
+                    if(x.PLULPDocumentNo === lp.LP){
                       request.ActivityType = 1;
-                      request.BinCode = lp.BinCode;
+                      request.BinCode = x.place;
                       request.ItemNo = lp.ItemNo;
                       request.LP = lp.LP;
                       request.LineNo = lp.LineNo;
@@ -721,40 +755,16 @@ export class EditPutAwayComponent implements OnInit {
                       Quantity: 0,
                       LP: ""
                     }
-                    });
-                  }else{
-                    lp.BinCode = Lp.place;
 
-                    request.ActivityType = 1;
-                    request.BinCode = lp.BinCode;
-                    request.ItemNo = lp.ItemNo;
-                    request.LP = lp.LP;
-                    request.LineNo = lp.LineNo;
-                    request.LocationCode = lp.LocationCode;
-                    request.No = lp.No;
-                    request.Quantity = lp.Quantity;
-                    request.ZoneCode = lp.ZoneCode;
-  
-                    list.push(request);
-  
-                    console.log(list);
-  
-                    request = {
-  
-                      ActivityType: 1,
-                      No: "",
-                      ItemNo: "",
-                      LineNo: "",
-                      ZoneCode: "",
-                      LocationCode: "",
-                      BinCode: "",
-                      Quantity: 0,
-                      LP: ""
                     }
-                  }           
+                 
+                  });
+
+                    break;
                 }
+
               });
-            }
+          //  }
 
           });
         }
@@ -814,18 +824,30 @@ export class EditPutAwayComponent implements OnInit {
 
         }
 
-        let postAway = await this.wmsService.Post_WarehousePutAways(this.warePY.fields.No);
+        let postAway = await this.wmsService.Post_WarehousePutAways(this.whsePutAway.fields.No);
 
         console.log('post away =>', postAway);
 
         if (postAway.Error) throw new Error(postAway.Error.Message);
         if (postAway.error) throw new Error(postAway.error.message);
-        if (postAway.message) throw new Error(postAway.message);
+       // if (postAway.message) throw new Error(postAway.message);
         
 
         this.intServ.loadingFunc(false);
 
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.warePY.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The Put away ${this.whsePutAway.fields.No} has been posted and generated a ${postAway.Registered_Whse_Activity}`, () => {
+
+          this.storage.remove(`listI ${this.whsePutAway.fields.No}`);
+          this.storage.remove(`itemsL ${this.whsePutAway.fields.No}`);
+          this.storage.remove(`items ${this.whsePutAway.fields.No}`);
+          this.storage.remove(`init item ${this.whsePutAway.fields.No}`);
+          this.storage.remove(`init ${this.whsePutAway.fields.No}`);
+          this.storage.remove(this.whsePutAway.fields.No);
+          this.storage.remove(`confirm ${this.whsePutAway.fields.No}`);
+          this.storage.remove(`bins ${this.whsePutAway.fields.No}`);
+          this.storage.remove(`bin ${this.whsePutAway.fields.No}`);
+          this.storage.remove('whsePutAway');
+          this.storage.remove('setPutAway');
 
           this.router.navigate(['page/wms/wmsMain']);
         }));
@@ -908,13 +930,7 @@ export class EditPutAwayComponent implements OnInit {
 
       console.log('bins =>',this.bins);
 
-      this.storage.set(`init ${this.whsePutAway.fields.No}`, this.initV);
-
       this.storage.set(`bin ${this.whsePutAway.fields.No}`, this.bins);
-
-      this.storage.set(`pallet ${this.pallet}`, this.pallet);
-
-
  
       const lpsP = await this.wmsService.GetLicencesPlateInPW(this.whsePutAway.fields.No, true);
 
@@ -943,9 +959,10 @@ export class EditPutAwayComponent implements OnInit {
       console.log(this.initV);
       console.log(this.initItem);
 
-  
-
+  this.QtyTotal = this.initV.length;
+   this.storage.set(`init ${this.whsePutAway.fields.No}`, this.initV);
     this.intServ.loadingFunc(false);
+
 
   }
 

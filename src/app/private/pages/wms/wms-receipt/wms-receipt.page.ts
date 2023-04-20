@@ -440,6 +440,8 @@ export class WmsReceiptPage implements OnInit {
 
         try {
 
+          const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
+
           //postea el wareshouse receipt
           let postWR = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
 
@@ -454,11 +456,12 @@ export class WmsReceiptPage implements OnInit {
 
           let edit = false;
 
-          const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
-
+          
           let traking = await this.storage.get(`traking item ${this.wareReceipts.No}`);
 
           let update = await this.storage.get(`update item ${this.wareReceipts.No}`);
+
+          console.log(lpsP, traking, update);
 
           if (lpsP.Error === undefined && lpsP.error === undefined && traking === false && update === false){
 
@@ -469,8 +472,9 @@ export class WmsReceiptPage implements OnInit {
 
          for (const key in this.items){
 
-          lp.push(this.items[key].LPArray.LicensePlates);
+          lp.push(...this.items[key].LPArray.LicensePlates);
          }
+         console.log('lp sueltos', lp);
 
       
          edit = (lp.length > 0)?true:false;
@@ -486,12 +490,15 @@ export class WmsReceiptPage implements OnInit {
 
     
     
+      if(edit){
 
-          if(postWR.Partial){
-            this.getReceipt();
-          }else{
-            this.router.navigate(['/page/wms/wmsMain']);
-          }
+        if(postWR.Partial){
+          this.getReceipt();
+        }else{
+          this.router.navigate(['page/wms/wmsMain']);
+        }
+      }
+        
 
           if(postWR.Partial)this.items.map(x =>  this.storage.set(`${x.No} ${x.LineNo}`, 0));
 
@@ -530,9 +537,9 @@ export class WmsReceiptPage implements OnInit {
                         this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
       
                          if(postWR.Partial){
-                          this.router.navigate(['/page/wms/wmsReceipt']);
+                          this.router.navigate(['page/wms/wmsReceipt']);
                          }else{
-                          this.router.navigate(['/page/wms/wmsMain']);
+                          this.router.navigate(['page/wms/wmsMain']);
                          }
                         }));
       
@@ -571,9 +578,10 @@ export class WmsReceiptPage implements OnInit {
             this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
 
              if(postWR.Partial){
-              this.router.navigate(['/page/wms/wmsReceipt']);
+             // this.router.navigate(['page/wms/wmsReceipt']);
+             this.getReceipt();
              }else{
-              this.router.navigate(['/page/wms/wmsMain']);
+              this.router.navigate(['page/wms/wmsMain']);
              }
             }));
 

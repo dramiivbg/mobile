@@ -591,6 +591,10 @@ disable(){
 
   this.QtyLP = 0;
 
+  this.lps = [];
+
+  this.items = [];
+
   let contador = 0
 
   if(this.traking.length > 0){

@@ -27,7 +27,7 @@
           <ion-row *ngIf="item.QtyPhysInventory !== undefined || item.Quantity !== undefined">
             <ion-col size="6" *ngIf="boolean" >{{item.No}}</ion-col>
             <ion-col size="3" *ngIf="item.proceded === false && !boolean" >{{item.SerialNo}}</ion-col>
-            <ion-col size="3" *ngIf="item.proceded === true && !boolean" (click)="opcions(item,i)"><a>{{item.SerialNo}}</a></ion-col>
+            <ion-col size="3" *ngIf="item.proceded === true && !boolean" ><a>{{item.SerialNo}}</a></ion-col>
             <ion-col size="3" *ngIf="!boolean">{{item.LotNo}}</ion-col>
             <ion-col size="3" *ngIf="!boolean">{{item.ExperationDate}}</ion-col>
             <ion-col size="3" *ngIf="item.Qty !== undefined">{{item.Qty}}</ion-col>
@@ -54,7 +54,8 @@
           <ion-col size="6" *ngIf="boolean">{{item.No}}</ion-col>
           <ion-col size="3" *ngIf="item.proceded === false && !boolean" >{{item.SerialNo}}</ion-col>
           <ion-col size="3" *ngIf="item.proceded === true && !boolean"><a>{{item.SerialNo}}</a></ion-col>
-          <ion-col size="3" *ngIf="!boolean">{{item.LotNo}}</ion-col>
+          <ion-col size="3" *ngIf="item.proceded === false && !boolean">{{item.LotNo}}</ion-col>
+          <ion-col size="3" *ngIf="item.proceded === true && !boolean"><a>{{item.LotNo}}</a></ion-col>
           <ion-col size="3" *ngIf="!boolean">{{item.ExperationDate}}</ion-col>
           <ion-col size="2" *ngIf="item.Qty !== undefined">{{item.Qty}}</ion-col>
           <ion-col size="3" *ngIf="item.Quantity !== undefined && item.Quantity !== null">{{item.Quantity}}</ion-col> 

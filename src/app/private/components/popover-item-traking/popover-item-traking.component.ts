@@ -220,7 +220,7 @@ async  view(){
     obj.LotNo = this.trakingOpen[key].LotNo;
     obj.ExperationDate = this.trakingOpen[key].ExpirationDate;
 
-    let line = this.list.find(x => x.SerialNo === obj.SerialNo);
+    let line = this.list.find(x => x.SerialNo === obj.SerialNo && x.LotNo === obj.LotNo);
 
     if(line === undefined)this.list.push(obj);
   }
@@ -264,6 +264,7 @@ async  view(){
   
   switch(this.Boolean){
     case true:
+  
       console.log(this.frm.controls['TotalToReceive'].value, this.lp.LP_Pending_To_Receive);
       if(this.frm.valid && this.frm.controls['TotalToReceive'].value <= this.lp.LP_Pending_To_Receive){
         this.total = this.frm.controls['TotalToReceive'].value;
@@ -277,6 +278,8 @@ async  view(){
        if(this.serial === false) this.frm.controls['QtyBase'].enable();
   
         this.Boolean = false;
+      }else{
+        this.intServ.alertFunc(this.jsonService.getAlert('alert', '',`You can't take back more than you have`));
       }  
       break;
     
@@ -357,9 +360,11 @@ async  view(){
     
   let Qty = (this.serial)?1:this.frm.get('QtyBase').value;
  
-    if(this.approved){
+    if(this.approved && this.frm.valid){
 
-      if(this.frm.valid && this.Quantity+Qty <= this.total){
+     switch(this.Quantity+Qty <= this.total){
+
+      case true:
 
         let res = new Date(this.frm.get('requestedDeliveryDate').value);
   
@@ -401,7 +406,7 @@ async  view(){
             this.list.push(obj);
 
           }else{
-            find.Qty = this.frm.get('QtyBase').value;
+            find.Qty += this.frm.get('QtyBase').value;
             this.Quantity+= this.frm.get('QtyBase').value;
           }        
         }
@@ -417,6 +422,19 @@ async  view(){
         });
   
         console.log(this.list);
+        break;
+      default:
+
+        this.frm.patchValue({
+          SerialNo: "",
+          LotNo: "",
+          requestedDeliveryDate: "",
+          QtyBase: ""
+        });
+
+      this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
+
+        break;
       }
     }
       
