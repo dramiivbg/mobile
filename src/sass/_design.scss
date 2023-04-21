@@ -124,8 +124,6 @@ ion-content.login, ion-content.intro {
             text-decoration: none;
         }
     }
-    
-
 }
 
 /*Popovers*/
@@ -254,4 +252,15 @@ btn-search {
     height: 100%;
 }
 
-
+// Se agrega codigo para ajustar error en el input de las Sales
+ion-row.label-SO-text-row {
+    ion-col {
+        font-size: 10px;
+        ion-input {
+            position: relative;
+        }
+        .native-input {
+            position: absolute;
+        }
+    }
+}
