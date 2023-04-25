@@ -89,7 +89,7 @@ import { SharedModule } from './shared/modules/sharedModule.module';
     WmsService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent,],
+  bootstrap: [AppComponent]
 
  
 })
