@@ -8,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WmsMainPage } from './wms-main/wms-main.page';
 import { WmsComponent } from './wms.component';
 import { WmsReceiptPage } from './wms-receipt/wms-receipt.page';
-import { SearchComponent } from '@prv/components/search/search.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { LicensePlatesComponent } from './license-plates/license-plates.component';
