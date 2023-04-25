@@ -51,7 +51,9 @@ export class PopoverListSNComponent implements OnInit {
 
       let process = [];
 
-      this.select.map((x,index) => x.proceded == false?this.list.splice(Number(index),1): process.push(x));
+      this.select.map((x,index) => x.proceded === false?this.list.splice(Number(index),1): process.push(x));
+      
+      this.del = true;
 
       if(process.length > 0){
 

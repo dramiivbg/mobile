@@ -7,6 +7,7 @@ import { JsonService } from '@svc/json.service';
 import { Storage } from '@ionic/storage';
 import { PopoverListSerialLpComponent } from '../popover-list-serial-lp/popover-list-serial-lp.component';
 import { PopoverConfigurationCodeComponent } from '../popover-configuration-code/popover-configuration-code.component';
+import { PopoverListSNComponent } from '../popover-list-sn/popover-list-sn.component';
 
 @Component({
   selector: 'app-popover-add-item-traking',
@@ -391,9 +392,9 @@ async  onSubmit(){
     async lists(){
 
       const popover = await this.popoverController.create({
-        component: PopoverListSerialLpComponent,
-        cssClass: 'popoverListSerialLpComponent-modal',
-        componentProps: {list:this.list},
+        component: PopoverListSNComponent,
+        cssClass: 'popoverListSNComponent-modal',
+        componentProps: {list:this.list,item:this.item,checkbox:true},
         backdropDismiss: false
         
       });

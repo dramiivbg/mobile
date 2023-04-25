@@ -217,8 +217,9 @@ async onBarCode(){
   this.intServ.loadingFunc(true);
      
   items =  cloneDeep(this.dataI);
- 
-  listaL = cloneDeep(this.listLps);
+
+  
+  listaL = cloneDeep(this.dataL);
 
   console.log(listaL,items);
 
@@ -257,7 +258,9 @@ async onBarCode(){
     }
        
   
-      let identifier = await this.wmsService.GetItemIdentifier(code);
+      let identifier = await this.wmsService.GetItemIdentifier(code.toUpperCase());
+      console.log('identifier =>',identifier);
+
        if(!identifier.Error && !identifier.error){
           boolean = false;
         for (const key in identifier.ItemIdentifier) {

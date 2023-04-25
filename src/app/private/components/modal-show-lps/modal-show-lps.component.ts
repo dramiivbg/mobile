@@ -58,8 +58,11 @@ export class ModalShowLpsComponent implements OnInit {
           console.log(this.lps);
           this.lps = this.lpsT.filter(
             x => {
-               return (x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || x.PLUNo.toLowerCase().includes(val.toLowerCase()) 
-                  ||  x.PLULotNo.toLowerCase().includes(val.toLowerCase())  ||  x.PLUSerialNo.toLowerCase().includes(val.toLowerCase()));
+              
+              return  (x.PLULotNo != null && x.PLUSerialNo != null)?(x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || x.PLUNo.toLowerCase().includes(val.toLowerCase()) 
+                  ||  x.PLULotNo.toLowerCase().includes(val.toLowerCase())  || x.PLUSerialNo.toLowerCase().includes(val.toLowerCase())): (x.PLULotNo != null && x.PLUSerialNo === null)?
+                  (x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || x.PLUNo.toLowerCase().includes(val.toLowerCase()) 
+                  ||  x.PLULotNo.toLowerCase().includes(val.toLowerCase())):(x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()) || x.PLUNo.toLowerCase().includes(val.toLowerCase()));
     
               });      
       }
@@ -68,8 +71,10 @@ export class ModalShowLpsComponent implements OnInit {
     default:
       this.lps = this.lpsT.filter(
         x => {
-           return (x.PLULPDocumentNo.toLowerCase().includes(lPNo.toLowerCase())  || x.PLUNo.toLowerCase().includes(lPNo.toLowerCase())
-           ||  x.PLULotNo.toLowerCase().includes(lPNo.toLowerCase())  ||  x.PLUSerialNo.toLowerCase().includes(lPNo.toLowerCase()));
+           return  (x.PLULotNo != null && x.PLUSerialNo != null)?(x.PLULPDocumentNo.toLowerCase().includes(lPNo.toLowerCase()) || x.PLUNo.toLowerCase().includes(lPNo.toLowerCase()) 
+           ||  x.PLULotNo.toLowerCase().includes(lPNo.toLowerCase())  || x.PLUSerialNo.toLowerCase().includes(lPNo.toLowerCase())): (x.PLULotNo != null && x.PLUSerialNo === null)?
+           (x.PLULPDocumentNo.toLowerCase().includes(lPNo.toLowerCase()) || x.PLUNo.toLowerCase().includes(lPNo.toLowerCase()) 
+           ||  x.PLULotNo.toLowerCase().includes(lPNo.toLowerCase())):(x.PLULPDocumentNo.toLowerCase().includes(lPNo.toLowerCase()) || x.PLUNo.toLowerCase().includes(lPNo.toLowerCase()));
   
           });
           break;

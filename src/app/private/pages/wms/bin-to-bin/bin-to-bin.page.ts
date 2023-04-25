@@ -63,8 +63,7 @@ export class BinToBinPage implements OnInit {
 
          this.intServ.loadingFunc(false);
 
-         let bins = await this.wmsService.GetBinByLocation(this.lpH.fields.PLULocationCode);
-         this.listBin = bins;
+         this.listBin = (await this.wmsService.GetBinByLocation(this.lpH.fields.PLULocationCode)).Bins;
 
          console.log( this.listBin);
          
@@ -166,7 +165,7 @@ export class BinToBinPage implements OnInit {
 
         this.intServ.loadingFunc(true);
       
-       let line =   this.listBin.Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
+       let line =   this.listBin.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
   
        if(line != undefined){
         this.lpH.fields.PLUBinCode = line.BinCode;
