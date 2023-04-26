@@ -52,7 +52,6 @@ export class ListPalletComponent implements OnInit {
 
 
 
-
   listLpOrItems(item:any){
 
 

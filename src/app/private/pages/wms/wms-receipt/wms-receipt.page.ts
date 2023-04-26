@@ -66,28 +66,12 @@ export class WmsReceiptPage implements OnInit {
 
 
   ) {
-    let objFunc = {
-      func: () => {
-        this.onBack();
-      }
-    };
-    this.intServ.appBackFunc(objFunc);
    
-
   }
 
   public async ngOnInit() {
 
     this.getReceipt();
-  }
-
-
-
-  /**
-  * Return to the modules.
-  */
-  public onBack() {
-    this.router.navigate(['page/main/modules'], { replaceUrl: true });
   }
 
   /**
@@ -410,10 +394,7 @@ export class WmsReceiptPage implements OnInit {
         this.storage.set(`${this.wareReceipts.No}, pallet`, pallets);
         this.storage.set(`wareReceipt`, wareReceipts);
 
-        this.router.navigate(['page/wms/listPallet']);
-
-      
-      
+        this.router.navigate(['page/wms/listPallet']);   
 
     } catch (error) {
 

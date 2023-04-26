@@ -301,9 +301,6 @@ async onBarCode(){
       
             this.lpsB = true;
       
-            this.lpsT.push(line)
-            this.listLpsL.push(line);
-  
             this.intServ.loadingFunc(false);
   
           }
@@ -331,9 +328,6 @@ async onBarCode(){
               this.itemsL.push(line);
         
               this.itemB = true;
-              this.itemsT.push(line)
-            
-              this.listItemsL.push(line);
             
              console.log(this.itemsL);
              this.intServ.loadingFunc(false);
@@ -518,15 +512,12 @@ this.intServ.loadingFunc(true);
   if(this.listItems.length > 0){
 
     for (const index in this.listItems) {
-      if(this.listItems[index].Qty !== 0){
-  
+     
             let line = this.itemsL.find(Item => Item.ItemNo === this.listItems[index].ItemNo);
             let line2 = this.items.find(Item => Item.ItemNo === this.listItems[index].ItemNo);
   
             if(line === undefined && line2 === undefined)this.items.push(this.listItems[index]);
-                      
-    }
-     
+                     
   }
 
   }
@@ -595,8 +586,13 @@ disable(){
   this.QtyLP = 0;
 
   this.lps = [];
+  this.itemsL.map(x => {
+    this.items.map((i,index) => {
+      if(i.ItemNo === x.ItemNo && x.ItemTrackingCode != undefined)this.items.splice(index,1);
+    });
+  });
 
-  this.items = [];
+console.log(this.items);
 
   let contador = 0
 
@@ -662,10 +658,25 @@ async trakingItem(contador:number = 0){
   
       this.itemB = true;
       this.itemsL.push(item); 
-      this.listItemsL.push(item);
-      let line = this.items.find(x => x.ItemNo === item.ItemNo);
-      line.Qty -= item.Qty;
+      let line = this.items.find(x => x.ItemNo === this.traking[contador].ItemNo);
 
+      if(line.Qty == 0){
+        this.intServ.alertFunc(this.js.getAlert('alert', '', `The item ${this.traking[contador].ItemNo} has no quantities`, () => {
+          contador++;
+          if(contador < this.traking.length){
+            this.trakingItem(contador);
+          }else{
+            this.intServ.loadingFunc(false);
+            this.boolean = true;
+            this.traking = [];
+          }
+        }));
+      }
+
+      console.log(line);
+
+      line.Qty -= data.obj.TrackingInfo[key].Qty;
+      console.log('qty => ',line.Qty);
       console.log(this.items);
       
       item = {
@@ -706,14 +717,14 @@ switch(ev.detail.checked){
 case true:
 
 if(this.booleanL){
-  for(let i = 0; i < this.testListL.length; i++) {
+  for(let i in this.testListL) {
     this.testListL[i].checked = true;
  
     }  
     console.log(this.testListL);
   }else{
 
-    for(let i = 0; i < this.testListI.length; i++) {
+    for(let i in  this.testListI) {
       this.testListI[i].checked = true;
       }     
   }
@@ -724,13 +735,13 @@ if(this.booleanL){
 
     if(this.booleanL){
 
-      for(let i = 0; i < this.testListL.length; i++) {
+      for(let i in this.testListL) {
         this.testListL[i].checked = false;
         }
         console.log(this.testListL);
       }else{
     
-        for(let i = 0; i < this.testListI.length; i++) {
+        for(let i in this.testListI) {
           this.testListI[i].checked = false;
           }
           console.log(this.testListI);
@@ -748,40 +759,25 @@ applyLP(lp:any,ev){
 switch(ev.detail.checked){
 
   case true:  
-  
-  let line:any = undefined;
-
-
-
-  line = this.lpsL.find(Lp =>  Lp.LPDocumentNo === lp.LPDocumentNo);
-
-
-  if(line === undefined){
-
    
     this.lpsL.push(lp);
-     this.listLpsL.push(lp);
      this.lpsB = true;
-     this.lpsT.push(lp)
-   
-     console.log(this.lpsL);
+     console.log(this.lps, this.testListL);
 
-  }    
+  
   break;
   
   case false:
   
-     this.lpsL.filter( (Lp, index) => {
+     this.lpsL.filter((Lp, index) => {
   
         if(Lp.LPDocumentNo === lp.LPDocumentNo){
-           this.lpsL.splice(index,1)
-          this.listLpsL.splice(index,1)
-          this.lpsT.splice(index,1);
+           this.lpsL.splice(index,1);
         }
       });
   
   
-   console.log('Delete =>',this.listLpsL,this.lpsL, this.lpsLT);
+   console.log('Delete =>',this.lpsL,);
   
    break;
     }
@@ -796,25 +792,13 @@ switch(ev.detail.checked){
 
 case true:
 
-  let line:any = undefined;
-
-  line = this.itemsL.find(Item =>  Item.ItemNo ===  item.ItemNo);
-
-
-  if(line === undefined){
-
   this.itemsLT = [];
   this.intServ.loadingFunc(true);
     switch(item.ItemTrackingCode){
 
       case null || '':
         this.itemsL.push(item);
-  
-        this.itemB = true;
-        this.itemsT.push(item)
-      
-        this.listItemsL.push(item);
-      
+       this.itemB = true;      
        console.log(this.itemsL);
        this.intServ.loadingFunc(false);
        break;
@@ -825,8 +809,7 @@ case true:
         console.log(this.traking);
          break;
     }
-   
-  }
+  
   break;
 
 case false:
@@ -836,8 +819,6 @@ case false:
     if(Item.ItemNo === item.ItemNo){
 
       this.itemsL.splice(i,1);    
-      this.listItemsL.push(i,1);
-      this.itemsT.splice(i,1);
 
     }
   });
@@ -850,7 +831,7 @@ case false:
   });
  
 
-  console.log('Delete =>', this.listItemsL, this.itemsLT, this.listItemsL);
+  console.log('Delete =>', this.itemsL);
 
   break;
 }
@@ -888,11 +869,9 @@ case false:
 
     this.intServ.alertFunc(this.js.getAlert('confirm', '',"Are you sure to delete it?", () => {
 
-    this.listItemsL.filter((itemI, index) =>{
+    this.itemsL.filter((itemI, index) =>{
 
       if(item.ItemNo == itemI.ItemNo){
-
-        this.listItemsL.splice(index,1);
 
         this.itemsL.splice(index,1);
 
@@ -904,9 +883,7 @@ case false:
       console.log(this.items);
 
       let line = this.items.find(x => x.ItemNo === item.ItemNo);
-      line.Qty += item.Qty;
-
-      
+      line.Qty += item.Qty; 
       console.log(item,line);
 
     }
@@ -920,14 +897,10 @@ case false:
 
    this.intServ.alertFunc(this.js.getAlert('confirm', ' ',"Are you sure to delete it?", () => {
 
-    this.listLpsL.filter((lp, index) =>{
+    this.lpsL.filter((lp, index) =>{
 
       if(item.LPDocumentNo == lp.LPDocumentNo){
-
-        this.listLpsL.splice(index,1);
-
         this.lpsL.splice(index,1);
-        this.lpsT.splice(index,1);
       }
     });
 
