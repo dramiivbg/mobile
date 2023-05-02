@@ -37,67 +37,42 @@
             <div class="accorn-body">
                 <div class="lines">
                     <ion-list>
-                        <div>
-
-                            <ion-item-sliding>
-
-
+                     
                                 <ion-item>
                                     <div class="label-lines" part="item-width">
                                         <ion-row class="row1" *ngIf="lp !== undefined">
                                             <ion-col class="contentcol" size="12" *ngFor="let item of lps; let i=index">
                                                 <ion-row class="titlerow">
-                                                    <ion-col size="5" style="overflow: hidden;"
+                                                    <ion-col size="6" style="overflow: hidden;"
                                                         class="label-line-title blue">
-                                                        {{item.company}}
+                                                        {{lp.fields.PLULPDocumentNo}}
                                                     </ion-col>
-                                                    <ion-col size="3" class="label-line-title">
+                                                    <ion-col size="6" class="label-line-title">
                                                         Qty. {{item.fields.PLUQuantity
                                                         }}
 
                                                     </ion-col>
                                                 </ion-row>
+
                                                 <ion-row>
-                                                    <ion-col size="4" class="label-line">
+                                                    <ion-col size="6" class="label-line">
                                                         Item No: {{item.fields.PLUNo
                                                         }}
                                                     </ion-col>
-                                                    <ion-col size="4" class="label-line">
+                                                    <ion-col size="6" class="label-line">
                                                         UoM: {{item.fields.PLUUnitofMeasure}}
-                                                    </ion-col>
-
-                                                    <ion-col size="4" class="label-line">
-                                                        Loc. {{item.fields.PLULocationCode}}
-                                                    </ion-col>
-
-                                                    <ion-col size="4" class="label-line">
-                                                        Serial No. {{item.fields.PLULocationCode}}
-                                                    </ion-col>
-
-                                                    <ion-col size="4" class="label-line">
-                                                        Lot No. {{item.fields.PLULocationCode}}
-                                                    </ion-col>
-
-                                                    <ion-col size="4" class="label-line">
-                                                        Exp Date {{item.fields.PLULocationCode}}
-                                                    </ion-col>
-
-
+                                                    </ion-col>                                           
 
                                                 </ion-row>
 
 
                                                 <ion-row>
-                                                    <ion-col size="4" class="label-line">
-                                                        Line: {{item.fields.PLUWhseLineNo}}
-                                                    </ion-col>
-
-
-                                                    <ion-col size="4" class="label-line">
+                                                    
+                                                    <ion-col size="6" class="label-line">
                                                         Doc Type: {{item.fields.PLULPDocumentType}}
                                                     </ion-col>
 
-                                                    <ion-col size="4" class="label-line">
+                                                    <ion-col size="6" class="label-line">
                                                         Bin. {{item.fields.PLUBinCode
                                                         }}
 
@@ -105,32 +80,22 @@
 
                                                 </ion-row>
 
-                                                <ion-item-sliding>
-
-                                                    <ion-item>
-                                                        <ion-row *ngIf="listPicture.length > 0 ">
+                                               
+                                                        <ion-row *ngIf="listPicture.length > 0 && show">
                                                             <ion-col size="12" class="label-line splitimage">
                                                                 <label
-                                                                    *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show"
+                                                                    *ngIf="listPicture[i].fields.Picture != 'NOIMAGE'"
                                                                     class="label">{{listPicture[i].fields.No}}</label>&nbsp;
-                                                                <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE' && show"
+                                                                <img *ngIf="listPicture[i].fields.Picture != 'NOIMAGE'"
                                                                     [src]="listPicture[i].fields.Picture" alt="">
-                                                                <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE' && show"
+                                                                <img *ngIf="listPicture[i].fields.Picture === 'NOIMAGE'"
                                                                     src="../../../../assets/img/caja.jpg" alt="">
 
                                                             </ion-col>
 
                                                         </ion-row>
 
-                                                    </ion-item>
-
-                                                    <ion-item-options>
-                                                        <ion-item-option color="danger" >
-                                                            <ion-icon slot="icon-only" name="trash"></ion-icon>
-                                                        </ion-item-option>
-                                                    </ion-item-options>
-
-                                                </ion-item-sliding>
+                                                 
 
                                                 <ion-row>
                                                     <ion-col class="buttoncol" size="6">
@@ -154,49 +119,29 @@
 
 
                                         <ion-row class="row2" *ngIf="palletH  !== undefined ">
-                                            <ion-col size="15" *ngFor="let item of pallets">
-                                                <ion-row>
-                                                    <ion-col size="5" style="overflow: hidden;"
+                                            <ion-col  class="contentcol" size="12" *ngFor="let item of pallets">
+                                                <ion-row class="titlerow">
+                                                    <ion-col size="6" 
                                                         class="label-line-title blue">
-                                                        {{item.company}}
+                                                        {{item.fields.PLULPDocumentNo}}
                                                     </ion-col>
 
-                                                    <ion-col size="3" class="label-line" style="padding-top: 7px;">
-                                                        Document Type:
-                                                    </ion-col>
-                                                    <ion-col size="2" style="padding-top: 7px;" class="negrilla">
-                                                        {{item.fields.PLULPDocumentType}}
-                                                    </ion-col>
-
-
-                                                </ion-row>
-                                                <ion-row>
-                                                    <ion-col size="4" class="label-line">
-                                                        Entry No: {{item.fields.PLUWarehouseEntryNo
-
-                                                        }}
-                                                    </ion-col>
-                                                    <ion-col style="padding-right: 30px;" size="4" class="label-line">
-                                                        Zone Code: {{item.fields.PLUZoneCode}}
-                                                    </ion-col>
-
-                                                    <ion-col size="4" class="label-line-ligth">
-                                                        Loc. {{item.fields.PLULocationCode}}
+                                                    <ion-col size="6" class="label-line" >
+                                                        Doc Type: {{item.fields.PLULPDocumentType}}
                                                     </ion-col>
 
                                                 </ion-row>
 
-
                                                 <ion-row>
-                                                    <ion-col size="5" class="label-line">
-                                                        Status: {{item.fields.PLULicensePlateStatus}}
+                                                    
+                                                
+                                                    <ion-col size="6" class="label-line-ligth">
+                                                        Zone Code. {{item.fields.PLUZoneCode}}
                                                     </ion-col>
 
-
-
-
-                                                    <ion-col size="5" class="label-line-ligth"
-                                                        style="text-align: right;">
+                                                    
+                                                    <ion-col size="6" class="label-line-ligth"
+                                                      >
                                                         Bin. {{item.fields.PLUBinCode
 
                                                         }}
@@ -206,15 +151,17 @@
                                                 </ion-row>
 
 
-                                                <ion-row>
+
+
+                                                <ion-row *ngIf="show">
                                                     <ion-col size="12" class="label-line splitimage">
 
 
                                                         <ion-slides>
                                                             <ion-slide *ngFor="let img of  listImagenesP; let i=index">
                                                                 <label
-                                                                    *ngIf="img.fields.Picture != 'NOIMAGE' && show">{{img.fields.No}}</label>&nbsp;
-                                                                <img *ngIf="img.fields.Picture != 'NOIMAGE'  && show "
+                                                                    *ngIf="img.fields.Picture != 'NOIMAGE'">{{img.fields.No}}</label>&nbsp;
+                                                                <img *ngIf="img.fields.Picture != 'NOIMAGE'"
                                                                     [src]="img.fields.Picture">
                                                             </ion-slide>
                                                         </ion-slides>
@@ -228,15 +175,15 @@
                                                     <ion-col size="6" class="buttoncol">
 
                                                         <ion-button shape="round" class="buttonsplitmerge"
-                                                            expand="block" (click)="option(item,$event)">Split
-                                                            Pallet</ion-button>
+                                                            expand="block" (click)="option(item,$event)">
+                                                            <ion-icon name="cut-outline"></ion-icon>&nbsp;&nbsp;Split Pallet</ion-button>
                                                     </ion-col>
 
                                                     <ion-col size="6" class="buttoncol">
 
                                                         <ion-button shape="round" class="buttonsplitmerge"
-                                                            expand="block" (click)="popoverMergeP(item,$event)">Merge
-                                                            Pallet
+                                                            expand="block" (click)="popoverMergeP(item,$event)">
+                                                            <ion-icon name="shuffle-outline"></ion-icon>&nbsp;&nbsp;Merge Pallet
                                                         </ion-button>
                                                     </ion-col>
 
@@ -246,16 +193,8 @@
                                         </ion-row>
                                     </div>
 
+                        </ion-item>
 
-
-                                </ion-item>
-
-
-                            </ion-item-sliding>
-
-
-
-                        </div>
                     </ion-list>
                 </div>
             </div>
@@ -266,17 +205,38 @@
 
 <PlureVersion class="footerReceipt" showVersion="0">
     <ion-row>
-        <ion-col size="6" (click)="onBarCode()">
-            <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-            <div class="itemfooter">Bar code</div>
-        </ion-col>
-
-        <ion-col size="6" (click)="onShow()">
+        <ion-col size="4" (click)="onShow()">
             <ion-icon class="itemfooter" size="large" name="eye-outline" *ngIf="!show"></ion-icon>
             <ion-icon class="itemfooter" size="large" name="eye-off-outline" *ngIf="show"></ion-icon>
             <div class="itemfooter" *ngIf="!show">Show Images</div>
             <div class="itemfooter" *ngIf="show">Hide images</div>
         </ion-col>
+  
+
+        <ion-col size="4" (click)="onBarCode()">
+            <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+            <div class="itemfooter">Bar code</div>
+        </ion-col>
+        
+              
+        <ion-col size="4" >
+            <ion-fab horizontal="end" vertical="bottom">
+                <ion-fab-button color="secondary">
+                    <ion-icon md="add" ios="add"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-list side="top">
+                  <ion-fab-button color="secondary" data-desc2="new pallet" (click)="newPallet()">
+                    <img  src="../../../../assets/img/pallet-_1_.svg"  alt="">
+                  </ion-fab-button>
+                  <ion-fab-button color="secondary" data-desc2="new LP Single" (click)="newLPSingle()">
+                    <img  src="../../../../assets/img/barcode-lines.svg"  alt="">
+                  </ion-fab-button>
+                 
+                </ion-fab-list>
+              </ion-fab>
+         
+        </ion-col>
+        
 
     </ion-row>
 </PlureVersion>

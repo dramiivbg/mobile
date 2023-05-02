@@ -6,7 +6,7 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
-import Swal from 'sweetalert2';
+import { Storage } from '@ionic/storage';
 import { parse } from 'path';
 
 @Component({
@@ -16,85 +16,40 @@ import { parse } from 'path';
 })
 export class ListPalletComponent implements OnInit {
 
- 
-
- // @Input() Pallet: any;
-
   public lpsNo: any[] = [];
 
   public boolean:Boolean = true;
   public lps: any[] = [];
 
- // @Input() WareReceipts: any;
-
-  private routExtras: any;
   public listPallet:any;
 
   public wareReceipts: any;
-
-  
 
 
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
     , private js: JsonService
     , private route: ActivatedRoute
-    , private router: Router, private popoverController: PopoverController,private barcodeScanner: BarcodeScanner,private modalCtrl: ModalController) {
+    , private router: Router, private popoverController: PopoverController
+    ,private barcodeScanner: BarcodeScanner,private modalCtrl: ModalController,
+    private storage: Storage) {
 
-    let objFunc = {
-      func: () => {
-        this.onBack();
-      }
-    };
-    this.intServ.appBackFunc(objFunc);
-    this.route.queryParams.subscribe(async params => {
-      if (this.router.getCurrentNavigation().extras.state) {
-        this.routExtras = this.router.getCurrentNavigation().extras;
-
-
-      } else {
-        this.router.navigate(['page/wms/wmsMain'], { replaceUrl: true });
-      }
-    });
-
+   
    }
 
   async ngOnInit() {
 
-   
-    
+    this.wareReceipts = await this.storage.get(`wareReceipt`);
 
-    this.wareReceipts = this.routExtras.state.wareReceipts; 
-
-    this.listPallet = this.routExtras.state.pallet;
+    this.listPallet = await this.storage.get(`${this.wareReceipts.No}, pallet`); 
 
     console.log('pallet =>',this.listPallet);
-
-
-    this.listPallet.filter(lp => {
-
-
-
-      let f  = new  Date(lp.fields[0].SystemCreatedAt);
-
-      let fecha = f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear();
-      
-      
-    lp.fields[0].SystemCreatedAt = fecha;
-   
-  
-    });
 
     
     this.intServ.loadingFunc(false);
     
-
   }
 
-
-  public onBack() {
-    this.router.navigate(['page/wms/wmsReceipt'], { replaceUrl: true });
-  }
 
 
   listLpOrItems(item:any){
@@ -113,63 +68,43 @@ export class ListPalletComponent implements OnInit {
    console.log('LP =>',item)
 
 
-   item.fields.filter((lp, index) => {
+   item.LPLines.filter((lp, index) => {
 
+    switch(lp.PLULPDocumentType){
+      case 'Single':
+        let find  = listLp.find(x => x.PLULPDocumentNo === lp.PLULPDocumentNo);
+        (find === undefined)?listLp.push(lp): find.PLUQuantity += lp.PLUQuantity;
+        break
 
-    if(lp.PLUType == 'LP'){
-
-      listLp.push(item.fields[index]);
-
-
-    }else if(lp.PLUType == 'Item'){
-
-
-      listItem.push(item.fields[index]);
-
-
-    }else{
-
-
-      listP.push( item.fields[index]);
-
+      default:
+        listItem.push(lp);
+        break;
     }
-   })
+
+   });
 
 
    let pallet = item;
 
-   let pallets = this.listPallet;
+ 
+   this.storage.set(`${pallet.LPDocumentNo} listItem`, listItem);
+   this.storage.set(`${pallet.LPDocumentNo} listLp`, listLp);
+   this.storage.set(`pallet`, pallet);
 
-   let wareReceipts = this.wareReceipts;
-
-   this.modalCtrl.dismiss({});
-
-    let navigationExtras: NavigationExtras = {
-      state: {
-        listItem, 
-        listLp,
-        listP,
-        pallet,
-        wareReceipts,
-        pallets,
-        new: false
-      },
-      replaceUrl: true
-    };
-    this.router.navigate(['page/wms/lists'], navigationExtras);
+    this.router.navigate(['page/wms/lists']);
 
   }
 
 
  delete(item:any){
 
-    this.intServ.alertFunc(this.js.getAlert('alert', '', `Are you sure you want to delete the Pallet ${item.fields[0].PLULPDocumentNo}?`, async() => {
+    this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure you want to delete the Pallet ${item.LPDocumentNo}?`, async() => {
 
       this.intServ.loadingFunc(true);
       try {
 
           
-        let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.fields[0].PLULPDocumentNo);
+        let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.LPDocumentNo);
 
          if(res.Error) throw new Error(res.Error.Message);
          
@@ -177,7 +112,7 @@ export class ListPalletComponent implements OnInit {
          this.listPallet.filter((pallet,index) => {
   
   
-          if(pallet.fields[0].PLULPDocumentNo === item.fields[0].PLULPDocumentNo){
+          if(pallet.LPDocumentNo === item.LPDocumentNo){
   
              this.listPallet.splice(index,1);
   
@@ -186,7 +121,7 @@ export class ListPalletComponent implements OnInit {
   
         this.intServ.loadingFunc(false);
      
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.fields[0].PLULPDocumentNo} has been removed correctly`));
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.LPDocumentNo} has been removed correctly`));
     
   
   

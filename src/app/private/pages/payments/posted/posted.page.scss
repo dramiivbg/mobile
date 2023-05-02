@@ -22,11 +22,11 @@ ion-content {
     }
     .item-native-plure {
         padding: 0;
-        --background: #ffffff;
+        --background: var(--ion-color-plure-background);
         color: #000;
         --border-color: #fff !important;
         div.search-all {
-            background: rgba(85, 85, 105, 0.1);
+            background: rgba(var(--ion-color-plure-search-all-rgb));
             border-radius: 15px;
             margin-left: 13px;
             width: 100%;

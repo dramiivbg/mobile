@@ -100,7 +100,7 @@ cancel(){
 
   async onSi(){
 
-    this.intServ.loadingFunc(true);
+    
     this.storage.remove('setPutAway');
     this.storage.remove('whsePutAway');
 

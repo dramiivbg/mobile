@@ -7,12 +7,12 @@
         <ion-label *ngIf="lp != undefined">No. {{lp.fields.PLUWhseDocumentNo}} </ion-label>
       </ion-col>
       <ion-col size="4">
-        <ion-label *ngIf="lpH != undefined">Loc. {{lpH.fields.PLULocationCode}} </ion-label>
+        <ion-label *ngIf="lpH != undefined">Loc. {{lpH.PLULocationCode}} </ion-label>
       </ion-col>
     </ion-row>
     <ion-row class="headerow">
       <ion-col>
-        <ion-label *ngIf="lpH != undefined">Registering Date: {{lpH.fields.SystemCreatedAt}} </ion-label>
+        <ion-label *ngIf="lpH != undefined">Registering Date: {{lpH.SystemCreatedAt}} </ion-label>
       </ion-col>
     </ion-row>
   </div>
@@ -33,10 +33,7 @@
   <div class="accorn-body">
     <div class="lines">
       <ion-list class="titlelist">
-        <div>
-
-          <ion-item-sliding>
-
+    
             <ion-item class="labelitem">
               <div class="label-lines" part="item-width">
                 <ion-row>
@@ -75,8 +72,6 @@
               </div>
             </ion-item>
 
-          </ion-item-sliding>
-        </div>
       </ion-list>
     </div>
   </div>
@@ -140,15 +135,15 @@
   <div class="designform-header">
     <ion-row class="headerow">
       <ion-col>
-        <ion-label *ngIf="palletH != undefined">No. {{lp.fields.PLUWhseDocumentNo}} </ion-label>
+        <ion-label *ngIf="palletH != undefined">No. {{palletH.PLUWhseDocumentNo}} </ion-label>
       </ion-col>
       <ion-col>
-        <ion-label *ngIf="palletH != undefined">Loc. {{lpH.fields.PLULocationCode}} </ion-label>
+        <ion-label *ngIf="palletH != undefined">Loc. {{palletH.PLULocationCode}} </ion-label>
       </ion-col>
     </ion-row>
     <ion-row class="headerow">
       <ion-col>
-        <ion-label *ngIf="palletH != undefined">Registering Date: {{lpH.fields.SystemCreatedAt}} </ion-label>
+        <ion-label *ngIf="palletH != undefined">Registering Date: {{palletH.SystemCreatedAt}} </ion-label>
       </ion-col>
     </ion-row>
   </div>
@@ -170,7 +165,7 @@
 
   <div class="accorn-body">
     <div class="lines"  style="text-align: center;">   
-    <div class="div">
+    
           <ion-grid class="ion-margin">
             <ion-row class="titletable">
               <ion-col >Item</ion-col>
@@ -182,6 +177,7 @@
               <ion-col>Qty</ion-col>
             </ion-row>
            
+            <div class="div">
             <ion-row class="datatable" *ngFor="let item of listItem" style="overflow-y:auto;">
               <ion-col >{{item.fields.PLUNo}}</ion-col>
               <ion-col >{{item.fields.PLUDescription}}</ion-col>
@@ -191,8 +187,8 @@
               <ion-col>{{item.fields.PLUUnitofMeasureCode}}</ion-col>
               <ion-col>{{item.fields.PLUQuantity}}</ion-col>
             </ion-row>
+          </div>
           </ion-grid>
-    </div>
     </div>
   </div>
 

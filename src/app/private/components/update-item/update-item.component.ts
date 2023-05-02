@@ -6,6 +6,8 @@ import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
 
+import { Storage } from '@ionic/storage';
+
 @Component({
   selector: 'app-update-item',
   templateUrl: './update-item.component.html',
@@ -19,7 +21,7 @@ export class UpdateItemComponent implements OnInit {
   public frm: FormGroup;
   @Input() options: any = {};
 
-
+  public update = false;
 
 
   constructor(private intServ: InterceptService
@@ -28,7 +30,8 @@ export class UpdateItemComponent implements OnInit {
     , private wmsService: WmsService
     , private popoverController: PopoverController
     , private interceptService: InterceptService,
-    private router: Router
+    private router: Router,
+    private storage: Storage
 
   ) {
 
@@ -40,12 +43,13 @@ export class UpdateItemComponent implements OnInit {
       }
     )
   }
-  ngOnInit() {
+ async ngOnInit() {
 
     this.item = this.options.item === undefined ? {} : this.options.item;
     this.lp = this.options.lp === undefined ? {} : this.options.lp;
     var lstUnitofMeasure = this.options.lstUoM === undefined ? {} : this.options.lstUoM;
     this.lstUoM = lstUnitofMeasure.UnitOfMeasure === undefined ? {} : lstUnitofMeasure.UnitOfMeasure;
+
 
     console.log(this.item);
   }
@@ -94,6 +98,8 @@ export class UpdateItemComponent implements OnInit {
 
 
         this.intServ.loadingFunc(false);
+        this.update = true;
+        this.storage.set(`update item ${this.item.No}`, this.update);
 
         this.intServ.alertFunc(this.jsonService.getAlert('success', 'The item quantities have been successfully posted.', '', ()=> {this.popoverController.dismiss({receive: obj.TotalToReceive})}));
 

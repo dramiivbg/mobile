@@ -50,7 +50,7 @@ export class PopoverListPalletComponent implements OnInit {
 
      const popover = await this.popoverController.create({
           component: PopoverListLpComponent,
-          cssClass: 'popoverCountingComponent',
+          cssClass: 'popoverListLpComponent',
           componentProps: {lp:obj,active:false},
           backdropDismiss: false
           

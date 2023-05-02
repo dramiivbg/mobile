@@ -63,6 +63,43 @@ export class WmsService {
 
  }
 
+ public async GetLicencesPlateByStatusGeneral(No:any,LicensePlateStatus:any){
+
+    
+    try {
+        let obj: any = [{
+            No,
+            LicensePlateStatus
+          
+        }]; 
+        
+        let p = await this.syncErp.processRequestParams('GetLicencesPlateByStatusGeneral', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+
+ }
+
+ public async GetLPArrayByStatus(IsPallet:boolean,LicensePlateStatus:number){
+
+    
+    try {
+        let obj: any = [{
+            IsPallet,
+            LicensePlateStatus
+          }]; 
+        
+        let p = await this.syncErp.processRequestParams('GetLPArrayByStatus', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+
+ }
+
 
 
  public async GetLicencesPlateInPW(No: string, boolean: boolean){
@@ -220,7 +257,8 @@ public async GetItemInfo(ItemNo:any){
             let obj: any = [{
                 No: no
             }];
-            let p = await this.syncErp.processRequestParams('GetWarehouseReceipt', obj);
+            
+            let p = await this.syncErp.processRequestParams('GetWarehouseReceiptV3', obj);
             let rsl = await this.syncErp.setRequest(p);
             return rsl;
         } catch (error) {
@@ -540,7 +578,9 @@ public async GetItemInfo(ItemNo:any){
    }
 
 
-   public async Calcule_Possible_LPChilds_From_WR(LP_Pallet_No:any){
+   
+
+   public async Calcule_Possible_LPChilds_From_WR_V3(LP_Pallet_No:any){
 
 
     
@@ -555,7 +595,34 @@ public async GetItemInfo(ItemNo:any){
 
 
         
-        let p = await this.syncErp.processRequestParams('Calcule_Possible_LPChilds_From_WR', obj);
+        let p = await this.syncErp.processRequestParams('Calcule_Possible_LPChilds_From_WR_V3', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+   }
+
+
+
+   public async Calcule_Possible_LPChilds_From_WR_V2(LP_Pallet_No:any){
+
+
+    
+    try {
+
+        let obj: any = [{
+
+            LP_Pallet_No
+            
+        }];
+
+
+
+        
+        let p = await this.syncErp.processRequestParams('Calcule_Possible_LPChilds_From_WR_V2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -598,7 +665,7 @@ public async GetItemInfo(ItemNo:any){
    }
 
 
-   public async Delete_LPChild_to_LP_Pallet_From_WR(LP_Pallet_No:any, WarehouseReceipt_No:any, LP_Pallet_Child_No:any){
+   public async Delete_LPChild_to_LP_Pallet_From_WRV2(LP_Pallet_No:any, WarehouseReceipt_No:any, LP_Pallet_Child:any){
 
 
     try {
@@ -608,7 +675,7 @@ public async GetItemInfo(ItemNo:any){
 
         LP_Pallet_No,
         WarehouseReceipt_No,
-        LP_Pallet_Child_No
+        LP_Pallet_Child
         
     }];
 
@@ -619,9 +686,9 @@ public async GetItemInfo(ItemNo:any){
 
 
     
-    let p = await this.syncErp.processRequestParams('Delete_LPChild_to_LP_Pallet_From_WR', obj);
+    let p = await this.syncErp.processRequestParams('Delete_LPChild_to_LP_Pallet_From_WRV2', obj);
     let rsl = await this.syncErp.setRequest(p);
-  //  return rsl;
+    return rsl;
    
 } catch (error) {
     throw error;
@@ -631,21 +698,25 @@ public async GetItemInfo(ItemNo:any){
 
    }
 
-   public async Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT(list:any){
+   public async Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT_V2(WarhouseReceiptNo:any,LP_Pallet_No:any,BinCode:any,Item_Child:any){
 
     try {
 
     
-        let obj: any = [
+        let obj: any = [{
     
-           list
-            
-        ];
+
+            WarhouseReceiptNo, 
+            LP_Pallet_No, 
+            BinCode,
+            Item_Child
+
+        }];
     
         console.log(JSON.stringify(obj));
 
         
-        let p = await this.syncErp.processRequestParams('Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT', obj);
+        let p = await this.syncErp.processRequestParams('Assign_ItemChild_to_LP_Pallet_From_WR_With_SNLOT_V2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -684,7 +755,7 @@ public async GetItemInfo(ItemNo:any){
    }
 
 
-   public async Delete_ItemChild_to_LP_Pallet_From_WR(LP_Pallet_No:any,  WarehouseReceipt_No:any,  WarehouseReceipt_LineNo:any, Qty:any,Item_Child_No:any ){
+   public async Delete_ItemChild_to_LP_Pallet_From_WR2(LP_Pallet_No:any,  WarehouseReceipt_No:any,Item_Child:any ){
 
 
     
@@ -697,11 +768,7 @@ public async GetItemInfo(ItemNo:any){
 
             WarehouseReceipt_No,
 
-            WarehouseReceipt_LineNo,
-
-            Qty,
-
-            Item_Child_No,
+            Item_Child,
             
         }];
 
@@ -709,9 +776,9 @@ public async GetItemInfo(ItemNo:any){
     
     
         
-        let p = await this.syncErp.processRequestParams('Delete_ItemChild_to_LP_Pallet_From_WR', obj);
+        let p = await this.syncErp.processRequestParams('Delete_ItemChild_to_LP_Pallet_From_WR2', obj);
         let rsl = await this.syncErp.setRequest(p);
-      //  return rsl;
+        return rsl;
        
     } catch (error) {
         throw error;
@@ -753,7 +820,7 @@ public async GetItemInfo(ItemNo:any){
 
 
 
-public async GetPossiblesBinFromPutAwayV2(No:any){
+public async GetPossiblesBinFromPutAway(No:any){
 
     try {
 
@@ -764,7 +831,7 @@ public async GetPossiblesBinFromPutAwayV2(No:any){
 
         console.log(JSON.stringify(obj));
         
-        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAwayV2', obj);
+        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAway', obj);
         let rsl = await this.syncErp.setRequest(p);
        return rsl;
        
@@ -833,33 +900,6 @@ public async DeleteLPPallet_FromWarehouseReceiptLine(No:any){
 }
 
 
-
-
-
-public async GetPossiblesBinFromPutAway(No:any){
-
-
-    try {
-
-    
-        let obj: any = [{
-    
-          No
-        }];
-    
-
-        console.log(JSON.stringify(obj));
-    
-        
-        let p = await this.syncErp.processRequestParams('GetPossiblesBinFromPutAway', obj);
-        let rsl = await this.syncErp.setRequest(p);
-        return rsl;
-       
-    } catch (error) {
-        throw error;
-    }
-
-}
 
 
 public async Prepare_WarehousePutAway(No:any){
@@ -944,7 +984,7 @@ public async Get_LPLedgerEntries(No:any){
 }
 
 
-public async SplitLPSingle(objS:any){
+public async SplitLPSingle_Item(objS:any){
 
 
     try {
@@ -962,7 +1002,7 @@ public async SplitLPSingle(objS:any){
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('SplitLPSingle', obj);
+        let p = await this.syncErp.processRequestParams('SplitLPSingle_Item', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1144,18 +1184,14 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
    }
 
 
-   public async MoveBinToBin_LP(LPNo:any,Zone:any,FromBin:any,ToBin:any,LocationCode:any){
+   public async MoveBinToBinArray_LP(list:any){
 
     try {
 
     
         let obj: any = [{
 
-            LPNo,
-            Zone,
-            FromBin,
-            ToBin,
-            LocationCode,
+            ArrayToMove: list
            
           }];
     
@@ -1163,7 +1199,7 @@ public async WarehouseItemJournal_LP(LPNo:any,Zone:any,Bin:any,LocationCode:any,
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('MoveBinToBin_LP', obj);
+        let p = await this.syncErp.processRequestParams('MoveBinToBinArray_LP', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1293,7 +1329,34 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
    }
 
 
-   public async Register_WarehouseInvPhysicalCount(LocationCode:any){
+   public async Delete_WarehouseInvPhysicalCount(list:any){
+
+       
+    try {
+
+    
+        let obj: any = [{
+            Delete_WarehouseInvPhysicalCount: list
+    
+    
+          }];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('Delete_WarehouseInvPhysicalCount', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+   
+   }
+
+
+   public async Register_WarehouseInvPhysicalCount(LocationCode:any, JournalTemplateName:any,JournalBatchName:any){
 
 
  
@@ -1301,6 +1364,8 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
 
     
         let obj: any = [{
+          JournalTemplateName,
+           JournalBatchName,
             LocationCode
 
 
@@ -1349,7 +1414,11 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     }
    }
 
-   public async GetItemTrackingSpecificationOpen(ItemNo:any,SourceNo:any,SourceRefNo:any){
+
+
+
+    
+   public async GetItemTrackingSpecificationV2(ItemNo:any,SourceNo:any,SourceRefNo:any){
 
     try {
 
@@ -1365,7 +1434,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationOpen', obj);
+        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationV2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1376,31 +1445,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
    }
 
    
-   public async GetItemTrackingSpecificationClosed(ItemNo:any,SourceNo:any,SourceRefNo:any){
-
-    try {
-
-    
-        let obj: any = [{
-
-            ItemNo,
-            SourceNo,
-            SourceRefNo
-        }];
-    
-
-        console.log(JSON.stringify(obj));
-    
-        
-        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationClosed', obj);
-        let rsl = await this.syncErp.setRequest(p);
-        return rsl;
-       
-    } catch (error) {
-        throw error;
-    }
-
-   }
+ 
 
    
    
@@ -1411,6 +1456,7 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     
         let obj: any = [{
 
+            Code
         }];
     
 
@@ -1466,7 +1512,9 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
    }
 
 
-   public async UpdateItemTrackingSpecificationOpen(list:any){
+
+
+   public async UpdateItemTrackingSpecificationOpenV2(item:any, TrackingInfo:any,QtyToReceive:any){
 
          
     try {
@@ -1474,23 +1522,22 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     
         let obj: any = [{
 
-            WarhouseReceiptNo: list.WarhouseReceiptNo,
-            ItemNo: list.ItemNo,
-            SourceNo: list.SourceNo,
-            SourceRefNo: list.SourceRefNo,
-            Qty: list.Qty,
-            SerialNo: list.SerialNo,
-            LotNo: list.LotNo,
-            ExperationDate: list.ExperationDate
-          
-
+            WarhouseReceiptNo: item.No,
+            ItemNo: item.ItemNo,
+            QtyToReceive,
+            UnitofMeasureCode: item.UnitofMeasureCode,
+            SourceNo: item.SourceNo,
+            SourceRefNo: item.SourceLineNo,
+            LineNo:item.LineNo,
+            TrackingInfo
+              
         }];
     
 
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('UpdateItemTrackingSpecificationOpen', obj);
+        let p = await this.syncErp.processRequestParams('UpdateItemTrackingSpecificationOpenV2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1513,32 +1560,30 @@ public async Get_WarehouseInvPhysicalCount(LocationCode:string,JournalTemplateNa
     }
 
 
-public async DeleteItemTrackingSpecificationOpen(list:any){
+public async DeleteItemTrackingSpecificationOpenV2(item:any,TrackingInfo:any){
 
         
          
     try {
 
     
+      
         let obj: any = [{
 
-            WarhouseReceiptNo: list.WarhouseReceiptNo,
-            ItemNo: list.ItemNo,
-            SourceNo: list.SourceNo,
-            SourceRefNo: list.SourceRefNo,
-            Qty: list.Qty,
-            SerialNo: list.SerialNo,
-            LotNo: list.LotNo,
-            ExperationDate: list.ExperationDate
-          
-
+            WarhouseReceiptNo: item.No,
+            ItemNo: item.ItemNo,
+            SourceNo: item.SourceNo,
+            SourceRefNo: item.SourceLineNo,
+            TrackingInfo
+              
         }];
+    
     
 
         console.log(JSON.stringify(obj));
     
         
-        let p = await this.syncErp.processRequestParams('DeleteItemTrackingSpecificationOpen', obj);
+        let p = await this.syncErp.processRequestParams('DeleteItemTrackingSpecificationOpenV2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        
@@ -1631,6 +1676,26 @@ public async Get_WarehouseJournalBatch(JournalTemplateName:string,UserID:string)
     }
 
     return array;
+}
+
+
+public async listPalletVoid(list):Promise<any>{
+
+    let obj = {}
+
+    let array = [];
+
+    for (const key in list) {
+      
+    obj = await this.fields(list[key].LicensePlatesHeaders.fields);
+
+    array.push(obj);
+
+    obj = {};
+
+}
+
+return array;
 }
 
     private async fields(fields:any): Promise<any>{

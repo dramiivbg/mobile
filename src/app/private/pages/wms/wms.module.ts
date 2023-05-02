@@ -8,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WmsMainPage } from './wms-main/wms-main.page';
 import { WmsComponent } from './wms.component';
 import { WmsReceiptPage } from './wms-receipt/wms-receipt.page';
-import { SearchComponent } from '@prv/components/search/search.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { LicensePlatesComponent } from './license-plates/license-plates.component';
@@ -33,7 +32,6 @@ import { PopoverLpEditComponent } from '@prv/components/popover-lp-edit/popover-
 import { PopoverLogLpComponent } from '@prv/components/popover-log-lp/popover-log-lp.component';
 import { OptionsLpsOrItemsComponent } from '@prv/components/options-lps-or-items/options-lps-or-items.component';
 import { SplitItemComponent } from '@prv/components/split-item/split-item.component';
-import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
 import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 import { PopoverShowInventoryComponent } from '@prv/components/popover-show-inventory/popover-show-inventory.component';
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
@@ -56,9 +54,8 @@ import { PopoverChildrensPalletComponent } from '@prv/components/popover-childre
 import { PopoverListLpComponent } from '@prv/components/popover-list-lp/popover-list-lp.component';
 import { PopoverListPalletComponent } from '@prv/components/popover-list-pallet/popover-list-pallet.component';
 import { PagueInquiriesComponent } from '@prv/components/pague-inquiries/pague-inquiries.component';
-import { ProductsResComponent } from '@prv/components/products-res/products-res.component';
-
-
+import { PopoverSelectPalletComponent } from '@prv/components/popover-select-pallet/popover-select-pallet.component';
+import { PopoverSettingComponent } from '@prv/components/popover-setting/popover-setting.component';
 
 
 
@@ -89,7 +86,6 @@ import { ProductsResComponent } from '@prv/components/products-res/products-res.
     PopoverLogLpComponent,
     SplitItemComponent,
     BinToBinPage,
-    CreatePhysicalInventoryComponent,
     ListPalletComponent,
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
@@ -112,7 +108,9 @@ import { ProductsResComponent } from '@prv/components/products-res/products-res.
     PopoverListLpComponent,
     PopoverListPalletComponent,
     PagueInquiriesComponent,
-    ProductsResComponent
+    PopoverSelectPalletComponent,
+    PopoverSettingComponent
+   
     
   
   ],
@@ -141,8 +139,6 @@ import { ProductsResComponent } from '@prv/components/products-res/products-res.
     PopoverLogLpComponent,
     OptionsLpsOrItemsComponent,
     SplitItemComponent,
-    CreatePhysicalInventoryComponent,
-    ListPalletComponent,
     PopoverShowInventoryComponent,
     PopoverLocateComponent,
     ModalShowLpsComponent,
@@ -161,7 +157,10 @@ import { ProductsResComponent } from '@prv/components/products-res/products-res.
     PopoverListLpComponent,
     PopoverListPalletComponent,
     PagueInquiriesComponent,
-    ProductsResComponent
+    PopoverSelectPalletComponent,
+    PopoverSettingComponent
+   
+   
   
   ]
 })

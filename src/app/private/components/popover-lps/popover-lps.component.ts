@@ -52,9 +52,24 @@ export class PopoverLpsComponent implements OnInit {
 
 async option(item:any,ev){
 
-switch(item.seriales.length === 1){
+switch(this.lps.serial){
 
    case true:
+    const popover1 = await this.popoverController.create({
+      component: PopoverShowSerialesComponent,
+      cssClass: 'popoverShowSerialesComponent',
+      componentProps: {lps:item},
+      backdropDismiss: false
+    });
+    this.intServ.loadingFunc(false);
+    await popover1.present();   
+    this.options(popover1);
+      break;
+  
+
+      default:
+    
+          
       this.intServ.loadingFunc(true);
 
       this.intServ.loadingFunc(false);
@@ -62,6 +77,7 @@ switch(item.seriales.length === 1){
         component: PopoverOpionsLpComponent,
         cssClass: 'popoverOptions',
         event: ev,
+        backdropDismiss: false,
         componentProps: this.listMenu(item)
       });
       await popover.present();
@@ -70,16 +86,11 @@ switch(item.seriales.length === 1){
     
         switch(data.name) {
     
-          case 'Edit':
+       
     
-          this.popoverController.dismiss({data: 'editado'});
-      // this.onPopLicensePlate(ev, item);
-      
-         break;
+          case 'Delete':
     
-         case 'Delete':
-    
-            let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Surely you want to eliminate it?', async() => {
+            let result = this.intServ.alertFunc(this.jsonService.getAlert('confirm',' ','Are you sure you want to remove it?', async() => {
     
     
               this.intServ.loadingFunc(true);
@@ -87,7 +98,7 @@ switch(item.seriales.length === 1){
               try {
     
     
-                 let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(item.PLULPDocumentNo);
+                 let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(item.LPDocumentNo);
     
                  if(lpD.Error) throw Error(lpD.Error.Message);
     
@@ -106,19 +117,7 @@ switch(item.seriales.length === 1){
     
           }
       break;
-
-      default:
-
-      const popover1 = await this.popoverController.create({
-        component: PopoverShowSerialesComponent,
-        cssClass: 'popoverShowSerialesComponent',
-        componentProps: {lps:item},
-        backdropDismiss: false
-      });
-      this.intServ.loadingFunc(false);
-      await popover1.present();   
-      this.options(popover1);
-        break;
+   
   }
  
   }
@@ -132,42 +131,20 @@ switch(item.seriales.length === 1){
 
   }
 
-  public async onPopLicensePlate(ev: any, lp: any) {
-    this.intServ.loadingFunc(true);
-
-   let lstUoM = await this.wmsService.getUnitOfMeasure(lp.PLUDescription);
-
-      const popover = await this.popoverController.create({
-        component: PopoverLpEditComponent,
-        cssClass: 'popoverLpEdit',
-        event: ev,
-        translucent: true,
-        componentProps: { options: {lp,lstUoM} },
-        backdropDismiss: false
-      });
-      this.intServ.loadingFunc(false);
-      await popover.present();  
-      const { data } = await popover.onDidDismiss();
-      console.log(data);
-  
-   }
+ 
 
 
    private listMenu(lp: any): any {
     return {
       options: {
-        name: `LP No. ${lp.PLULPDocumentNo}`,
+        name: `LP No. ${lp.LPDocumentNo}`,
         menu: [
+        
           { 
-            id: 1, 
-            name: 'Edit', 
-            icon: 'newspaper-outline',
-            obj: lp
-          },
-          { 
+       
             id: 1, 
             name: 'Delete', 
-            icon: 'close-outline',
+            icon: 'trash-outline',
             obj: lp
           },
           { 
@@ -180,6 +157,10 @@ switch(item.seriales.length === 1){
       }
     };
 
+  }
+
+  onClose(){
+    this.popoverController.dismiss({});
   }
   
 

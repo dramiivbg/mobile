@@ -1,5 +1,5 @@
 .header-md::after {
-    background: transparent linear-gradient(0deg, #FFFFFF00 0%, #8080804F 100%) 0% 0% no-repeat padding-box !important;
+    background: transparent linear-gradient(0deg, var(--ion-color-plureBlack-background-gradient) 0%, var( --ion-color-plureGrey-background-gradient) 100%) 0% 0% no-repeat padding-box !important;
     opacity: 1;
     height: 6px;
 }

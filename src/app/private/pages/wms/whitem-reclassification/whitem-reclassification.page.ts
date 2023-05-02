@@ -116,10 +116,11 @@ export class WhitemReclassificationPage implements OnInit {
         this.intServ.loadingFunc(true);
 
         let res = await this.wmsService.getLpNo(lpNo);
-
+       // console.log(res);
         this.lp = await this.wmsService.ListLp(res);
-
-        switch (this.lp.fields.PLULPDocumentType) {
+        this.lpH = await this.wmsService.listSetup(res.LicensePlates.LicensePlatesHeaders);
+       
+        switch (this.lpH.PLULPDocumentType) {
 
           case 'Single':
             console.log(this.lp);
@@ -132,22 +133,14 @@ export class WhitemReclassificationPage implements OnInit {
 
             this.PLUUnitofMeasureCode = this.lp.fields.PLUUnitofMeasureCode;
 
-            this.lpH = await this.wmsService.ListLpH(res);
-
-            this.PLUZoneCode = this.lpH.fields.PLUZoneCode;
+            this.PLUZoneCode = this.lpH.PLUZoneCode;
 
 
-            let f = new Date(this.lpH.fields.SystemCreatedAt);
+            this.binCode = this.lpH.PLUBinCode;
 
-            let fecha = f.getDate() + '/' + (f.getMonth() + 1) + '/' + f.getFullYear();
+            this.PLUBinCode = this.lpH.PLUBinCode;
 
-            this.lpH.fields.SystemCreatedAt = fecha;
-
-            this.binCode = this.lpH.fields.PLUBinCode;
-
-            this.PLUBinCode = this.lpH.fields.PLUBinCode;
-
-            let qty = this.lp.fields.PLUQuantity;
+            let qty = this.lpH.PLULPTotalQuantities;
 
             this.frm.setValue({
 
@@ -168,7 +161,7 @@ export class WhitemReclassificationPage implements OnInit {
             this.boolean = false;
 
 
-            let palletH = await this.wmsService.PalletH(res);
+            let palletH = await this.wmsService.listSetup(res.LicensePlates.LicensePlatesHeaders);
 
             let palletL = await this.wmsService.PalletL(res);
 

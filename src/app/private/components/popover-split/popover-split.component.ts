@@ -15,17 +15,13 @@ export class PopoverSplitComponent implements OnInit {
   public frm: FormGroup;
 
   @Input() lp:any;
-
-  
-  public boolean:Boolean = true;
-
-  public loading:Boolean = false;
+  @Input() listSingleVoid:any;
+  public No = '';
 
   constructor(private formBuilder: FormBuilder, 
     private jsonService: JsonService
-    , private wmsService: WmsService
     , private popoverController: PopoverController
-    , private interceptService: InterceptService) { 
+ ) { 
 
 
     this.frm = this.formBuilder.group(
@@ -55,139 +51,32 @@ export class PopoverSplitComponent implements OnInit {
     if (this.frm.valid) {
 
 
-      this.boolean = false;
-      this.loading = true;
-
       let obj = await this.jsonService.formToJson(this.frm);
-
-
-
      
      
-     if(obj['Quantity'] <= this.lp.fields.PLUQuantity){
+     if(obj.Quantity <= this.lp.fields.PLUQuantity){
 
-      if(obj['Quantity'] > 0){
+      if(obj.Quantity > 0){
 
+ 
+        this.popoverController.dismiss({qty: obj.Quantity, lpNo: this.No});
 
-        
-      try {
-
-        let lpN = await this.wmsService.GenerateEmptyLP(this.lp.fields.PLUZoneCode,this.lp.fields.PLULocationCode,'', 'Single');
-       
-
-        let qtyN = obj['Quantity'];
-  
-        let qty = this.lp.fields.PLUQuantity - qtyN;
-  
-        let lpO = this.lp.fields.PLULPDocumentNo;
-  
-        let objP =   {
-          NewLicensePlateCode: lpN.LPNo,
-          NewQuantity: qtyN,
-          OriginalQuantityModified: qty,
-          OriginalLicensePlateCode: lpO
-        };
-  
-  
-        let res = await this.wmsService.SplitLPSingle(objP);
-
-        console.log(res);
-
-        if(res.Error) throw new Error(res.Error.Message);
-
-
-        Swal.fire(
-          'Success!',
-          `Has been successfully created the License Plate Single ${lpN.LPNo}`,
-          'success'
-        )
-
-       
-
-        this.popoverController.dismiss({data: 'split', obj: this.lp.fields.PLULPDocumentNo});
-
-      
-
-        
-      } catch (error) {
-
-
-        this.boolean = true;
-        this.loading = false;
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error.message,
-          footer: ''
-        });
-        
-      }
-
-      }else{
-
-        this.boolean = true;
-        this.loading = false;
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: `The amount must be greater than zero`,
-          footer: ''
-        });
-        
-        
       }
 
   
-     }else{
-
-      this.boolean = true;
-      this.loading = false;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: `The quantity must not be greater than the original License Plate Single ${this.lp.fields.PLULPDocumentNo}`,
-        footer: ''
-      });
-
-        }
+     }
 
     }
 
  }
 
 
-  
-  add(){
+ onSelect(p){
 
-    let qty =  this.frm.get('Quantity').value;
-  
-    if(qty < this.lp.fields.PLUQuantity){
+  this.No = p;
 
-      qty +=1
-  
-      this.frm.get('Quantity').setValue(qty);
-    }
-    
-  
-    }
-  
-    res(){
-  
-      let qty =  this.frm.get('Quantity').value;
-  
-      if(qty > 1){
-   
-       qty -=1
-  
-       this.frm.get('Quantity').setValue(qty);
-       }
-  
-    }
-
-
-    
+  console.log(this.No);
+}
 
 
 }

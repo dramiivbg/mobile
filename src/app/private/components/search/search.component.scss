@@ -141,7 +141,8 @@ ion-row.search-salesOrder {
 
 div.logofooter2 {
     color: var(--ion-color-plureHeader);
-    background: linear-gradient(to bottom, #5CABF9, #1A518E);
+   // background: linear-gradient(to bottom, var(--ion-color-primary), var(--ion-color-primary-background));
+    background: linear-gradient(to bottom, red, white);
     bottom: 0;
     position: fixed;
     text-align: center;
@@ -171,7 +172,7 @@ div.logofooter2 {
 
 
 .bin {
-    color: #5CABF9;
+    color: var(--ion-color-primary);
     text-align: center;
     font-weight: bold;
 }
@@ -223,6 +224,3 @@ div.logofooter2 {
     font-weight: bold;
 }
 
-// ion-content {
-//     --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff);
-// }

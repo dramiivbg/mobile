@@ -2,7 +2,7 @@
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
-        <ion-icon *ngIf="item.trakingCode !== null" class="itemfooter" name="help-circle-outline"
+        <ion-icon *ngIf="code !== null" class="itemfooter" name="help-circle-outline"
           (click)="popoverConfigCode()"></ion-icon>
         <ion-col>
           <ion-label>Receive LP</ion-label>
@@ -85,7 +85,7 @@
 
 
 <ng-container *ngIf="!Boolean">
-  <ion-content (click)="save()">
+  <ion-content (ionBlur)="save()">
     <form [formGroup]="frm2" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col class="iconeye" size="2">
@@ -108,7 +108,7 @@
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input readonly class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001"
+          <ion-input  class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001"  
             value="0"></ion-input>
         </ion-col>
       </ion-row>
@@ -122,7 +122,7 @@
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input readonly class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
+          <ion-input  class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
         </ion-col>
       </ion-row>
 

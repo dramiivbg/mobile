@@ -10,6 +10,8 @@
   --ion-color-primary-contrast-rgb: 0,0,0;
   --ion-color-primary-shade: #5196db;
   --ion-color-primary-tint: #6cb3fa;
+  --ion-color-primary-background: #1A518E;
+  --ion-color-primary-constrast-box-shadow: #00000029;
 
   /** secondary **/
   --ion-color-secondary: #3dc2ff;
@@ -99,6 +101,42 @@
   --ion-color-plure-shade: #5CABF9;
   --ion-color-plure-tint: #5CABF9;
 
+  /**plure icons **/
+
+  --ion-color-plureWhite-icon: #F2F2F2 !important;
+
+    /**plure content **/
+  --ion-color-plure-ion-content-background-rgb: 220, 241, 255, 0.5;
+  --ion-color-plure-content-rgb: 255, 255, 255, 0.25;
+   /**plure color text **/
+
+   --ion-color-plure-text:#ffffff;
+
+   /** plure sale page **/
+
+   --ion-color-plure-content-section-card: 21, 73, 131, 0.4;
+   --ion-color-plure-div-rgb: 72, 74, 81, 0.1;
+
+   /** plure payment **/
+
+   --ion-color-plure-background: #ffffff;
+   --ion-color-plure-search-all-rgb: 85, 85, 105, 0.1;
+
+    /** plure change password **/
+
+    --ion-color-plure-card-content: 72, 74, 81, 0.06;
+
+    /** plure sales form  **/
+
+  --ion-color-plure-row-rgb: 21, 73, 131, 1;
+  
+  /**plure color fab-button **/
+
+  --ion-color-plureBlack-rgb-button-shadow1: 0, 0, 0, 0.2;
+  --ion-color-plureBlack-rgb-button-shadow2: 0, 0, 0, 0.14;
+  --ion-color-plureBlack-rgb-button-shadow3: 0, 0, 0, 0.12;
+
+
   /** plure color main**/
   --ion-color-plureBlue: #1A518E;
   --ion-color-plureBlue-rgb: 26, 81, 142;
@@ -114,6 +152,7 @@
   --ion-color-plureBlack-contrast-rgb: 255, 255, 255;
   --ion-color-plureBlack-shade: #111111;
   --ion-color-plureBlack-tint: #111111;
+  --ion-color-plureBlack-background-gradient: #FFFFFF00;
 
   /** plureGrey **/
   --ion-color-plureGrey: #777777;
@@ -122,6 +161,7 @@
   --ion-color-plureGrey-contrast-rgb: 255, 255, 255;
   --ion-color-plureGrey-shade: #777777;
   --ion-color-plureGrey-tint: #777777;
+  --ion-color-plureGrey-background-gradient: #8080804F;
 
   /** plureHeader **/
   --ion-color-plureHeader: #ffffff;
@@ -134,13 +174,13 @@
 
 
 
-@media (prefers-color-scheme: light) {
+//@media (prefers-color-scheme: dark) {
   /*
    * Dark Colors
    * -------------------------------------------
    */
 
-  body {
+  body [color-theme="dark"] {
     --ion-color-primary: #428cff;
     --ion-color-primary-rgb: 66,140,255;
     --ion-color-primary-contrast: #ffffff;
@@ -210,7 +250,7 @@
    * -------------------------------------------
    */
 
-  .ios body {
+  .ios body [color-theme="dark"] {
     --ion-background-color: #000000;
     --ion-background-color-rgb: 0,0,0;
 
@@ -254,7 +294,7 @@
    * -------------------------------------------
    */
 
-  .md body {
+  .md body  [color-theme="dark"] {
     --ion-background-color: #121212;
     --ion-background-color-rgb: 18,18,18;
 
@@ -291,4 +331,3 @@
 
     --ion-card-background: #1e1e1e;
   }
-}

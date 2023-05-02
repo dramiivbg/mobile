@@ -32,14 +32,36 @@ export class PhysicalInventoryPage implements OnInit {
   public template:any;
   public listCounted = [];
   public listBin = [];
+  public data = '';
+  public lpsT:any[] = [];
+  public resActive = false;
+  public resLp = [];
+  public resLpT = [];
+  public resBins = [];
+  public resListT = [];
+  public resList = [];
+  public resListPhysical = [];
+  public resListaCount = [];
+  public resListCounted = [];
+  public resListBin = [];
+
+ 
+
+
   constructor(private storage: Storage ,private intServ: InterceptService
     , private js: JsonService, private barcodeScanner: BarcodeScanner,
     public popoverController: PopoverController,
     private wmsService: WmsService, public router: Router) { }
 
  async ngOnInit() {
+
   this.lists = await  this.storage.get('inventory');
-  this.listPhysical = await this.storage.get('inventory');
+  this.listPhysical = await  this.storage.get('inventory');
+  
+  this.lists.map(x => {
+    let line = this.bins.find(b => b === x.BinCode);
+    if(line === null || line === undefined)this.bins.push(x.BinCode);
+  });
 
   console.log(this.lists);
 
@@ -93,11 +115,12 @@ export class PhysicalInventoryPage implements OnInit {
 
   const { data } = await popover.onDidDismiss();
 
-     if(data.line != undefined)this.counting(data.line);
+
+     if(data.line != undefined)this.counting(data.line, obj);
  }
 
- async counting(obj){
-
+ async counting(obj, pallet:any = undefined){
+  console.log('pallet',pallet);
   const popover = await this.popoverController.create({
     component: PopoverCountingComponent,
     cssClass: 'popoverCountingComponent',
@@ -108,7 +131,7 @@ export class PhysicalInventoryPage implements OnInit {
   await popover.present();
   const { data } = await popover.onDidDismiss();
 
-  if(data.qty != undefined) this.WritePI(data.obj,data.qty,data.seriales,data.type);
+  if(data.qty != undefined) this.WritePI(data.obj,data.qty,data.seriales,data.type, pallet);
 }
 
   async onBarCode(){
@@ -116,22 +139,29 @@ export class PhysicalInventoryPage implements OnInit {
     this.barcodeScanner.scan().then(
      async barCodeData => {
         let code = barCodeData.text;
-        switch(this.bin === ''){
+        let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(), this.locate);
+  
+      switch(this.bin === '' || !res.Error){
 
-          case true:
+        case true:
+          
+          let bin = this.bins.find(x => x === code.toUpperCase());
+         if(bin !=  undefined){
+          this.lps = [];
           this.intServ.loadingFunc(true);
-          let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(), this.locate);
           console.log(res);
           
-          if(!res.Error && res.length > 0){
+          if(!res.Error){
             this.bin = code.toUpperCase();
             console.log(this.lists);
+
             res.map(async x => {   
               console.log(x); 
               let obj = this.lists.find(j => j.PLULPDocumentNo ===  x.LPHeader || j.PLUParentLPNo === x.LPHeader);
               console.log(obj);
              if(obj != undefined){
-              if(obj.PLUParentLPNo === null){
+              switch(obj.PLUParentLPNo === null){
+                case true:
                 x.Lines.map(j => {
                   let find  = this.lists.find(o => o.PLULPDocumentNo === j.LPDocumentNo);
                   if(find != undefined)j.Quantity = find.QtyPhysInventoryBase;
@@ -146,8 +176,9 @@ export class PhysicalInventoryPage implements OnInit {
                  if(line === null || line === undefined)this.lps.push(obj);
                         
                
-               console.log(obj);
-              }else{
+               break;
+              
+               default:
 
                 let pallet = {
                   PLULPDocumentNo: "",
@@ -191,28 +222,44 @@ export class PhysicalInventoryPage implements OnInit {
                this.lps.push(pallet);
                console.log(pallet);
 
+               break;
+
               }       
-             } 
-                 
-              
+             }           
             
             });
 
-        //    this.lists.map(x => x.BinCode === code.toUpperCase()?this.quantity+= x.QtyPhysInventory:x);
-           
-            this.intServ.loadingFunc(false);
+            var time =   setTimeout(() => {
+              
+              this.intServ.loadingFunc(false);   
+              clearTimeout(time);
+              
+             }, 100);
+                 
+
           }else{
+            let res = await this.wmsService.getLpNo(code.toUpperCase());
+            let resI = await this.wmsService.GetItem(code.toUpperCase());
             this.intServ.loadingFunc(false);
-            this.intServ.alertFunc(this.js.getAlert('error','', `The bin ${code.toUpperCase()}  does not exist`));
+            this.intServ.alertFunc(this.js.getAlert('error','', (res.Error && resI.Error)?`The bin ${code.toUpperCase()}  does not exist`:`Please scan a bin!` ));
           }
-          break;
+         
+
+         } else{
+
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('alert',' ', `The bin ${code.toUpperCase()} is not in your inventory`));
+         }
+
+         break;
+         
 
           case false:
             console.log(code)
 
           let line = this.lps.find(x => x.PLULPDocumentNo === code.toUpperCase() || x.ItemNo === code.toUpperCase());
         
-          let res1 = await this.wmsService.GetBinContent_LP(this.bin,'WMS');
+          let res1 = await this.wmsService.GetBinContent_LP(this.bin,this.locate);
           let x  = res1.find(x => x.LPHeader === code.toUpperCase());
 
           if(line != undefined){
@@ -302,7 +349,7 @@ export class PhysicalInventoryPage implements OnInit {
             
             switch(find){
 
-              case undefined || null:
+              case undefined:
                 this.intServ.loadingFunc(false);
                 this.intServ.alertFunc(this.js.getAlert('error','', 'Does not exist in the inventory'));
                 break;
@@ -323,9 +370,9 @@ export class PhysicalInventoryPage implements OnInit {
                 :`The Pallet ${code.toUpperCase()} is registered in the system in the Bin ${find.BinCode}, Do you want to tell it in this Bin?` ,async() => {
   
                   this.intServ.loadingFunc(true);
-                  try {
+                 
   
-  
+               /*
                     if(!res.Error){
   
                       let resB = await this.wmsService.MoveBinToBin_LP(lp.PLULPDocumentNo,find.ZoneCode,find.BinCode,this.bin,find.LocationCode);
@@ -355,16 +402,11 @@ export class PhysicalInventoryPage implements OnInit {
   
                     }
                 
-                             
+                          
                     
-                  } catch (error) {
-                    this.intServ.loadingFunc(false);
-                    this.intServ.alertFunc(this.js.getAlert('error','',error.message));
-                    
-                  }
-                
-  
-  
+                    */
+                  
+            
                 }));
               }else{
                 this.intServ.loadingFunc(false);
@@ -373,43 +415,38 @@ export class PhysicalInventoryPage implements OnInit {
                 :`The Pallet ${code.toUpperCase()} belongs to the pallet ${find.PLUParentLPNo}`));
               }
           
-
                 break;
             }
            
           }
-            break;
-
-            
+            break;     
 
         }
-      
-       
-        
+
+        this.lpsT = this.lps;
+             
       }
     ).catch(
       err => {
         console.log(err);
       }
     )
-
-
   }
 
 async show(item:any){
 
   let list = [];
   switch(item.type){
-
     case undefined:
+      let boolean = false;
       if(item.seriales.length > 0){
 
-        item.seriales.map(x => {x['proceded'] = false; list.push(x)});
+        item.seriales.map(x => {x['proceded'] = false; list.push(x); boolean = x.SerialNo === "" ?true:false });
     
         const popover = await this.popoverController.create({
           component: PopoverListSNComponent,
           cssClass: 'popoverListSNComponent-modal',
-          componentProps: { list },
+          componentProps: { list, boolean},
         });
         this.intServ.loadingFunc(false);
         await popover.present();
@@ -428,7 +465,7 @@ async show(item:any){
 
       const { data } = await popover.onDidDismiss();
 
-      if(data.line != undefined)this.counting(data.line);
+      if(data.line != undefined)this.counting(data.line, item);
 
       console.log(data);
 
@@ -439,7 +476,7 @@ async show(item:any){
 
 public async popoverCount(){
   this.intServ.loadingFunc(true);
-  let  resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount('WMS',this.template,this.batch);
+  let  resR = await this.wmsService.PreRegister_WarehouseInvPhysicalCount(this.locate,this.template,this.batch);
 
   let count = await this.wmsService.listTraking(resR.Warehouse_Physical_Inventory_Counted);
   this.storage.set('count', count);
@@ -456,7 +493,7 @@ public async popoverNonCount(){
   this.router.navigate(['page/wms/physicalNoCount']);
 }
 
-  async WritePI(obj:any,qty:any,seriales:any,type:any){
+  async WritePI(obj:any,qty:any,seriales:any,type:any, pallet:any = undefined){
 
     this.intServ.loadingFunc(true);
 
@@ -464,36 +501,93 @@ public async popoverNonCount(){
   
      let lists:any[] = [];
 
-     switch(type){
+    switch(type){
       case 'serial':
+
+      if(pallet == undefined){
+
+     
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+       
+       if(find === undefined) this.listaCount.push(obj);
+         
+          
+      }else{
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === pallet.PLULPDocumentNo);  
+        let find2  = this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+
+       if(find === undefined)this.listaCount.push(pallet);
+       if(find2 === undefined) this.listaCount.push(obj);
+      }
+
+      console.log(seriales);
         obj.seriales.map(x => {
           let line = this.listPhysical.find(o => x.SerialNo === o.SerialNo);
           console.log(line);
           let line2 = seriales.find(k => k.SerialNo === x.SerialNo);
-          if(line2 === undefined || line2 === null){
-            line.QtyPhysInventory = 0;
+          if(line2 == undefined){
+          
+             line.QtyPhysInventory = 0;
+
           }else{
-            this.listaCount.map((x,i) => x.LineNo === line.LineNo?this.listaCount.splice(i,1):x);        
-            this.listaCount.push(line);
-          }
-          for (const key in this.listCounted) {
-            if (line.LineNo === Number(key)) {
-              console.log(key);
-              this.counted-= line.QtyPhysInventory;
-              
+            line.QtyPhysInventory = 1;
+
+            for (const key in this.listCounted) {
+              if (line.LineNo === Number(key)) {
+                console.log(key);
+                this.counted-= line.QtyPhysInventory;
+                
+              }
             }
+            this.listCounted[line.LineNo] = line.QtyPhysInventory;
+            this.counted += line.QtyPhysInventory;
+            
           }
-          this.listCounted[line.LineNo] = line.QtyPhysInventory;
-          this.counted += line.QtyPhysInventory;
+        
           listI.push(line);     
        });
+
+       console.log('pallet =>',pallet);
+
+       if(pallet != undefined){
+
+         for (const key in pallet.childrens) {
+          let line = this.listaCount.find(x => x.PLULPDocumentNo === pallet.childrens[key].PLULPDocumentNo);
+          if(line === undefined){
+            this.listPhysical.map(o => {
+              if(pallet.childrens[key].PLULPDocumentNo === o.PLULPDocumentNo){
+                o.QtyPhysInventory = 0;
+                listI.push(o);
+              }
+            });
+
+          }
+        
+         }
+      
+       }
+
         break;
 
       default:
+
+      if(pallet === undefined){
+
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+
+        if(find === undefined)this.listaCount.push(obj);
+
+      }else{
+
+        let find =  this.listaCount.find(x => x.PLULPDocumentNo === pallet.PLULPDocumentNo);  
+         let find2  = this.listaCount.find(x => x.PLULPDocumentNo === obj.PLULPDocumentNo);  
+
+        if(find === undefined)this.listaCount.push(pallet);
+        if(find2 === undefined) this.listaCount.push(obj);
+          
+      }
         obj.seriales.map(x => {
           let line = this.listPhysical.find(o => x.LPDocumentNo === o.PLULPDocumentNo);
-          this.listaCount.map((x,i) => x.LineNo === line.LineNo?this.listaCount.splice(i,1):x); 
-          this.listaCount.push(line);
           console.log(line);
           for (const key in this.listCounted) {
             console.log('line =>',key)
@@ -508,8 +602,31 @@ public async popoverNonCount(){
           this.counted += line.QtyPhysInventory;
           listI.push(line);   
         });
+
+        console.log('pallet =>',pallet);
+        
+       if(pallet != undefined){
+
+        for (const key in pallet.childrens) {
+
+          let line = this.listaCount.find(x => x.PLULPDocumentNo === pallet.childrens[key].PLULPDocumentNo);
+         if(line === undefined){
+          this.listPhysical.map(o => {
+            if(pallet.childrens[key].PLULPDocumentNo === o.PLULPDocumentNo){
+              o.QtyPhysInventory = 0;
+              listI.push(o);
+            }
+          });
+
+         }
+       
+        }
+
+      }
         break;
      }
+   
+   
 
      console.log(this.listCounted);
    
@@ -685,7 +802,7 @@ public async popoverNonCount(){
    
        if(res.Error) throw new Error(res.Error.Message);
           
-     //  if(res.error) throw new Error(res.error.message);
+       if(res.error) throw new Error(res.error.message);
 
      //  if(res.message) throw new Error(res.message);
    
@@ -707,12 +824,11 @@ public async popoverNonCount(){
     this.storage.set('inventory',items);
 
      this.lists = items;
+     this.listPhysical = items;
      this.intServ.loadingFunc(false);
 
      this.intServ.alertFunc(this.js.getAlert('success', '', 'Successful'));
    
-     //  console.log(resR);
-       
        
      } catch (error) {
    
@@ -728,200 +844,236 @@ public async popoverNonCount(){
 
   let lists = [];
   let listNoCount = [];
+  let QtyNoCount = 0;
+  let listDelet = [];
   this.lists.map(x => {if(x.BinCode === this.bin){
-  let line = this.listaCount.find(i => x.PLULPDocumentNo === i.PLULPDocumentNo);
+  let line = this.listaCount.find(i => x.PLULPDocumentNo === i.PLULPDocumentNo || x.PLUParentLPNo === i.PLULPDocumentNo);
   if(line === null || line === undefined){
-     // x.QtyPhysInventory = 0;
       listNoCount.push(x);
+      QtyNoCount += x.QtyPhysInventoryBase;
     }
   }});
 
-  this.intServ.alertFunc(this.js.getAlert('res', (listNoCount.length > 0)?`Are you sure to finish the count in the bin ${this.bin}?`:'',(listNoCount.length > 0)?String(listNoCount.length):`Are you sure to finish the count in the bin ${this.bin}?`, async() => {
+  this.intServ.alertFunc(this.js.getAlert('res', (listNoCount.length > 0)?`Are you sure to finish the count in the bin ${this.bin}?`:'',(listNoCount.length > 0)?String(QtyNoCount):`Are you sure to finish the count in the bin ${this.bin}?`, async() => {
 
     this.intServ.loadingFunc(true);
 
-    
-    let  list = {
-      name: "WarehouseJournalLine",
-      fields: [ {
-        name: "JournalTemplateName",
-        value: "",
-      },
-      {
-      
-        name: "JournalBatchName",
-        value: "",
-      },
-      {
-        name: "LineNo",
-        value: "",
-      },
-      {
-        name: "RegisteringDate",
-        value: "",
-      },
-      {
-        name: "LocationCode",
-        value: "",   
-      },
-      {
-        name: "ItemNo",
-        value: "",
-      },
-      {
-        name: "Qty(PhysInventory)",
-        value: "",
-      },
-      {
-        name: "UserID",
-        value: "",    
-      },
-      {
-        name: "VariantCode",
-        value: "",
-      },
-      {
-        name: "SerialNo",
-        value: "",      
-      },
-      {
-        name: "LotNo",
-        value: "",     
-      },   
-      {
-        name: "PLULicensePlates",
-        value: "",      
-      }]
-    };
- 
-    
-    listNoCount.filter(inv => {
-  
-      list = {
-        name: "WarehouseJournalLine",
-        fields: [ {
-          name: "JournalTemplateName",
-          value: inv.JournalTemplateName,
-        },
-        {
-          name: "JournalBatchName",
-          value: inv.JournalBatchName,
-        },
-        {
-          name: "LineNo",
-          value: inv.LineNo,
-        },
-        {
-          name: "RegisteringDate",
-          value: inv.RegisteringDate,
-        },
-        {
-          name: "LocationCode",
-          value: inv.LocationCode,   
-        },
-        {
-          name: "ItemNo",
-          value: inv.ItemNo,
-        },
-        {
-          name: "Qty(PhysInventory)",
-          value: Number(inv.QtyPhysInventory),
-        },
-        {
-          name: "UserID",
-          value: inv.UserID,    
-        },
-        {
-          name: "VariantCode",
-          value: inv.VariantCode,
-        },
-        {
-          name: "SerialNo",
-          value: inv.SerialNo,      
-        },
-        {
-          name: "LotNo",
-          value: inv.LotNo,     
-        },   
-        {
-          name: "PLULPDocumentNo",
-          value: inv.PLULPDocumentNo,      
-        }]
-      };
-  
-      lists.push(list);
-  
-      list = {
-        name: "WarehouseJournalLine",
-        fields: [ {
-          name: "JournalTemplateName",
-          value: "",
-        },
-        {
-          name: "JournalBatchName",
-          value: "",
-        },
-        {
-          name: "LineNo",
-          value: "",
-        },
-        {
-          name: "RegisteringDate",
-          value: "",
-        },
-        {
-          name: "LocationCode",
-          value: "",   
-        },
-        {
-          name: "ItemNo",
-          value: "",
-        },
-        {
-          name: "Qty(PhysInventory)",
-          value: "",
-        },
-        {
-          name: "UserID",
-          value: "",    
-        },
-        {
-          name: "VariantCode",
-          value: "",
-        },
-        {
-          name: "SerialNo",
-          value: "",      
-        },
-        {
-          name: "LotNo",
-          value: "",     
-        },   
-        {
-          name: "PLULPDocumentNo",
-          value: "",      
-        }]
-      };
-  
-    });
+    let obj = [];
 
+    for (const key in listNoCount) {
+
+      let line = obj.find(x => x.PLULPDocumentNo === listNoCount[key].PLULPDocumentNo);
+      if(line === undefined || line === null)obj.push(listNoCount[key]);
+ 
+    }
+    
+    let listMoveBin = []
+
+    let listDelet = [];
+
+    for (const key in obj) {
+  
+      if(obj[key].PLUParentLPNo === null && obj[key].PLULPDocumentNo != null){
+
+      let objL =   {
+          LPNo: obj[key].PLULPDocumentNo,
+          Zone:obj[key].ZoneCode,
+          FromBin:obj[key].BinCode,
+          ToBin:"NOCOUNT",
+          LocationCode:obj[key].LocationCode
+          }  
+
+          listMoveBin.push(objL);
+
+          objL =   {
+            LPNo: "",
+            Zone:"",
+            FromBin:"",
+            ToBin:"",
+            LocationCode:""
+            }
+
+        
+    for (const i in listNoCount) {
+
+      if(listNoCount[i].PLULPDocumentNo === obj[key].PLULPDocumentNo){
+     
+       let listD = {
+          name: "WarehouseJournalLine",
+          fields: [ {
+            name: "JournalTemplateName",
+            value: listNoCount[i].JournalTemplateName,
+          },
+          {
+          
+            name: "JournalBatchName",
+            value: listNoCount[i].JournalBatchName,
+          },
+          {
+            name: "LineNo",
+            value: listNoCount[i].LineNo,
+          },
+         
+          {
+            name: "LocationCode",
+            value: listNoCount[i].LocationCode,   
+          },
+      
+          {
+            name: "LPDocumentNo",
+            value: listNoCount[i].PLULPDocumentNo,      
+          }]
+        };
+
+        listDelet.push(listD);
+
+
+        listD = {
+          name: "WarehouseJournalLine",
+          fields: [ {
+            name: "JournalTemplateName",
+            value: "",
+          },
+          {
+          
+            name: "JournalBatchName",
+            value: "",
+          },
+          {
+            name: "LineNo",
+            value: "",
+          },
+         
+          {
+            name: "LocationCode",
+            value: "",   
+          },
+      
+          {
+            name: "LPDocumentNo",
+            value: "",      
+          }]
+        };
+
+         }
+    
+      }
+    
+      }else 
+         if(obj[key].PLUParentLPNo !== null && obj[key].PLULPDocumentNo != null){
+          let objL =   {
+            LPNo: obj[key].PLUParentLPNo,
+            Zone:obj[key].ZoneCode,
+            FromBin:obj[key].BinCode,
+            ToBin:"NOCOUNT",
+            LocationCode:obj[key].LocationCode
+            }  
+              
+            let line = listMoveBin.find(x => x.LPNo === obj[key].PLUParentLPNo);
+
+            if(line === undefined)listMoveBin.push(objL);
+  
+            objL =   {
+              LPNo: "",
+              Zone:"",
+              FromBin:"",
+              ToBin:"",
+              LocationCode:""
+              }
+
+              for (const i in listNoCount) {
+
+                if(listNoCount[i].PLUParentLPNo === obj[key].PLUParentLPNo){
+               
+                 let listD = {
+                    name: "WarehouseJournalLine",
+                    fields: [ {
+                      name: "JournalTemplateName",
+                      value: listNoCount[i].JournalTemplateName,
+                    },
+                    {
+                    
+                      name: "JournalBatchName",
+                      value: listNoCount[i].JournalBatchName,
+                    },
+                    {
+                      name: "LineNo",
+                      value: listNoCount[i].LineNo,
+                    },
+                   
+                    {
+                      name: "LocationCode",
+                      value: listNoCount[i].LocationCode,   
+                    },
+                
+                    {
+                      name: "LPDocumentNo",
+                      value: listNoCount[i].PLULPDocumentNo,      
+                    }]
+                  };
+          
+                  let line = listDelet.find(x => x.fields[4].value === listD.fields[4].value);
+                  if(line === undefined)listDelet.push(listD);
+          
+          
+                  listD = {
+                    name: "WarehouseJournalLine",
+                    fields: [ {
+                      name: "JournalTemplateName",
+                      value: "",
+                    },
+                    {
+                    
+                      name: "JournalBatchName",
+                      value: "",
+                    },
+                    {
+                      name: "LineNo",
+                      value: "",
+                    },
+                   
+                    {
+                      name: "LocationCode",
+                      value: "",   
+                    },
+                
+                    {
+                      name: "LPDocumentNo",
+                      value: "",      
+                    }]
+                  };
+                }
+         }
+    }
+        
+  }
+     
     try {
 
-     // let res = await this.wmsService.Write_WarehouseInvPhysicalCount(lists);
-   
-   //   if(res.Error) throw new Error(res.Error.Message);
-  
+
+    if(listNoCount.length > 0){
+
+              
+    let res5 =  await this.wmsService.MoveBinToBinArray_LP(listMoveBin);
        
-     // if(res.error) throw new Error(res.error.message);
+    console.log(res5);
 
-     // if(res.message) throw new Error(res.message);
+    if(res5.Error) throw new Error(res5.Error.Message);
+   
+    if(res5.error) throw new Error(res5.error.message);
 
-      listNoCount.filter(async x => {
-       if(x.PLUParentLPNo === null) await this.wmsService.MoveBinToBin_LP(x.PLULPDocumentNo,x.ZoneCode,x.BinCode,"NOCOUNT",x.LocationCode);
-      });
-     
 
-      let res2 = await this.wmsService.Register_WarehouseInvPhysicalCount(this.locate);
+
+        let res3 =  await this.wmsService.Delete_WarehouseInvPhysicalCount(listDelet);
+
+      
+        if(res3.Error) throw new Error(res3.Error.Message);
+
+        if(res3.error) throw new Error(res3.error.message);
+
+    }  
+ 
+      let res2 = await this.wmsService.Register_WarehouseInvPhysicalCount(this.locate, this.template,this.batch);
 
       if(res2.Error) throw new Error(res2.Error.Message);
   
@@ -929,35 +1081,202 @@ public async popoverNonCount(){
       if(res2.error) throw new Error(res2.error.message);
 
       if(res2.message) throw new Error(res2.message);
+
+      let lists = [];
+      let res = new Date();
+      
+      let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1;
   
+      let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
+  
+      let fecha = res.getFullYear()+'-'+month+'-'+day;
+
+       this.bins.map(async x => {
+
+        let res4 = await this.wmsService.Create_WarehouseInvPhysicalCount("STO",x,this.locate,fecha,"TOO",this.template,this.batch);
+
+        let  items = await this.wmsService.listTraking(res4.Warehouse_Physical_Inventory_Journal);
+        lists.push(...items);
+        
+       });
+
+       console.log(lists);    
       this.lps = [];
       this.listaCount = [];
       this.bin = '';
-      let res3 = await this.wmsService.Get_WarehouseInvPhysicalCount(this.locate,this.template,this.batch);
+      this.counted = 0;
+     this.storage.set('inventory', lists);
 
-      if(res3.Error) throw new Error(res3.Error.Message);
-      if(res3.error) throw new Error(res3.error.message);
-      if(res3.message) throw new Error(res3.message);
-      
-           
-    let  items = await this.wmsService.listTraking(res3.Warehouse_Physical_Inventory_Journal);
-
-
-     this.storage.set('inventory',items);
-
-     this.lists = await  this.storage.get('inventory');
-
+     this.lists = lists;
+     this.listPhysical = lists;
      this.intServ.loadingFunc(false);
      this.bin = '';
+     this.quantity = 0;
+     this.listaCount = [];
+     this.listCounted = [];
+     
      this.intServ.alertFunc(this.js.getAlert('success', '',`Bin ${this.bin} has been successfully registered`))
       
     } catch (error) {
       this.intServ.loadingFunc(false);
       this.intServ.alertFunc(this.js.getAlert('error','', error.message));
     }
-  }));
+  
+}));
    
 
+}
+
+clean(){
+
+  if(this.lps.length === 0){
+    this.intServ.alertFunc(this.js.getAlert('alert','','There is nothing to clean'));
+  }else{
+
+    this.resActive = true;
+    this.resLp = this.lps;
+   this.resLpT = this.lpsT
+   this.resBins = this.bins;
+   this.resListT = this.listT;
+   this.resList = this.list;
+   this.resListPhysical = this.listPhysical;
+   this.resListaCount = this.listaCount;
+   this.resListCounted = this.listCounted;
+   this.resListBin = this.listBin;
+ 
+   this.lps = [];
+   this.lpsT = []
+   this.bins = [];
+   this.listT = [];
+   this.list = [];
+   this.listPhysical = [];
+   this.listaCount = [];
+   this.listCounted = [];
+   this.listBin = [];
+  }
+
+}
+
+restore(){
+
+  this.resActive = false;
+
+  this.lps =  this.resLp;
+  this.lpsT =  this.resLpT;
+  this.bins = this.resBins;
+  this.listT = this.resListT;
+  this.list = this.resList;
+  this.listPhysical = this.resListPhysical;
+  this.listaCount = this.resListaCount;
+  this.listCounted = this.resListCounted;
+  this.listBin = this.resListBin;
+
+}
+  
+
+  async onSyncTemp(){
+
+    try {
+
+      this.intServ.loadingFunc(true);
+      let res = await this.wmsService.Get_WarehouseInvPhysicalCount(this.locate,this.template,this.batch);
+
+      if(res.Error) throw new Error(res.Error.Message);
+      if(res.error) throw new Error(res.error.message);
+      if(res.message) throw new Error(res.message);
+      
+           
+    let  items = await this.wmsService.listTraking(res.Warehouse_Physical_Inventory_Journal);
+  
+    console.log('update =>',items);
+  
+    this.storage.set('inventory',items);
+  
+    this.lists = items;
+    this.listPhysical = items;
+  
+    console.log(this.lists);
+
+    this.bins = [];
+
+    this.lists.map(x => {
+      let line = this.bins.find(b => b === x.BinCode);
+      if(line === null || line === undefined)this.bins.push(x.BinCode);
+    });
+
+    this.intServ.loadingFunc(false);
+
+    this.intServ.alertFunc(this.js.getAlert('success', '', 'Synchronized correctly'));
+      
+    } catch (error) {
+
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+      
+    }
+
    }
+
+   
+  autoComplet() {
+
+    this.barcodeScanner.scan().then(
+      async (barCodeData) => {
+
+
+        let code = barCodeData.text;
+
+        this.data = code.toUpperCase();
+
+
+        this.onFilter('', this.data);
+
+
+
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
+
+  onFilter(e, data: any = '') {
+
+    switch (data) {
+      case '':
+        let val = e.target.value;
+
+        console.log(val);
+
+        if (val === '') {
+          this.lps = this.lpsT;
+        } else {
+          this.lps = this.lpsT.filter(
+            x => {
+              return (x.PLULPDocumentNo.toLowerCase().includes(val.toLowerCase()));
+            }
+          )
+
+      
+        }
+        break;
+
+      default:
+
+
+        this.lps = this.lpsT.filter(
+          x => {
+            return (x.PLULPDocumentNo.toLowerCase().includes(data.toLowerCase()));
+          }
+        )
+
+
+        break;
+    }
+
+  }
   
 }

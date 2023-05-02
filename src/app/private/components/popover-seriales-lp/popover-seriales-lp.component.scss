@@ -1,42 +1,14 @@
-ion-row.header {
-    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
-    color: #ffffff;
-    font-size: 20px;
-    padding: 10px 15px;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 0 0 70% 0;
-}
+@import "~src/sass/popover-wms";
 
-.itemfooter{
-    color: #F2F2F2 !important;
-}
 
 ion-list {
 
-    overflow: auto;
-    width: 100%;
-   // overflow-y: auto;
-  
-  
+
     --ion-grid-column-padding: 0.8px;
     border-collapse: collapse;
     border-style: hidden;
-   // height: auto !important;
-    
-  
-  
-  
-  
-   
-    ion-row{
-  
-      width: 100%;
+
      
-    }
-   
-    
-   
     ion-col {
       // border: 1px solid black;
       border-bottom: 0;
@@ -46,36 +18,13 @@ ion-list {
    
     }
   
-  
-    .col{
-  
-      width: 100px;
-      
-  
-    }
-  }
-  
-  
-  .row{
-  
-    
-      background: var(--ion-color-plureheader);
-      font-weight: bold;
-      color: var(--ion-color-plureBlue);
-  
-      ion-col {
-        // border: 1px solid black;
-        border-bottom: 0;
-        border-right: 0;
-        
-     
-     
-      }
-  
-  }
-  
 
-  .icon{
-
-    font-size: 18px;
   }
+  
+  .content{
+
+    overflow-y: scroll;
+    height: 20vh !important;
+}
+
+

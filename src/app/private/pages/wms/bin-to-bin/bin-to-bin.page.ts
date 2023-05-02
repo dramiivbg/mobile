@@ -50,12 +50,12 @@ export class BinToBinPage implements OnInit {
           
 
          let lp = await this.wmsService.ListLp(res);
+         this.lpH = await this.wmsService.ListLpH(res);
 
-         if(lp.fields.PLULicensePlateStatus !== "Stored") throw new Error(`LP ${lp.fields.PLULPDocumentNo} is not in Storage`);
+         if(this.lpH.fields.PLULicensePlateStatus !== "Stored") throw new Error(`LP ${lp.fields.PLULPDocumentNo} is not in Storage`);
          
          this.lp = lp;
 
-         this.lpH = await this.wmsService.ListLpH(res);
 
         this.binOrigi =  this.lpH.fields.PLUBinCode; 
 
@@ -63,8 +63,7 @@ export class BinToBinPage implements OnInit {
 
          this.intServ.loadingFunc(false);
 
-         let bins = await this.wmsService.GetBinByLocation(this.lpH.fields.PLULocationCode);
-         this.listBin = bins;
+         this.listBin = (await this.wmsService.GetBinByLocation(this.lpH.fields.PLULocationCode)).Bins;
 
          console.log( this.listBin);
          
@@ -103,9 +102,15 @@ export class BinToBinPage implements OnInit {
 
    try {
 
+   let obj = {
+      LPNo: this.lpH.fields.PLULPDocumentNo,
+      Zone:this.lpH.fields.PLUZoneCode,
+      FromBin:this.binOrigi,
+      ToBin:this.lpH.fields.PLUBinCode,
+      LocationCode:this.lpH.fields.PLULocationCode
+      }
     
-   let res = await this.wmsService.MoveBinToBin_LP(this.lpH.fields.PLULPDocumentNo,this.lpH.fields.PLUZoneCode,this.binOrigi,this.lpH.fields.PLUBinCode,
-    this.lpH.fields.PLULocationCode);
+   let res = await this.wmsService.MoveBinToBinArray_LP([obj]);
 
 
 
@@ -121,6 +126,14 @@ export class BinToBinPage implements OnInit {
       this.lp = undefined;
 
       this.lpH = undefined;
+
+      let obj = {
+        LPNo: " ",
+        Zone:"",
+        FromBin:"",
+        ToBin:"",
+        LocationCode:""
+        }
   
     
     }));
@@ -152,9 +165,15 @@ export class BinToBinPage implements OnInit {
 
         this.intServ.loadingFunc(true);
       
-       let line =   this.listBin.Bins.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
-   
-    this.lpH.fields.PLUBinCode = line.BinCode;
+       let line =   this.listBin.find(bin => bin.BinCode.toUpperCase() === code.toUpperCase())
+  
+       if(line != undefined){
+        this.lpH.fields.PLUBinCode = line.BinCode;
+       }else{
+        this
+        this.intServ.alertFunc(this.js.getAlert('error', '', `Bin Code ${code.toUpperCase()} does not exist`));
+       }
+    
 
 
     this.intServ.loadingFunc(false);
@@ -164,6 +183,9 @@ export class BinToBinPage implements OnInit {
     ).catch(
       err => {
         console.log(err);
+        this.intServ.loadingFunc(false);
+        this.intServ.alertFunc(this.js.getAlert('alert', '','Please scan an LP or item'));
+
       }
     )
 

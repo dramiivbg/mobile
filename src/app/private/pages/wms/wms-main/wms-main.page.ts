@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
-import { CreatePhysicalInventoryComponent } from '@prv/components/create-physical-inventory/create-physical-inventory.component';
-import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
@@ -13,10 +11,9 @@ import { WmsService } from '@svc/wms.service';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { SqlitePlureService } from '@svc/sqlite-plure.service';
-
 import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-locate.component';
-import { WSAEWOULDBLOCK } from 'constants';
+import { PopoverSettingComponent } from '@prv/components/popover-setting/popover-setting.component';
+
 
 
 @Component({
@@ -32,6 +29,8 @@ export class WmsMainPage implements OnInit {
 
   public booleanM: Boolean = false;
   public booleanInQ: Boolean = false;
+
+  public configured = false;
 
   public locale: any = '';
   public listsLocate: any;
@@ -68,13 +67,17 @@ export class WmsMainPage implements OnInit {
   public async ionViewWillEnter() {
 
     this.processes = [];
+
     let session = (await this.js.getSession()).login;
     this.http.get(environment.api + session.userId).subscribe(res => {
 
       this.listsLocate = res;
     });
 
-    this.locale = (await this.storage.get('locale') != undefined || await this.storage.get('locale') != null) ? await this.storage.get('locale') : this.locale;
+    this.locale = (await this.storage.get('locale') != undefined && await this.storage.get('locale') != null) ? await this.storage.get('locale') : this.locale;
+
+    this.configured = (await this.storage.get(`configured ${session.userId}`) != undefined && 
+                  await this.storage.get(`configured ${session.userId}`) != null)? await this.storage.get(`configured ${session.userId}`): false;
 
     try {
       this.intServ.loadingFunc(true);
@@ -90,12 +93,8 @@ export class WmsMainPage implements OnInit {
         }
       });
 
-
-      this.session = (await this.js.getSession()).login;
+  
       console.log('session =>', this.session)
-
-
-
 
       this.intServ.loadingFunc(false);
     } catch (error) {
@@ -350,6 +349,21 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
     } 
 
 
+  async NewSettingPrint(){
+    
+    const popover = await this.popoverController.create({
+      component: PopoverSettingComponent,
+      cssClass: 'popoverSettingComponent',
+      backdropDismiss: false,
+      componentProps: { listLocale: this.listsLocate }
+    });
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+
+    }
+
+
   async popoverLocate(ev) {
 
 
@@ -426,8 +440,6 @@ let obj = this.general.structSearch(templates, `Physical Inv Journal-Counting `,
       console.log(process);
 
       let obj = this.general.structSearch(receipts, `Search ${process.description}`, 'Receipts', async (wms) => {
-
-        // console.log('data =>',wms);
 
         this.storage.set('wms', wms);
 

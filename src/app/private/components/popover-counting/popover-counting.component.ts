@@ -50,7 +50,7 @@ export class PopoverCountingComponent implements OnInit {
     if(this.frm.valid && this.item != undefined){
 
       let obj = await this.jsonService.formToJson(this.frm);
-      this.popoverController.dismiss({qty:obj.qty, obj: this.list,type:'normal'});
+      this.popoverController.dismiss({qty:obj.qty, seriales: this.seriales, obj: this.list,type:'normal'});
     }else{
       this.popoverController.dismiss({qty:this.count, seriales: this.seriales,obj: this.list,type:'serial'});
     }

@@ -2,7 +2,7 @@ ion-list.list {
     padding: 0 15px;
     background: transparent;
     ion-row {
-        background: rgb(255, 255, 255, 0.25);
+        background: rgb(var(--ion-color-plure-content-rgb));
         border-radius: 23px;
         box-shadow: 0px 1px 4px rgb(0 0 0 / 9%);
         color: var(--ion-color-plureMain);
@@ -62,7 +62,7 @@ ion-list.list {
 }
 
 ion-content{
-    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
+    --background: linear-gradient(to bottom, rgb(var(--ion-color-plure-ion-content-background-rgb)), #ffff) !important;
 }
 
 .footerMain{

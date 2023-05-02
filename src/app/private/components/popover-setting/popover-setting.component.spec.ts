@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { CreatePhysicalInventoryComponent } from './create-physical-inventory.component';
+import { PopoverSettingComponent } from './popover-setting.component';
 
-describe('CreatePhysicalInventoryComponent', () => {
-  let component: CreatePhysicalInventoryComponent;
-  let fixture: ComponentFixture<CreatePhysicalInventoryComponent>;
+describe('PopoverSettingComponent', () => {
+  let component: PopoverSettingComponent;
+  let fixture: ComponentFixture<PopoverSettingComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreatePhysicalInventoryComponent ],
+      declarations: [ PopoverSettingComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CreatePhysicalInventoryComponent);
+    fixture = TestBed.createComponent(PopoverSettingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

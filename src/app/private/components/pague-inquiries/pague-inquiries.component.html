@@ -15,11 +15,11 @@
 
       <ion-row class="delivery newColor2">
         <ion-col size="10">
-          <ion-searchbar [(ngModel)]="binCode" [ngModelOptions]="{standalone: true}" 
+          <ion-searchbar [(ngModel)]="data" [ngModelOptions]="{standalone: true}"  (ionInput)="onFilter($event)"
             show-clear-button="always" clear-icon="close-outline" placeholder="Filter"></ion-searchbar>
         </ion-col>
         <ion-col size="2" class="barcodebtn">
-          <ion-icon size="large" name="barcode-outline" ></ion-icon>
+          <ion-icon size="large" name="barcode-outline" (click)="autoComplet()" ></ion-icon>
         </ion-col>
       </ion-row>
 
@@ -30,9 +30,7 @@
         <div class="lines">
 
           <ion-list>
-            <div>
-
-              <ion-item>
+            
                 <div class="label-lines" part="item-width">
                   <ion-row *ngFor="let item of obj">
 
@@ -57,37 +55,39 @@
 
                          
 
-                          <ion-row >
-                            <ion-col size="4" class="label-line-title" *ngIf="item.PLULPDocumentType != 'Pallet'">
+                          <ion-row *ngIf="item.PLULPDocumentType != 'Pallet'">
+                            <ion-col size="6" class="label-line" >
                               Item No: <b>{{item.PLUItemNo}}</b>
                             </ion-col>
-                            <ion-col size="4" class="label-line-title" *ngIf="item.PLULPDocumentType != 'Pallet'" >
-                              UoM: <b>{{item.PLUUnitofMeasure}}</b>
-                            </ion-col>
-                            <ion-col size="4" class="label-line-title" *ngIf="item.PLULPDocumentType != 'Pallet'">
+                           
+                            <ion-col size="6" class="label-line" >
                               type: <b>{{item.PLULPDocumentType}}</b>
                             </ion-col>
                            
                           </ion-row>
 
+                          
+                          <ion-row>
+                           
+                            <ion-col size="6" class="label-line" *ngIf="item.PLULPDocumentType != 'Pallet'" >
+                              UoM: <b>{{item.PLUUnitofMeasure}}</b>
+                            </ion-col>
+                            <ion-col size="6" class="label-line" >
+                              Bin Code: <b>{{item.PLUBinCode}}</b>
+                            </ion-col>
+                           
+                          </ion-row>
+
+
+
                         </ion-col>
 
                       </ion-item>
 
-                      <!-- <ion-item-options>
-                        <ion-item-option color="danger" (click)="remove(item)">
-                          <ion-icon slot="icon-only" name="trash"></ion-icon>
-                        </ion-item-option>
-                      </ion-item-options>
-
-                    </ion-item-sliding> -->
                   </ion-row>
 
                 </div>
 
-              </ion-item>
-
-            </div>
           </ion-list>
         </div>
       </div>
@@ -101,7 +101,7 @@
   <ion-row>
     <ion-col size="12" (click)="onBarCode()">
       <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-      <div class="itemfooter">Scan Bin Code</div>
+      <div class="itemfooter">Bar Code</div>
   </ion-col>
   </ion-row>
 </PlureVersion>

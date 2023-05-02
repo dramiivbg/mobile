@@ -1,16 +1,8 @@
-ion-content {
-  --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
+@import "~src/sass/popover-wms";
+@import "~src/sass/wms";
 
-  .designform-header {
-    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
-    padding-top: 5px;
-    padding-bottom: 0.5em;
-    position: relative;
-    color: #ffffff;
-    border-radius: 0 0 70% 0;
-    font-weight: bold;
-    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.11);
-  }
+ion-content {
+
 
   .headerow {
     padding: 5px 20px 0 20px !important;
@@ -66,20 +58,7 @@ ion-col {
   font-weight: 600;
 }
 
-.col {
-  width: 100px;
-}
 
-.row {
-  background: var(--ion-color-plureheader);
-  font-weight: bold;
-  color: var(--ion-color-plureBlue);
-
-  ion-col {
-    border-bottom: 0;
-    border-right: 0;
-  }
-}
 
 ion-grid {
   width: 100%;

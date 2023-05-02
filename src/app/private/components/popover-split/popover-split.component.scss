@@ -1,50 +1,23 @@
-ion-content {
- 
-    ion-row.header{
-        background: linear-gradient(to top, #5CABF9, #1A518E) !important;
-        color: #ffffff;
-        font-size: 20px;
-        padding: 10px 0;
-        text-align: center;
-        font-weight: bold;
-        border-radius: 0 0 0 70%;
-    }
-    ion-list {
-        border-bottom: 1px solid #999;
-        padding: 0;
-        ion-row {
-            ion-col {
-                ion-icon {
-                    font-size: 25px;
-                    color: var(--ion-color-plureBlue);
-                }
-                ion-label {
-                    margin-top: 4px;
-                    width: 100%;
-                    position: absolute;
-                    margin-left: 13px;
-                }
-            }
-        }
-    }
-}
+@import "~src/sass/popover-wms";
 
-ion-button{
-    color: white;
-    --backround: var(--ion-color-plureBlue) !important;
-    border-radius: 23px;
-}
 
 ion-input{
-
 
     border-bottom: 1px solid  #aaaaaa;
     padding-bottom: 10px;
 }
 
-.btnqty {
-    color: var(--ion-color-plureBlue);
-    font-size: 20px;
 
-    padding-top: 10px;
+
+.contentbody {
+    padding: 4px 0 4px 0;
+}
+
+.selectpopupitem {
+    border-bottom: none !important;
+    padding: 0 0 10px 0 !important;
+}
+
+.qtytoreceive {
+    font-weight: bold;
 }

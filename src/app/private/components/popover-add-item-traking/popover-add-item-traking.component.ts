@@ -7,6 +7,7 @@ import { JsonService } from '@svc/json.service';
 import { Storage } from '@ionic/storage';
 import { PopoverListSerialLpComponent } from '../popover-list-serial-lp/popover-list-serial-lp.component';
 import { PopoverConfigurationCodeComponent } from '../popover-configuration-code/popover-configuration-code.component';
+import { PopoverListSNComponent } from '../popover-list-sn/popover-list-sn.component';
 
 @Component({
   selector: 'app-popover-add-item-traking',
@@ -32,6 +33,7 @@ export class PopoverAddItemTrakingComponent implements OnInit {
   public lot:boolean = false; 
   public exp:boolean = false;
   public serial:boolean = false;
+  public approved = true;
   constructor( private formBuilder: FormBuilder, public popoverController: PopoverController, private barcodeScanner: BarcodeScanner,
     private jsonService: JsonService, private intServ: InterceptService,  private storage: Storage) {
 
@@ -75,15 +77,12 @@ export class PopoverAddItemTrakingComponent implements OnInit {
 
 
      this.obj =  {
-      WarhouseReceiptNo: this.item.No,
-      LP_Pallet_No: this.palletNo,
-      Item_Child_No: this.item.ItemNo,
-      BinCode: this.item.BinCode,
+      ItemNo: this.item.ItemNo,
+      TotalToReceive: this.item.Qty,
+      UnitofMeasureCode: this.item.UnitofMeasureCode,
       SourceNo: this.item.SourceNo,
       SourceRefNo: this.item.SourceRefNo,
       LineNo: this.item.LineNo,
-      UnitofMeasureCode: this.item.UnitofMeasureCode,
-      Qty: this.item.Qty,
       TrackingInfo: []
     }
 
@@ -140,94 +139,64 @@ export class PopoverAddItemTrakingComponent implements OnInit {
   
   }
 
-
-
 async  save(){
 
-  switch(this.Quantity === this.total){
-    case false:
-      if (this.frm2.valid) {
+  let obj = await this.jsonService.formToJson(this.frm2); 
+ switch(this.serial){
+  case true:
+    let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+    let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+    let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
+  
+    if(line != undefined || line2 != undefined || line3 != undefined){
+      this.approved = false;
+      this.frm2.controls.SerialNo.setValue('');
+  
+      this.mensaje = `The serial ${obj.SerialNo.toUpperCase()} already exists`;
+  
+    }else{
+      this.approved = true;
+    }
+    
+    break;
 
-        let obj = await this.jsonService.formToJson(this.frm2);
-  
-        let res = new Date(obj.exp);
-  
-        let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1
-  
-        let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
+  case false:
+    this.approved = true;
+    break;
+ }
+ 
+let Qty = (this.serial)?1:obj.Qty;
+ 
+  if(this.approved){
+    console.log('qty =>',Qty);
+    switch(this.Quantity+Qty <= this.total){
+      case true:
+        if (this.frm2.valid) {    
+          let res = new Date(obj.exp);
     
-        let fecha = (obj.exp.includes(':'))?res.getFullYear()+'-'+month+'-'+day:obj.exp;
-  
-        if(this.serial){
-          let  json =   {
-            LotNo: obj.LotNo,
-            SerialNo: obj.SerialNo,
-            ExperationDate: fecha,
-            Qty: (obj.Qty > 1)?obj.Qty:1,
-            proceded: false
-          }
-          let  json2 =   {
-            LotNo: obj.LotNo,
-            SerialNo: obj.SerialNo,
-            ExperationDate: fecha,
-            Qty: (obj.Qty > 1)?obj.Qty:1
-          }
+          let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1
     
-          this.list.push(json);
-          this.obj.Qty = this.total;
-          this.obj.TrackingInfo.push(json2);
+          let day = (res.getDate() < 10)?'0'+res.getDate():res.getDate();
+      
+          let fecha = (obj.exp.includes(':'))?res.getFullYear()+'-'+month+'-'+day:obj.exp;
     
-    
-          this.Quantity += json.Qty;
-    
-          console.log(this.list);
-    
-          this.frm2.patchValue({
-    
-            SerialNo: "",
-            LotNo: "",
-            exp: "",
-            Qty:""
-          });
-    
-          json =   {
-            LotNo: "",
-            SerialNo: "",
-            ExperationDate: "",
-            Qty: 0,
-            proceded: false
-          }
-    
-          json2 =   {
-            LotNo: "",
-            SerialNo: "",
-            ExperationDate: "",
-            Qty: 0,
-    
-          }
-        }else{
-  
-         let line = this.list.find(x => x.LotNo === obj.LotNo);
-  
-         switch(line){
-  
-          case undefined:
+          if(this.serial){
             let  json =   {
               LotNo: obj.LotNo,
-              SerialNo: obj.SerialNo,
+              SerialNo: obj.SerialNo.toUpperCase(),
               ExperationDate: fecha,
-              Qty: (obj.Qty > 1)?obj.Qty:1,
+              Qty: 1,
               proceded: false
             }
             let  json2 =   {
               LotNo: obj.LotNo,
-              SerialNo: obj.SerialNo,
+              SerialNo: obj.SerialNo.toUpperCase(),
               ExperationDate: fecha,
-              Qty: (obj.Qty > 1)?obj.Qty:1
+              Qty: 1
             }
       
             this.list.push(json);
-            this.obj.Qty = this.total;
+            this.obj.TotalToReceive = this.total;
             this.obj.TrackingInfo.push(json2);
       
       
@@ -258,35 +227,88 @@ async  save(){
               Qty: 0,
       
             }
-            break;
-  
-          default:
-  
-          line.Qty += obj.Qty;
-          this.Quantity += obj.Qty;
-  
-          this.frm2.patchValue({
-      
-            SerialNo: "",
-            LotNo: "",
-            exp: "",
-            Qty: ""
-          });
+          }else{
+    
+           let line = this.list.find(x => x.LotNo === obj.LotNo);
+    
+           switch(line){
+    
+            case undefined:
+              let  json =   {
+                LotNo: obj.LotNo,
+                SerialNo: obj.SerialNo.toUpperCase(),
+                ExperationDate: fecha,
+                Qty: (obj.Qty > 1)?obj.Qty:1,
+                proceded: false
+              }
+              let  json2 =   {
+                LotNo: obj.LotNo,
+                SerialNo: obj.SerialNo.toUpperCase(),
+                ExperationDate: fecha,
+                Qty: (obj.Qty > 1)?obj.Qty:1
+              }
         
-         }
-  
+              this.list.push(json);
+              this.obj.TotalToReceive = this.total;
+              this.obj.TrackingInfo.push(json2);
+        
+        
+              this.Quantity += json.Qty;
+        
+              console.log(this.list);
+        
+              this.frm2.patchValue({
+        
+                SerialNo: "",
+                LotNo: "",
+                exp: "",
+                Qty:""
+              });
+        
+              json =   {
+                LotNo: "",
+                SerialNo: "",
+                ExperationDate: "",
+                Qty: 0,
+                proceded: false
+              }
+        
+              json2 =   {
+                LotNo: "",
+                SerialNo: "",
+                ExperationDate: "",
+                Qty: 0,
+        
+              }
+              break;
+    
+            default:
+    
+            line.Qty += obj.Qty;
+            this.Quantity += obj.Qty;
+    
+            this.frm2.patchValue({
+        
+              SerialNo: "",
+              LotNo: "",
+              exp: "",
+              Qty: ""
+            });
+          
+           }
+    
+          }
+    
         }
+        break
   
-      }
-      break
-
-     default:
-      this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
-      break;
-    
+       default:
+        this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
+        break;
+      
+    }
   }
-    
-
+  
   }
 
   public async closePopover() {
@@ -306,7 +328,7 @@ async  save(){
       let line3  = this.trakingClose.find(x => x.SerialNo === code.toUpperCase());
 
       if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
-
+      this.approved = true;
         this.frm2.patchValue({
           SerialNo: code.toUpperCase()
         });
@@ -370,9 +392,9 @@ async  onSubmit(){
     async lists(){
 
       const popover = await this.popoverController.create({
-        component: PopoverListSerialLpComponent,
-        cssClass: 'popoverListSerialLpComponent-modal',
-        componentProps: {list:this.list},
+        component: PopoverListSNComponent,
+        cssClass: 'popoverListSNComponent-modal',
+        componentProps: {list:this.list,item:this.item,checkbox:true},
         backdropDismiss: false
         
       });

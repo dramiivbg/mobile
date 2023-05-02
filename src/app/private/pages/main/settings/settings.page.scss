@@ -26,7 +26,7 @@ ion-item {
 }
 
 ion-content {
-    --background: linear-gradient(to bottom, rgb(220, 241, 255, 0.5), #ffff) !important;
+    --background: linear-gradient(to bottom, rgb(var(--ion-color-plure-ion-content-background-rgb)), #ffff) !important;
 }
 
 ion-list {

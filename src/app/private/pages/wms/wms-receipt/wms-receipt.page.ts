@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { ActionSheetController, AlertController, ModalController, PopoverController } from '@ionic/angular';
+import { ActionSheetController, AlertController, IonThumbnail, ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
 import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { GeneralService } from '@svc/general.service';
@@ -41,13 +41,13 @@ export class WmsReceiptPage implements OnInit {
   private process: Process;
   private routExtras: any;
 
-  private lp: any;
-
   private list: any = [];
 
   private LpL: any = [];
 
   public seriales:any[] = [];
+
+  public items:any[] = [];
 
 
   public cantidades: number[] = [];
@@ -55,7 +55,6 @@ export class WmsReceiptPage implements OnInit {
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
     , private js: JsonService
-    , private route: ActivatedRoute
     , private router: Router
     , private moduleService: ModuleService
     , private general: GeneralService
@@ -63,42 +62,16 @@ export class WmsReceiptPage implements OnInit {
     , public popoverController: PopoverController
     , private interceptService: InterceptService
     , private jsonService: JsonService
-    , private sqlitePlureService: SqlitePlureService
-    , private alertController: AlertController,
-    private modalCtrl: ModalController,
-    private storage: Storage,
+    ,private storage: Storage,
 
 
   ) {
-    let objFunc = {
-      func: () => {
-        this.onBack();
-      }
-    };
-    this.intServ.appBackFunc(objFunc);
-
-    this.getReceipt();
-
+   
   }
 
   public async ngOnInit() {
 
-  }
-
-  public async ionViewWillEnter() {
-    try {
-      this.module = await this.moduleService.getSelectedModule();
-      this.process = await this.moduleService.getSelectedProcess();
-    } catch (error) {
-      this.intServ.loadingFunc(false);
-    }
-  }
-
-  /**
-  * Return to the modules.
-  */
-  public onBack() {
-    this.router.navigate(['page/main/modules'], { replaceUrl: true });
+    this.getReceipt();
   }
 
   /**
@@ -124,8 +97,8 @@ export class WmsReceiptPage implements OnInit {
 
   public async onPopoverMenu(ev: any, item: any) {
     this.intServ.loadingFunc(true);
-   // let plure = await this.wmsService.GetItemInfo(item.ItemNo);
-    switch (item.plure) {
+   
+    switch (item.Managed_by_PlurE) {
       case true:
         this.intServ.loadingFunc(false);    
           this.onPopLicensePlates(ev, item);
@@ -135,7 +108,7 @@ export class WmsReceiptPage implements OnInit {
         let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
         let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
 
-      if(item.trakingCode === null){
+      if(item.ItemTrackingCode === ""){
 
         console.log('Bincode =>', item.BinCode);
         this.intServ.loadingFunc(false);
@@ -161,13 +134,13 @@ export class WmsReceiptPage implements OnInit {
   }
 
 
-  public async onPopoverPl(ev: any, items: any) {
+  public async onPopoverPl(items: any) {
 
     this.intServ.loadingFunc(false);
     const popover = await this.popoverController.create({
       component: PopoverLpsComponent,
       cssClass: 'popoverPls',
-      backdropDismiss: true,
+      backdropDismiss: false,
       componentProps: { lps: items }
 
     });
@@ -185,24 +158,22 @@ export class WmsReceiptPage implements OnInit {
 
 
   public async popoverItemTraking(item:any,lp:any){
+    let res = await this.wmsService.GetItemTrackingSpecificationV2(item.ItemNo,item.SourceNo,item.SourceLineNo);
 
-    let res = await this.wmsService.GetItemTrackingSpecificationOpen(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let res2 = await this.wmsService.GetItemTrackingSpecificationClosed(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):null;
-    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationClose):null;
-
+      console.log(res);
+    
+    let trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
+    let trakingClose = (res.ItemTrackinCloseJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackinCloseJO.TrackingSpecificationClose):[];
     console.log('item =>',item);
 
-   // console.log(trakingOpen);
-   // console.log(res);
-   // console.log(trakingClose);
+    let code = (res.ItemTrackingJO.Error === undefined)? await this.wmsService.listCode(res.ItemTrackingJO): null;
 
       if(item.Auto_Generate_LOT === false && item.Auto_Generate_SN === false){
 
         const popover = await this.popoverController.create({
           component: PopoverItemTrakingComponent,
           cssClass: 'transparent-modal',
-          componentProps: {options: { item, lp, trakingOpen, trakingClose} },
+          componentProps: {options: { item, lp, code,trakingOpen, trakingClose} },
           backdropDismiss: false
         });
         await popover.present();
@@ -212,23 +183,26 @@ export class WmsReceiptPage implements OnInit {
         this.intServ.loadingFunc(false);
         this.intServ.alertFunc(this.js.getAlert('alert','','Lots/serials  will be generated automatically'));
       }
+      
   }
 
 
   public async onPopLicensePlates(ev: any, item: any) {
     this.intServ.loadingFunc(true);
+
+    try {
+      
+      let res = await this.wmsService.GetItemTrackingSpecificationV2(item.ItemNo,item.SourceNo,item.SourceLineNo);
+
+      console.log(res);
+ 
     
-    let res = await this.wmsService.GetItemTrackingSpecificationOpen(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let res2 = await this.wmsService.GetItemTrackingSpecificationClosed(item.ItemNo,item.SourceNo,item.SourceLineNo);
-    let trakingOpen = (res.Error === undefined)?await this.wmsService.listTraking(res.TrackingSpecificationOpen):[];
-    let trakingClose = (res2.Error === undefined)?await this.wmsService.listTraking(res2.TrackingSpecificationClose):[];
+    let trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
+    let trakingClose = (res.ItemTrackinCloseJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackinCloseJO.TrackingSpecificationClose):[];
     let lp = await this.wmsService.getPendingToReceiveLP(item.No, item.ItemNo, item.UnitofMeasureCode, item.BinCode);
-   // console.log('Bincode =>', item.BinCode);
+    let code = (res.ItemTrackingJO.Error === undefined)?await this.wmsService.listCode(res.ItemTrackingJO):null;
     let lstUoM = await this.wmsService.getUnitOfMeasure(item.ItemNo);
 
-    
-    let resC = (item.trakingCode != null)?await this.wmsService.configurationTraking(item.trakingCode):null;
-    let code = (resC != null)?await this.wmsService.listCode(resC):null;
 
     console.log(lp);
     console.log(item);
@@ -252,12 +226,19 @@ export class WmsReceiptPage implements OnInit {
       this.interceptService.alertFunc(this.jsonService.getAlert('alert', ' ', 'You have created all the LP Pending To Receive'))
     }
 
+    } catch (error) {
+   
+    }
+    
+    
   }
 
   private async getReceipt() {
     this.intServ.loadingFunc(true);
     let wms = await this.storage.get('wms');
     console.log('data =>', wms);
+
+   
     try {
       let receipt = await this.wmsService.getReceiptByNo(wms.id);
 
@@ -265,13 +246,17 @@ export class WmsReceiptPage implements OnInit {
       if(receipt.error) throw new Error(receipt.error.message);
       if(receipt.message) throw new Error(receipt.message);
     
+      console.log('receiptc =>', receipt);
       this.mappingReceipt(receipt);
 
     } catch (error) {
       this.intServ.loadingFunc(false);
-
-      this.intServ.alertFunc(this.js.getAlert('error', ' ', error.message));
+      this.intServ.alertFunc(this.js.getAlert('error', '', error.message, () => {
+        return this.router.navigate(['page/wms/wmsMain']);
+      }));
     }
+
+    
 
   }
   /**
@@ -280,9 +265,19 @@ export class WmsReceiptPage implements OnInit {
    */
   private async mappingReceipt(receipt: any) {
     this.wareReceipts = await this.general.ReceiptHeaderAndLines(receipt.WarehouseReceipt);
-    console.log(this.wareReceipts);
-    let items = await this.wmsService.listTraking(receipt.WarehouseReceipt.WarehouseReceiptLines);
-    this.GetLicencesPlateInWR(this.wareReceipts,items);
+    console.log('receipt =>', this.wareReceipts);
+     this.items = receipt.WarehouseReceipt.WarehouseReceiptLines;
+    this.intServ.loadingFunc(false);
+
+    let traking =   await this.storage.get(`traking item ${this.wareReceipts.No}`);
+
+    let update =   await this.storage.get(`update item ${this.wareReceipts.No}`);
+
+    if(traking === undefined || traking === null) this.storage.set(`traking item ${this.wareReceipts.No}`, false);
+    
+
+    if(update === undefined || update === null) this.storage.set(`update item ${this.wareReceipts.No}`, false);
+    
 
   }
 
@@ -310,90 +305,11 @@ export class WmsReceiptPage implements OnInit {
   }
 
 
-  async GetLicencesPlateInWR(wareReceipts: any = {},items:any) {
-    this.list = [];
-    this.LpL = [];
-
-    try {
-
-      const lps = await this.wmsService.GetLicencesPlateInWR(wareReceipts.No, false);
-
-      console.log(lps);
-
-      if (lps.Error) throw new Error(lps.Error.Message);
-
-      let res = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
-      let res2 = await this.wmsService.listTraking(lps.LicensePlates.LPLines);
-      console.log('res =>',res);
-      res.filter(lp => {
-
-        let line = this.list.find(x => x.PLULPDocumentNo === lp.PLULPDocumentNo);
-
-        if(line === undefined || line === null)this.list.push(lp);
-      });
-
-      
-     console.log('lps =>',this.list);
-     let temp = [];
-
-     let qty = 0
-
-     
-  for (const key in this.list) {
-        for (const j in res2) {
-          if (res2[j].PLULPDocumentNo === this.list[key].PLULPDocumentNo) {
-            console.log('x =>',res2[j]);
-            temp.push(res2[j]);
-            qty+= res2[j].PLUQuantity;
-            
-          }
-        }
-        
-        this.list[key]['seriales'] = temp;
-        this.list[key].PLUQuantity = qty;
-        temp = [];
-        qty = 0;
-      }
-     
-  
-
-      let contador = 0;
-      this.cantidades = [];
-
-      this.LpL = [];
-
-      for (const key in items) {
-        for (const i in this.list) {
-          if (this.list[i].PLUWhseLineNo  === items[key].LineNo) {
-
-            contador++;
-            this.LpL.push(this.list[i]);
-          }
-        }
-
-        console.log(this.LpL);
-    
-   }   
-   console.log(this.cantidades);
-    this.intServ.loadingFunc(false);
-    } catch (error) {
-      this.intServ.loadingFunc(false);
-    }
-
-  }
-
-
-
+//muestra el contenido del  LP
   showLPs(item: any) {
     this.intServ.loadingFunc(true);
-    let list = [];
-    this.LpL.filter(lp => {
-        if (lp.PLUWhseLineNo === item.LineNo) {
-          list.push(lp);
-        }
-     });
-
-    this.onPopoverPl('event', list);
+   
+    this.onPopoverPl(item.LPArray.LicensePlates);
   }
 
 
@@ -425,6 +341,7 @@ export class WmsReceiptPage implements OnInit {
       let navigationExtras: NavigationExtras = {
         state: {
           pallet: palletN,
+          wareReceipts: this.wareReceipts,
           new: false
         },
         replaceUrl: true
@@ -447,6 +364,7 @@ export class WmsReceiptPage implements OnInit {
   async listPallet() {
 
     this.intServ.loadingFunc(true);
+    let pallets = [];
 
     try {
 
@@ -456,99 +374,27 @@ export class WmsReceiptPage implements OnInit {
 
 
       if (lpsP.Error) throw Error(lpsP.Error.Message);
+      if (lpsP.error) throw Error(lpsP.error.message);
 
 
-      console.log(lpsP.length);
+      for (const key in lpsP.LicensePlates) {
 
-
-
-      console.log('license plate pallet =>', lpsP);
-
-      let pallet = await this.wmsService.ListPallet(lpsP);
-
-
-      let pallet2 = await this.wmsService.ListPallet(lpsP);
-
+        let pallet = await this.wmsService.listTraking(lpsP.LicensePlates[key].LPLines);
+        lpsP.LicensePlates[key].LPLines = pallet
+        
+        if(pallet.length > 0)pallets.push(lpsP.LicensePlates[key]);
+      }
 
 
 
-      console.log('antes =>', pallet);
-      console.log('antes =>', pallet2);
-
-
-      if (pallet.length > 0 || pallet != undefined) {
-
-        for (const i in pallet) {
-
-          for (const j in pallet2) {
-
-
-            if (pallet[i] != undefined) {
-
-              if (pallet[i].fields[0].PLUQuantity != null) {
-
-                if (pallet[i].fields[0].PLULPDocumentNo === pallet2[j].fields[0].PLULPDocumentNo) {
-
-                  if (j != i) {
-
-
-
-                    let con = pallet.splice(Number(j), 1);
-                    console.log(i, j);
-                    console.log(con)
-
-                  }
-
-
-                }
-              } else {
-
-                pallet.splice(Number(i), 1);
-
-              }
-            }
-          }
-        }
-
-        console.log('despues =>', pallet);
-        console.log('despues =>', pallet2);
-
-        for (const i in pallet) {
-          pallet[i].fields = [];
-          let res = pallet[i].recordId.split(' ');
-          let No = res[3].split(',');
-          console.log(No);
-          for (const j in pallet2) {
-            if (No[0] === pallet2[j].fields[0].PLULPDocumentNo) {
-                console.log(pallet2[j].fields[0])
-                pallet[i].fields.push(pallet2[j].fields[0]);
-
-            }
-          }
-        }
-
-        console.log('final =>', pallet);
+      console.log('license plate pallet =>', pallets);
 
         let wareReceipts = this.wareReceipts;
 
-        let navigationExtras: NavigationExtras = {
-          state: {
-            pallet,
-            wareReceipts,
-            new: false
-          },
-          replaceUrl: true
-        };
-        this.router.navigate(['page/wms/listPallet'], navigationExtras);
+        this.storage.set(`${this.wareReceipts.No}, pallet`, pallets);
+        this.storage.set(`wareReceipt`, wareReceipts);
 
-      }
-      else {
-
-        this.intServ.loadingFunc(false);
-
-
-        this.intServ.loadingFunc(this.js.getAlert('alert', '', 'You do not have license plate created'))
-      }
+        this.router.navigate(['page/wms/listPallet']);   
 
     } catch (error) {
 
@@ -575,71 +421,155 @@ export class WmsReceiptPage implements OnInit {
 
         try {
 
+          const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
+
+          //postea el wareshouse receipt
           let postWR = await this.wmsService.Post_WarehouseReceipts(this.wareReceipts.No);
 
           console.log(postWR);
           if (postWR.Error) throw new Error(postWR.Error.Message);
           if (postWR.error) throw new  Error(postWR.error.message);
-          if (postWR.message) throw new  Error(postWR.message);
+         // if (postWR.message) throw new  Error(postWR.message);
 
           this.wmsService.setPutAway(postWR);
 
+          let lp = [];
+
+          let edit = false;
+
+          
+          let traking = await this.storage.get(`traking item ${this.wareReceipts.No}`);
+
+          let update = await this.storage.get(`update item ${this.wareReceipts.No}`);
+
+          console.log(lpsP, traking, update);
+
+          if (lpsP.Error === undefined && lpsP.error === undefined && traking === false && update === false){
+
+            this.storage.remove(`traking item ${this.wareReceipts.No}`);
+
+            this.storage.remove(`update item ${this.wareReceipts.No}`);
+            
+
+         for (const key in this.items){
+
+          lp.push(...this.items[key].LPArray.LicensePlates);
+         }
+         console.log('lp sueltos', lp);
+
+      
+         edit = (lp.length > 0)?true:false;
+
+
+          }else{
+
+            edit = true;
+            this.storage.remove(`traking item ${this.wareReceipts.No}`);
+
+            this.storage.remove(`update item ${this.wareReceipts.No}`);
+          } 
+
+    
+    
+      if(edit){
+
+        if(postWR.Partial){
+          this.getReceipt();
+        }else{
+          this.router.navigate(['page/wms/wmsMain']);
+        }
+      }
+        
+
+          if(postWR.Partial)this.items.map(x =>  this.storage.set(`${x.No} ${x.LineNo}`, 0));
+
           console.log('postWR', postWR);
 
-          this.intServ.loadingFunc(false);
-
-
-          this.intServ.alertFunc(this.js.getAlert('continue', '', 'Continue Process Put-Away?', () => {
-
-            this.intServ.loadingFunc(true);
-
-            var alert = setTimeout(() => {
-
+          switch (edit) {
+            case  true:
               this.intServ.loadingFunc(false);
 
-              this.intServ.alertFunc(this.js.getAlert('edit', 'If you press "No" the Put-Away will be processed by default on the floor!', 'Will you edit the default Put-Away?', async () => {
+              this.intServ.alertFunc(this.js.getAlert('continue', '', 'Continue Process Put-Away?', () => {
+      
+                  this.intServ.loadingFunc(true);
+      
+                  var alert = setTimeout(() => {
+      
+                    this.intServ.loadingFunc(false);
+      
+                    this.intServ.alertFunc(this.js.getAlert('edit', 'If you press "No" the Put-Away will be processed by default on the floor!', 'Do you want to edit the default Put-Away?', async () => {
+      
+                      this.intServ.loadingFunc(true);
+      
+                      try {
+      
+                        let dataPw = this.wmsService.getPutAway();
+      
+                        //postea el wareshouse put away por default
+                        let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
+      
+                        console.log('postWP', data);
+      
+                        if (data.Error) throw new  Error(data.Error.Message);
+                        if (data.error) throw new  Error(data.error.message);
+                      //  if (data.message) throw new  Error(data.message);
+      
+                        this.intServ.loadingFunc(false);
+                        this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
+      
+                         if(postWR.Partial){
+                          this.router.navigate(['page/wms/wmsReceipt']);
+                         }else{
+                          this.router.navigate(['page/wms/wmsMain']);
+                         }
+                        }));
+      
+      
+                      } catch (error) {
+      
+                        this.intServ.loadingFunc(false);
+                        this.intServ.alertFunc(this.js.getAlert('error', '', error.message))
+      
+                      }
+      
+                    }));
+      
+                    clearTimeout(alert);
+                  }, 100)
+      
+      
+                }));
+              
+              break;
+          
+            default:
+              
+            let dataPw = this.wmsService.getPutAway();
+      
+            //postea el wareshouse put away por default
+            let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
 
-                this.intServ.loadingFunc(true);
+            console.log('postWP', data);
 
-                try {
+            if (data.Error) throw new  Error(data.Error.Message);
+            if (data.error) throw new  Error(data.error.message);
+           // if (data.message) throw new  Error(data.message);
 
-                  let dataPw = this.wmsService.getPutAway();
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
 
+             if(postWR.Partial){
+             // this.router.navigate(['page/wms/wmsReceipt']);
+             this.getReceipt();
+             }else{
+              this.router.navigate(['page/wms/wmsMain']);
+             }
+            }));
 
-                  let data = await this.wmsService.Post_WarehousePutAways(dataPw.Warehouse_Activity_No);
+           break;
 
+          }
 
-                  console.log('postWP', data);
-
-
-                  if (data.Error) throw new  Error(data.Error.Message);
-                  if (data.error) throw new  Error(data.error.message);
-                  if (data.message) throw new  Error(data.message);
-
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('success', '', `The put away ${dataPw.Warehouse_Activity_No} was successfully posted with the registration number ${data.Registered_Whse_Activity}`, () => {
-
-
-                    this.router.navigate(['/page/wms/wmsReceipt']);
-                  }))
-
-
-                } catch (error) {
-
-                  this.intServ.loadingFunc(false);
-                  this.intServ.alertFunc(this.js.getAlert('error', '', error.message))
-
-                }
-
-              }));
-
-              clearTimeout(alert);
-            }, 100)
-
-
-          }));
-
-          this.getReceipt();
 
         } catch (error) {
 

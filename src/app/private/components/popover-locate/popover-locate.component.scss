@@ -1,3 +1,5 @@
+@import "~src/sass/popover-wms";
+
 .rowtable {
     width: 100%;
   }
@@ -16,10 +18,4 @@
     padding-bottom: 5px;
   }
 
-  ion-row.header {
-    background: linear-gradient(to top, #5CABF9, #1A518E) !important;
-    color: #ffffff;
-    font-weight: bold;
-    text-align: center !important;
-    border-radius: 0 0 0 70%;
-}
+ 

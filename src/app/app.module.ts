@@ -37,6 +37,7 @@ import { WmsService } from '@svc/wms.service';
 import { PopoverOpionsLpComponent } from '@prv/components/popover-opions-lp/popover-opions-lp.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-away.component';
+import { SharedModule } from './shared/modules/sharedModule.module';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,7 @@ import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-awa
     WmsService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent,],
+  bootstrap: [AppComponent]
 
  
 })

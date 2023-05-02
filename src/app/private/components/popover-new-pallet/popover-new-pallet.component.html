@@ -6,7 +6,7 @@
     <ion-icon md="add" ios="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
-    <ion-fab-button color="secondary" (click)="listLpOrItem(pallet)" data-desc2="Add new Pallet">
+    <ion-fab-button color="secondary" (click)="listLpOrItem()" data-desc2="Add new Pallet">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
 
@@ -51,24 +51,10 @@
 
     </div>
     <div class="accorn">
-      <div class="order-details">
-        <ion-row>
-          <ion-col size="3" class="txt">
-            <ion-label>Lines</ion-label>
-          </ion-col>
-          <!-- <ion-col *ngIf="new || edit">
-                  <ion-button class="add-lines" color="plure" (click)="onItem()" type="button">+</ion-button>
-                </ion-col> -->
-        </ion-row>
-      </div>
+     
       <div class="accorn-body">
         <div class="lines">
           <ion-list>
-            <div>
-
-
-
-
 
               <div class="label-lines" part="item-width">
                 <ion-row *ngFor="let item of itemsL; let i=index">
@@ -147,54 +133,40 @@
                       <ion-col size="15" class="item border">
 
                         <ion-row>
-                          <ion-col size="5" style="overflow: hidden;" class="label-line-title blue">
-                            {{item.fields.PLULPDocumentNo}}
+                          <ion-col size="12" style="overflow: hidden;" class="label-line-title blue">
+                            {{item.LPDocumentNo}}
                           </ion-col>
-
-
-
 
                         </ion-row>
 
                         <ion-row>
-                          <ion-col size="3" style="overflow: hidden;" class="label-line-title blue">
-                            {{item.company}}
-                          </ion-col>
-                          <ion-col size="3" class="label-line-title">
-                            Qty. {{item.fields.PLUQuantity}}
+                        
+                          <ion-col size="6" class="label-line-title">
+                            Qty. {{item.Quantity}}
 
 
 
                           </ion-col>
-                          <ion-col size="3" class="label-line-title" style="text-align: right;">
-                            {{item.fields.PLUDescription
+                          <ion-col size="6" class="label-line">
+                            UoM: {{item.UnitofMeasure
                             }}
-
-
-
                           </ion-col>
 
                         </ion-row>
 
 
-                        <ion-row>
-                          <ion-col size="4" class="label-line">
-                            Item No: {{item.fields.PLUNo
+                     <ion-row>
+                          <ion-col size="6" class="label-line">
+                            Item No: {{item.ItemNo
                             }}
                           </ion-col>
-                          <ion-col size="4" class="label-line">
-                            Measure: {{item.fields.PLUUnitofMeasureCode
+                         
+                          <ion-col size="6" class="label-line">
+                            Bin Code: {{item.BinCode
                             }}
                           </ion-col>
-                          <ion-col size="4" class="label-line">
-                            PO: {{item.fields.PLUSourceDocumentNo}}
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col class="label-line" size="3">
-                            <!--     Line: {{item.LineNo}}-->
-                          </ion-col>
-                        </ion-row>
+                        </ion-row> 
+                      
                       </ion-col><br>
                     </ion-item>
 
@@ -206,8 +178,6 @@
                   </ion-item-sliding>
                 </ion-row>
               </div>
-
-            </div>
           </ion-list>
         </div>
       </div>
@@ -217,17 +187,12 @@
 
 
 
-<PlureHeader type="1" title="New Pallet" url="page/wms/newPallet" notify="0" *ngIf="!boolean" (click)="exit()">
-</PlureHeader>
-
-
-
 <ion-content *ngIf="!boolean">
 
-  <ion-row>
+  <ion-row *ngIf="booleanL">
     <ion-col size="10">
       <ion-searchbar [(ngModel)]="lpNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeLp($event)"
-        show-clear-button="always" clear-icon="close-outline" placeholder="Search LP" *ngIf="booleanL">
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search LP" >
       </ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
@@ -235,7 +200,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-row class="header" style="text-align: center;" *ngIf="booleanL">
+  <ion-row style="text-align: center;" *ngIf="booleanL">
     <ion-col class="TitleHeader">
       <ion-label>License plate</ion-label>
     </ion-col>
@@ -248,7 +213,7 @@
 
     <ion-grid>
 
-      <ion-row class=" newColor">
+      <ion-row class=" newColorCheck">
 
         <ion-col>
 
@@ -274,7 +239,7 @@
       <ion-row class=" delivery ContentTable" *ngFor="let item of lps; let i= index">
 
 
-        <ion-col *ngIf="testListL.length > 0 && testListL[i].checked != undefined">
+        <ion-col *ngIf="testListL.length > 0">
 
 
           <ion-checkbox (ionChange)="applyLP(item,$event)" [(ngModel)]="testListL[i].checked"></ion-checkbox>
@@ -283,14 +248,15 @@
         </ion-col>
 
 
-        <ion-col size="3" *ngIf="testListL[i].checked != undefined">
-          <div>{{item.fields.PLULPDocumentNo}}</div>
+        <ion-col size="3" >
+          <div>{{item.LPDocumentNo}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="testListL[i].checked != undefined">
-          <div>{{item.fields.PLUQuantity}}</div>
+        <ion-col size="4">
+          <div>{{item.Quantity}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="testListL[i].checked != undefined">
-          <div>{{item.fields.PLUUnitofMeasureCode}}</div>
+        <ion-col size="4">
+          <div>{{item.UnitofMeasure
+          }}</div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -300,7 +266,7 @@
   <ion-row *ngIf="!booleanL">
     <ion-col size="10">
       <ion-searchbar [(ngModel)]="itemNo" [ngModelOptions]="{standalone: true}" (ionInput)="onChangeI($event)"
-        show-clear-button="always" clear-icon="close-outline" placeholder="Search Item" *ngIf="!booleanL">
+        show-clear-button="always" clear-icon="close-outline" placeholder="Search Item" >
       </ion-searchbar>
     </ion-col>
     <ion-col size="2" class="barcodebtn">
@@ -309,7 +275,7 @@
   </ion-row>
 
 
-  <ion-row class="header" style="text-align: center;" *ngIf="!booleanL">
+  <ion-row  style="text-align: center;" *ngIf="!booleanL">
     <ion-col class="TitleHeader">
       <ion-label>Items</ion-label>
     </ion-col>
@@ -320,7 +286,7 @@
 
     <ion-grid >
 
-      <ion-row class=" newColor">
+      <ion-row class=" newColorCheck">
         <ion-col>
 
           <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
@@ -343,7 +309,7 @@
 
 
 
-        <ion-col *ngIf="item.Qty > 0  &&  testListI.length > 0">
+        <ion-col *ngIf="item.Qty > 0  && testListI.length > 0 ">
 
 
           <ion-checkbox  (ionChange)="applyItem(item,$event)" [(ngModel)]="testListI[i].checked"></ion-checkbox>
@@ -352,13 +318,13 @@
         </ion-col>
 
 
-        <ion-col size="3" *ngIf="item.Qty > 0">
+        <ion-col size="3" >
           <div>{{item.ItemNo}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.Qty > 0">
+        <ion-col size="4" >
           <div>{{item.Qty}}</div>
         </ion-col>
-        <ion-col size="4" *ngIf="item.Qty > 0">
+        <ion-col size="4" >
           <div>{{item.LineNo}}</div>
         </ion-col>
 
@@ -374,18 +340,18 @@
 
 <ion-tab-bar class="footernewpallettabs" slot="bottom" *ngIf="!boolean">
   <ion-tab-button tab="music" (click)="enableLP()">
-    <ion-label class="itemfooter">LPS</ion-label>
-    <ion-icon class="itemfooter" size="large" name="newspaper-outline"></ion-icon>
+    <ion-label class="itemfooterSave">LPS</ion-label>
+    <ion-icon class="itemfooterSave" size="large" name="newspaper-outline"></ion-icon>
     <ion-badge>{{QtyLP}}</ion-badge>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)=" enableItem()">
-    <ion-label class="itemfooter">Items</ion-label>
-    <ion-icon class="itemfooter" size="large" name="cube-outline"></ion-icon>
+    <ion-label class="itemfooterSave">Items</ion-label>
+    <ion-icon class="itemfooterSave" size="large" name="cube-outline"></ion-icon>
     <ion-badge>{{QtyItem}}</ion-badge>
   </ion-tab-button>
   <ion-tab-button tab="movies" (click)="disable()">
-    <ion-label class="itemfooter">Add</ion-label>
-    <ion-icon class="itemfooter" size="large" name="checkmark-done-circle-outline"></ion-icon>
+    <ion-label class="itemfooterSave">Home</ion-label>
+    <ion-icon class="itemfooterSave" size="large" name="home-outline"></ion-icon>
   </ion-tab-button>
 
 </ion-tab-bar>
@@ -403,12 +369,12 @@
     </ion-col>
 
     <ion-col size="4" (click)="onBarCode()">
-      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
-      <div class="itemfooter">Bar code</div>
+      <ion-icon class="itemfooterSave" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooterSave">Bar code</div>
     </ion-col>
     <ion-col size="4" (click)="onSubmit(pallet)">
-      <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
-      <div class="itemfooter">Save</div>
+      <ion-icon class="itemfooterSave" size="large" name="save-outline"></ion-icon>
+      <div class="itemfooterSave">Save</div>
     </ion-col>
   </ion-row>
 

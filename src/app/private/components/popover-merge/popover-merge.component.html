@@ -1,14 +1,6 @@
 <ng-container>
   <ion-content>
-
-    <ion-header *ngIf="loading">
-      <ion-toolbar>
-        <ion-title>Loading....</ion-title>
-        <ion-progress-bar type="indeterminate"></ion-progress-bar>
-      </ion-toolbar>
-    </ion-header>
-
-    <form *ngIf="boolean">
+    <form>
       <ion-row class="header">
         <ion-col>
           <ion-label>Confirm LP to merge</ion-label>
@@ -24,8 +16,13 @@
         <ion-col size="2" class="barcodebtn">
           <ion-icon size="large" name="barcode-outline" (click)="autoComplet()"></ion-icon>
         </ion-col>
-
       </ion-row>
+
+        <div *ngIf="mensaje != ''">
+          
+          <ion-text [color]="color"><ion-icon [name]="type"></ion-icon></ion-text><ion-text color="tertiary">{{mensaje}}</ion-text>     
+        </div>
+
 
 
       <ion-row>

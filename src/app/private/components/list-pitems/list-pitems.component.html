@@ -1,16 +1,14 @@
-<PlureHeader (click)="back()" type="1" title="LP Details " url="page/wms/lists" notify="0" *ngIf="boolean">
+<PlureHeader  type="1" title="LP Details " url="page/wms/listPallet" notify="0" *ngIf="boolean">
 </PlureHeader>
 
 
-<div class="docnumber" *ngIf="boolean">
-  <p> Document No: {{pallet.fields[0].PLULPDocumentNo}} </p>
+<div class="docnumber" *ngIf="boolean && pallet != undefined">
+  <p> Document No: {{pallet.LPDocumentNo}} </p>
 </div>
 
 
-
-
 <ion-content *ngIf="boolean">
-
+  
 
   <ion-row>
     <ion-col size="10">
@@ -23,39 +21,31 @@
   </ion-row>
 
 
-  <ion-row class="header" style="text-align: center;">
+  <ion-row  style="text-align: center;">
     <ion-col class="TitleHeader">
-      <ion-label>License plate</ion-label>
+      <ion-label>Licenses Plates</ion-label>
     </ion-col>
   </ion-row>
 
 
-  <ion-list>
-
     <ion-grid>
 
-
-      <ion-row class=" newColor column">
+      <ion-row class=" newH">
         <ion-col size="1">
           <ion-checkbox (ionChange)="checkAll($event)"></ion-checkbox>
 
         </ion-col>
 
-        <ion-col size="3">
+        <ion-col size="4">
           <div style="font-family: Arial, Helvetica, sans-serif;">LP No</div>
         </ion-col>
-        <ion-col size="2">
+        <ion-col size="4">
           <div style="font-family: Arial, Helvetica, sans-serif;">Qty</div>
         </ion-col>
-        <ion-col size="2">
+        <ion-col size="3">
           <div style="font-family: Arial, Helvetica, sans-serif;">UoM</div>
         </ion-col>
-        <ion-col size="2">
-          <div style="font-family: Arial, Helvetica, sans-serif;">Serial</div>
-        </ion-col>
-        <ion-col size="2">
-          <div style="font-family: Arial, Helvetica, sans-serif;">lot</div>
-        </ion-col>
+       
       </ion-row>
 
 
@@ -77,25 +67,14 @@
 
 
 
-        <ion-col size="3">
-          <div>{{item.PLUNo
-            }}</div>
+        <ion-col size="4">
+          <div>{{item.PLULPDocumentNo}}</div>
         </ion-col>
-        <ion-col size="2">
+        <ion-col size="4">
           <div>{{item.PLUQuantity}}</div>
         </ion-col>
-        <ion-col size="2">
+        <ion-col size="3">
           <div>{{item.PLUUnitofMeasureCode
-            }}</div>
-        </ion-col>
-        <ion-col size="2">
-          <div>{{item.PLUSerialNo
-
-            }}</div>
-        </ion-col>
-        <ion-col size="2">
-          <div>{{item.PLULotNo
-
             }}</div>
         </ion-col>
       </ion-row>
@@ -104,10 +83,6 @@
 
     </ion-grid>
 
-
-
-
-  </ion-list>
 
 
 </ion-content>
@@ -119,7 +94,7 @@
 
 
 <div class="docnumber" *ngIf="!boolean">
-  <p> Document No: {{pallet.fields[0].PLULPDocumentNo}} </p>
+  <p> Document No: {{pallet.LPDocumentNo}} </p>
 </div>
 
 
@@ -136,7 +111,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-row class="header" style="text-align: center;">
+  <ion-row  style="text-align: center;">
     <ion-col class="TitleHeader">
       <ion-label>Items</ion-label>
     </ion-col>
@@ -144,13 +119,13 @@
 
 
 
-  <ion-list>
+
 
 
     <ion-grid >
 
 
-      <ion-row class=" newColor column">
+      <ion-row class=" newH">
 
 
 
@@ -218,16 +193,6 @@
 
 
     </ion-grid>
-
-
-
-
-  </ion-list>
-
-
-
-
-
 
 
 </ion-content>

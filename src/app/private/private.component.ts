@@ -5,11 +5,13 @@ import { ToastController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { NotifyService } from '@svc/notify.service';
 import { OfflineService } from '@svc/offline.service';
-import { SalesService } from '@svc/Sales.service';
+
 import { JsonService } from '@svc/json.service';
 import { E_NOTIFYTYPE } from '@var/enums';
 import { UserService } from '@svc/user.service';
 import { AuthService } from '@svc/auth.service';
+import { SalesService } from '@svc/Sales.service';
+
 
 @Component({
   selector: 'app-private',
