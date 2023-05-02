@@ -273,6 +273,8 @@ export class WmsReceiptPage implements OnInit {
 
     let update =   await this.storage.get(`update item ${this.wareReceipts.No}`);
 
+    console.log(traking,update);
+
     if(traking === undefined || traking === null) this.storage.set(`traking item ${this.wareReceipts.No}`, false);
     
 

@@ -15,6 +15,8 @@ import { Storage } from '@ionic/storage';
 import { SK_OFFLINE } from '@var/consts';
 import * as moment from 'moment';
 import { debuglog } from 'util';
+import { PopoverController } from '@ionic/angular';
+import { PopoverCountingComponent } from '@prv/components/popover-counting/popover-counting.component';
 
 @Component({
   selector: 'app-sales-form',
@@ -59,7 +61,7 @@ export class SalesFormPage implements OnInit {
   public taxTotal: Number = 0;
   public discountTotal: Number = 0;
   public total: Number = 0;
-  
+  public contador = 0;
 
   public process: Process = {
     processId: '',
@@ -85,6 +87,7 @@ export class SalesFormPage implements OnInit {
     , private barcodeScanner: BarcodeScanner
     , private moduleService: ModuleService
     , private storage: Storage
+    , public popoverController: PopoverController
   ) { 
     let objFunc = {
       func: () => {
@@ -190,7 +193,7 @@ export class SalesFormPage implements OnInit {
   }
 
   /**
-   * Edit sales
+   * Edit salesonBarCode()
    */
   async editSales(){
     if (this.edit) {
@@ -277,6 +280,52 @@ export class SalesFormPage implements OnInit {
     }
   }
 
+
+ async  popoverPicking(i,item: any){
+
+    const popover = await this.popoverController.create({
+      component: PopoverCountingComponent,
+      cssClass: 'popoverCountingComponent',
+      componentProps: {list:item.value, picking:true},
+      backdropDismiss: false
+      
+    });
+    await popover.present();
+    const { data } = await popover.onDidDismiss();
+
+   if(data.qtyToShip != undefined){
+
+    switch(data.qtyToShip <= item.value.quantity){
+
+      case true:
+        console.log(data.qtyToShip);
+
+        let lines = this.frm.controls.lines.value;
+    
+        lines[i].qtyToShip = data.qtyToShip;
+         
+          let subTotal =  data.qtyToShip * lines[i].unitPrice
+          let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
+          lines[i].lineDiscountAmount = discountAmount.toFixed(2);
+          lines[i].totalWithoutDiscount = subTotal.toFixed(2);
+          lines[i].total = Number(subTotal  - discountAmount).toFixed(2);
+          this.frm.controls.lines.setValue(lines);
+          this.setTotals();    
+    
+        console.log(this.frm.controls.lines);
+      break;
+
+      default:
+        this.intServ.alertFunc(this.js.getAlert('alert', '', 'Qty To ship must not be greater than Quantity'));
+        break;
+    }
+ 
+   }
+   
+  
+
+  }
+
   onDeleteLine(i) {
     let lines: any = this.frm.controls.lines;
     lines.removeAt(i);
@@ -286,7 +335,7 @@ export class SalesFormPage implements OnInit {
 
   onIncDec(i, dec) {
     let lines = this.frm.controls.lines.value;
-    console.log('lines =>', lines[i].quantity);
+   // console.log('lines =>', lines[i].quantity);
     if (dec === 0 && lines[i].quantity !== 1) {
       lines[i].quantity -= 1;
     } else if (dec === 1) {
@@ -566,6 +615,7 @@ export class SalesFormPage implements OnInit {
    */
   async itemsPerCategory(category) {
     this.items = category.items;
+    console.log(this.items);
     let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
       await this.addItem(item);
       if (item.error)
@@ -659,6 +709,7 @@ export class SalesFormPage implements OnInit {
       }
     }
     item['quantity'] = 1;
+    item['qtyToShip'] = 0;
     this.linesS.push(item);
     if (newSales) {
       this.frm.controls.lines = this.setLines(item);
@@ -707,6 +758,7 @@ export class SalesFormPage implements OnInit {
         locationCode,
         edit: false,
         tax,
+        qtyToShip: item.qtyToShip
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -772,7 +824,8 @@ export class SalesFormPage implements OnInit {
           taxPerc: taxPerc,
           locationCode: lines[i].fields.LocationCode === null  ? '' : lines[i].fields.LocationCode,
           edit,
-          tax
+          tax,
+          qtyToShip: lines[i].fields.qtyToShip
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -809,12 +862,53 @@ export class SalesFormPage implements OnInit {
           locationCode: lines[i].locationCode,
           edit: lines[i].edit,
           tax: lines[i].tax,
+          qtyToShip: lines[i].qtyToShip
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
       this.listPrices[arr.length - 1] = item.priceListC;
     }
     return arr;
+  }
+  pickingAll(){
+
+    let items = this.frm.get('lines')['controls'];
+    console.log(items);
+
+  this.barcodeScanner.scan().then(
+    barCodeData => {
+    let code = barCodeData.text;
+    let item = items.find(x => x.value.id === code.toUpperCase());
+    let index = items.indexOf(items.find(x => x.value.id === code.toUpperCase()));
+
+    if(item != undefined){
+      this.popoverPicking(index,item);
+    }else{
+      this.intServ.alertFunc(this.js.getAlert('alert', '', `The item ${code.toUpperCase()} is not in the list, please scan it.`));
+    }
+  
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+  
+  }
+
+  scanItem(){
+
+    
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text;
+        this.setLines;
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      });
+
   }
 
   setLines2(item) {
@@ -882,6 +976,7 @@ export class SalesFormPage implements OnInit {
 
 
   private async getItemsList() {
+    console.log(this.items);
     let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
       await this.addItem(item);
       if (item.error)

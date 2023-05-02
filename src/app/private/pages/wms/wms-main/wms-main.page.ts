@@ -60,14 +60,6 @@ export class WmsMainPage implements OnInit {
 
   public async ngOnInit() {
 
-
-
-  }
-
-  public async ionViewWillEnter() {
-
-    this.processes = [];
-
     let session = (await this.js.getSession()).login;
     this.http.get(environment.api + session.userId).subscribe(res => {
 
@@ -76,10 +68,15 @@ export class WmsMainPage implements OnInit {
 
     this.locale = (await this.storage.get('locale') != undefined && await this.storage.get('locale') != null) ? await this.storage.get('locale') : this.locale;
 
+    console.log(this.locale);
+
     this.configured = (await this.storage.get(`configured ${session.userId}`) != undefined && 
                   await this.storage.get(`configured ${session.userId}`) != null)? await this.storage.get(`configured ${session.userId}`): false;
 
-    try {
+  }
+
+  public async ionViewWillEnter() {
+
       this.intServ.loadingFunc(true);
       this.module = await this.moduleService.getSelectedModule();
 
@@ -97,9 +94,7 @@ export class WmsMainPage implements OnInit {
       console.log('session =>', this.session)
 
       this.intServ.loadingFunc(false);
-    } catch (error) {
-      this.intServ.loadingFunc(false);
-    }
+    
   }
 
   /**
@@ -183,6 +178,13 @@ export class WmsMainPage implements OnInit {
 
 
     }
+
+  }
+
+
+  ChangeLocate(){
+
+    this.storage.set('locale',this.locale);
 
   }
 

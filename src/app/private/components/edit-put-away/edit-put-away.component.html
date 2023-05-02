@@ -85,10 +85,10 @@
 
             <ion-row size="12">
                 <ion-col size="8">
-                    <ion-label> Total LP: {{QtyTotal}}</ion-label>
+                    <ion-label> Total: {{QtyTotal}}</ion-label>
                 </ion-col>
                 <ion-col size="4">
-                    <ion-label>LP taken: {{QtyTake}}</ion-label>
+                    <ion-label> Taken: {{QtyTake}}</ion-label>
                 </ion-col>
             </ion-row>
 
@@ -227,12 +227,30 @@
                                                             Variant Code: {{item.VariantCode}}
                                                         </ion-col> 
 
-                                                        <ion-col size="4" class="label-line-title" >
+                                                        <ion-col size="4" class="label-line" >
                                                             Take: {{item.take}}
                                                         </ion-col>
 
-                                                        <ion-col size="4" class="label-line-title">
+                                                        <ion-col size="4" class="label-line">
                                                             Place: {{item.place}}
+                                                        </ion-col>
+
+
+                                                    </ion-row>
+
+                                                    
+                                                    <ion-row size="12" class="subtitlelist" >
+
+                                                        <ion-col size="4" class="label-line" *ngIf="item.ExpirationDate != '' && item.ExpirationDate.charAt(0) != '0' ">
+                                                            Exp Date: {{item.VariantCode}}
+                                                        </ion-col> 
+
+                                                        <ion-col size="4" class="label-line" *ngIf="item.SerialNo != '' ">
+                                                            SerialNo: {{item.SerialNo}}
+                                                        </ion-col>
+
+                                                        <ion-col size="4" class="label-line" *ngIf="item.LotNo != '' ">
+                                                            LotNo: {{item.LotNo}}
                                                         </ion-col>
 
 

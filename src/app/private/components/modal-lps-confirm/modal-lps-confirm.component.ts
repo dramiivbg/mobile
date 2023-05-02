@@ -3,6 +3,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { PopoverSerialesLpComponent } from '../popover-seriales-lp/popover-seriales-lp.component';
+import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
   selector: 'app-modal-lps-confirm',
@@ -18,6 +19,11 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   public itemLT;
 
+  public lpsR = [];
+  public itemR = [];
+  public itemB = [];
+  public lpsB = [];
+
   public lpNo: any = '';
   public lpsT: any;
   public Bin: string = '';
@@ -32,11 +38,13 @@ export class ModalLpsConfirmComponent implements OnInit {
   constructor(private barcodeScanner: BarcodeScanner, private modalCtrl: ModalController, private storage: Storage,public popoverController: PopoverController) { }
 
   ngOnInit() {
-    this.lpsT = this.lps;
-    this.itemLT = this.itemsL;
+    this.lpsT = cloneDeep(this.lps);
+    this.itemLT = cloneDeep(this.itemsL);
     console.log(this.lps);
     console.log(this.itemsL);
-
+    
+    this.lpsR = cloneDeep(this.lps);
+    this.itemR = cloneDeep(this.itemsL);
   }
 
 
@@ -48,6 +56,7 @@ export class ModalLpsConfirmComponent implements OnInit {
       this.Bin = '';
     } else {
       this.Bin = bin.toUpperCase();
+     
       this.lps = this.lpsT.filter(
         x => {
           return (x.place.toLowerCase().includes(bin.toLowerCase()));
@@ -64,7 +73,23 @@ export class ModalLpsConfirmComponent implements OnInit {
 
   back() {
 
-    this.modalCtrl.dismiss({ data: this.lps, bin: this.bins, items: this.itemsL, delete: this.deleteI, qtyR: this.qtyR });
+    let data = [];
+
+    let items = [];
+
+    this.lpsR.map(x => {
+      let find = this.lpsB.find(i => i.LPDocumentNo === x.LPDocumentNo);
+
+      if(find === undefined)data.push(x);
+    });
+
+    this.itemR.map(x => {
+      let find = this.itemB.find(i => i.LineNo === x.LineNo && i.identify === x.identify);
+
+      if(find === undefined)items.push(x);
+    });
+
+    this.modalCtrl.dismiss({ data, bin: this.bins, items, delete: this.itemB});
 
   }
   autoComplet() {
@@ -161,6 +186,23 @@ export class ModalLpsConfirmComponent implements OnInit {
 
  async onSubmit() {
 
+  
+  let data = [];
+
+  let itemsT = [];
+
+  this.lpsR.map(x => {
+    let find = this.lpsB.find(i => i.LPDocumentNo === x.LPDocumentNo);
+
+    if(find === undefined)data.push(x);
+  });
+
+  this.itemR.map(x => {
+    let find = this.itemB.find(i => i.LineNo === x.LineNo && i.identify === x.identify);
+
+    if(find === undefined)itemsT.push(x);
+  });
+
         let items: any[] = [];
         for (const key in this.itemsL) {
   
@@ -191,16 +233,17 @@ export class ModalLpsConfirmComponent implements OnInit {
   
         console.log(groupItems);
   
-        this.modalCtrl.dismiss({ data: this.lps, bin: this.bins, items: this.itemsL, action: 'register', itemsG: groupItems , delete: this.deleteI, qtyR: this.qtyR});
+        this.modalCtrl.dismiss({ data, bin: this.bins, items: itemsT, action: 'register', itemsG: groupItems , delete: this.itemB});
       
   }
 
   remove(item: any) {
 
+    this.lpsB.push(item);
+
     this.lps.filter((lp, index) => {
       if (lp.LPDocumentNo === item.LPDocumentNo){
       this.lps.splice(index, 1);
-      this.qtyR++;
       }
     });
 
@@ -215,24 +258,25 @@ export class ModalLpsConfirmComponent implements OnInit {
   removeI(item: any) {
 
     this.itemsL.filter((Item, index) => {
-      if (item.LineNo === Item.LineNo) {
-        this.deleteI.push(item);
+      if (Item.LineNo === item.LineNo && Item.identify === item.identify) {
+        this.itemB.push(Item);
+        console.log('posicion',index);
         this.itemsL.splice(index, 1);
-        this.qtyR++;
       }
     });
 
     this.itemLT.filter((Item, index) => {
-      if (item.LineNo === Item.LineNo) this.itemLT.splice(index, 1);
+      if (item.LineNo === Item.LineNo && Item.identify === item.identify) this.itemLT.splice(index, 1);
     });
 
-    this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemLT);
+    this.storage.set(`itemsL ${this.whsePutAway.fields.No}`, this.itemsL);
 
   }
   removeAll() {
+    this.lpsB = cloneDeep(this.lps);
+    this.itemB = cloneDeep(this.itemsL);
+
     if (this.Bin === '') {
-      this.qtyR += this.lps.length + this.itemsL.length;
-      this.deleteI = this.itemsL;
       this.lps = [];
       this.lpsT = [];
       this.bins = [];
@@ -253,8 +297,6 @@ export class ModalLpsConfirmComponent implements OnInit {
       }
 
 
-      this.qtyR += this.lps.length - Lps.length;
-
 
       for (const j in this.itemsL) {
 
@@ -262,12 +304,11 @@ export class ModalLpsConfirmComponent implements OnInit {
         if (this.itemsL[Number(j)].place === this.Bin) this.deleteI.push(this.itemsL[Number(j)]);
       }
 
-      this.qtyR += this.itemsL.length - items.length;
 
-      this.lps = Lps;
-      this.lpsT = Lps;
-      this.itemsL = items;
-      this.itemLT = items;
+      this.lps = cloneDeep(Lps);
+      this.lpsT = cloneDeep(Lps);
+      this.itemsL = cloneDeep(items);
+      this.itemLT = cloneDeep(items);
 
       this.storage.set(`confirm ${this.whsePutAway.fields.No}`, this.lps);
       // this.storage.set(`bins ${this.whsePutAway.fields.No}`, this.bins);

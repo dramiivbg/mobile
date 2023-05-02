@@ -132,10 +132,10 @@
                   </ion-item-option>
                 </ion-item-options>
 
-                <ion-item>
+                <ion-item >
                   <div class="label-lines">
                     <ion-row>
-                      <ion-col size="2" class="label-line-title">
+                      <ion-col size="2" class="label-line-title" (click)="popoverPicking(i,item)">
                         <img class="noImage" *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'"
                           src="../../../../assets/img/NOIMAGE.svg" />
                         <img *ngIf="item.controls.picture.value != 'data:image/jpeg;base64,NOIMAGE'"
@@ -151,10 +151,10 @@
                           </ion-col>
                         </ion-row>
                         <ion-row class="label-SO-text-row">
-                          <ion-col size="4" class="label-line">
+                          <ion-col size="6" class="label-line">
                             Item No: {{item.controls.id.value}}
                           </ion-col>
-                          <ion-col size="4" class="label-line">
+                          <ion-col size="6" class="label-line">
                             <ion-row>
                               <ion-col size="5" style="padding: 0;">
                                 Disc %
@@ -170,11 +170,18 @@
                               </ion-col>
                             </ion-row>
                             <!-- Disc %: {{item.controls.lineDiscountPercentage.value}} -->
+                          </ion-col>                       
+                        </ion-row>
+
+                        <ion-row class="label-SO-text-row">
+                          <ion-col size="6" class="label-line">
+                            QtyToShip: {{item.controls.qtyToShip.value}}
                           </ion-col>
-                          <ion-col size="4" class="label-line">
+                          <ion-col size="6" class="label-line">
                             Measure: {{item.controls.unitOfMeasureCode.value}}
                           </ion-col>
                         </ion-row>
+
                         <ion-row class="label-SO-text-row">
                           <ion-col size="4" class="label-line">
                             Quantity: {{item.controls.quantity.value}}
@@ -302,18 +309,24 @@
 
 <PlureVersion class="footerReceipt" showVersion="0" *ngIf="new || edit">
   <ion-row>
-    <ion-col size="4" (click)="onItem()">
+    <ion-col size="3" (click)="onItem()">
       <ion-icon class="itemfooter" size="large" name="add-circle-outline"></ion-icon>
       <div class="itemfooter">Add</div>
     </ion-col>
-    <ion-col size="4" (click)="onBarCode()">
+    <ion-col size="3" (click)="onBarCode()">
       <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
       <div class="itemfooter">Bar code</div>
       <hr />
     </ion-col>
-    <ion-col size="4" (click)="onSubmit()">
+    <ion-col size="3" (click)="onSubmit()">
       <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
       <div class="itemfooter">Save</div>
-    </ion-col>
+    </ion-col>&nbsp;&nbsp;
+    <picture class="img" (click)="pickingAll()">
+            
+      <img  src="../../../../assets/img/picking.svg" height="35px" alt="">
+      <div  class="itemfooter">Picking</div>
+      
+    </picture>
   </ion-row>
 </PlureVersion>

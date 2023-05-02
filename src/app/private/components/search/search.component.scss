@@ -141,8 +141,7 @@ ion-row.search-salesOrder {
 
 div.logofooter2 {
     color: var(--ion-color-plureHeader);
-   // background: linear-gradient(to bottom, var(--ion-color-primary), var(--ion-color-primary-background));
-    background: linear-gradient(to bottom, red, white);
+    background: linear-gradient(to bottom, var(--ion-color-primary), var(--ion-color-primary-background));
     bottom: 0;
     position: fixed;
     text-align: center;

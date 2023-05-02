@@ -59,6 +59,7 @@ ion-list.list {
         font-size: 20px;
     }
 
+
 }
 
 ion-content{
@@ -95,3 +96,7 @@ ion-content{
     font-weight: bold;
     text-transform: capitalize;
 }
+
+ion-select::part(icon) {
+    color: var(--ion-color-plureBlue)!important;
+  }
