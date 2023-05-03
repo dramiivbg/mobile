@@ -40,7 +40,7 @@
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic-native/stripe": "^5.33.1",
     "@ionic-native/unique-device-id": "^5.36.0",
-    "@ionic/angular": "^6.7.4",
+    "@ionic/angular": "^7.0.5",
     "@ionic/storage": "^2.3.1",
     "angular-material": "^1.1.24",
     "bootstrap": "^5.2.1",
@@ -62,7 +62,7 @@
     "moment": "^2.29.1",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "reinstall-node-modules": "^1.2.0",
-    "rxjs": "^6.5.0",
+    "rxjs": "^7.5.0",
     "sweetalert2": "^11.4.8",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

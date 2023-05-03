@@ -1,4 +1,3 @@
-import { typeWithParameters } from '@angular/compiler/src/render3/util';
 import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
@@ -7,22 +6,11 @@ import { GeneralService } from '@svc/general.service';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
 import { WmsService } from '@svc/wms.service';
-import Swal from 'sweetalert2'
 import { Storage } from '@ionic/storage';
-import { PassThrough, Stream } from 'stream';
-import { CssSelector } from '@angular/compiler';
 import { ModalShowLpsComponent } from '../modal-show-lps/modal-show-lps.component';
-import { empty, UnsubscriptionError, zip } from 'rxjs';
 import { ModalLpsConfirmComponent } from '../modal-lps-confirm/modal-lps-confirm.component';
 import { PopoverSplitItemComponent } from '../popover-split-item/popover-split-item.component';
-import { lutimes, truncateSync } from 'fs';
-import { utf8Encode } from '@angular/compiler/src/util';
-import { time, timeEnd } from 'console';
-import { EROFS } from 'constants';
 import { PopoverSerialesLpComponent } from '../popover-seriales-lp/popover-seriales-lp.component';
-
-import * as cloneDeep from 'lodash/cloneDeep';
-
 
 @Component({
   selector: 'app-edit-put-away',

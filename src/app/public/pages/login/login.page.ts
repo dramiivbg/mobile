@@ -327,7 +327,7 @@ export class LoginPage implements OnInit {
     const modal = await this.modalController.create({
       component: ChangeInstancePage,
       cssClass: 'my-custom-class',
-      swipeToClose: true,
+      // swipeToClose: true,
       presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
     });
     return await modal.present();

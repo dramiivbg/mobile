@@ -1,4 +1,3 @@
-import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Network } from '@capacitor/network';
@@ -19,9 +18,6 @@ import { SyncerpService } from '@svc/syncerp.service';
 import { WmsService } from '@svc/wms.service';
 import { SK_OFFLINE } from '@var/consts';
 import { E_PROCESSTYPE } from '@var/enums';
-import { constants } from 'buffer';
-import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
-import { PopoverShowInventoryComponent } from '../popover-show-inventory/popover-show-inventory.component';
 
 @Component({
   selector: 'btn-search',
