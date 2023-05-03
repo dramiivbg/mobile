@@ -15,7 +15,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "js-sha512"               
+              "js-sha512"
             ],
             "outputPath": "www",
             "index": "src/index.html",
@@ -41,7 +41,8 @@
             ],
             "styles": [
               {
-                "input": "src/sass/style.scss"
+                "input": "src/sass/style.scss",
+                "inject": true
               }
             ],
             "scripts": []
@@ -57,7 +58,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,

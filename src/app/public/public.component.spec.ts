@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PublicComponent } from './public.component';
@@ -7,7 +7,7 @@ describe('PublicComponent', () => {
   let component: PublicComponent;
   let fixture: ComponentFixture<PublicComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PublicComponent ],
       imports: [IonicModule.forRoot()]

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PopoverSelectPalletComponent } from './popover-select-pallet.component';
@@ -7,7 +7,7 @@ describe('PopoverSelectPalletComponent', () => {
   let component: PopoverSelectPalletComponent;
   let fixture: ComponentFixture<PopoverSelectPalletComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PopoverSelectPalletComponent ],
       imports: [IonicModule.forRoot()]

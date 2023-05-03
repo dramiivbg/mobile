@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { WmsMovementPage } from './wms-movement.page';
@@ -7,7 +7,7 @@ describe('WmsMovementPage', () => {
   let component: WmsMovementPage;
   let fixture: ComponentFixture<WmsMovementPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WmsMovementPage ],
       imports: [IonicModule.forRoot()]

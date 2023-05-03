@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PopoverMergeComponent } from './popover-merge.component';
@@ -7,7 +7,7 @@ describe('PopoverMergeComponent', () => {
   let component: PopoverMergeComponent;
   let fixture: ComponentFixture<PopoverMergeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PopoverMergeComponent ],
       imports: [IonicModule.forRoot()]

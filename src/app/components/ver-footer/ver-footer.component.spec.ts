@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { VerFooterComponent } from './ver-footer.component';
@@ -7,7 +7,7 @@ describe('VerFooterComponent', () => {
   let component: VerFooterComponent;
   let fixture: ComponentFixture<VerFooterComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ VerFooterComponent ],
       imports: [IonicModule.forRoot()]

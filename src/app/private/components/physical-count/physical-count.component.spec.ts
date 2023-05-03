@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PhysicalCountComponent } from './physical-count.component';
@@ -7,7 +7,7 @@ describe('PhysicalCountComponent', () => {
   let component: PhysicalCountComponent;
   let fixture: ComponentFixture<PhysicalCountComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PhysicalCountComponent ],
       imports: [IonicModule.forRoot()]

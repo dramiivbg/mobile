@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { ListPalletComponent } from './list-pallet.component';
@@ -7,7 +7,7 @@ describe('ListPalletComponent', () => {
   let component: ListPalletComponent;
   let fixture: ComponentFixture<ListPalletComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ListPalletComponent ],
       imports: [IonicModule.forRoot()]

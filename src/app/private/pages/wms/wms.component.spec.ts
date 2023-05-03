@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { WmsComponent } from './wms.component';
@@ -7,7 +7,7 @@ describe('WmsComponent', () => {
   let component: WmsComponent;
   let fixture: ComponentFixture<WmsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WmsComponent ],
       imports: [IonicModule.forRoot()]

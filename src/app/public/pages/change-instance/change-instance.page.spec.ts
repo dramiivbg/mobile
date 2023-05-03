@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { ChangeInstancePage } from './change-instance.page';
@@ -7,7 +7,7 @@ describe('ChangeInstancePage', () => {
   let component: ChangeInstancePage;
   let fixture: ComponentFixture<ChangeInstancePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ChangeInstancePage ],
       imports: [IonicModule.forRoot()]

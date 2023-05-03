@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PopoverListSerialLpComponent } from './popover-list-serial-lp.component';
@@ -7,7 +7,7 @@ describe('PopoverListSerialLpComponent', () => {
   let component: PopoverListSerialLpComponent;
   let fixture: ComponentFixture<PopoverListSerialLpComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PopoverListSerialLpComponent ],
       imports: [IonicModule.forRoot()]

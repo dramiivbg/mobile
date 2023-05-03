@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { WhitemReclassificationPage } from './whitem-reclassification.page';
@@ -7,7 +7,7 @@ describe('WhitemReclassificationPage', () => {
   let component: WhitemReclassificationPage;
   let fixture: ComponentFixture<WhitemReclassificationPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WhitemReclassificationPage ],
       imports: [IonicModule.forRoot()]

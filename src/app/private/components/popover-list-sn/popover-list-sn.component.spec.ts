@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PopoverListSNComponent } from './popover-list-sn.component';
@@ -7,7 +7,7 @@ describe('PopoverListSNComponent', () => {
   let component: PopoverListSNComponent;
   let fixture: ComponentFixture<PopoverListSNComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PopoverListSNComponent ],
       imports: [IonicModule.forRoot()]

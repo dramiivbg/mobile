@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PhysicalInventoryPage } from './physical-inventory.page';
@@ -7,7 +7,7 @@ describe('PhysicalInventoryPage', () => {
   let component: PhysicalInventoryPage;
   let fixture: ComponentFixture<PhysicalInventoryPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PhysicalInventoryPage ],
       imports: [IonicModule.forRoot()]
