@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 // import services
 import { AuthService } from '@svc/auth.service';
@@ -17,11 +17,11 @@ import { Camera, CameraResultType } from '@capacitor/camera';
 export class ProfilePage implements OnInit {
   public userSession: any = {}
   public avatar: string = "../../../../../assets/img/img-robothead.svg";
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
   public showFooter: boolean = true;
 
   constructor(private authService: AuthService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private apiService: ApiService
     , private intServ: InterceptService
     , private jsonServ: JsonService

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { PickerController, PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -21,8 +21,8 @@ export class LicensePlatesComponent implements OnInit {
   public item: any = {};
   public lp: any = {};
   public lstUoM: any = [];
-  public frm: FormGroup;
-  public frm2: FormGroup;
+  public frm: UntypedFormGroup;
+  public frm2: UntypedFormGroup;
   public code:any = {};
   public trakingClose:any;
   public trakingOpen:any;
@@ -38,7 +38,7 @@ export class LicensePlatesComponent implements OnInit {
   @Input() options: any = {};
 
   constructor(private intServ: InterceptService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController

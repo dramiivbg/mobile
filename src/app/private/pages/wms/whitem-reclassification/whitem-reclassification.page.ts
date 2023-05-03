@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { InterceptService } from '@svc/intercept.service';
 import { WmsService } from '@svc/wms.service';
@@ -12,7 +12,7 @@ import { WmsService } from '@svc/wms.service';
 })
 export class WhitemReclassificationPage implements OnInit {
 
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
 
   public binCode: any = '';
 
@@ -37,7 +37,7 @@ export class WhitemReclassificationPage implements OnInit {
   public palletH: any;
 
   constructor(
-    private barcodeScanner: BarcodeScanner, private formBuilder: FormBuilder, private wmsService: WmsService, private intServ: InterceptService
+    private barcodeScanner: BarcodeScanner, private formBuilder: UntypedFormBuilder, private wmsService: WmsService, private intServ: InterceptService
 
   ) {
 

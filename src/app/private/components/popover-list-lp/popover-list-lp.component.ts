@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { popoverController } from '@ionic/core';
@@ -14,12 +14,12 @@ import { PopoverCountingComponent } from '../popover-counting/popover-counting.c
   styleUrls: ['./popover-list-lp.component.scss'],
 })
 export class PopoverListLpComponent implements OnInit {
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
   @Input() lp:any;
   @Input() active:boolean = true;
   public listBin:any;
   public size = '';
-  constructor(private formBuilder: FormBuilder,private barcodeScanner: BarcodeScanner, 
+  constructor(private formBuilder: UntypedFormBuilder,private barcodeScanner: BarcodeScanner, 
     private popoverController: PopoverController,private intServ: InterceptService
     , private js: JsonService,private wmsService: WmsService) { }
 

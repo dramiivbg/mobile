@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./split-item.component.scss'],
 })
 export class SplitItemComponent implements OnInit {
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
 
   @Input() item:any;
   @Input() pallet:any;
@@ -22,7 +22,7 @@ export class SplitItemComponent implements OnInit {
 
   public loading:Boolean = false;
 
-  constructor(private formBuilder: FormBuilder, 
+  constructor(private formBuilder: UntypedFormBuilder, 
     private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController

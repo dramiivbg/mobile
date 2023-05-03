@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
@@ -18,14 +18,14 @@ export class UpdateItemComponent implements OnInit {
   public item: any = {};
   public lp: any = {};
   public lstUoM: any = [];
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
   @Input() options: any = {};
 
   public update = false;
 
 
   constructor(private intServ: InterceptService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController

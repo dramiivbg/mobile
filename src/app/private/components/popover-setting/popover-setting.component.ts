@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -12,12 +12,12 @@ import { JsonService } from '@svc/json.service';
 })
 export class PopoverSettingComponent implements OnInit {
 
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
   public edit = false;
 
   private session:any;
 
-  constructor(private formBuilder: FormBuilder,private popoverController: PopoverController
+  constructor(private formBuilder: UntypedFormBuilder,private popoverController: PopoverController
              ,private barcodeScanner: BarcodeScanner,private storage: Storage, private jsonService: JsonService) {
 
     this.frm = this.formBuilder.group(

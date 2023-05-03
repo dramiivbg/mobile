@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
@@ -15,7 +15,7 @@ import { WmsService } from '@svc/wms.service';
 export class PopoverSplitItemComponent implements OnInit {
 
   @Input() item:any;
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
 
   public binCode:any;
 
@@ -23,7 +23,7 @@ export class PopoverSplitItemComponent implements OnInit {
 
   
   constructor(private intServ: InterceptService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController

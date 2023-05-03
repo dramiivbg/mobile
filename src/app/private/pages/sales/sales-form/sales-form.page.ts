@@ -1,5 +1,5 @@
 import { Component, DebugEventListener, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Guid } from 'guid-typescript';
@@ -49,7 +49,7 @@ export class SalesFormPage implements OnInit {
   public idSales: string;
   public hideShipTo: boolean = false;
   public hideOrderDate: boolean = false;
-  public frm = new FormGroup({});
+  public frm = new UntypedFormGroup({});
   public orderDate: string = new Date().toDateString();
   public deliveryDate: string = new Date().toDateString();
   public fields: Array<any> = [];
@@ -74,7 +74,7 @@ export class SalesFormPage implements OnInit {
   @ViewChild('dateDelivery') dateDeliveryTime;
 
   constructor(private apiConnect: ApiService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private intServ: InterceptService
     , private syncerp: SyncerpService
     , private general: GeneralService
@@ -141,13 +141,13 @@ export class SalesFormPage implements OnInit {
    */
   async initForm() {
     let guid: any = Guid.create();
-    this.frm.addControl('id', new FormControl(guid.value));
-    this.frm.addControl('shippingName', new FormControl(""));
-    this.frm.addControl('shippingNo', new FormControl(""));
-    this.frm.addControl('customerNo', new FormControl("", Validators.required));
-    this.frm.addControl('customerName', new FormControl(""));
-    this.frm.addControl('orderDate', new FormControl(""));
-    this.frm.addControl('requestedDeliveryDate', new FormControl(""));
+    this.frm.addControl('id', new UntypedFormControl(guid.value));
+    this.frm.addControl('shippingName', new UntypedFormControl(""));
+    this.frm.addControl('shippingNo', new UntypedFormControl(""));
+    this.frm.addControl('customerNo', new UntypedFormControl("", Validators.required));
+    this.frm.addControl('customerName', new UntypedFormControl(""));
+    this.frm.addControl('orderDate', new UntypedFormControl(""));
+    this.frm.addControl('requestedDeliveryDate', new UntypedFormControl(""));
     // this.frm.addControl('lines', this.formBuilder.array([this.initLines()]));
     this.frm.addControl('lines', this.formBuilder.array([]));
   }
@@ -351,9 +351,9 @@ export class SalesFormPage implements OnInit {
         this.fields.forEach(
           x => {
             if (x.required) {
-              this.frm.addControl(x.id,new FormControl("",Validators.required));
+              this.frm.addControl(x.id,new UntypedFormControl("",Validators.required));
             } else {
-              this.frm.addControl(x.id,new FormControl(""));
+              this.frm.addControl(x.id,new UntypedFormControl(""));
             }
           }
         );
@@ -674,7 +674,7 @@ export class SalesFormPage implements OnInit {
    */
   setLines(item) {
     let locationCode: string = '';
-    let arr = new FormArray([]);
+    let arr = new UntypedFormArray([]);
     if (this.frm.controls.lines.value.length > 0) {
       this.frm.controls.lines.value.forEach(
         line =>{
@@ -740,7 +740,7 @@ export class SalesFormPage implements OnInit {
    */
   async setSalesOrderLines(lines) {
     let edit = false;
-    let arr = new FormArray([]);
+    let arr = new UntypedFormArray([]);
     for(let i in lines) {
       let item = await this.items.find(x => (x.id === lines[i].id));
       await this.addItem(item, false);
@@ -787,7 +787,7 @@ export class SalesFormPage implements OnInit {
    * @returns 
    */
    async setTempSalesLines(lines) {
-    let arr = new FormArray([]);
+    let arr = new UntypedFormArray([]);
     for(let i in lines) {
       let item = await this.items.find(x => (x.id === lines[i].id));
       await this.addItem(item, false);
@@ -854,9 +854,9 @@ export class SalesFormPage implements OnInit {
     this.fields.forEach(
       x => {
         if (x.required) {
-          this.frm.addControl(x.id,new FormControl(x.value,Validators.required));
+          this.frm.addControl(x.id,new UntypedFormControl(x.value,Validators.required));
         } else {
-          this.frm.addControl(x.id,new FormControl(x.value));
+          this.frm.addControl(x.id,new UntypedFormControl(x.value));
         }
       }
     );

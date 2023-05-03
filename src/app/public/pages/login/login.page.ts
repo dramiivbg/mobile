@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
@@ -41,11 +41,11 @@ export class LoginPage implements OnInit {
   instances = ['Development', 'Test', 'Live']
 
   public environments: Array<any> = [];
-  frm: FormGroup;
+  frm: UntypedFormGroup;
 
   constructor(private intServ: InterceptService
     , private apiConnect: ApiService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private jsonServ: JsonService
     , private router: Router
     , private storage: Storage
@@ -70,7 +70,7 @@ export class LoginPage implements OnInit {
     intServ.modifyMenu({ menu: [], showMenu: false });
     this.frm = this.formBuilder.group(
       {
-        User: new FormControl('', [
+        User: new UntypedFormControl('', [
           Validators.required,
           Validators.pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")
         ]),

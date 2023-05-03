@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { sha512 } from 'js-sha512'
@@ -27,8 +27,8 @@ export class ChangePasswordPage implements OnInit {
 
   lbLastPassword = 'Temporary password';
 
-  frmChangePassword: FormGroup;
-  constructor(private formBuilder: FormBuilder
+  frmChangePassword: UntypedFormGroup;
+  constructor(private formBuilder: UntypedFormBuilder
     , private storage: Storage
     , private apiService: ApiService
     , private intServ: InterceptService
@@ -52,7 +52,7 @@ export class ChangePasswordPage implements OnInit {
   }
 
   matchingPasswords(newPassword: string, confirmNewPassword: string) {
-    return (group: FormGroup): {[key: string]: any} => {
+    return (group: UntypedFormGroup): {[key: string]: any} => {
       let password = group.controls[newPassword];
       let confirmPassword = group.controls[confirmNewPassword];
 

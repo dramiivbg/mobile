@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
@@ -13,11 +13,11 @@ import { WmsService } from '@svc/wms.service';
 })
 export class PopoverLpEditComponent implements OnInit {
 
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
 
   @Input() options : any;
   constructor(private intServ: InterceptService
-    , private formBuilder: FormBuilder, private router: Router, private popover: PopoverController, private interceptService: InterceptService,
+    , private formBuilder: UntypedFormBuilder, private router: Router, private popover: PopoverController, private interceptService: InterceptService,
     private jsonService: JsonService, private wmsService: WmsService
     ) {
 

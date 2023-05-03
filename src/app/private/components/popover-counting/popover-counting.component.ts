@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
@@ -16,12 +16,12 @@ export class PopoverCountingComponent implements OnInit {
 
   @Input() list:any;
   public item:any;
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
   public qty = 0;
   public count = 0;
   public seriales = [];
   constructor(private intServ: InterceptService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController,private barcodeScanner: BarcodeScanner) { 

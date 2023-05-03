@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { IonInfiniteScroll, PickerController, PopoverController } from '@ionic/angular';
@@ -24,7 +24,7 @@ export class WmsItemJournalPage implements OnInit {
   
 
   
-public frm: FormGroup;
+public frm: UntypedFormGroup;
 
   public company:any = '';
   public PLUNo:any = '';
@@ -42,7 +42,7 @@ public frm: FormGroup;
   public zone:any = '';
 
   constructor(public router: Router, public popoverController: PopoverController, private intServ: InterceptService, 
-    private barcodeScanner: BarcodeScanner, private formBuilder: FormBuilder, private wmsService:WmsService, 
+    private barcodeScanner: BarcodeScanner, private formBuilder: UntypedFormBuilder, private wmsService:WmsService, 
     private js: JsonService,private pickerCtrl: PickerController) { 
 
 

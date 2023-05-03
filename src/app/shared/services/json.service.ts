@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Storage } from '@ionic/storage';
 import { SK_USER_SESSION } from '@var/consts';
 import { environment } from 'src/environments/environment';
@@ -16,7 +16,7 @@ export class JsonService {
   ) { }
 
   // convert form to Json object
-  public formToJson = async (frm: FormGroup, exclude = []): Promise<any> => {
+  public formToJson = async (frm: UntypedFormGroup, exclude = []): Promise<any> => {
     return new Promise((resolve, reject) => {
       try {
         let obj: any = {};

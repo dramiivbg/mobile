@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
@@ -34,8 +34,8 @@ export class PopoverItemTrakingComponent implements OnInit {
 
   public item: any;
   public approved = true;
-  public frm: FormGroup;
-  constructor(private formBuilder: FormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner, 
+  public frm: UntypedFormGroup;
+  constructor(private formBuilder: UntypedFormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner, 
     private jsonService: JsonService,  private intServ: InterceptService, private wmsService: WmsService,  private storage: Storage) {
 
    

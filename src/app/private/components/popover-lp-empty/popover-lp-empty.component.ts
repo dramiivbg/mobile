@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -15,12 +15,12 @@ import Swal from 'sweetalert2';
 export class PopoverLpEmptyComponent implements OnInit {
 
 
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
 
   public boolean:Boolean = true;
 
   public loading:Boolean = false;
-  constructor(public popoverController: PopoverController, private intServ: InterceptService,  private formBuilder: FormBuilder, 
+  constructor(public popoverController: PopoverController, private intServ: InterceptService,  private formBuilder: UntypedFormBuilder, 
     private jsonService: JsonService, private wmsService: WmsService) {
 
 

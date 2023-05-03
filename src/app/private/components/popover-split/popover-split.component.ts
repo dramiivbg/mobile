@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -12,13 +12,13 @@ import Swal from 'sweetalert2';
   styleUrls: ['./popover-split.component.scss'],
 })
 export class PopoverSplitComponent implements OnInit {
-  public frm: FormGroup;
+  public frm: UntypedFormGroup;
 
   @Input() lp:any;
   @Input() listSingleVoid:any;
   public No = '';
 
-  constructor(private formBuilder: FormBuilder, 
+  constructor(private formBuilder: UntypedFormBuilder, 
     private jsonService: JsonService
     , private popoverController: PopoverController
  ) { 

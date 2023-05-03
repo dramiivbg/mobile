@@ -1,6 +1,6 @@
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
 import { Storage } from '@ionic/storage';
@@ -27,13 +27,13 @@ const { App } = Plugins;
   styleUrls: ['./environments.page.scss']
 })
 export class EnvironmentsPage implements OnInit {
-  frm: FormGroup;
+  frm: UntypedFormGroup;
   version: string = "";
 
   constructor(
     private intServ: InterceptService
     , private apiConnect: ApiService
-    , private formBuilder: FormBuilder
+    , private formBuilder: UntypedFormBuilder
     , private jsonServ: JsonService
     , private router: Router
     , private sqlLite: SqlitePlureService
