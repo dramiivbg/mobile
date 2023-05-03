@@ -281,12 +281,12 @@ export class SalesFormPage implements OnInit {
   }
 
 
- async  popoverPicking(i,item: any){
+ async  popoverPicking(i,item: any,automate:boolean = false){
 
     const popover = await this.popoverController.create({
       component: PopoverCountingComponent,
       cssClass: 'popoverCountingComponent',
-      componentProps: {list:item.value, picking:true},
+      componentProps: {list:item.value, picking:true,automate},
       backdropDismiss: false
       
     });
@@ -294,7 +294,7 @@ export class SalesFormPage implements OnInit {
     const { data } = await popover.onDidDismiss();
 
    if(data.qtyToShip != undefined){
-
+    item.value.quantity = data.qty;
     switch(data.qtyToShip <= item.value.quantity){
 
       case true:
@@ -302,8 +302,8 @@ export class SalesFormPage implements OnInit {
 
         let lines = this.frm.controls.lines.value;
     
-        lines[i].qtyToShip = data.qtyToShip;
-         
+        lines[i].qtytoShip = data.qtyToShip;
+        lines[i].quantity = data.qty;         
           let subTotal =  data.qtyToShip * lines[i].unitPrice
           let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
           lines[i].lineDiscountAmount = discountAmount.toFixed(2);
@@ -412,11 +412,26 @@ export class SalesFormPage implements OnInit {
 
   // camera bar code
   onBarCode() {
+
     this.barcodeScanner.scan().then(
       barCodeData => {
         let code = barCodeData.text;
-        let item = this.allItems.find(x => x.id === code);
-        this.addItem(item);
+        let items = this.frm.get('lines')['controls'];
+
+        let item = this.items.find(x => x.id.toUpperCase() === code.toUpperCase());
+        let find  = items.find(x => x.value.id.toUpperCase() === item.id.toUpperCase());
+       // console.log(item);
+
+       if(find === undefined)this.addItem(item);
+
+       let items2 = this.frm.get('lines')['controls'];
+
+        let obj  = items2.find(x => x.value.id.toUpperCase() === item.id.toUpperCase());
+        let index = items2.indexOf(items.find(x => x.value.id.toUpperCase() === item.id.toUpperCase()));
+
+        let automate = true;
+        this.popoverPicking(index,obj,automate);
+
       }
     ).catch(
       err => {
@@ -554,12 +569,29 @@ export class SalesFormPage implements OnInit {
             }
             if (json.lines.length > 0) {
               let salesOrder = await this.syncerp.setRequest(process);
+
+              console.log(salesOrder);
+
+              //update qty To Ship
+
+              let items = this.frm.get('lines')['controls'];
+
+              
+              let obj = {
+                DocumentType: this.process.description === "Sales Order"?1:this.process.description === "Sales Credit Memo"?3:this.process.description === "Sales Invoice"?2:5,
+                DocumentNo:salesOrder.SalesOrder,
+
+
+              }
+
+
               
               this.intServ.loadingFunc(false);
               if (salesOrder.error !== undefined) {
                 this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
               } else {
                 if (this.new) {
+                
                   this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
                     this.router.navigate(['page/sales/main'], { replaceUrl: true });
                   }));
@@ -709,7 +741,7 @@ export class SalesFormPage implements OnInit {
       }
     }
     item['quantity'] = 1;
-    item['qtyToShip'] = 0;
+    item['qtytoShip'] = 0;
     this.linesS.push(item);
     if (newSales) {
       this.frm.controls.lines = this.setLines(item);
@@ -758,7 +790,7 @@ export class SalesFormPage implements OnInit {
         locationCode,
         edit: false,
         tax,
-        qtyToShip: item.qtyToShip
+        qtytoShip: item.qtytoShip
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -825,7 +857,7 @@ export class SalesFormPage implements OnInit {
           locationCode: lines[i].fields.LocationCode === null  ? '' : lines[i].fields.LocationCode,
           edit,
           tax,
-          qtyToShip: lines[i].fields.qtyToShip
+          qtytoShip: lines[i].fields.qtytoShip
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;

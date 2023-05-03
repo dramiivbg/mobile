@@ -16,6 +16,7 @@ export class PopoverCountingComponent implements OnInit {
 
   @Input() list:any;
   @Input() picking = false;
+  @Input() automate: boolean;
   public item:any;
   public frm: FormGroup;
   public qty = 0;
@@ -34,15 +35,24 @@ export class PopoverCountingComponent implements OnInit {
     this.frm = this.formBuilder.group(
       {
         qty: ['', Validators.required],
+        qtyToShip: ['', Validators.required]
        
       }
     )
+
+   
+    
     
   if(!this.picking){
     this.item = (this.list.seriales.length === 1 )?this.list:undefined;
     console.log(this.item);
    this.qty = this.list.seriales.length;
     console.log(this.list);
+    this.frm.controls.qtyToShip.disable();
+
+  }else{
+
+    (!this.automate)?this.frm.controls.qty.disable():this.frm.controls.qty.setValue(this.list.quantity);
   }  
  
   }
@@ -66,7 +76,8 @@ export class PopoverCountingComponent implements OnInit {
 
       default:
 
-        if(this.frm.valid)this.popoverController.dismiss({qtyToShip: obj.qty});
+         if(this.automate)this.list.quantity = obj.qty;
+        if(this.frm.valid)this.popoverController.dismiss({qtyToShip: obj.qtyToShip,qty: this.list.quantity});
         break;
 
     }

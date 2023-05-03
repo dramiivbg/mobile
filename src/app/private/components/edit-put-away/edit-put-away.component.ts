@@ -505,8 +505,7 @@ export class EditPutAwayComponent implements OnInit {
             for (const i in this.itemsG[key]) {
 
               let listItem: any[] = [];
-              let base:any;
-
+            
               let item = {
                 ActivityType: 1,
                 No: '',
@@ -518,15 +517,7 @@ export class EditPutAwayComponent implements OnInit {
                 Quantity: 0
               }
 
-              let item2 = {
-                ActivityType: 1,
-                No: '',
-                ItemNo: '',
-                LineNo: '',
-                ZoneCode: "STO",
-                LocationCode: '',
-                Quantity: 0
-              }
+            
 
             if(this.itemsG[key][i].Quantity > 1){
               console.log(this.itemsG);
@@ -559,59 +550,69 @@ export class EditPutAwayComponent implements OnInit {
                 listI.QtyToHandle = this.itemsG[key][i].Quantity;
 
 
-                this.obj = {
-
-                  ActivityType: 1,
-                  No: "",
-                  ItemNo: "",
-                  LineNo: "",
-                  ZoneCode: "STO",
-                  LocationCode: "",
-                  BinCode: "",
-                  Quantity: 0
-
-                }
-
-
-
               }
 
               console.log('list =>', listI);
               console.log('items =>', this.binItem)
 
+                       
 
               let res = await this.wmsService.SplitPutAwayLine(listI);
 
               console.log('res =>', res);
-              if (res.Error) throw new Error(res.Error.Message);
+            //  if (res.Error) throw new Error(res.Error.Message);
 
-              if (res.error) throw new Error(res.error.message);
+             // if (res.error) throw new Error(res.error.message);
 
+             listItem = [];
 
-               listItem = [];
+              if(!res.Error && !res.error){
 
-               item2 = {
+                
+               item = {
                 ActivityType: 1,
                 No: res.WarehousePutAwayLines[0].No,
                 ItemNo: res.WarehousePutAwayLines[0].ItemNo,
                 LineNo: res.WarehousePutAwayLines[0].LineNo,
                 ZoneCode: "STO",
                 LocationCode: res.WarehousePutAwayLines[0].LocationCode,
-                Quantity: res.WarehousePutAwayLines[0].Quantity
+                Quantity: res.WarehousePutAwayLines[0].Quantity,
+                BinCode: ""
               }
 
-              base = item2;
+                 
+              this.obj = {
 
-              listItem.push(item2);
+                ActivityType: 1,
+                No: "",
+                ItemNo: "",
+                LineNo: "",
+                ZoneCode: "STO",
+                LocationCode: "",
+                BinCode: "",
+                Quantity: 0
 
-              item2 = {
+              }
+
+              this.obj.ActivityType = 1;
+              this.obj.No = res.WarehousePutAwayLines[0].No;
+              this.obj.ItemNo = res.WarehousePutAwayLines[0].ItemNo;
+              this.obj.LineNo = res.WarehousePutAwayLines[0].LineNo;
+              this.obj.ZoneCode = "STO";
+              this.obj.LocationCode = res.WarehousePutAwayLines[0].LocationCode;
+              this.obj.Quantity = res.WarehousePutAwayLines[0].Quantity;
+
+              listItem.push(item);
+
+              item = {
                 ActivityType: 1,
                 No: "",
                 ItemNo: "",
                 LineNo: " ",
                 ZoneCode: "",
                 LocationCode: "",
-                Quantity: 0
+                Quantity: 0,
+                BinCode: ""
               }
 
 
@@ -624,9 +625,29 @@ export class EditPutAwayComponent implements OnInit {
                 ZoneCode: "STO",
                 LocationCode: res.WarehousePutAwayLines[1].LocationCode,
                 BinCode: this.itemsG[key][i].place,
-                Quantity: res.WarehousePutAwayLines[1].Quantity
+                Quantity: res.WarehousePutAwayLines[1].Quantity,
               }
+
               listItem.push(item);
+
+              }else{
+
+                item = {
+                  ActivityType: 1,
+                  No: this.obj.No,
+                  ItemNo: this.obj.ItemNo,
+                  LineNo: this.obj.LineNo,
+                  ZoneCode: "STO",
+                  LocationCode: this.obj.LocationCode,
+                  BinCode: this.itemsG[key][i].place,
+                  Quantity: this.itemsG[key][i].Quantity,
+                }
+
+                listItem.push(item);
+              } 
+
+
+          
 
             }else{
 
@@ -651,14 +672,7 @@ export class EditPutAwayComponent implements OnInit {
               if (updateI.Error) throw new Error(updateI.Error.Message);
               if(updateI.error) throw new Error(updateI.error.message);
 
-              this.obj.ActivityType = 1;
-              this.obj.No = base.No;
-              this.obj.ItemNo = base.ItemNo;
-              this.obj.LineNo = base.LineNo;
-              this.obj.ZoneCode = "STO";
-              this.obj.LocationCode = base.LocationCode;
-              this.obj.Quantity = base.Quantity;
-
+          
               console.log('obj =>', this.obj);
 
               item = {
