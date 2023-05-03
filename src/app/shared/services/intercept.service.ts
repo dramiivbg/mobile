@@ -109,7 +109,7 @@ export class InterceptService {
    * @param obj 
    */
   public updateSalesFunc() {
-    this.updateSalesSource.next();
+    this.updateSalesSource.next('');
   }
 
 }
