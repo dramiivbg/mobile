@@ -1,9 +1,4 @@
-import { identifierModuleUrl } from "@angular/compiler";
-import { typeWithParameters } from "@angular/compiler/src/render3/util";
 import { Injectable } from "@angular/core";
-import { ListPItemsComponent } from "@prv/components/list-pitems/list-pitems.component";
-
-import { Observable, Subject } from "rxjs";
 import { InterceptService } from "./intercept.service";
 import { SyncerpService } from "./syncerp.service";
 

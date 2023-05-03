@@ -3,7 +3,6 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ActionSheetController, AlertController, IonThumbnail, ModalController, PopoverController } from '@ionic/angular';
 import { Process } from '@mdl/module';
-import { PopoverOptionsComponent } from '@prv/components/popover-options/popover-options.component';
 import { GeneralService } from '@svc/general.service';
 import { ModuleService } from '@svc/gui/module.service';
 import { InterceptService } from '@svc/intercept.service';
@@ -14,13 +13,6 @@ import { WmsService } from '@svc/wms.service';
 import { LicensePlatesComponent } from '../license-plates/license-plates.component';
 
 import { PopoverLpsComponent } from '../../../components/popover-lps/popover-lps.component';
-import { ELOOP, S_IFREG } from 'constants';
-import { Key } from 'protractor';
-import { SqlitePlureService } from '@svc/sqlite-plure.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { PopoverNewPalletComponent } from '@prv/components/popover-new-pallet/popover-new-pallet.component';
-import { typeWithParameters } from '@angular/compiler/src/render3/util';
-import { ListPalletComponent } from '@prv/components/list-pallet/list-pallet.component';
 
 import { Storage } from '@ionic/storage';
 import { UpdateItemComponent } from '@prv/components/update-item/update-item.component';

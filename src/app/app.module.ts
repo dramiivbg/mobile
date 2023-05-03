@@ -40,57 +40,51 @@ import { EditPutAwayComponent } from '@prv/components/edit-put-away/edit-put-awa
 import { SharedModule } from './shared/modules/sharedModule.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoadingComponent,
-    AlertsComponent,
-    NotifyComponent,
-   
-  
-
-  ],
-  entryComponents: [],
-  imports: [
-    BrowserModule,
-    IonicModule.forRoot(),
-    FormsModule,
-    ReactiveFormsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    IonicStorageModule.forRoot()
-  ],
-  providers: [
-    PopoverController,
-    SplashScreen,
-    BarcodeScanner,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    InterceptService,
-    ApiService,
-    JsonService,
-    SqlitePlureService,
-    GeneralService,
-    LoadingComponent,
-    AlertsComponent,
-    IonicStorageModule,
-    Device,
-    AppVersion,
-    OfflineService,
-    SyncerpService,
-    FileChooser,
-    FilePath,
-    ScreenOrientation, {
-      provide: RouteReuseStrategy,
-      useClass: IonicRouteStrategy
-    },
-    Stripe,
-    NotifyComponent,
-    NotifyService,
-    UserService,
-    WmsService
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
-
- 
+    declarations: [
+        AppComponent,
+        LoadingComponent,
+        AlertsComponent,
+        NotifyComponent,
+    ],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot(),
+        FormsModule,
+        ReactiveFormsModule,
+        AppRoutingModule,
+        HttpClientModule,
+        IonicStorageModule.forRoot()
+    ],
+    providers: [
+        PopoverController,
+        SplashScreen,
+        BarcodeScanner,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        InterceptService,
+        ApiService,
+        JsonService,
+        SqlitePlureService,
+        GeneralService,
+        LoadingComponent,
+        AlertsComponent,
+        IonicStorageModule,
+        Device,
+        AppVersion,
+        OfflineService,
+        SyncerpService,
+        FileChooser,
+        FilePath,
+        ScreenOrientation, {
+            provide: RouteReuseStrategy,
+            useClass: IonicRouteStrategy
+        },
+        Stripe,
+        NotifyComponent,
+        NotifyService,
+        UserService,
+        WmsService
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -8,10 +8,6 @@ import { WmsService } from '@svc/wms.service';
 import { PopoverConfigurationCodeComponent } from '../popover-configuration-code/popover-configuration-code.component';
 import { PopoverListSNComponent } from '../popover-list-sn/popover-list-sn.component';
 import { Storage } from '@ionic/storage';
-import { TypeCheckCompiler } from '@angular/compiler/src/view_compiler/type_check_compiler';
-import { PopoverListSerialLpComponent } from '../popover-list-serial-lp/popover-list-serial-lp.component';
-import { reverse } from 'dns';
-import { throws } from 'assert';
 
 @Component({
   selector: 'app-popover-item-traking',
