@@ -20,13 +20,13 @@ export class AlertsComponent implements OnInit {
   alertObj: any = {};
   testBool: boolean = false;
   public warePW: any = {};
-  
+
   public whsePutAway: any;
   constructor(
-     private intServ: InterceptService
-    , private js: JsonService, private router: Router,private wmsService: WmsService,private modalCtrl: ModalController,
+    private intServ: InterceptService
+    , private js: JsonService, private router: Router, private wmsService: WmsService, private modalCtrl: ModalController,
     private storage: Storage, private barcodeScanner: BarcodeScanner
-  ) { 
+  ) {
     intServ.alert$.subscribe(
       (obj: any) => {
         this.alertObj = obj;
@@ -39,12 +39,10 @@ export class AlertsComponent implements OnInit {
 
   // Ok - hide alert
   onOk() {
-    if ( this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue'  &&  this.alertObj.type !== 'res')
+    if (this.alertObj.func !== undefined && this.alertObj.type !== 'confirm' && this.alertObj.type !== 'continue' && this.alertObj.type !== 'res')
 
       this.alertObj.func();
-      this.alertObj = {};
-    
-   
+    this.alertObj = {};
   }
 
   onYes() {
@@ -52,78 +50,49 @@ export class AlertsComponent implements OnInit {
     this.alertObj = {};
   }
 
-  onNo(){
-
-
-
+  onNo() {
     this.alertObj.func();
-  this.alertObj = {};
+    this.alertObj = {};
+  }
 
- 
-
-}
-
-viewRes(){
-
-  
-}
+  viewRes() {
 
 
+  }
+
+  onLp(opcion: Boolean) {
+    this.alertObj.func(opcion);
+    this.alertObj = {};
+  }
 
 
+  onItem(opcion: Boolean) {
+    this.alertObj.func(opcion);
+    this.alertObj = {};
+  }
 
-onLp(opcion:Boolean){
+  si() {
+    this.alertObj.func();
+    this.alertObj = {};
+  }
 
-  this.alertObj.func(opcion);
-  this.alertObj = {};
+  cancel() {
 
+    this.alertObj = {};
+  }
 
-}
-
-
-onItem(opcion:Boolean){
-
-
-  this.alertObj.func(opcion);
-  this.alertObj = {};
-}
-
-si(){
-  this.alertObj.func();
-  this.alertObj = {};
-}
-
-cancel(){
-
-  this.alertObj = {};
-}
-
-  async onSi(){
-
-    
+  async onSi() {
     this.storage.remove('setPutAway');
     this.storage.remove('whsePutAway');
-
-       let dataPw = this.wmsService.getPutAway();
-
-       console.log('put away',dataPw);
-
-       let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
-
-       this.whsePutAway = await this.wmsService.ListPutAwayH(listWP);
-   
-       this.storage.set('setPutAway',listWP);
-
-
-         let whsePutAway = this.whsePutAway;
-
-       this.alertObj = {};
-
-       this.storage.set('whsePutAway',whsePutAway)
-
-       this.router.navigate(['page/wms/wmsPutAway']);
-
-    
-    }
+    let dataPw = this.wmsService.getPutAway();
+    console.log('put away', dataPw);
+    let listWP = await this.wmsService.GetWarehousePutAway(dataPw.Warehouse_Activity_No);
+    this.whsePutAway = await this.wmsService.ListPutAwayH(listWP);
+    this.storage.set('setPutAway', listWP);
+    let whsePutAway = this.whsePutAway;
+    this.alertObj = {};
+    this.storage.set('whsePutAway', whsePutAway)
+    this.router.navigate(['page/wms/wmsPutAway']);
+  }
 
 }

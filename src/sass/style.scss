@@ -24,139 +24,117 @@
     src: url("../assets/fonts/source_sans_pro/SourceSansPro-Bold.ttf"); //change url accordingly
 }
 
+[hidden] {
+    display: none !important;
+}
+
 @import "./var";
 @import "./_design_root";
 @import "./_variables";
 @import "./design";
 
-
-
-
-.popoverSplitComponent{
-
+.popoverSplitComponent {
     --heigth: 400px;
     --width: 320px;
     border-radius: 23px 0 0 23px;
-
 }
 
 .transparent-modal {
-
     --width: 320px;
     border-radius: 23px 0 0 23px;
-
 }
 
 .popLicensePlate-modal {
-
     --heigth: 400px;
     --width: 320px;
     border-radius: 23px 0 0 23px;
 }
 
 .popoverConfigurationCodeComponent-modal {
-
     --min-height: 50% !important;
     --heigth: 20% !important;
     --width: 320px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverListSNComponent-modal{
-
+.popoverListSNComponent-modal {
     --heigth: 20px !important;
     --width: 365px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverListSerialLpComponent-modal{
-
+.popoverListSerialLpComponent-modal {
     --heigth: 20px !important;
     --width: 365px;
     border-radius: 23px 0 0 23px;
-
 }
 
-.popoverSerialesLpComponent{
-
+.popoverSerialesLpComponent {
     --heigth: 20px !important;
     --width: 330px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverAddItemTrakingComponent{
-
+.popoverAddItemTrakingComponent {
     --heigth: 400px;
     --width: 320px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverCountingComponent{
-   
+.popoverCountingComponent {
     --heigth: 400px;
     --width: 320px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverShowSerialesComponent{
-
+.popoverShowSerialesComponent {
     --width: 330px;
     border-radius: 23px 0 0 23px;
-
 }
 
-.popoverChildrensPalletComponent{
+.popoverChildrensPalletComponent {
     --width: 365px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverListPalletComponent{
+.popoverListPalletComponent {
     --width: 375px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverSplitItemComponent{
-
+.popoverSplitItemComponent {
     --heigth: 400px;
     --width: 320px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverPls{
-    
+.popoverPls {
     --heigth: 20px !important;
     --width: 330px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverMergeComponent{
-
+.popoverMergeComponent {
     --heigth: 400px;
     --width: 320px;
     border-radius: 23px 0 0 23px;
-
-
-
 }
 
-.popoverListLpComponent{
-
+.popoverListLpComponent {
     --min-height: 50% !important;
     --heigth: 20% !important;
     --width: 320px;
     border-radius: 23px 0 0 23px;
-
 }
 
-.PopoverSelectPalletComponent{
-
+.PopoverSelectPalletComponent {
     --heigth: 400px;
     --width: 370px;
     border-radius: 23px 0 0 23px;
 }
 
-.popoverSettingComponent{
-//--min-height: 50% !important;
+.popoverSettingComponent {
+    //--min-height: 50% !important;
     --heigth: 20% !important;
     --width: 320px;
     border-radius: 23px 0 0 23px;

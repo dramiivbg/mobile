@@ -58,12 +58,13 @@ div.login {
         
         ion-input, ion-select {   
             //--margin-top: 0px !important;         
-            --padding-top: 4px !important;
+            --padding-top: 0 !important;
             font-family: SourceSansProRegular !important;                        
             color: $plure-init-input-color;
             width: 100%;            
             font-size: 16px;
             line-height: 20px; 
+            min-height: 42px !important;
         }
 
         ion-icon {
