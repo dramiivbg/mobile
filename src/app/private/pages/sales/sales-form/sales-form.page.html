@@ -111,7 +111,7 @@
             <div [formGroupName]="i" *ngIf="item.controls.title.value != ''">
 
               <ion-item-sliding>
-                <ion-item-options side="start">
+                <ion-item-options *ngIf="!disabled" side="start">
                   <ion-item-option *ngIf="new || edit" color="danger" (click)="onDeleteLine(i)"
                     style="padding: 0 20px;">
                     <ion-icon name="trash-outline"></ion-icon>
@@ -160,11 +160,11 @@
                                 Disc %
                               </ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input *ngIf="new || edit"
+                                <ion-input disabled={{disabled}}  *ngIf="new || edit"
                                   style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
                                   formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)">
                                 </ion-input>
-                                <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number"
+                                <ion-input disabled={{disabled}}  *ngIf="!new && !edit" style="height: 14px;" type="number"
                                   formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)"
                                   readonly></ion-input>
                               </ion-col>
@@ -190,7 +190,7 @@
                             <ion-row>
                               <ion-col size="5" style="padding: 0;">U.Price</ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input *ngIf="new || edit"
+                                <ion-input disabled={{disabled}}    *ngIf="new || edit"
                                   style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
                                   formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
                                 <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number"
@@ -208,7 +208,7 @@
                   </div>
                 </ion-item>
 
-                <ion-item-options side="end" *ngIf="new || edit">
+                <ion-item-options  side="end" *ngIf="new || edit && !disabled">
                   <ion-item-option color="plureBlue" class="select-floating">
                     <ion-label>Unit of measure</ion-label>
                     <ion-select style="width: 150px;" (ionChange)="ionMeasure(i)" formControlName="unitOfMeasureCode">

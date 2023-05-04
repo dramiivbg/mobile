@@ -38,7 +38,7 @@ export class SalesFormPage implements OnInit {
   private locationMandatory: boolean;
   private customerLocationCode: string = '';
   private routExtras: any;
-
+  public disabled = false;
   public locationSetup: any;
   public new: boolean;
   public edit: boolean = false;
@@ -153,6 +153,9 @@ export class SalesFormPage implements OnInit {
     this.frm.addControl('requestedDeliveryDate', new FormControl(""));
     // this.frm.addControl('lines', this.formBuilder.array([this.initLines()]));
     this.frm.addControl('lines', this.formBuilder.array([]));
+
+    console.log('order =>',this.order);
+
   }
 
   /**
@@ -301,7 +304,7 @@ export class SalesFormPage implements OnInit {
         console.log(data.qtyToShip);
 
         let lines = this.frm.controls.lines.value;
-    
+        console.log('line =>',lines[i]);
         lines[i].qtytoShip = data.qtyToShip;
         lines[i].quantity = data.qty;         
           let subTotal =  data.qtyToShip * lines[i].unitPrice
@@ -425,10 +428,10 @@ export class SalesFormPage implements OnInit {
        if(find === undefined)this.addItem(item);
 
        let items2 = this.frm.get('lines')['controls'];
-
+       console.log(items2);
         let obj  = items2.find(x => x.value.id.toUpperCase() === item.id.toUpperCase());
-        let index = items2.indexOf(items.find(x => x.value.id.toUpperCase() === item.id.toUpperCase()));
-
+        let index = items2.indexOf(items2.find(x => x.value.id.toUpperCase() === item.id.toUpperCase()));
+        console.log(index);
         let automate = true;
         this.popoverPicking(index,obj,automate);
 
@@ -567,44 +570,32 @@ export class SalesFormPage implements OnInit {
               json['genBusinessPostingGroup'] = this.customer.genBusinessPostingGroup;
               process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
             }
-            if (json.lines.length > 0) {
-              let salesOrder = await this.syncerp.setRequest(process);
-
-              console.log(salesOrder);
-
-              //update qty To Ship
-
-              let items = this.frm.get('lines')['controls'];
-
-              
-              let obj = {
-                DocumentType: this.process.description === "Sales Order"?1:this.process.description === "Sales Credit Memo"?3:this.process.description === "Sales Invoice"?2:5,
-                DocumentNo:salesOrder.SalesOrder,
 
 
-              }
-
-
-              
-              this.intServ.loadingFunc(false);
-              if (salesOrder.error !== undefined) {
-                this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
-              } else {
-                if (this.new) {
-                
-                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
-                  }));
+              if (json.lines.length > 0) {
+                let salesOrder = await this.syncerp.setRequest(process);
+    
+                this.intServ.loadingFunc(false);
+                if (salesOrder.error !== undefined) {
+                  this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
                 } else {
-                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been successfully updated`, () => {
-                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
-                  }));
+                  if (this.new) {
+                  
+                    this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
+                      this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                    }));
+                  } else {
+                    this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been successfully updated`, () => {
+                      this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                    }));
+                  }
                 }
+              } else {
+                this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This order does not have lines`));
+                this.intServ.loadingFunc(false);
               }
-            } else {
-              this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This order does not have lines`));
-              this.intServ.loadingFunc(false);
-            }
+
+          
           }
         )
       } else if (!mandatoryBoolean) {
@@ -742,6 +733,7 @@ export class SalesFormPage implements OnInit {
     }
     item['quantity'] = 1;
     item['qtytoShip'] = 0;
+    item['OutstandingQuantity'] = 0
     this.linesS.push(item);
     if (newSales) {
       this.frm.controls.lines = this.setLines(item);
@@ -790,7 +782,8 @@ export class SalesFormPage implements OnInit {
         locationCode,
         edit: false,
         tax,
-        qtytoShip: item.qtytoShip
+        qtytoShip: item.qtytoShip,
+        OutstandingQuantity: item.OutstandingQuantity
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -857,7 +850,8 @@ export class SalesFormPage implements OnInit {
           locationCode: lines[i].fields.LocationCode === null  ? '' : lines[i].fields.LocationCode,
           edit,
           tax,
-          qtytoShip: lines[i].fields.qtytoShip
+          qtytoShip: lines[i].fields.QtytoShip == null?0:lines[i].fields.QtytoShip,
+          OutstandingQuantity: lines[i].fields.OutstandingQuantity
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -894,7 +888,8 @@ export class SalesFormPage implements OnInit {
           locationCode: lines[i].locationCode,
           edit: lines[i].edit,
           tax: lines[i].tax,
-          qtyToShip: lines[i].qtyToShip
+          qtytoShip: lines[i].qtytoShip,
+          OutstandingQuantity: lines[i].fields.OutstandingQuantity
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -910,14 +905,19 @@ export class SalesFormPage implements OnInit {
   this.barcodeScanner.scan().then(
     barCodeData => {
     let code = barCodeData.text;
-    let item = items.find(x => x.value.id === code.toUpperCase());
-    let index = items.indexOf(items.find(x => x.value.id === code.toUpperCase()));
+    if(code ! = ''){
 
-    if(item != undefined){
-      this.popoverPicking(index,item);
-    }else{
-      this.intServ.alertFunc(this.js.getAlert('alert', '', `The item ${code.toUpperCase()} is not in the list, please scan it.`));
-    }
+      let item = items.find(x => x.value.id === code.toUpperCase());
+      let index = items.indexOf(items.find(x => x.value.id === code.toUpperCase()));
+     
+      if(item != undefined){
+        this.popoverPicking(index,item);
+      }else{
+        this.intServ.alertFunc(this.js.getAlert('alert', '', `The item ${code.toUpperCase()} is not in the list, please scan it.`));
+      }
+
+    } 
+   
   
       }
     ).catch(
@@ -1122,6 +1122,10 @@ export class SalesFormPage implements OnInit {
       await this.setCustomer();
     } else {
       this.order = this.routExtras.state.order;
+
+      console.log('order =>',this.order);
+      if(this.order.fields.Status === "Released")this.disabled = true; 
+      
       this.temp = this.routExtras.state.temp;
       await this.initForm();
     }
