@@ -580,51 +580,80 @@ export class SalesFormPage implements OnInit {
             }
 
 
-              if (json.lines.length > 0) {
+        if (json.lines.length > 0) {
 
-                let list = [];
+            let list = [];
           if(this.disabled){
 
-            this.listEditShip.filter(item => {
+            let obj = {
+              DocumentType:"",
+              DocumentNo: "", 
+              LineNo: "",
+              No: "", 
+              QtytoShip: ""
+             }
 
-              let obj = {
-                DocumentType: this.process.description == "Sales Order"?"1":this.process.description == "Sales Return Order"?"5":this.process.description == "Sales Invoice"?"2":"3",
-                DocumentNo: this.order.id, 
-                LineNo: item.LineNo,
-                No: item.No, 
-                QtytoShip: item.qtytoShip
+            this.listEditShip.filter(i => {
+                console.log('item =>',i);
+               obj.DocumentType = this.process.description == "Sales Order"?"1":this.process.description == "Sales Return Order"?"5":this.process.description == "Sales Invoice"?"2":"3",
+                obj.DocumentNo =  this.order.id;
+                obj.LineNo = i.LineNo;
+                obj.No =  i.id; 
+                obj.QtytoShip =  i.qtytoShip;
+                list.push(obj);
+                obj = {
+                DocumentType:"",
+                DocumentNo: "", 
+                LineNo: "",
+                No: "", 
+                QtytoShip: ""
                }
-
-               list.push(obj);
-               obj.DocumentType =  "",
-                obj.DocumentNo =  "", 
-                obj.LineNo = "",
-                obj.No = "", 
-                obj.QtytoShip = ""
                
             });
 
           }
            
-              
 
-                let salesOrder = !this.disabled?await this.syncerp.setRequest(process): this.wmsService.Update_QtyToShip_SalesLines_V1(list);
-    
-                this.intServ.loadingFunc(false);
-                if (salesOrder.error !== undefined) {
-                  this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
-                } else {
-                  if (this.new) {
+          try {
+
+            let salesOrder =  !this.disabled?await this.syncerp.setRequest(process): this.wmsService.Update_QtyToShip_SalesLines_V1(list);
+            console.log(salesOrder);
+            if(salesOrder.Error) throw new Error(salesOrder.Error.Message);
+
+            if(salesOrder.error) throw new Error(salesOrder.error.message);    
+            
+            if(salesOrder.__zone_symbol__value.error) throw new Error(salesOrder.__zone_symbol__value.error.message);
+            
+
+            this.intServ.loadingFunc(false);
+
+            switch(this.disabled){
+              case true:
+               this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${this.order.id} has been successfully updated`, () => {
+                this.router.navigate(['page/sales/main'], { replaceUrl: true });
+              }));
+                break;
+
+              default:
+                if (this.new) {
                   
-                    this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                      this.router.navigate(['page/sales/main'], { replaceUrl: true });
-                    }));
-                  } else {
-                    this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been successfully updated`, () => {
-                      this.router.navigate(['page/sales/main'], { replaceUrl: true });
-                    }));
-                  }
+                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
+                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                  }));
+                } else {
+                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been successfully updated`, () => {
+                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                  }));
                 }
+                break;
+            }
+           
+            
+          } catch (error) {
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('error', 'Error', error.message));
+          }
+      
               } else {
                 this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This order does not have lines`));
                 this.intServ.loadingFunc(false);
@@ -887,7 +916,7 @@ export class SalesFormPage implements OnInit {
           tax,
           qtytoShip: lines[i].fields.QtytoShip == null?0:lines[i].fields.QtytoShip,
           OutstandingQuantity: lines[i].fields.OutstandingQuantity,
-          LineNo: lines[i].LineNo
+          LineNo: lines[i].fields.LineNo
 
         })
       );
