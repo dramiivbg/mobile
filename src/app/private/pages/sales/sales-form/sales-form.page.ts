@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import { debuglog } from 'util';
 import { PopoverController } from '@ionic/angular';
 import { PopoverCountingComponent } from '@prv/components/popover-counting/popover-counting.component';
+import { WmsService } from '@svc/wms.service';
 
 @Component({
   selector: 'app-sales-form',
@@ -48,6 +49,7 @@ export class SalesFormPage implements OnInit {
   public temp: any = {};
   public unitMeasureList: any = [];
   
+  public listEditShip = [];
   public idSales: string;
   public hideShipTo: boolean = false;
   public hideOrderDate: boolean = false;
@@ -88,6 +90,8 @@ export class SalesFormPage implements OnInit {
     , private moduleService: ModuleService
     , private storage: Storage
     , public popoverController: PopoverController
+    ,public wmsService: WmsService
+
   ) { 
     let objFunc = {
       func: () => {
@@ -286,6 +290,7 @@ export class SalesFormPage implements OnInit {
 
  async  popoverPicking(i,item: any,automate:boolean = false){
 
+     automate = this.disabled?false:automate; 
     const popover = await this.popoverController.create({
       component: PopoverCountingComponent,
       cssClass: 'popoverCountingComponent',
@@ -306,15 +311,18 @@ export class SalesFormPage implements OnInit {
         let lines = this.frm.controls.lines.value;
         console.log('line =>',lines[i]);
         lines[i].qtytoShip = data.qtyToShip;
-        lines[i].quantity = data.qty;         
+         lines[i].quantity = data.qty;         
           let subTotal =  data.qtyToShip * lines[i].unitPrice
           let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
           lines[i].lineDiscountAmount = discountAmount.toFixed(2);
           lines[i].totalWithoutDiscount = subTotal.toFixed(2);
           lines[i].total = Number(subTotal  - discountAmount).toFixed(2);
-          this.frm.controls.lines.setValue(lines);
+          this.frm.controls.lines.setValue(lines); 
+          if(this.disabled)this.listEditShip.push(lines[i]);
+
           this.setTotals();    
-    
+        console.log(this.listEditShip);
+
         console.log(this.frm.controls.lines);
       break;
 
@@ -573,7 +581,34 @@ export class SalesFormPage implements OnInit {
 
 
               if (json.lines.length > 0) {
-                let salesOrder = await this.syncerp.setRequest(process);
+
+                let list = [];
+          if(this.disabled){
+
+            this.listEditShip.filter(item => {
+
+              let obj = {
+                DocumentType: this.process.description == "Sales Order"?"1":this.process.description == "Sales Return Order"?"5":this.process.description == "Sales Invoice"?"2":"3",
+                DocumentNo: this.order.id, 
+                LineNo: item.LineNo,
+                No: item.No, 
+                QtytoShip: item.qtytoShip
+               }
+
+               list.push(obj);
+               obj.DocumentType =  "",
+                obj.DocumentNo =  "", 
+                obj.LineNo = "",
+                obj.No = "", 
+                obj.QtytoShip = ""
+               
+            });
+
+          }
+           
+              
+
+                let salesOrder = !this.disabled?await this.syncerp.setRequest(process): this.wmsService.Update_QtyToShip_SalesLines_V1(list);
     
                 this.intServ.loadingFunc(false);
                 if (salesOrder.error !== undefined) {
@@ -851,7 +886,9 @@ export class SalesFormPage implements OnInit {
           edit,
           tax,
           qtytoShip: lines[i].fields.QtytoShip == null?0:lines[i].fields.QtytoShip,
-          OutstandingQuantity: lines[i].fields.OutstandingQuantity
+          OutstandingQuantity: lines[i].fields.OutstandingQuantity,
+          LineNo: lines[i].LineNo
+
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -889,7 +926,7 @@ export class SalesFormPage implements OnInit {
           edit: lines[i].edit,
           tax: lines[i].tax,
           qtytoShip: lines[i].qtytoShip,
-          OutstandingQuantity: lines[i].fields.OutstandingQuantity
+          OutstandingQuantity: lines[i].fields.OutstandingQuantity,
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;

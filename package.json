@@ -62,7 +62,7 @@
     "moment": "^2.29.1",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "reinstall-node-modules": "^1.2.0",
-    "rxjs": "^7.5.0",
+    "rxjs": "^6.6.7",
     "sweetalert2": "^11.4.8",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

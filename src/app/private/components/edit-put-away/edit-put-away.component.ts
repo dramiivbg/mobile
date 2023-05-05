@@ -12,6 +12,8 @@ import { ModalLpsConfirmComponent } from '../modal-lps-confirm/modal-lps-confirm
 import { PopoverSplitItemComponent } from '../popover-split-item/popover-split-item.component';
 import { PopoverSerialesLpComponent } from '../popover-seriales-lp/popover-seriales-lp.component';
 
+import {cloneDeep} from 'lodash';
+
 @Component({
   selector: 'app-edit-put-away',
   templateUrl: './edit-put-away.component.html',

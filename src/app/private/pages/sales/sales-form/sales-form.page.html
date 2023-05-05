@@ -151,26 +151,19 @@
                           </ion-col>
                         </ion-row>
                         <ion-row class="label-SO-text-row">
-                          <ion-col size="6" class="label-line">
+                  
+                          <ion-col size="4" class="label-line">
+                            Quantity: {{item.controls.quantity.value}}
+                          </ion-col>
+
+                          <ion-col size="5" class="label-line">
                             Item No: {{item.controls.id.value}}
                           </ion-col>
-                          <ion-col size="6" class="label-line">
-                            <ion-row>
-                              <ion-col size="5" style="padding: 0;">
-                                Disc %
-                              </ion-col>
-                              <ion-col size="7" style="padding: 0;">
-                                <ion-input disabled={{disabled}}  *ngIf="new || edit"
-                                  style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
-                                  formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)">
-                                </ion-input>
-                                <ion-input disabled={{disabled}}  *ngIf="!new && !edit" style="height: 14px;" type="number"
-                                  formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)"
-                                  readonly></ion-input>
-                              </ion-col>
-                            </ion-row>
-                            <!-- Disc %: {{item.controls.lineDiscountPercentage.value}} -->
-                          </ion-col>                       
+
+                          <ion-col class="label-line" size="3">
+                            Tax: {{item.controls.taxPerc.value}}%
+                          </ion-col>
+                                             
                         </ion-row>
 
                         <ion-row class="label-SO-text-row">
@@ -183,25 +176,36 @@
                         </ion-row>
 
                         <ion-row class="label-SO-text-row">
-                          <ion-col size="4" class="label-line">
-                            Quantity: {{item.controls.quantity.value}}
-                          </ion-col>
+                      
+                          <ion-col size="6" class="label-line">
+                            <ion-row>
+                              <ion-col size="5" style="padding: 0;">
+                                Disc %
+                              </ion-col>
+                              <ion-col size="7" style="padding: 0;">
+                                
+                                <ion-input disabled={{disabled}} 
+                                   type="number"
+                                  formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)">
+                                </ion-input>
+                               
+                              </ion-col>
+                            </ion-row>
+                         
+                         <!-- Disc %: {{item.controls.lineDiscountPercentage.value}} -->
+                          </ion-col>  
                           <ion-col class="label-line" size="5">
                             <ion-row>
                               <ion-col size="5" style="padding: 0;">U.Price</ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input disabled={{disabled}}    *ngIf="new || edit"
-                                  style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
+                                <ion-input disabled={{disabled}}  type="number"
                                   formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
-                                <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number"
-                                  formControlName="unitPrice" readonly></ion-input>
+                               
                               </ion-col>
                             </ion-row>
                             <!-- Unit price: ${{item.controls.unitPrice.value}} -->
                           </ion-col>
-                          <ion-col class="label-line" size="3">
-                            Tax: {{item.controls.taxPerc.value}}%
-                          </ion-col>
+                         
                         </ion-row>
                       </ion-col>
                     </ion-row>
