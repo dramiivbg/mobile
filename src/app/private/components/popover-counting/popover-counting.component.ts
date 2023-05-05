@@ -15,6 +15,8 @@ import { PopoverListSerialLpComponent } from '../popover-list-serial-lp/popover-
 export class PopoverCountingComponent implements OnInit {
 
   @Input() list:any;
+  @Input() picking = false;
+  @Input() automate: boolean;
   public item:any;
   public frm: UntypedFormGroup;
   public qty = 0;
@@ -25,19 +27,34 @@ export class PopoverCountingComponent implements OnInit {
     , private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController,private barcodeScanner: BarcodeScanner) { 
-      this.frm = this.formBuilder.group(
-        {
-          qty: ['', Validators.required],
-         
-        }
-      )
+    
     }
 
   ngOnInit() {
-   this.item = (this.list.seriales.length === 1 )?this.list:undefined;
-   console.log(this.item);
-  this.qty = this.list.seriales.length;
-   console.log(this.list);
+
+    this.frm = this.formBuilder.group(
+      {
+        qty: ['', Validators.required],
+        qtyToShip: ['', Validators.required]
+       
+      }
+    )
+
+   
+    
+    
+  if(!this.picking){
+    this.item = (this.list.seriales.length === 1 )?this.list:undefined;
+    console.log(this.item);
+   this.qty = this.list.seriales.length;
+    console.log(this.list);
+    this.frm.controls.qtyToShip.disable();
+
+  }else{
+
+    (!this.automate)?this.frm.controls.qty.disable():this.frm.controls.qty.setValue(this.list.quantity);
+  }  
+ 
   }
 
   
@@ -47,13 +64,24 @@ export class PopoverCountingComponent implements OnInit {
 
   public async onSubmit(){
 
-    if(this.frm.valid && this.item != undefined){
+    let obj = await this.jsonService.formToJson(this.frm); 
+    switch(this.picking){
+      case false:
+        if(this.frm.valid && this.item != undefined){
+          this.popoverController.dismiss({qty:obj.qty, seriales: this.seriales, obj: this.list,type:'normal'});
+        }else{
+          this.popoverController.dismiss({qty:this.count, seriales: this.seriales,obj: this.list,type:'serial'});
+        }
+        break;
 
-      let obj = await this.jsonService.formToJson(this.frm);
-      this.popoverController.dismiss({qty:obj.qty, seriales: this.seriales, obj: this.list,type:'normal'});
-    }else{
-      this.popoverController.dismiss({qty:this.count, seriales: this.seriales,obj: this.list,type:'serial'});
+      default:
+
+         if(this.automate)this.list.quantity = obj.qty;
+        if(this.frm.valid)this.popoverController.dismiss({qtyToShip: obj.qtyToShip,qty: this.list.quantity});
+        break;
+
     }
+   
   }
 
  async onScan(){

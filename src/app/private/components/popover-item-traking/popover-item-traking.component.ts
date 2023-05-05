@@ -199,28 +199,6 @@ async popoverConfigCode(){
   }
 
 async  view(){
-
-  for (const key in this.trakingOpen) {
-
-  let  obj =   {
-  
-      Qty: 0,
-      SerialNo: "",
-      LotNo: "",
-      ExperationDate: "",
-      proceded: true
-    }
-
-    obj.Qty = this.trakingOpen[key].Quantity;
-    obj.SerialNo = this.trakingOpen[key].SerialNo;
-    obj.LotNo = this.trakingOpen[key].LotNo;
-    obj.ExperationDate = this.trakingOpen[key].ExpirationDate;
-
-    let line = this.list.find(x => x.SerialNo === obj.SerialNo && x.LotNo === obj.LotNo);
-
-    if(line === undefined)this.list.push(obj);
-  }
-
   console.log(this.trakingOpen);
 
   const popover = await this.popoverController.create({
@@ -236,25 +214,62 @@ async  view(){
   this.Quantity = 0;
   this.list.length > 0?this.list.map(x => {if(x.proceded === false){this.Quantity += x.Qty}}):this.Quantity;
     
+  }
 
-  if(data != undefined){
 
-    switch(data.data){
+  async  viewProcessed(){
 
-      case "Delete":
-        let res = await this.wmsService.GetItemTrackingSpecificationV2(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
-        this.trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
-        if(this.trakingOpen.length == 0) this.storage.remove(`traking item ${this.item.No}`);
-        console.log(this.trakingOpen);
+    let processed = [];
 
-        this.receive = await this.storage.set(`${this.item.No} ${this.item.LineNo}`, false);
-
-        break;
+    for (const key in this.trakingOpen) {
   
-     }
-  }
- 
-  }
+    let  obj =   {
+    
+        Qty: 0,
+        SerialNo: "",
+        LotNo: "",
+        ExperationDate: "",
+        proceded: true
+      }
+  
+      obj.Qty = this.trakingOpen[key].Quantity;
+      obj.SerialNo = this.trakingOpen[key].SerialNo;
+      obj.LotNo = this.trakingOpen[key].LotNo;
+      obj.ExperationDate = this.trakingOpen[key].ExpirationDate;
+  
+       processed.push(obj);
+    }
+  
+    console.log(this.trakingOpen);
+  
+    const popover = await this.popoverController.create({
+      component: PopoverListSNComponent,
+      cssClass: 'popoverListSNComponent-modal',
+      componentProps: {list:processed, item:this.item,checkbox:true},
+      
+    });
+
+    await popover.present();
+    const { data } = await popover.onDidDismiss();     
+  
+    if(data != undefined){
+  
+      switch(data.data){
+  
+        case "Delete":
+          let res = await this.wmsService.GetItemTrackingSpecificationV2(this.item.ItemNo,this.item.SourceNo,this.item.SourceLineNo);
+          this.trakingOpen = (res.ItemTrackingOpenJO.Error === undefined)?await this.wmsService.listTraking(res.ItemTrackingOpenJO.TrackingSpecificationOpen):[];
+          if(this.trakingOpen.length == 0) this.storage.remove(`traking item ${this.item.No}`);
+          console.log(this.trakingOpen);
+  
+          this.receive = await this.storage.set(`${this.item.No} ${this.item.LineNo}`, false);
+  
+          break;
+    
+       }
+    }
+   
+    }
 
  async onSubmit(){
   
@@ -287,17 +302,9 @@ async  view(){
        this.intServ.loadingFunc(true);  
        try {
 
-        let traking = [];
-         for (const key in this.list) {
-           if(this.list[key].proceded === false){
-           traking.push(this.list[key]);
-         }
-             
-      }
-
       this.total+= await this.storage.get(`${this.item.No} ${this.item.LineNo}`);
        
-       let res =   await this.wmsService.UpdateItemTrackingSpecificationOpenV2(this.item,traking,this.total);   
+       let res =   await this.wmsService.UpdateItemTrackingSpecificationOpenV2(this.item,this.list,this.total);   
 
         if(res.Error) throw new Error(res.Error.Message);
 

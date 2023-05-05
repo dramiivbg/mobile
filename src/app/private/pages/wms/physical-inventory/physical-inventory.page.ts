@@ -139,8 +139,11 @@ export class PhysicalInventoryPage implements OnInit {
     this.barcodeScanner.scan().then(
      async barCodeData => {
         let code = barCodeData.text;
+
+     if(code != ''){
+
         let res = await this.wmsService.GetBinContent_LP(code.toUpperCase(), this.locate);
-  
+   
       switch(this.bin === '' || !res.Error){
 
         case true:
@@ -426,6 +429,7 @@ export class PhysicalInventoryPage implements OnInit {
         this.lpsT = this.lps;
              
       }
+    }
     ).catch(
       err => {
         console.log(err);

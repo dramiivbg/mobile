@@ -118,41 +118,38 @@
 
                                                     </ion-row>
 
-                                                    <ion-row size="12" class="subtitlelist">
-                                                        <ion-col size="6" class="label-line-title">
+                                                    <ion-row size="12" class="subtitlelist" >
+
+                                                        <ion-col size="4" class="label-line" *ngIf="item.VariantCode != '' ">
+                                                            Variant Code: {{item.VariantCode}}
+                                                        </ion-col> 
+
+                                                        <ion-col size="4" class="label-line" >
                                                             Take: {{item.take}}
                                                         </ion-col>
 
-                                                        <ion-col size="6" class="label-line-title">
+                                                        <ion-col size="4" class="label-line">
                                                             Place: {{item.place}}
                                                         </ion-col>
 
-                                                    </ion-row>
-
-                                                    <ion-row size="12">
-
-                                                        <ion-col size="6" class="label-line"
-                                                            *ngIf="item.ExpirationDate != null">
-                                                            Exp Date: {{item.ExpirationDate}}
-                                                        </ion-col>
-                                                        <ion-col size="6" class="label-line" *ngIf="item.LotNo != null">
-                                                            Lot No: {{item.LotNo}}
-                                                        </ion-col>
 
                                                     </ion-row>
 
-                                                    <ion-row size="12">
+                                                    
+                                                    <ion-row size="12" class="subtitlelist" >
 
+                                                        <ion-col size="4" class="label-line" *ngIf="item.ExpirationDate != '' && item.ExpirationDate.charAt(0) != '0' ">
+                                                            Exp Date: {{item.VariantCode}}
+                                                        </ion-col> 
 
-                                                        <ion-col size="6" class="label-line"
-                                                            *ngIf="item.VariantCode != null">
-                                                            Variant Code: {{item.VariantCode}}
+                                                        <ion-col size="4" class="label-line" *ngIf="item.SerialNo != '' ">
+                                                            SerialNo: {{item.SerialNo}}
                                                         </ion-col>
 
-                                                        <ion-col size="6" class="label-line"
-                                                            *ngIf="item.SerialNo != null">
-                                                            Serial No: {{item.SerialNo}}
+                                                        <ion-col size="4" class="label-line"  *ngIf="item.LotNo != '' ">
+                                                            LotNo: {{item.LotNo}}
                                                         </ion-col>
+
 
                                                     </ion-row>
 

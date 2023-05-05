@@ -72,8 +72,10 @@ export class SalesMainPage implements OnInit {
     let p = await this.syncerp.processRequestParams(method, [{ type: process.salesType, pageSize:'', position:'', salesPerson: this.module.erpUserId }]);
     let sales = await this.syncerp.setRequest(p);
 
-    console.log('ventas =>', sales);
+   
     let salesList = await this.general.salesOrderList(sales.SalesOrders);
+    console.log('ventas =>', salesList);
+    
     let navg: NavigationExtras = {
       state: {
         salesList

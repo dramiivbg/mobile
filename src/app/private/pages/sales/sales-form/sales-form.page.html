@@ -111,7 +111,7 @@
             <div [formGroupName]="i" *ngIf="item.controls.title.value != ''">
 
               <ion-item-sliding>
-                <ion-item-options side="start">
+                <ion-item-options *ngIf="!disabled" side="start">
                   <ion-item-option *ngIf="new || edit" color="danger" (click)="onDeleteLine(i)"
                     style="padding: 0 20px;">
                     <ion-icon name="trash-outline"></ion-icon>
@@ -132,10 +132,10 @@
                   </ion-item-option>
                 </ion-item-options>
 
-                <ion-item>
+                <ion-item >
                   <div class="label-lines">
                     <ion-row>
-                      <ion-col size="2" class="label-line-title">
+                      <ion-col size="2" class="label-line-title" (click)="popoverPicking(i,item)">
                         <img class="noImage" *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'"
                           src="../../../../assets/img/NOIMAGE.svg" />
                         <img *ngIf="item.controls.picture.value != 'data:image/jpeg;base64,NOIMAGE'"
@@ -151,30 +151,37 @@
                           </ion-col>
                         </ion-row>
                         <ion-row class="label-SO-text-row">
-                          <ion-col size="4" class="label-line">
+                          <ion-col size="6" class="label-line">
                             Item No: {{item.controls.id.value}}
                           </ion-col>
-                          <ion-col size="4" class="label-line">
+                          <ion-col size="6" class="label-line">
                             <ion-row>
                               <ion-col size="5" style="padding: 0;">
                                 Disc %
                               </ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input *ngIf="new || edit"
+                                <ion-input disabled={{disabled}}  *ngIf="new || edit"
                                   style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
                                   formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)">
                                 </ion-input>
-                                <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number"
+                                <ion-input disabled={{disabled}}  *ngIf="!new && !edit" style="height: 14px;" type="number"
                                   formControlName="lineDiscountPercentage" (ionChange)="onChangeDiscount($event, i)"
                                   readonly></ion-input>
                               </ion-col>
                             </ion-row>
                             <!-- Disc %: {{item.controls.lineDiscountPercentage.value}} -->
+                          </ion-col>                       
+                        </ion-row>
+
+                        <ion-row class="label-SO-text-row">
+                          <ion-col size="6" class="label-line">
+                            QtyToShip: {{item.controls.qtytoShip.value}}
                           </ion-col>
-                          <ion-col size="4" class="label-line">
+                          <ion-col size="6" class="label-line">
                             Measure: {{item.controls.unitOfMeasureCode.value}}
                           </ion-col>
                         </ion-row>
+
                         <ion-row class="label-SO-text-row">
                           <ion-col size="4" class="label-line">
                             Quantity: {{item.controls.quantity.value}}
@@ -183,7 +190,7 @@
                             <ion-row>
                               <ion-col size="5" style="padding: 0;">U.Price</ion-col>
                               <ion-col size="7" style="padding: 0;">
-                                <ion-input *ngIf="new || edit"
+                                <ion-input disabled={{disabled}}    *ngIf="new || edit"
                                   style="height: 14px; border-bottom: 1px solid rgba(85, 85, 105, 0.5);" type="number"
                                   formControlName="unitPrice" (ionChange)="onChangePrice($event, i)"></ion-input>
                                 <ion-input *ngIf="!new && !edit" style="height: 14px;" type="number"
@@ -201,7 +208,7 @@
                   </div>
                 </ion-item>
 
-                <ion-item-options side="end" *ngIf="new || edit">
+                <ion-item-options  side="end" *ngIf="new || edit && !disabled">
                   <ion-item-option color="plureBlue" class="select-floating">
                     <ion-label>Unit of measure</ion-label>
                     <ion-select style="width: 150px;" (ionChange)="ionMeasure(i)" formControlName="unitOfMeasureCode">
@@ -302,18 +309,24 @@
 
 <PlureVersion class="footerReceipt" showVersion="0" *ngIf="new || edit">
   <ion-row>
-    <ion-col size="4" (click)="onItem()">
+    <ion-col size="3" (click)="onItem()">
       <ion-icon class="itemfooter" size="large" name="add-circle-outline"></ion-icon>
       <div class="itemfooter">Add</div>
     </ion-col>
-    <ion-col size="4" (click)="onBarCode()">
+    <ion-col size="3" (click)="onBarCode()">
       <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
       <div class="itemfooter">Bar code</div>
       <hr />
     </ion-col>
-    <ion-col size="4" (click)="onSubmit()">
+    <ion-col size="3" (click)="onSubmit()">
       <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
       <div class="itemfooter">Save</div>
-    </ion-col>
+    </ion-col>&nbsp;&nbsp;
+    <picture class="img" (click)="pickingAll()">
+            
+      <img  src="../../../../assets/img/picking.svg" height="35px" alt="">
+      <div  class="itemfooter">Picking</div>
+      
+    </picture>
   </ion-row>
 </PlureVersion>

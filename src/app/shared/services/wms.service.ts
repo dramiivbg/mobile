@@ -118,6 +118,24 @@ export class WmsService {
 }
 
 
+public async Update_QtyToShip_SalesLines_V1(list:any){
+
+    
+    try {
+        let obj: any = [{
+            SalesLine: list
+          
+        }]; 
+        
+        let p = await this.syncErp.processRequestParams('Update_QtyToShip_SalesLines_V1', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
  public set(wareReceipts:any){
 
     this.wareReceipts = wareReceipts;

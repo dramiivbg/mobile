@@ -15,6 +15,8 @@ import { Storage } from '@ionic/storage';
 import { SK_OFFLINE } from '@var/consts';
 import * as moment from 'moment';
 import { debuglog } from 'util';
+import { PopoverController } from '@ionic/angular';
+import { PopoverCountingComponent } from '@prv/components/popover-counting/popover-counting.component';
 
 @Component({
   selector: 'app-sales-form',
@@ -36,7 +38,7 @@ export class SalesFormPage implements OnInit {
   private locationMandatory: boolean;
   private customerLocationCode: string = '';
   private routExtras: any;
-
+  public disabled = false;
   public locationSetup: any;
   public new: boolean;
   public edit: boolean = false;
@@ -59,7 +61,7 @@ export class SalesFormPage implements OnInit {
   public taxTotal: Number = 0;
   public discountTotal: Number = 0;
   public total: Number = 0;
-  
+  public contador = 0;
 
   public process: Process = {
     processId: '',
@@ -85,6 +87,7 @@ export class SalesFormPage implements OnInit {
     , private barcodeScanner: BarcodeScanner
     , private moduleService: ModuleService
     , private storage: Storage
+    , public popoverController: PopoverController
   ) { 
     let objFunc = {
       func: () => {
@@ -150,6 +153,9 @@ export class SalesFormPage implements OnInit {
     this.frm.addControl('requestedDeliveryDate', new UntypedFormControl(""));
     // this.frm.addControl('lines', this.formBuilder.array([this.initLines()]));
     this.frm.addControl('lines', this.formBuilder.array([]));
+
+    console.log('order =>',this.order);
+
   }
 
   /**
@@ -190,7 +196,7 @@ export class SalesFormPage implements OnInit {
   }
 
   /**
-   * Edit sales
+   * Edit salesonBarCode()
    */
   async editSales(){
     if (this.edit) {
@@ -277,6 +283,52 @@ export class SalesFormPage implements OnInit {
     }
   }
 
+
+ async  popoverPicking(i,item: any,automate:boolean = false){
+
+    const popover = await this.popoverController.create({
+      component: PopoverCountingComponent,
+      cssClass: 'popoverCountingComponent',
+      componentProps: {list:item.value, picking:true,automate},
+      backdropDismiss: false
+      
+    });
+    await popover.present();
+    const { data } = await popover.onDidDismiss();
+
+   if(data.qtyToShip != undefined){
+    item.value.quantity = data.qty;
+    switch(data.qtyToShip <= item.value.quantity){
+
+      case true:
+        console.log(data.qtyToShip);
+
+        let lines = this.frm.controls.lines.value;
+        console.log('line =>',lines[i]);
+        lines[i].qtytoShip = data.qtyToShip;
+        lines[i].quantity = data.qty;         
+          let subTotal =  data.qtyToShip * lines[i].unitPrice
+          let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
+          lines[i].lineDiscountAmount = discountAmount.toFixed(2);
+          lines[i].totalWithoutDiscount = subTotal.toFixed(2);
+          lines[i].total = Number(subTotal  - discountAmount).toFixed(2);
+          this.frm.controls.lines.setValue(lines);
+          this.setTotals();    
+    
+        console.log(this.frm.controls.lines);
+      break;
+
+      default:
+        this.intServ.alertFunc(this.js.getAlert('alert', '', 'Qty To ship must not be greater than Quantity'));
+        break;
+    }
+ 
+   }
+   
+  
+
+  }
+
   onDeleteLine(i) {
     let lines: any = this.frm.controls.lines;
     lines.removeAt(i);
@@ -286,7 +338,7 @@ export class SalesFormPage implements OnInit {
 
   onIncDec(i, dec) {
     let lines = this.frm.controls.lines.value;
-    console.log('lines =>', lines[i].quantity);
+   // console.log('lines =>', lines[i].quantity);
     if (dec === 0 && lines[i].quantity !== 1) {
       lines[i].quantity -= 1;
     } else if (dec === 1) {
@@ -363,11 +415,26 @@ export class SalesFormPage implements OnInit {
 
   // camera bar code
   onBarCode() {
+
     this.barcodeScanner.scan().then(
       barCodeData => {
         let code = barCodeData.text;
-        let item = this.allItems.find(x => x.id === code);
-        this.addItem(item);
+        let items = this.frm.get('lines')['controls'];
+
+        let item = this.items.find(x => x.id.toUpperCase() === code.toUpperCase());
+        let find  = items.find(x => x.value.id.toUpperCase() === item.id.toUpperCase());
+       // console.log(item);
+
+       if(find === undefined)this.addItem(item);
+
+       let items2 = this.frm.get('lines')['controls'];
+       console.log(items2);
+        let obj  = items2.find(x => x.value.id.toUpperCase() === item.id.toUpperCase());
+        let index = items2.indexOf(items2.find(x => x.value.id.toUpperCase() === item.id.toUpperCase()));
+        console.log(index);
+        let automate = true;
+        this.popoverPicking(index,obj,automate);
+
       }
     ).catch(
       err => {
@@ -503,27 +570,32 @@ export class SalesFormPage implements OnInit {
               json['genBusinessPostingGroup'] = this.customer.genBusinessPostingGroup;
               process = await this.syncerp.processRequestParams('ProcessSalesOrders', [json]);
             }
-            if (json.lines.length > 0) {
-              let salesOrder = await this.syncerp.setRequest(process);
-              
-              this.intServ.loadingFunc(false);
-              if (salesOrder.error !== undefined) {
-                this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
-              } else {
-                if (this.new) {
-                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
-                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
-                  }));
+
+
+              if (json.lines.length > 0) {
+                let salesOrder = await this.syncerp.setRequest(process);
+    
+                this.intServ.loadingFunc(false);
+                if (salesOrder.error !== undefined) {
+                  this.intServ.alertFunc(this.js.getAlert('error', 'Error', `${salesOrder.error.message}`));
                 } else {
-                  this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been successfully updated`, () => {
-                    this.router.navigate(['page/sales/main'], { replaceUrl: true });
-                  }));
+                  if (this.new) {
+                  
+                    this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been created successfully`, () => {
+                      this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                    }));
+                  } else {
+                    this.intServ.alertFunc(this.js.getAlert('success', 'Success', `The sales No. ${salesOrder.SalesOrder} has been successfully updated`, () => {
+                      this.router.navigate(['page/sales/main'], { replaceUrl: true });
+                    }));
+                  }
                 }
+              } else {
+                this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This order does not have lines`));
+                this.intServ.loadingFunc(false);
               }
-            } else {
-              this.intServ.alertFunc(this.js.getAlert('alert', 'Alert', `This order does not have lines`));
-              this.intServ.loadingFunc(false);
-            }
+
+          
           }
         )
       } else if (!mandatoryBoolean) {
@@ -566,6 +638,7 @@ export class SalesFormPage implements OnInit {
    */
   async itemsPerCategory(category) {
     this.items = category.items;
+    console.log(this.items);
     let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
       await this.addItem(item);
       if (item.error)
@@ -659,6 +732,8 @@ export class SalesFormPage implements OnInit {
       }
     }
     item['quantity'] = 1;
+    item['qtytoShip'] = 0;
+    item['OutstandingQuantity'] = 0
     this.linesS.push(item);
     if (newSales) {
       this.frm.controls.lines = this.setLines(item);
@@ -707,6 +782,8 @@ export class SalesFormPage implements OnInit {
         locationCode,
         edit: false,
         tax,
+        qtytoShip: item.qtytoShip,
+        OutstandingQuantity: item.OutstandingQuantity
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -772,7 +849,9 @@ export class SalesFormPage implements OnInit {
           taxPerc: taxPerc,
           locationCode: lines[i].fields.LocationCode === null  ? '' : lines[i].fields.LocationCode,
           edit,
-          tax
+          tax,
+          qtytoShip: lines[i].fields.QtytoShip == null?0:lines[i].fields.QtytoShip,
+          OutstandingQuantity: lines[i].fields.OutstandingQuantity
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -809,12 +888,59 @@ export class SalesFormPage implements OnInit {
           locationCode: lines[i].locationCode,
           edit: lines[i].edit,
           tax: lines[i].tax,
+          qtytoShip: lines[i].qtytoShip,
+          OutstandingQuantity: lines[i].fields.OutstandingQuantity
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
       this.listPrices[arr.length - 1] = item.priceListC;
     }
     return arr;
+  }
+  pickingAll(){
+
+    let items = this.frm.get('lines')['controls'];
+    console.log(items);
+
+  this.barcodeScanner.scan().then(
+    barCodeData => {
+    let code = barCodeData.text;
+    if(code ! = ''){
+
+      let item = items.find(x => x.value.id === code.toUpperCase());
+      let index = items.indexOf(items.find(x => x.value.id === code.toUpperCase()));
+     
+      if(item != undefined){
+        this.popoverPicking(index,item);
+      }else{
+        this.intServ.alertFunc(this.js.getAlert('alert', '', `The item ${code.toUpperCase()} is not in the list, please scan it.`));
+      }
+
+    } 
+   
+  
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      }
+    )
+  
+  }
+
+  scanItem(){
+
+    
+    this.barcodeScanner.scan().then(
+      barCodeData => {
+        let code = barCodeData.text;
+        this.setLines;
+      }
+    ).catch(
+      err => {
+        console.log(err);
+      });
+
   }
 
   setLines2(item) {
@@ -882,6 +1008,7 @@ export class SalesFormPage implements OnInit {
 
 
   private async getItemsList() {
+    console.log(this.items);
     let obj = this.general.structSearch(this.items, 'Search item', 'Items', async (item) => {
       await this.addItem(item);
       if (item.error)
@@ -995,6 +1122,10 @@ export class SalesFormPage implements OnInit {
       await this.setCustomer();
     } else {
       this.order = this.routExtras.state.order;
+
+      console.log('order =>',this.order);
+      if(this.order.fields.Status === "Released")this.disabled = true; 
+      
       this.temp = this.routExtras.state.temp;
       await this.initForm();
     }
