@@ -13,8 +13,11 @@ Versiones que necesitas para correr la app mobile de Plur-e Mobile.
 
 ### Install Packages
 
-- npm install -g @ionic/cli
-- npm install
+``` sh
+npm install -g @ionic/cli
+npm install -g @angular/cli
+npm install
+```
 
 Si se genera error al compilar en android studio de android.support, ejecutar:
 
