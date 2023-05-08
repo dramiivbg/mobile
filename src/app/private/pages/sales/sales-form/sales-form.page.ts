@@ -39,7 +39,7 @@ export class SalesFormPage implements OnInit {
   private locationMandatory: boolean;
   private customerLocationCode: string = '';
   private routExtras: any;
-  public disabled = false;
+  public disabled: boolean;
   public locationSetup: any;
   public new: boolean;
   public edit: boolean = false;
@@ -115,6 +115,8 @@ export class SalesFormPage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    console.log(this.disabled);
+
     let offline = await this.storage.get(SK_OFFLINE);
     this.onReset();
     if (this.extras) {
@@ -158,6 +160,8 @@ export class SalesFormPage implements OnInit {
     // this.frm.addControl('lines', this.formBuilder.array([this.initLines()]));
     this.frm.addControl('lines', this.formBuilder.array([]));
 
+    
+
     console.log('order =>',this.order);
 
   }
@@ -181,6 +185,14 @@ export class SalesFormPage implements OnInit {
       this.frm.controls.requestedDeliveryDate.setValue(requestDeliveryDate);
       this.frm.addControl('lines', this.formBuilder.array([]));
       this.frm.controls.lines = await this.setSalesOrderLines(this.order.lines);
+
+      if(this.order.fields.Status === "Released"){
+       this.disabled = true;
+      }else{
+        this.disabled = false;
+      }
+
+
       this.setTotals();
     } else {
       this.idSales = this.temp.id;
@@ -290,6 +302,8 @@ export class SalesFormPage implements OnInit {
 
  async  popoverPicking(i,item: any,automate:boolean = false){
 
+    // console.log(item);
+
      automate = this.disabled?false:automate; 
     const popover = await this.popoverController.create({
       component: PopoverCountingComponent,
@@ -301,9 +315,11 @@ export class SalesFormPage implements OnInit {
     await popover.present();
     const { data } = await popover.onDidDismiss();
 
+    console.log(item.value.QuantityShipped);
+
    if(data.qtyToShip != undefined){
     item.value.quantity = data.qty;
-    switch(data.qtyToShip <= item.value.quantity){
+    switch(item.value.QuantityShipped === undefined?data.qtyToShip <= item.value.quantity:data.qtyToShip+item.value.QuantityShipped <= item.value.quantity){
 
       case true:
         console.log(data.qtyToShip);
@@ -318,7 +334,10 @@ export class SalesFormPage implements OnInit {
           lines[i].totalWithoutDiscount = subTotal.toFixed(2);
           lines[i].total = Number(subTotal  - discountAmount).toFixed(2);
           this.frm.controls.lines.setValue(lines); 
-          if(this.disabled)this.listEditShip.push(lines[i]);
+          if(this.disabled){
+            let find = this.listEditShip.find(x => x.LineNo === lines[i].LineNo);
+            find == undefined?this.listEditShip.push(lines[i]):find.qtytoShip = data.qtyToShip;
+          }
 
           this.setTotals();    
         console.log(this.listEditShip);
@@ -622,9 +641,6 @@ export class SalesFormPage implements OnInit {
 
             if(salesOrder.error) throw new Error(salesOrder.error.message);    
             
-            if(salesOrder.__zone_symbol__value.error) throw new Error(salesOrder.__zone_symbol__value.error.message);
-            
-
             this.intServ.loadingFunc(false);
 
             switch(this.disabled){
@@ -797,8 +813,10 @@ export class SalesFormPage implements OnInit {
     }
     item['quantity'] = 1;
     item['qtytoShip'] = 0;
-    item['OutstandingQuantity'] = 0
+    item['QuantityShipped'] = 0;
     this.linesS.push(item);
+    console.log(this.disabled, this.new, this.edit);
+
     if (newSales) {
       this.frm.controls.lines = this.setLines(item);
       this.setTotals();
@@ -847,7 +865,7 @@ export class SalesFormPage implements OnInit {
         edit: false,
         tax,
         qtytoShip: item.qtytoShip,
-        OutstandingQuantity: item.OutstandingQuantity
+        QuantityShipped: item.QuantityShipped
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -915,8 +933,8 @@ export class SalesFormPage implements OnInit {
           edit,
           tax,
           qtytoShip: lines[i].fields.QtytoShip == null?0:lines[i].fields.QtytoShip,
-          OutstandingQuantity: lines[i].fields.OutstandingQuantity,
-          LineNo: lines[i].fields.LineNo
+          LineNo: lines[i].fields.LineNo,
+          QuantityShipped: lines[i].fields.QuantityShipped === null?0:lines[i].fields.QuantityShipped
 
         })
       );
@@ -955,7 +973,8 @@ export class SalesFormPage implements OnInit {
           edit: lines[i].edit,
           tax: lines[i].tax,
           qtytoShip: lines[i].qtytoShip,
-          OutstandingQuantity: lines[i].fields.OutstandingQuantity,
+          QuantityShipped: lines[i].QuantityShipped
+          
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -971,13 +990,14 @@ export class SalesFormPage implements OnInit {
   this.barcodeScanner.scan().then(
     barCodeData => {
     let code = barCodeData.text;
-    if(code ! = ''){
+    if(code != ''){
 
       let item = items.find(x => x.value.id === code.toUpperCase());
       let index = items.indexOf(items.find(x => x.value.id === code.toUpperCase()));
      
       if(item != undefined){
-        this.popoverPicking(index,item);
+        let automate = this.disabled?false:true;
+        this.popoverPicking(index,item,automate);
       }else{
         this.intServ.alertFunc(this.js.getAlert('alert', '', `The item ${code.toUpperCase()} is not in the list, please scan it.`));
       }
@@ -1184,14 +1204,13 @@ export class SalesFormPage implements OnInit {
     this.new = this.routExtras.state.new;
     if (this.new) {
       this.customer = this.routExtras.state.customer;
+      this.disabled = false;
       await this.initNew();
       await this.setCustomer();
     } else {
-      this.order = this.routExtras.state.order;
-
+      this.order = this.routExtras.state.order
       console.log('order =>',this.order);
-      if(this.order.fields.Status === "Released")this.disabled = true; 
-      
+    
       this.temp = this.routExtras.state.temp;
       await this.initForm();
     }

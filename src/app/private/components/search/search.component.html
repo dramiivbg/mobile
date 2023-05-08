@@ -87,8 +87,8 @@
               </ion-row>
             </ion-item>
 
-            <ion-item-options side="end" *ngIf="item.parameters == undefined">
-              <ion-item-option color="plureBlue" (click)="onPostLine(item, i)" style="padding: 0 20px;">Post
+            <ion-item-options side="end" >
+              <ion-item-option color="plureBlue" (click)="onPostLine(item, i)" style="padding: 0 20px;" *ngIf="item.parameters == undefined">Post
               </ion-item-option> <!-- Delete item -->
             </ion-item-options>
           </ion-item-sliding>
