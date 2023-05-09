@@ -15,7 +15,6 @@ import { PopoverLocateComponent } from '@prv/components/popover-locate/popover-l
 import { PopoverSettingComponent } from '@prv/components/popover-setting/popover-setting.component';
 
 
-
 @Component({
   selector: 'app-wms-main',
   templateUrl: './wms-main.page.html',
@@ -181,6 +180,7 @@ export class WmsMainPage implements OnInit {
 
   }
 
+  
 
   ChangeLocate(){
 

@@ -57,13 +57,15 @@ export class PhysicalInventoryPage implements OnInit {
 
   this.lists = await  this.storage.get('inventory');
   this.listPhysical = await  this.storage.get('inventory');
+
+  this.quantity = this.lists.length;
   
   this.lists.map(x => {
     let line = this.bins.find(b => b === x.BinCode);
     if(line === null || line === undefined)this.bins.push(x.BinCode);
   });
 
-  console.log(this.lists);
+  console.log(this.lists,this.bins);
 
   this.batch = await  this.storage.get('batch'); 
 
