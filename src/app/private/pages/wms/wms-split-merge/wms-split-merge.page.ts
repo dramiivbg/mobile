@@ -176,21 +176,7 @@ export class WmsSplitMergePage implements OnInit {
               this.lps.push(this.lp);
               this.listLp.push(this.lp);
 
-              let item = await this.wmsService.GetItem(this.lp.fields.PLUNo);
-
-              let listI = await this.wmsService.listItem(item);
-
-              listI.fields.Picture = `data:image/jpeg;base64,${listI.fields.Picture}`;
-
-              this.listPicture.push(listI);
-
-              console.log(this.listPicture);
-
             }
-
-
-
-
 
             console.log(this.lp);
 
@@ -198,9 +184,9 @@ export class WmsSplitMergePage implements OnInit {
 
           } else {
 
-
+            console.log(lp);
+            
             this.palletH = await this.wmsService.PalletH(lp);
-
             let line = this.pallets.find(pallet => pallet.fields.PLULPDocumentNo === this.palletH.fields.PLULPDocumentNo);
 
             if (line === undefined || line === null) {
@@ -212,26 +198,6 @@ export class WmsSplitMergePage implements OnInit {
 
               this.palletsL[this.palletH.fields.PLULPDocumentNo] = this.palletL;
 
-              this.palletsL[this.palletH.fields.PLULPDocumentNo].filter(async (lp) => {
-
-
-                lp = await this.wmsService.getLpNo(lp.PLUNo);
-
-                this.lp = await this.wmsService.ListLp(lp);
-
-                let item = await this.wmsService.GetItem(this.lp.fields.PLUNo);
-
-                let listI = await this.wmsService.listItem(item);
-
-                listI.fields.Picture = `data:image/jpeg;base64,${listI.fields.Picture}`;
-
-                this.listImagenesP.push(listI);
-
-                console.log(this.listImagenesP);
-
-
-
-              });
 
             }
 
@@ -286,24 +252,24 @@ export class WmsSplitMergePage implements OnInit {
 
     let resS;
     try {
-       resS = await this.wmsService.GetLPArrayByStatus(false,0);
+       resS = await this.wmsService.GetAllLicencesPlateByStatus(false,0);
       if(resS.Error) throw new Error(resS.Error.Message);
       if(resS.error) throw new Error(resS.error.message);
       
-      
+      console.log(resS);
+
     } catch (error) {
       return this.intServ.alertFunc(this.js.getAlert('alert', error.message,'Please create an empty LP single in the drop-down button below. '));
     
     }
    
-    let listSingleVoid = await this.wmsService.listPalletVoid(resS.LicensePlates.LPHeaders);
   
 
     const popover = await this.popoverController.create({
       component: PopoverSplitComponent,
       cssClass: 'popoverSplitComponent',
       backdropDismiss: false,
-      componentProps: { lp,listSingleVoid }
+      componentProps: { lp,listSingleVoid: resS.LicensePlates}
     });
     await popover.present();
 
@@ -323,7 +289,9 @@ export class WmsSplitMergePage implements OnInit {
          NewLicensePlateCode: data.lpNo,
           NewQuantity:  data.qty,
           OriginalQuantityModified: qty,
-          OriginalLicensePlateCode: lpO
+          OriginalLicensePlateCode: lpO,
+          ItemCode: lp.fields.PLUNo,
+          LineNo: lp.fields.PLULineNo
         };
   
   
@@ -350,17 +318,6 @@ export class WmsSplitMergePage implements OnInit {
       }
     }
 
-  }
-
-
-  public UploadI() {
-
-    this.image = true;
-  }
-
-  public RemoveI() {
-
-    this.image = false;
   }
 
 
@@ -439,146 +396,36 @@ try {
     let No = pallet.fields.PLULPDocumentNo;
 
 
-    const modal = await this.modalCtrl.create({
+    const popover = await this.popoverController.create({
       component: OptionsLpsOrItemsComponent,
-      componentProps: { lists: lines, No }
+      cssClass: 'optionsLpsOrItemsComponent',
+      componentProps: { lists: lines, No },
+      backdropDismiss: false
 
 
     });
-    modal.present();
+    popover.present();
 
-    const { data, role } = await modal.onWillDismiss();
+    const { data, role } = await popover.onDidDismiss();
 
-  let single = data.data;
+  let singles = data.lps;
 
+  let items = data.items;
+  try {
+    this.intServ.loadingFunc(true);
+    let listPalletVoid = await this.wmsService.GetAllLicencesPlateByStatus(true,0);
+    if(listPalletVoid.Error) throw new Error(listPalletVoid.Error.Message);
+    if(listPalletVoid.error) throw new Error(listPalletVoid.error.message);
 
-    switch (data.data.PLUType) {
+    if(singles.length > 0)this.splitLP(pallet,singles,listPalletVoid);
 
+    if(items.length > 0)this.splitItem(pallet,items,listPalletVoid);
 
-      case 'LP':
-
-      let resP;
-
-      try {
-        resP = await this.wmsService.GetLPArrayByStatus(true,0);
-        if(resP.Error) throw new Error(resP.Error.Message);
-        if(resP.error) throw new Error(resP.error.message);
-        
-        
-      } catch (error) {
-        
-       return this.intServ.alertFunc(this.js.getAlert('alert', error.message,'Please create an empty Pallet in the drop-down button below. '));
-        
-      }
-    
-    
-      let listPalletVoid = await this.wmsService.listPalletVoid(resP.LicensePlates.LPHeaders);
-      const popover = await this.popoverController.create({
-        component: PopoverSelectPalletComponent,
-        cssClass: "PopoverSelectPalletComponent",
-        componentProps: {pallet,single, listPalletVoid},
-        backdropDismiss: false
-      
-      });
-      popover.present();
-
-      const { data} = await popover.onWillDismiss();
-
-
-    if(data.palletNo != undefined){
-      
-      this.intServ.loadingFunc(true);
-      let obj = {
-
-        OldLPPalletCode: pallet.fields.PLULPDocumentNo,
-        NewLPPalletCode: data.palletNo,
-        LPChildSingleCode: single.PLUNo
-      }
-
-      try {
-
-        let res = await this.wmsService.SplitPallet_LPSingle(obj);
-
-        console.log(res);
-
-        if (res.Error) throw new Error(res.Error.Message);
-        if(res.error) throw new Error(res.error.message);
-
-        
-        console.log(res);
-
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The license plate ${single.PLUNo} has been removed from the pallet ${pallet.fields.PLULPDocumentNo} to the pallet
-       ${data.palletNo}`, async() => {
-        this.pallets = [];
-        this.palletH = undefined
-
-      }));
-
-      } catch (error) {
-
-        this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
-
-      }
-    }
-
-     
-
-        break;
-
-      case 'Item':
-
-        let res = await this.splitQ(data.data, pallet);
-
-        if (res.data === 'split') {
-
-
-          this.intServ.loadingFunc(true);
-
-          let lp = await this.wmsService.getLpNo(pallet.fields.PLULPDocumentNo.toUpperCase());
-
-
-          if (!lp.Error) {
-
-            this.palletL = await this.wmsService.PalletL(lp);
-
-            this.palletsL[pallet.fields.PLULPDocumentNo] = this.palletL;
-
-            this.intServ.loadingFunc(false);
-
-
-          } else {
-
-            this.pallets.filter((Pallet, index) => {
-
-              if (Pallet.fields.PLULPDocumentNo === pallet.fields.PLULPDocumentNo) {
-
-                this.pallets.splice(index, 1);
-
-              }
-            });
-
-            if (this.pallets.length === 0) {
-              this.palletH = undefined;
-            }
-
-            this.intServ.loadingFunc(false);
-          }
-
-
-
-
-        }
-
-
-
-        break;
-
-
-
-
-    }
+  } catch (error) {
+    this.intServ.loadingFunc(false);
+    this.intServ.alertFunc(this.js.getAlert('error','',error.message));
+  }
+ 
 
 
 
@@ -589,25 +436,172 @@ try {
 
   }
 
+  async splitLP(pallet:any,singles:any,listPalletVoid:any){
 
-
-
-  async splitQ(item: any, pallet: any) {
-
+    this.intServ.loadingFunc(false);
     const popover = await this.popoverController.create({
-      component: SplitItemComponent,
-      cssClass: ' splitItemComponent',
-      translucent: true,
-      componentProps: { item, pallet }
+      component: PopoverSelectPalletComponent,
+      cssClass: "PopoverSelectPalletComponent",
+      componentProps: {pallet,singles, listPalletVoid:listPalletVoid.LicensePlates},
+      backdropDismiss: false
+    
     });
-    await popover.present();
+    popover.present();
 
-    const { data } = await popover.onDidDismiss();
+    const { data} = await popover.onWillDismiss();
+
+  console.log(singles);
+
+  if(data.palletNo != undefined){
+
+  // let lists = [];
+
+  /*  let obj = {
+
+      OldLPPalletCode: "",
+      NewLPPalletCode: "",
+      LPChildSingleCode: ""
+    }
+
+    */
+    
+    this.intServ.loadingFunc(true);
+
+    let obj2 = {
+      OldLPPalletCode: pallet.fields.PLULPDocumentNo,
+      NewLPPalletCode: data.palletNo,
+      LPChildArray: []
+    }
+
+    let lp = {
+      LPChildSingleCode: ""
+    }
 
 
-    return data;
+      for (const key in singles) {
+     
+        lp.LPChildSingleCode =  singles[key].PLUNo;
 
+        obj2.LPChildArray.push(lp)
+      
+        lp = {
+          LPChildSingleCode: ""
+        }
+    
+    }
+    
+
+  /*  for (const key in singles) {
+     
+        obj.OldLPPalletCode = pallet.fields.PLULPDocumentNo;
+        obj.NewLPPalletCode =  data.palletNo;
+        obj.LPChildSingleCode =  singles[key].PLUNo;
+        
+        lists.push(obj);
+
+        console.log(lists);
+
+    obj = {
+
+      OldLPPalletCode: "",
+      NewLPPalletCode: "",
+      LPChildSingleCode: ""
+    }
+
+    }
+
+    */
+    
+
+    try {
+
+     // let res = await this.wmsService.SplitPallet_LPSingle(lists);
+     let res = await this.wmsService.SplitPallet_LPSingleV2(obj2);
+      console.log(res);
+
+      if (res.Error) throw new Error(res.Error.Message);
+      if(res.error) throw new Error(res.error.message);
+
+      
+      console.log(res);
+
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('success', '', `The license plates has been removed from the pallet ${pallet.fields.PLULPDocumentNo} to the pallet
+     ${data.palletNo}`, async() => {
+      this.pallets = [];
+      this.palletH = undefined
+
+    }));
+
+    } catch (error) {
+
+      this.intServ.loadingFunc(false);
+      this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
+
+    }
   }
+
+    
+  }
+
+
+ async splitItem(palletOld:any,items:any,listPalletVoid:any, contador:number = 0,list:any[] = []){
+  this.intServ.loadingFunc(false);
+  const popover = await this.popoverController.create({
+    component: SplitItemComponent,
+    cssClass: 'splitItemComponent',
+    translucent: true,
+    componentProps: { item:items[contador], palletOld,listPalletVoid:listPalletVoid.LicensePlates}
+  });
+  await popover.present();
+
+  const { data } = await popover.onDidDismiss();
+
+    if (data.qty !== undefined) {
+
+      let qty = items[contador].PLUQuantity - data.qty;
+
+      let obj2 = {
+        ItemCode: items[contador].PLUNo
+      }
+
+      list.push(obj2);
+
+      obj2 = {
+        ItemCode: ""
+      }
+
+      contador++;
+
+     if(contador > items.length)this.splitItem(palletOld,items,listPalletVoid,contador,list);
+
+   /*   let obj = {
+        NewLicensePlateCode: data.palletNew,
+        NewQuantity: data.qty,
+        OriginalQuantityModified: qty,
+        OriginalLicensePlateCode: palletOld,
+        ItemCode: items[contador].PLUNo
+      };
+
+      console.log('inicio =>',obj);
+
+
+      let res = await this.wmsService.SplitPallet_Item(obj);
+
+      console.log(res);
+
+      if(res.Error) throw new Error(res.Error.Message);
+
+      if(res.message) throw new Error(res.message);
+      
+*/
+  
+    }
+  }
+
+
+
+
 
 
 }

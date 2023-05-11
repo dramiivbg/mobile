@@ -1,2 +1,12 @@
 @import "~src/sass/wms";
 
+.footernewpallettabs {
+    --background: linear-gradient(to bottom, var(--ion-color-primary), var(--ion-color-primary-background)) !important;
+    --border: 0px !important;
+}
+
+.itemfooterSave{
+
+    color: var(--ion-color-plureWhite-icon);
+
+}

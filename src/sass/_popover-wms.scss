@@ -162,3 +162,37 @@ ion-fab-button {
     }
   }
 
+
+.newColor2 {
+    width: 100%;
+    margin: 0px 0 1px 0px;
+
+}
+
+
+.content{
+
+    overflow-y: scroll;
+    height: 20vh !important;
+
+}
+
+ion-row.newColorCheck {
+    background: linear-gradient(to top, var(--ion-color-primary), var(--ion-color-primary-background)) !important;
+    margin: 5px 0 0;
+    font-weight: bold;
+    color: var(--ion-color-plure-text);
+}
+
+
+ion-checkbox {
+    --border-radius: 50%;
+}
+
+
+
+ion-row.delivery {
+
+
+    overflow: auto;
+}

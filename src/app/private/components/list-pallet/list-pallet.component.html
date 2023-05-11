@@ -1,8 +1,8 @@
-<PlureHeader   type="1" title="List Pallet" url="page/wms/wmsReceipt" notify="0"></PlureHeader>
-
+<PlureHeader type="1" title="List Pallet" url="page/wms/wmsReceipt" notify="0" *ngIf="boolean"></PlureHeader>
+<PlureHeader type="1" title="List LP Single" url="page/wms/wmsReceipt" notify="0" *ngIf="!boolean"></PlureHeader >
 
 <ion-content>
-    <form >
+    <form>
         <div class="designform-header" *ngIf="wareReceipts != undefined">
             <ion-row>
                 <ion-col>
@@ -27,65 +27,152 @@
             </ion-row>
         </div>
         <div class="accorn">
-         
+
             <div class="accorn-body">
-                <div class="lines">
+                <div class="lines" *ngIf="boolean">
                     <ion-list *ngFor="let item of listPallet; let i=index">
                         <div>
 
-                         
-                                    <div class="label-lines" part="item-width" >
-                                        <ion-row >
 
-                                            <ion-item-sliding>
+                            <div class="label-lines" part="item-width">
+                                <ion-row>
 
-                        
-                                                <ion-item>
-                                          <ion-col size="15" class="item" (click)="listLpOrItems(item)">
-                     
-                                            <ion-row >
-                                                <ion-col size="6" 
-                                                    class="label-line-title blue">
-                                                    {{item.LPDocumentNo}}
-                                                </ion-col>
-
-                                                <ion-col size="6" class="label-line">
-                                                    DateC: {{item.LPLines[0].SystemCreatedAt | date:'dd-MM-yyyy'
-                                                    }}
-                                                  </ion-col>
-                                               
-
-                                            </ion-row>
+                                    <ion-item-sliding>
 
 
-                                         
-                                         
-                                        </ion-col>
+                                        <ion-item>
+                                            <ion-col size="15" class="item" (click)="listLpOrItems(item)">
 
-                                    </ion-item>    
-                                
-                                    <ion-item-options side="end">
-                                        <ion-item-option color="danger" (click)="delete(item)">
-                                          <ion-icon slot="icon-only" name="trash"></ion-icon>
-                                        </ion-item-option>
+                                                <ion-row>
+                                                    <ion-col size="6" class="label-line-title blue">
+                                                        {{item.LPDocumentNo}}
+                                                    </ion-col>
 
-                                      
-                                      </ion-item-options>
-                          
-                                </ion-item-sliding>
+                                                    <ion-col size="6" class="label-line">
+                                                        DateC: {{item.LPLines[0].SystemCreatedAt | date:'dd-MM-yyyy'
+                                                        }}
+                                                    </ion-col>
 
-                                        </ion-row>
-                                    </div>
-             
 
-                                
+                                                </ion-row>
 
-                                 
-                              
+
+
+
+                                            </ion-col>
+
+                                        </ion-item>
+
+                                        <ion-item-options side="end">
+                                            <ion-item-option color="danger" (click)="delete(item)">
+                                                <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                            </ion-item-option>
+
+
+                                        </ion-item-options>
+
+                                    </ion-item-sliding>
+
+                                </ion-row>
+                            </div>
                         </div>
                     </ion-list>
                 </div>
+
+
+                <div class="lines" *ngIf="!boolean">
+                    <ion-list *ngFor="let item of listLP; let i=index">
+                        <div>
+
+
+                            <div class="label-lines" part="item-width">
+                                <ion-row>
+
+                                    <ion-item-sliding>
+
+
+                                        <ion-item>
+                                            <ion-col size="15" class="item" (click)="listSerial(item)">
+
+                                                <ion-row>
+                                                    <ion-col size="6" class="label-line-title blue">
+                                                        {{item.LPDocumentNo}}
+                                                    </ion-col>
+
+                                                    <ion-col size="6" class="label-line-title">
+                                                        Qty:{{item.qty
+                                                        }}
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                                <ion-row>
+                                                    <ion-col size="6" class="label-line">
+                                                        Item No: {{item.LPLines[0].PLUNo}}
+                                                    </ion-col>
+
+                                                    <ion-col size="6" class="label-line">
+                                                        UoM: {{item.LPLines[0].PLUUnitofMeasureCode
+                                                        }}
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                                <ion-row>
+                                                    <ion-col size="6" class="label-line">
+                                                        Location code: {{item.LocationCode}}
+                                                    </ion-col>
+
+                                                    <ion-col size="6" class="label-line">
+                                                        DateC: {{item.LPLines[0].SystemCreatedAt | date:'dd-MM-yyyy'
+                                                        }}
+                                                    </ion-col>
+
+                                                </ion-row>
+
+                                            </ion-col>
+
+                                        </ion-item>
+
+                                        <ion-item-options side="end">
+                                            <ion-item-option color="danger" (click)="delete(item)">
+                                                <ion-icon slot="icon-only" name="trash"></ion-icon>
+                                            </ion-item-option>
+
+
+                                        </ion-item-options>
+
+                                    </ion-item-sliding>
+
+                                </ion-row>
+                            </div>
+
+                        </div>
+                    </ion-list>
+                </div>
+
             </div>
         </div>
     </form>
 </ion-content>
+
+
+
+<ion-tab-bar class="footernewpallettabs" slot="bottom">
+    <ion-tab-button tab="movies" (click)=" enablePallet()">
+        <img  src="../../../../assets/img/pallet-_2_.svg" width="100px" height="30px"  alt="">
+        <ion-label class="itemfooterSave">Pallets</ion-label>
+        <ion-badge>{{QtyPallet}}</ion-badge>
+    </ion-tab-button>
+    <ion-tab-button tab="music" (click)="enableLP()">
+        <ion-label class="itemfooterSave">LP single</ion-label>
+        <ion-icon class="itemfooterSave" size="large" name="newspaper-outline"></ion-icon>
+        <ion-badge>{{QtyLP}}</ion-badge>
+    </ion-tab-button>
+
+   <ion-tab-button tab="movies" (click)="deleteAll()">
+      <ion-label class="itemfooterSave">Delete all</ion-label>
+      <ion-icon class="itemfooterSave" size="large" name="trash-outline"></ion-icon>
+    </ion-tab-button>
+
+</ion-tab-bar>

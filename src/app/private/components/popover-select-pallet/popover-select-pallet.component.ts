@@ -11,7 +11,7 @@ import { JsonService } from '@svc/json.service';
 })
 export class PopoverSelectPalletComponent implements OnInit {
 @Input() pallet:any;
-@Input() single:any;
+@Input() singles:any;
 @Input() listPalletVoid:any;
 public No = '';
   
@@ -19,7 +19,7 @@ public No = '';
     private intServ: InterceptService,private jsonService: JsonService) { }
 
   ngOnInit() {
-    console.log(this.pallet,this.single);
+    console.log(this.pallet,this.singles);
     console.log('list void',this.listPalletVoid);
   }
 

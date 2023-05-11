@@ -109,7 +109,9 @@ import { PopoverSettingComponent } from '@prv/components/popover-setting/popover
         PopoverListPalletComponent,
         PagueInquiriesComponent,
         PopoverSelectPalletComponent,
-        PopoverSettingComponent
+        PopoverSettingComponent,
+        OptionsLpsOrItemsComponent
+
     ],
     imports: [
         CommonModule,

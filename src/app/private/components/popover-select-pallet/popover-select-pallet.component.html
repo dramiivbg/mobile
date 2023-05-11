@@ -20,11 +20,12 @@
             <ion-col size="5" >Pallet old</ion-col>
             <ion-col size="7" class="dataitem">{{pallet.fields.PLULPDocumentNo}}</ion-col>
           </ion-row>
-
-          <ion-row class="contentbody" >
+          <div class="main">
+          <ion-row class="contentbody" *ngFor="let single of singles">
             <ion-col size="5" >LP single</ion-col>
             <ion-col size="7" class="dataitem">{{single.PLUNo}}</ion-col>
           </ion-row>
+        </div>
        
 
           <ion-row class="contentbody">
@@ -37,7 +38,7 @@
                           <ion-select interface="popover" #p (ionChange)="onSelect(p.value)"
                               placeholder="Pallet">
                               <ion-select-option *ngFor="let item of listPalletVoid">
-                                {{item.PLULPDocumentNo}}
+                                {{item.LPDocumentNo}}
                               </ion-select-option>
                           </ion-select>
                       </ion-item>

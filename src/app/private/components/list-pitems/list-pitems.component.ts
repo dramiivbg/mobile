@@ -9,7 +9,7 @@ import { WmsService } from '@svc/wms.service';
 import { Storage } from '@ionic/storage';
 import { ListPalletComponent } from '../list-pallet/list-pallet.component';
 import { PopoverOptionsComponent } from '../popover-options/popover-options.component';
-
+import * as cloneDeep from 'lodash/cloneDeep';
 @Component({
   selector: 'app-list-pitems',
   templateUrl: './list-pitems.component.html',
@@ -193,21 +193,18 @@ export class ListPItemsComponent implements OnInit {
   if(this.boolean){
   
     for(let i =0; i < this.testListL.length; i++) {
-  
-  
+
       this.testListL[i].checked = true;
-  
-  
-   
       }  
+      this.listL = cloneDeep(this.listLp);
       console.log(this.testListL);
     }else{
   
       for(let i =0; i < this.testListI.length; i++) {
-        this.testListI[i].checked = true;
-  
-  
-        }     
+        this.testListI[i].checked = true; 
+        }   
+        
+      this.listI = cloneDeep(this.listItem);
     }
   
     break;
@@ -219,18 +216,19 @@ export class ListPItemsComponent implements OnInit {
   
         for(let i =0; i < this.testListL.length; i++) {
           this.testListL[i].checked = false;
-  
-  
+
           }
+
+        this.listL = [];
           console.log(this.testListL);
         }else{
       
           for(let i =0; i < this.testListI.length; i++) {
-            this.testListI[i].checked = false;
-  
-        
+            this.testListI[i].checked = false;      
   
             }
+
+          this.listI = [];
             console.log(this.testListI);
         }
     

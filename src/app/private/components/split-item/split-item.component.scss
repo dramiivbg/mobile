@@ -1,4 +1,5 @@
 @import "~src/sass/popover-wms";
+@import "~src/sass/wms";
 
 ion-input{
 
@@ -12,4 +13,14 @@ ion-input{
     font-size: 20px;
 
     padding-top: 10px;
+}
+
+.selectpopupitem {
+    border-bottom: none !important;
+    padding: 0 0 10px 0 !important;
+}
+
+
+.qtytoreceive {
+    font-weight: bold;
 }

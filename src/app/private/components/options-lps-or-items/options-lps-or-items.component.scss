@@ -1,26 +1,6 @@
+@import "~src/sass/popover-wms";
 @import "~src/sass/wms";
 
 
-ion-row.newH {
-    background: linear-gradient(to top, var(--ion-color-primary), var(--ion-color-primary-background)) !important;
-    margin: 5px 0 0;
-    font-weight: bold;
-}
-
-.docnumber {
-    text-align: center;
-    background: linear-gradient(to top, var(--ion-color-primary), var(--ion-color-primary-background)) !important;
-    color: var(--ion-color-plure-text);;
-    // margin-bottom: 1rem;
-    font-weight: bold;
-}
-
-ion-icon {
-    color: var(--ion-color-plureBlue);
-}
 
 
-
-ion-checkbox{
-    --border-radius: 50%;
-}

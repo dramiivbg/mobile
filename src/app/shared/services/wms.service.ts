@@ -77,7 +77,7 @@ export class WmsService {
 
  }
 
- public async GetLPArrayByStatus(IsPallet:boolean,LicensePlateStatus:number){
+ public async GetAllLicencesPlateByStatus(IsPallet:boolean,LicensePlateStatus:number){
 
     
     try {
@@ -86,7 +86,7 @@ export class WmsService {
             LicensePlateStatus
           }]; 
         
-        let p = await this.syncErp.processRequestParams('GetLPArrayByStatus', obj);
+        let p = await this.syncErp.processRequestParams('GetAllLicencesPlateByStatus', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
     } catch (error) {
@@ -1003,13 +1003,7 @@ public async SplitLPSingle_Item(objS:any){
     try {
 
     
-        let obj: any = [{
-    
-            NewLicensePlateCode: objS.NewLicensePlateCode,
-            NewQuantity: objS.NewQuantity,
-            OriginalQuantityModified: objS.OriginalQuantityModified,
-            OriginalLicensePlateCode: objS.OriginalLicensePlateCode
-        }];
+        let obj: any = [objS];
     
 
         console.log(JSON.stringify(obj));
@@ -1025,6 +1019,28 @@ public async SplitLPSingle_Item(objS:any){
 
 }
 
+
+public async SplitPallet_LPSingleV2(list:any){
+
+    
+    try {
+
+    
+        let obj: any = [list];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('SplitPallet_LPSingleV2', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
 
 public async MergeLPSingle(LicensePlatesHeadersAddedCode:any,LicensePlatesHeadersBaseCode:any){
 
@@ -1062,11 +1078,15 @@ public async SplitPallet_LPSingle(objP:any){
     try {
 
     
-        let obj: any = [  {
+      /*  let obj: any = [  {
             OldLPPalletCode: objP.OldLPPalletCode,
             NewLPPalletCode: objP.NewLPPalletCode,
             LPChildSingleCode: objP.LPChildSingleCode
           }];
+
+          */
+
+          let obj: any = objP;
     
 
         console.log(JSON.stringify(obj));

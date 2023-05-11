@@ -359,17 +359,21 @@ export class WmsReceiptPage implements OnInit {
 
     this.intServ.loadingFunc(true);
     let pallets = [];
+    let lpsS = [];
 
     try {
 
-
-
       const lpsP = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, true);
 
+      const lpS = await this.wmsService.GetLicencesPlateInWR(this.wareReceipts.No, false);
 
-      if (lpsP.Error) throw Error(lpsP.Error.Message);
-      if (lpsP.error) throw Error(lpsP.error.message);
 
+      if (lpsP.Error &&  lpS.Error) throw Error(lpsP.Error.Message);
+      if (lpsP.error && lpS.error) throw Error(lpsP.error.message);
+
+
+       console.log(lpS);
+     if(!lpsP.Error){
 
       for (const key in lpsP.LicensePlates) {
 
@@ -378,14 +382,36 @@ export class WmsReceiptPage implements OnInit {
         
         if(pallet.length > 0)pallets.push(lpsP.LicensePlates[key]);
       }
+     }else{
 
+      pallets = [];
 
+     }
+     
+
+     if(!lpS.Error){
+
+      for (const key in lpS.LicensePlates) {
+
+        let lps = await this.wmsService.listTraking(lpS.LicensePlates[key].LPLines);
+        lpS.LicensePlates[key].LPLines = lps;
+        
+        if(lps.length > 0)lpsS.push(lpS.LicensePlates[key]);
+      }
+     }else{
+      
+      lpsS = [];
+
+     }
 
       console.log('license plate pallet =>', pallets);
 
         let wareReceipts = this.wareReceipts;
 
         this.storage.set(`${this.wareReceipts.No}, pallet`, pallets);
+
+        this.storage.set(`${this.wareReceipts.No}, LP Single`, lpsS);
+
         this.storage.set(`wareReceipt`, wareReceipts);
 
         this.router.navigate(['page/wms/listPallet']);   

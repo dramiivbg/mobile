@@ -21,6 +21,7 @@ import { PopoverSettingComponent } from '@prv/components/popover-setting/popover
   styleUrls: ['./wms-main.page.scss'],
 })
 export class WmsMainPage implements OnInit {
+
   public module: any = {};
   public sessionLogin: any = {};
   public session: any = {};

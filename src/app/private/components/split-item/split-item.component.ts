@@ -16,10 +16,11 @@ export class SplitItemComponent implements OnInit {
 
   @Input() item:any;
   @Input() pallet:any;
-
+  @Input() listPalletVoid:any;
   
   public boolean:Boolean = true;
 
+  public No:any;
   public loading:Boolean = false;
 
   constructor(private formBuilder: UntypedFormBuilder, 
@@ -53,113 +54,18 @@ export class SplitItemComponent implements OnInit {
 
 
  async onSubmit(){
-
-
+ 
     if (this.frm.valid) {
 
 
       this.boolean = false;
       this.loading = true;
 
-      let obj = await this.jsonService.formToJson(this.frm);
-
-
-
+      let obj = await this.jsonService.formToJson(this.frm); 
      
-     
-     if(obj['Quantity'] <= this.item.PLUQuantity){
+     if(obj.Quantity <= this.item.PLUQuantity && obj.Quantity > 0){
 
-      if(obj['Quantity'] > 0){
-
-
-        
-      try {
-
-        let lpN = await this.wmsService.GenerateEmptyLP(this.pallet.fields.PLUZoneCode,this.pallet.fields.PLULocationCode," ", 'Pallet');
-       
-
-        console.log(lpN);
-
-        let qtyN = obj['Quantity'];
-  
-        let qty = this.item.PLUQuantity - qtyN;
-  
-        let itemNo = this.item.PLUNo;
-  
-        let objP = {
-          NewLicensePlateCode: lpN.LPNo,
-          NewQuantity: qtyN,
-          OriginalQuantityModified: qty,
-          OriginalLicensePlateCode: this.pallet.fields.PLULPDocumentNo,
-          ItemCode: itemNo
-        };
-
-        console.log('inicio =>',objP);
-  
-  
-        let res = await this.wmsService.SplitPallet_Item(objP);
-
-        console.log(res);
-
-        if(res.Error) throw new Error(res.Error.Message);
-
-        if(res.message) throw new Error(res.message);
-        
-
-        Swal.fire(
-          'Success!',
-          `The created item has been successfully moved to the pallet ${lpN.LPNo}`,
-          'success'
-        )
-
-       
-
-        this.popoverController.dismiss({data: 'split', obj: this.item.PLULPDocumentNo});
-
-      
-
-        
-      } catch (error) {
-
-
-        this.boolean = true;
-        this.loading = false;
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error.message,
-          footer: ''
-        });
-        
-      }
-
-      }else{
-
-        this.boolean = true;
-        this.loading = false;
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: `The amount must be greater than zero`,
-          footer: ''
-        });
-        
-        
-      }
-
-  
-     }else{
-
-      this.boolean = true;
-      this.loading = false;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: `The quantity must not be greater than the original Item ${this.item.PLUNo}`,
-        footer: ''
-      });
+      this.popoverController.dismiss({qty: obj.Quantity,palletNew:this.No});
 
         }
 
@@ -194,6 +100,13 @@ export class SplitItemComponent implements OnInit {
        this.frm.get('Quantity').setValue(qty);
        }
   
+    }
+
+    onSelect(p){
+
+      this.No = p;
+    
+      console.log(this.No);
     }
 
 }

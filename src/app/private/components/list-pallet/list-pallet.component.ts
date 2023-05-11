@@ -18,13 +18,19 @@ export class ListPalletComponent implements OnInit {
 
   public lpsNo: any[] = [];
 
-  public boolean:Boolean = true;
   public lps: any[] = [];
 
   public listPallet:any;
 
+  public listLP:any;
+
   public wareReceipts: any;
 
+  public boolean:boolean = true;
+
+  public QtyPallet = 0;
+
+  public QtyLP = 0;
 
   constructor(private wmsService: WmsService
     , private intServ: InterceptService
@@ -42,15 +48,26 @@ export class ListPalletComponent implements OnInit {
     this.wareReceipts = await this.storage.get(`wareReceipt`);
 
     this.listPallet = await this.storage.get(`${this.wareReceipts.No}, pallet`); 
+    this.listLP = await this.storage.get(`${this.wareReceipts.No}, LP Single`); 
+    this.listLP.map(x => {
+      x['qty'] = 0 
+      x.LPLines.map(i => x.qty += i.PLUQuantity);
+    });
+
+    this.QtyPallet = this.listPallet.length;
+    this.QtyLP = this.listLP.length;
 
     console.log('pallet =>',this.listPallet);
-
+    console.log('single =>',this.listLP);
     
     this.intServ.loadingFunc(false);
     
   }
 
+  listSerial(item:any){
 
+   
+  }
 
   listLpOrItems(item:any){
 
@@ -96,17 +113,24 @@ export class ListPalletComponent implements OnInit {
   }
 
 
- delete(item:any){
+async delete(item:any){
 
-    this.intServ.alertFunc(this.js.getAlert('confirm', '', `Are you sure you want to delete the Pallet ${item.LPDocumentNo}?`, async() => {
+ 
+this.intServ.alertFunc(this.js.getAlert('confirm', '', item.LPDocumentType == "Pallet"?`Are you sure you want to delete the Pallet ${item.LPDocumentNo}?`:
+ `Are you sure you want to delete the LP Single ${item.LPDocumentNo}?`, async() => {
+  this.intServ.loadingFunc(true);
+    switch(item.LPDocumentType){
 
-      this.intServ.loadingFunc(true);
+      case "Pallet":
+      
+
       try {
 
           
         let res = await this.wmsService.DeleteLPPallet_FromWarehouseReceiptLine(item.LPDocumentNo);
 
          if(res.Error) throw new Error(res.Error.Message);
+         if(res.error) throw new  Error(res.error.message);
          
         
          this.listPallet.filter((pallet,index) => {
@@ -121,7 +145,15 @@ export class ListPalletComponent implements OnInit {
   
         this.intServ.loadingFunc(false);
      
-        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.LPDocumentNo} has been removed correctly`));
+        this.intServ.alertFunc(this.js.getAlert('success', '', `The pallet ${item.LPDocumentNo} has been removed correctly`, 
+            () => {
+
+              this.listPallet.map((x,i) => {if(x.LPDocumentNo === item.LPDocumentNo)this.listPallet.splice(i,1)});
+              this.storage.set(`${this.wareReceipts.No}, pallet`, this.listPallet); 
+
+              this.QtyPallet = this.listPallet.length;
+
+            }));
     
   
   
@@ -133,17 +165,67 @@ export class ListPalletComponent implements OnInit {
             this.intServ.alertFunc(this.js.getAlert('error', '', error.message));
             
           }
+
+          break;
+
+          default:
       
-    }))
+          try {
+      
+            let lpD = await this.wmsService.DeleteLPSingle_FromWarehouseReceiptLine(item.LPDocumentNo);
+      
+            if(lpD.Error) throw new Error(lpD.Error.Message);
+            if(lpD.error) throw new  Error(lpD.error.message);
+          
+            
+            this.intServ.loadingFunc(false);
+            this.intServ.alertFunc(this.js.getAlert('success', '', `The license plate ${item.LPDocumentNo} has been successfully deleted`, () => {
+            
+              this.listLP.map((x,i) => {if(x.LPDocumentNo === item.LPDocumentNo)this.listLP.splice(i,1)});
 
+              this.storage.set(`${this.wareReceipts.No}, LP Single`, this.listLP); 
 
+              this.QtyLP = this.listLP.length;
+           
+            }));
+         
+         } catch (error) {
+           
+           this.intServ.loadingFunc(false);
+           this.intServ.alertFunc(this.js.getAlert('error', '', error.message))
+         }
+      
+            break;
+        }
+      
+    }));
   
   }
 
 
-  
+  enableLP(){
+
+    this.boolean = false;
+  }
+
+enablePallet(){
+ this.boolean = true;
+}
 
 
+deleteAll(){
+
+  switch(this.boolean){
+    case true:
+      console.log(this.listPallet);
+      break;
+
+    default:
+      console.log(this.listLP);
+      break;
+
+  }
+}
 
 
 }

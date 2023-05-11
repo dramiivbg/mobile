@@ -52,13 +52,6 @@
     border-bottom: 1px solid gray;
 }
 
-
-ion-row.newColorCheck {
-    background: linear-gradient(to top, var(--ion-color-primary), var(--ion-color-primary-background)) !important;
-    margin: 5px 0 0;
-    font-weight: bold;
-}
-
 .footernewpallet,
 .footernewpallettabs {
     height: 60px;
@@ -71,13 +64,6 @@ ion-row.newColorCheck {
     --background: linear-gradient(to bottom, var(--ion-color-primary), var(--ion-color-primary-background)) !important;
     --border: 0px !important;
 }
-
-
-
-ion-checkbox {
-    --border-radius: 50%;
-}
-
 
 
 .itemfooterSave{

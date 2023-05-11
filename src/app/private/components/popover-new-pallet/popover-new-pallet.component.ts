@@ -365,7 +365,7 @@ async onBarCode(){
   console.log(this.itemsL);
   console.log(this.itemsTraking);
 
- if(this.itemB || this.lpsB){
+ if(this.itemsL.length > 0 || this.lpsL.length > 0){
 
   for (const i in this.itemsTraking) {
     for (const j  in this.itemsL) {
@@ -721,12 +721,24 @@ if(this.booleanL){
     this.testListL[i].checked = true;
  
     }  
+    this.lpsL = cloneDeep(this.lps);
+    
     console.log(this.testListL);
   }else{
 
     for(let i in  this.testListI) {
       this.testListI[i].checked = true;
-      }     
+      }
+      
+      this.itemsL = cloneDeep(this.items);
+
+      this.itemsL.map((x,i) => {
+        if(x.ItemTrackingCode != null || x.ItemTrackingCode != ''){
+          this.traking.push(cloneDeep(x));
+          this.itemsL.splice(i,1);
+        }
+      });
+     
   }
 
   break;
@@ -738,12 +750,15 @@ if(this.booleanL){
       for(let i in this.testListL) {
         this.testListL[i].checked = false;
         }
+        this.lpsL = [];
         console.log(this.testListL);
       }else{
     
         for(let i in this.testListI) {
           this.testListI[i].checked = false;
           }
+
+          this.itemsL = [];
           console.log(this.testListI);
       }
   
@@ -761,7 +776,7 @@ switch(ev.detail.checked){
   case true:  
    
     this.lpsL.push(lp);
-     this.lpsB = true;
+
      console.log(this.lps, this.testListL);
 
   
@@ -793,19 +808,16 @@ switch(ev.detail.checked){
 case true:
 
   this.itemsLT = [];
-  this.intServ.loadingFunc(true);
     switch(item.ItemTrackingCode){
 
       case null || '':
-        this.itemsL.push(item);
-       this.itemB = true;      
+        this.itemsL.push(item);     
        console.log(this.itemsL);
-       this.intServ.loadingFunc(false);
+
        break;
 
        default:
         this.traking.push(item);
-        this.intServ.loadingFunc(false);
         console.log(this.traking);
          break;
     }
