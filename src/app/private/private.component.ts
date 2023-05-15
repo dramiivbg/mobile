@@ -54,7 +54,7 @@ export class PrivateComponent implements OnInit {
         clearTimeout(this.setTimeNetwork);
         this.setTimeNetwork = setTimeout(() => {
           this.sendAllTemps();
-        }, 5000);
+        }, 1000);
       }
     });
   }

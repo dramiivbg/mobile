@@ -35,6 +35,7 @@ export class LicensePlatesComponent implements OnInit {
   public total:number = 0;
   public Quantity = 0;
   public approved = false;
+  public send = false;
   @Input() options: any = {};
 
   constructor(private intServ: InterceptService
@@ -68,11 +69,15 @@ export class LicensePlatesComponent implements OnInit {
       }
     );
 
+    let fecha = new Date().toISOString();
+
+    console.log(fecha);
+
     this.frm2 = this.formBuilder.group(
       {
         SerialNo: ['', Validators.required],
         LotNo: ['', Validators.required],
-        exp: ['', Validators.required],
+        exp: [fecha, Validators.required],
         Qty: ['', Validators.required]
 
 
@@ -80,6 +85,13 @@ export class LicensePlatesComponent implements OnInit {
     )
   }
 
+  change(exp){
+
+    console.log(exp);
+
+    this.frm2.controls.exp.setValue(exp);
+
+  }
   public async ngOnInit() {
     this.item = this.options.item === undefined ? {} : this.options.item;
     this.lp = this.options.lp === undefined ? {} : this.options.lp;
@@ -295,20 +307,25 @@ public async onSubmit() {
         let code = barCodeData.text;
   
         let line = this.list.find(x => x.LotNo === code.toUpperCase());
-        if(line != undefined){
+        let line2 = this.trakingOpen.find(x => x.LotNo === code.toUpperCase());
+        let line3  = this.trakingClose.find(x => x.LotNo === code.toUpperCase());
+  
+
+        if(line != undefined || line2 != undefined || line3 != undefined){
+
           this.frm2.patchValue({
 
             LotNo: code.toUpperCase(),
-            exp: line.ExperationDate
+            exp: line != undefined?line.ExperationDate:line2 != undefined?line2.ExpirationDate:line3.ExpirationDate
   
           });
-          if(this.exp) document.getElementById('datetime').setAttribute('disabled','true');
+          if(this.exp) document.getElementById('button').setAttribute('disabled','true');
       
 
         }else{
 
 
-         if(this.exp) document.getElementById('datetime').setAttribute('disabled','false');
+         if(this.exp) document.getElementById('button').setAttribute('disabled','false');
 
           this.frm2.patchValue({
 
@@ -331,39 +348,17 @@ public async onSubmit() {
   
 
 async  save(){
-
+  console.log(this.frm2);
   let obj = await this.jsonService.formToJson(this.frm2);
-
-  switch(this.serial){
-
-    case true:
-      let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-      let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-      let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-      if(line != undefined || line2 != undefined || line3 != undefined){
-        this.approved = false;
-        this.frm2.controls.SerialNo.setValue('');
-    
-        this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${obj.SerialNo.toUpperCase()} already exists`));
-    
-      }else{
-        this.approved = true;
-      }
-       break;
- 
-    case false:
-        this.approved = true;
-     break;
-    } 
-
-
+  let fecha2 = new Date().toISOString();
+  console.log(obj);
 
   let Qty = (this.serial)?1:obj.Qty;
 
-if(this.approved && this.frm2.valid){
-  switch(this.Quantity+Qty <= this.total){
-    case true:
- 
+if(this.frm2.valid){
+
+     if(this.Quantity+Qty === this.total)this.send = true;
+
         let res = new Date(obj.exp);
   
         let month = (res.getMonth()+1 < 10)?'0'+(res.getMonth()+1):res.getMonth()+1
@@ -393,7 +388,7 @@ if(this.approved && this.frm2.valid){
 
         SerialNo: "",
         LotNo: "",
-        exp: ""
+        exp: fecha2
       });
 
       json =   {
@@ -430,7 +425,7 @@ if(this.approved && this.frm2.valid){
       
               SerialNo: "",
               LotNo: "",
-              exp: "",
+              exp: fecha2,
               Qty:""
             });
       
@@ -453,7 +448,7 @@ if(this.approved && this.frm2.valid){
       
             SerialNo: "",
             LotNo: "",
-            exp: "",
+            exp: fecha2,
             Qty: ""
           });
           break;
@@ -461,23 +456,7 @@ if(this.approved && this.frm2.valid){
          }
   
         }
-  
-      break
-
-     default:
-      
-      this.frm2.patchValue({
-
-        SerialNo: "",
-        LotNo: "",
-        exp: ""
-      });
-
-     this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
-      break;
-    
-  }
-
+        document.getElementById('button').setAttribute('disabled','false');
 }  
   
 
@@ -518,6 +497,65 @@ if(this.approved && this.frm2.valid){
 
   }
 
+  validSerial(e){
+    let val = e.target.value;
+    let line = this.list.find(x => x.SerialNo === val.toUpperCase());
+    let line2 = this.trakingOpen.find(x => x.SerialNo === val.toUpperCase());
+    let line3 = this.trakingClose.find(x => x.SerialNo === val.toUpperCase());
+
+    if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
+
+      this.frm2.patchValue({
+        SerialNo: val.toUpperCase()
+      });
+
+      this.approved = true;
+    }else{
+
+      this.intServ.alertFunc(this.jsonService.getAlert('alert','',`The serial ${val.toUpperCase()} already exists`));
+      this.frm2.controls.SerialNo.setValue("");
+    }
+  }
+
+
+  validLot(e){
+
+    let val = e.target.value;
+
+    let line = this.list.find(x => x.LotNo === val.toUpperCase());
+     let line2 = this.trakingOpen.find(x => x.LotNo === val.toUpperCase());
+     let line3  = this.trakingClose.find(x => x.LotNo === val.toUpperCase());
+
+
+     if(line != undefined || line2 != undefined || line3 != undefined){
+
+       this.frm2.patchValue({
+         LotNo: val.toUpperCase(),
+         exp: line != undefined?line.ExperationDate:line2 != undefined?line2.ExpirationDate:line3.ExpirationDate
+
+       });
+
+       console.log(this.frm2);
+       
+
+       if(this.exp) document.getElementById('button').setAttribute('disabled','true');
+       
+
+     }else{
+
+         if(this.exp) document.getElementById('button').setAttribute('disabled','false');
+      
+         this.frm2.patchValue({
+
+           LotNo: val.toUpperCase()
+ 
+         });
+       
+
+     }
+
+}
+
   
     async lists(){
 
@@ -556,7 +594,7 @@ if(this.approved && this.frm2.valid){
 
        this.list.length > 0?this.list.map(x => {if(x.proceded === false){this.Quantity += x.Qty}}):this.Quantity;
     
-     
+      this.send = this.Quantity < this.total?false:true;
    
     }
 

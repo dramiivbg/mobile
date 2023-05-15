@@ -35,8 +35,8 @@
             <ion-col class="itemlist" size="2" *ngIf="item.Qty === undefined && item.QtyPhysInventory === undefined">{{item.Quantity}}</ion-col>
 
           </ion-item>
-            <ion-item-options *ngIf="item.proceded === false"  (click)="delete(i)">
-            <ion-item-option color="danger">
+            <ion-item-options >
+            <ion-item-option *ngIf="item.proceded === false"  (click)="delete(i)" color="danger">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-item-option>
           </ion-item-options>

@@ -24,11 +24,11 @@ export class WmsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.asyncNetwork();
+   // this.asyncNetwork();
   }
 
 
-  private asyncNetwork(): void {
+ /* private asyncNetwork(): void {
     Network.addListener('networkStatusChange', async status => {
       let msg =  'You do not have internet access, please log on';
       console.log('conexion =>',status.connected);   
@@ -36,9 +36,11 @@ export class WmsComponent implements OnInit {
         
         this.intServ.alertFunc(this.js.getAlert('alert', '', msg , () => {
           this.router.navigate(['page/main/modules']);
+          
         }));
       } 
     });
   }
+  */
 
 }

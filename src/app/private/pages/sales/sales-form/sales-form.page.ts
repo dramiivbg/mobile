@@ -45,8 +45,8 @@ export class SalesFormPage implements OnInit {
   public edit: boolean = false;
   public backObj: any = {};
   public permissions: Array<E_PROCESSTYPE>;
-  public order: any = {};
-  public temp: any = {};
+  public order: any;
+  public temp: any;
   public unitMeasureList: any = [];
   
   public listEditShip = [];
@@ -73,9 +73,6 @@ export class SalesFormPage implements OnInit {
     sysPermits: []
   };
 
-  // viewChild
-  @ViewChild('dateOrder') dateOrderTime;
-  @ViewChild('dateDelivery') dateDeliveryTime;
 
   constructor(private apiConnect: ApiService
     , private formBuilder: UntypedFormBuilder
@@ -159,8 +156,23 @@ export class SalesFormPage implements OnInit {
     this.frm.addControl('requestedDeliveryDate', new UntypedFormControl(""));
     // this.frm.addControl('lines', this.formBuilder.array([this.initLines()]));
     this.frm.addControl('lines', this.formBuilder.array([]));
+    this.today = new Date().toISOString()
+    this.frm.controls.orderDate.setValue(this.today);
+    this.frm.controls.requestedDeliveryDate.setValue(this.today);   
+    console.log(this.order);
 
-    
+    if(this.order !== undefined){
+
+      let requestDeliveryDate = this.order.fields.RequestedDeliveryDate === null ? this.order.fields.OrderDate : this.order.fields.RequestedDeliveryDate;
+      this.frm.controls.orderDate.setValue(this.order.fields.OrderDate);
+     if(this.process.description == 'Sales Order')this.frm.controls.requestedDeliveryDate.setValue(requestDeliveryDate);
+      
+    }else if(this.temp != undefined){
+
+      this.frm.controls.orderDate.setValue(this.temp.parameters.orderDate);
+      if(this.process.description == 'Sales Order')this.frm.controls.requestedDeliveryDate.setValue(this.temp.parameters.requestedDeliveryDate);
+    }
+ 
 
     console.log('order =>',this.order);
 
@@ -171,7 +183,7 @@ export class SalesFormPage implements OnInit {
    */
   async initSalesOrder() {
     if (this.order !== undefined) {
-      let requestDeliveryDate = this.order.fields.RequestedDeliveryDate === null ? this.order.fields.OrderDate : this.order.fields.RequestedDeliveryDate;
+   
       this.idSales = this.order.id;
       if (!this.hideShipTo) {
         const shipToCode = this.order.fields.ShiptoCode === null ? '': this.order.fields.ShiptoCode;
@@ -181,18 +193,16 @@ export class SalesFormPage implements OnInit {
       }
       this.frm.controls.customerNo.setValue(this.order.fields.SelltoCustomerNo);
       this.frm.controls.customerName.setValue(this.order.fields.SelltoCustomerName);
-      this.frm.controls.orderDate.setValue(this.order.fields.OrderDate);
-      this.frm.controls.requestedDeliveryDate.setValue(requestDeliveryDate);
       this.frm.addControl('lines', this.formBuilder.array([]));
       this.frm.controls.lines = await this.setSalesOrderLines(this.order.lines);
 
       if(this.order.fields.Status === "Released"){
        this.disabled = true;
+       document.getElementById('button').setAttribute('disabled','true');
+       document.getElementById('button2').setAttribute('disabled','true');
       }else{
         this.disabled = false;
       }
-
-
       this.setTotals();
     } else {
       this.idSales = this.temp.id;
@@ -203,8 +213,6 @@ export class SalesFormPage implements OnInit {
       }
       this.frm.controls.customerNo.setValue(this.temp.parameters.customerNo);
       this.frm.controls.customerName.setValue(this.temp.value);
-      this.frm.controls.orderDate.setValue(this.temp.parameters.orderDate);
-      this.frm.controls.requestedDeliveryDate.setValue(this.temp.parameters.requestedDeliveryDate);
       this.frm.addControl('lines', this.formBuilder.array([]));
       this.frm.controls.lines = await this.setTempSalesLines(this.temp.parameters.lines);
       this.setTotals();
@@ -300,15 +308,16 @@ export class SalesFormPage implements OnInit {
   }
 
 
- async  popoverPicking(i,item: any,automate:boolean = false){
+ async  popoverPicking(i,item: any,process:any, automate:boolean = true){
 
     // console.log(item);
 
      automate = this.disabled?false:automate; 
+     let picking  = process === 'Sales Order'?true:false
     const popover = await this.popoverController.create({
       component: PopoverCountingComponent,
       cssClass: 'popoverCountingComponent',
-      componentProps: {list:item.value, picking:true,automate},
+      componentProps: {list:item.value, picking,automate,process},
       backdropDismiss: false
       
     });
@@ -346,7 +355,9 @@ export class SalesFormPage implements OnInit {
       break;
 
       default:
-        this.intServ.alertFunc(this.js.getAlert('alert', '', 'Qty To ship must not be greater than Quantity'));
+
+       let ship = data.qtyToShip+item.value.QuantityShipped - item.value.quantity;
+        this.intServ.alertFunc(this.js.getAlert('alert', '', `You cannot ship more than ${ship} units`));
         break;
     }
  
@@ -454,13 +465,15 @@ export class SalesFormPage implements OnInit {
 
        if(find === undefined)this.addItem(item);
 
+       if(this.process.description === 'Sales Return Order' || this.process.description === 'Sales Order'){
+        
        let items2 = this.frm.get('lines')['controls'];
        console.log(items2);
         let obj  = items2.find(x => x.value.id.toUpperCase() === item.id.toUpperCase());
         let index = items2.indexOf(items2.find(x => x.value.id.toUpperCase() === item.id.toUpperCase()));
-        console.log(index);
-        let automate = true;
-        this.popoverPicking(index,obj,automate);
+       this.popoverPicking(index,obj,this.process.description);
+
+       }
 
       }
     ).catch(
@@ -470,16 +483,8 @@ export class SalesFormPage implements OnInit {
     )
   }
 
-  /**
-   * Change date
-   * @param n 
-   */
-  onDate(n) {
-    if (this.new || this.edit) {
-      if(n === 0) this.dateOrderTime.open();
-      if(n === 1) this.dateDeliveryTime.open();
-    }
-  }
+
+
 
   /**
    * Return to the main.
@@ -811,11 +816,10 @@ export class SalesFormPage implements OnInit {
         item['total'] = Number(item['unitPrice']).toFixed(2);
       }
     }
-    item['quantity'] = 1;
-    item['qtytoShip'] = 0;
-    item['QuantityShipped'] = 0;
+     item['quantity'] = 1;
+     item['qtytoShip'] = 0;
+     item['ReturnQtytoReceive'] = 0;
     this.linesS.push(item);
-    console.log(this.disabled, this.new, this.edit);
 
     if (newSales) {
       this.frm.controls.lines = this.setLines(item);
@@ -865,7 +869,8 @@ export class SalesFormPage implements OnInit {
         edit: false,
         tax,
         qtytoShip: item.qtytoShip,
-        QuantityShipped: item.QuantityShipped
+        QuantityShipped: item.QuantityShipped,
+        ReturnQtytoReceive: item.ReturnQtytoReceive
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -996,8 +1001,7 @@ export class SalesFormPage implements OnInit {
       let index = items.indexOf(items.find(x => x.value.id === code.toUpperCase()));
      
       if(item != undefined){
-        let automate = this.disabled?false:true;
-        this.popoverPicking(index,item,automate);
+        this.popoverPicking(index,item,this.process.description);
       }else{
         this.intServ.alertFunc(this.js.getAlert('alert', '', `The item ${code.toUpperCase()} is not in the list, please scan it.`));
       }
@@ -1200,6 +1204,10 @@ export class SalesFormPage implements OnInit {
     this.salesType = this.process.salesType;
     this.permissions = this.process.sysPermits;
     if (this.permissions.indexOf(E_PROCESSTYPE.Edit) !== -1) this.edit = true;
+    if(!this.edit){
+      document.getElementById('button').setAttribute('disabled','true');
+     if(this.process.description == 'Sales Order')document.getElementById('button2').setAttribute('disabled','true');
+    }
     this.extras = true;
     this.new = this.routExtras.state.new;
     if (this.new) {

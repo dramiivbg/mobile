@@ -300,7 +300,7 @@ export class LoginPage implements OnInit {
     ) .catch(
       err => {
         this.intServ.loadingFunc(false);
-        this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', err.error.message)
+        this.intServ.alertFunc(this.jsonServ.getAlert('alert', ' ', 'Invalid credentials')
         );
       }
     );

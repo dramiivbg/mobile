@@ -48,35 +48,48 @@
         </ion-col>
       </ion-row>
       <!-- <hr *ngIf="!hideShipTo" /> -->
-      <ion-row class="orderDate newColor" (click)="onDate(0)">
-        <ion-col size="11">
+      <ion-row class="orderDate newColor" >
+        <ion-col size="12">
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/order-date.svg" width="100%" />
           </div>
           <div class="text-header lines">
             <ion-label class="smallfont" *ngIf="!hideOrderDate">Order date: </ion-label>
             <ion-label class="smallfont" *ngIf="hideOrderDate">Document date: </ion-label>
-            <ion-label class="smallfont">{{ frm.controls.orderDate.value | date: 'MM/dd/yyyy' }}</ion-label>
+           <!-- <ion-label class="smallfont">{{ frm.controls.orderDate.value | date: 'MM/dd/yyyy' }}</ion-label>-->
           </div>
+          <ion-datetime-button  id="button"  datetime="datetime"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime formControlName="orderDate" id="datetime" min="2023" max="3099" displayFormat="MM/DD/YYYY"></ion-datetime>
+            </ng-template>
+          </ion-modal>
         </ion-col>
-        <ion-col size="1" *ngIf="new || edit" class="edit-header">
+      <!--  <ion-col size="1" *ngIf="new || edit" class="edit-header">
           <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
-        </ion-col>
+        </ion-col>-->
       </ion-row>
       <!-- <hr *ngIf="!hideShipTo" /> -->
-      <ion-row class="delivery newColor" (click)="onDate(1)" *ngIf="!hideShipTo">
-        <ion-col size="11">
+      <ion-row class="delivery newColor"  *ngIf="!hideShipTo">
+        <ion-col size="12">
           <div class="icon-header">
             <img src="../../../../assets/img/modules/sales/delivery-date.svg" width="100%" />
           </div>
           <div class="text-header">
             <ion-label class="smallfont">Delivery date: </ion-label>
-            <ion-label class="smallfont">{{ frm.controls.requestedDeliveryDate.value | date: 'MM/dd/yyyy' }}</ion-label>
+            <!--<ion-label class="smallfont">{{ frm.controls.requestedDeliveryDate.value | date: 'MM/dd/yyyy' }}</ion-label>-->
           </div>
+
+          <ion-datetime-button id="button2"   datetime="datetime2" *ngIf="process.description === 'Sales Order'"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime formControlName="requestedDeliveryDate" id="datetime2" min="2023" max="3099" displayFormat="MM/DD/YYYY"></ion-datetime>
+            </ng-template>
+          </ion-modal>
         </ion-col>
-        <ion-col size="1" *ngIf="new || edit" class="edit-header">
+       <!-- <ion-col size="1" *ngIf="new || edit" class="edit-header">
           <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
-        </ion-col>
+        </ion-col>-->
       </ion-row>
       <ion-row class="total-for-pay">
         <ion-col>
@@ -135,7 +148,7 @@
                   <ion-item>
                     <div class="label-lines">
                       <ion-row>
-                        <ion-col size="2" class="label-line-title" (click)="popoverPicking(i,item)">
+                        <ion-col size="2" class="label-line-title" (click)="popoverPicking(i,item,process.description)">
                           <img class="noImage" *ngIf="item.controls.picture.value == 'data:image/jpeg;base64,NOIMAGE'"
                             src="../../../../assets/img/NOIMAGE.svg" />
                           <img *ngIf="item.controls.picture.value != 'data:image/jpeg;base64,NOIMAGE'"
@@ -162,21 +175,40 @@
 
                           </ion-row>
 
-                          <ion-row class="label-SO-text-row">
-                            <ion-col size="6" class="label-line">
+                          <ion-row class="label-SO-text-row" *ngIf="process.description === 'Sales Order' || process.description === 'Sales Return Order'">
+                            <ion-col size="6" class="label-line" *ngIf="process.description === 'Sales Order'">
                               QtyToShip: {{item.controls.qtytoShip.value}}
+                            </ion-col>
+
+                            <ion-col size="6" class="label-line" *ngIf="process.description === 'Sales Return Order'">
+                              ReturnQtytoReceive: {{item.controls.ReturnQtytoReceive.value}}
                             </ion-col>
                             <ion-col size="6" class="label-line">
                               Measure: {{item.controls.unitOfMeasureCode.value}}
                             </ion-col>
                           </ion-row>
 
-                          <ion-row class="label-SO-text-row">
-                            <ion-col size="6" class="label-line">
+                          <ion-row class="label-SO-text-row" *ngIf="process.description === 'Sales Order' || process.description === 'Sales Return Order'">
+                            <ion-col size="6" class="label-line" *ngIf="process.description === 'Sales Order'">
                               QtyToShipped: {{item.controls.QuantityShipped.value}}
+                            </ion-col>
+                            <ion-col size="6" class="label-line" *ngIf="process.description === 'Sales Return Order'">
+                              ReturnQtytoReceived: 
                             </ion-col>
                             <ion-col size="6" class="label-line">
                               Tax: {{item.controls.taxPerc.value}}%
+                            </ion-col>
+                          </ion-row>
+
+                          <ion-row class="label-SO-text-row" *ngIf="process.description !== 'Sales Order' &&  process.description !== 'Sales Return Order'">
+                            <ion-col size="6" class="label-line">
+                              Tax: {{item.controls.taxPerc.value}}%
+                            </ion-col>
+                            <ion-col size="6" class="label-line" *ngIf="process.description === 'Sales Return Order'">
+                              ReturnQtytoReceived: 
+                            </ion-col>
+                            <ion-col size="6" class="label-line">
+                              Measure: {{item.controls.unitOfMeasureCode.value}}
                             </ion-col>
                           </ion-row>
 
@@ -311,22 +343,9 @@
 
 </ion-content>
 
-<!-- <ion-toolbar color="plureMain" *ngIf="new || edit">
-  <ion-buttons slot="primary">
-    <ion-button (click)="onItem()" *ngIf="new || edit">
-      <img src="../../../../assets/img/modules/add-lines.svg" />
-    </ion-button>
-    <ion-button (click)="onSubmit()" *ngIf="new || edit">
-      <img src="../../../../assets/img/modules/save.svg" />
-    </ion-button>
-    <ion-button (click)="onBarCode()" *ngIf="new || edit">
-      <img src="../../../../assets/img/modules/bar-code-line.svg" />
-    </ion-button>
-  </ion-buttons>
-</ion-toolbar> -->
 
-<PlureVersion class="footerReceipt" showVersion="0" *ngIf="new || edit">
-  <ion-row>
+<PlureVersion class="footerReceipt" showVersion="0" *ngIf="new || edit ">
+  <ion-row *ngIf="process.description === 'Sales Return Order' || process.description === 'Sales Order'">
     <ion-col size="3" (click)="onItem()">
       <ion-icon class="itemfooter" size="large" name="add-circle-outline"></ion-icon>
       <div class="itemfooter">Add</div>
@@ -336,15 +355,41 @@
       <div class="itemfooter">Bar code</div>
       <hr />
     </ion-col>
-    <ion-col size="3" (click)="onSubmit()">
+    <ion-col size="3" (click)="onSubmit()" *ngIf="process.description == 'Sales Return Order'">
+      <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+      <div class="itemfooter">Save</div>
+    </ion-col>
+    <ion-col size="3" (click)="pickingAll()" *ngIf="process.description == 'Sales Return Order'">
+      <ion-icon  class="itemfooter" size="large" name="sync-outline"></ion-icon>
+      <div class="itemfooter">Return order</div>
+    </ion-col>
+  
+    <ion-col size="3" (click)="onSubmit()" *ngIf="process.description == 'Sales Order'">
       <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
       <div class="itemfooter">Save</div>
     </ion-col>&nbsp;&nbsp;
-    <picture class="img" (click)="pickingAll()">
+
+    <picture class="img" (click)="pickingAll()" *ngIf="process.description == 'Sales Order'">
 
       <img src="../../../../assets/img/picking.svg" height="35px" alt="">
       <div class="itemfooter">Picking</div>
 
     </picture>
+  </ion-row>
+
+  <ion-row *ngIf="process.description === 'Sales Invoice' || process.description === 'Sales Credit Memo'">
+    <ion-col size="4" (click)="onItem()">
+      <ion-icon class="itemfooter" size="large" name="add-circle-outline"></ion-icon>
+      <div class="itemfooter">Add</div>
+    </ion-col>
+    <ion-col size="4" (click)="onBarCode()">
+      <ion-icon class="itemfooter" size="large" name="barcode-outline"></ion-icon>
+      <div class="itemfooter">Bar code</div>
+      <hr />
+    </ion-col>
+    <ion-col size="4" (click)="onSubmit()" >
+      <ion-icon class="itemfooter" size="large" name="save-outline"></ion-icon>
+      <div class="itemfooter">Save</div>
+    </ion-col>
   </ion-row>
 </PlureVersion>

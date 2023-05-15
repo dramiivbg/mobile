@@ -17,6 +17,7 @@ export class PopoverCountingComponent implements OnInit {
   @Input() list:any;
   @Input() picking = false;
   @Input() automate: boolean;
+  @Input() process:any;
   public item:any;
   public frm: UntypedFormGroup;
   public qty = 0;
@@ -34,26 +35,23 @@ export class PopoverCountingComponent implements OnInit {
 
     this.frm = this.formBuilder.group(
       {
-        qty: ['', Validators.required],
-        qtyToShip: ['', Validators.required]
+        qty: [this.list.quantity, Validators.required],
+        qtyToShip: [this.process === 'Sales Order'?this.list.qtytoShip:this.list.ReturnQtytoReceive, Validators.required]
        
       }
     )
 
-   
+   console.log(this.list);
     
     
-  if(!this.picking){
+  if(this.process === undefined){
     this.item = (this.list.seriales.length === 1 )?this.list:undefined;
     console.log(this.item);
    this.qty = this.list.seriales.length;
     console.log(this.list);
     this.frm.controls.qtyToShip.disable();
 
-  }else{
-
-    (!this.automate)?this.frm.controls.qty.disable():this.frm.controls.qty.setValue(this.list.quantity);
-  }  
+  } 
  
   }
 
@@ -65,7 +63,9 @@ export class PopoverCountingComponent implements OnInit {
   public async onSubmit(){
 
     let obj = await this.jsonService.formToJson(this.frm); 
-    switch(this.picking){
+    console.log(obj);
+    
+    switch(this.process === undefined){
       case false:
         if(this.frm.valid && this.item != undefined){
           this.popoverController.dismiss({qty:obj.qty, seriales: this.seriales, obj: this.list,type:'normal'});
@@ -76,8 +76,7 @@ export class PopoverCountingComponent implements OnInit {
 
       default:
 
-         if(this.automate)this.list.quantity = obj.qty;
-        if(this.frm.valid)this.popoverController.dismiss({qtyToShip: obj.qtyToShip,qty: this.list.quantity});
+        if(this.frm.valid)this.popoverController.dismiss({qtyToShip: obj.qtyToShip,qty: obj.qty});
         break;
 
     }
@@ -127,5 +126,43 @@ export class PopoverCountingComponent implements OnInit {
      this.seriales = data.list;
      this.count = this.seriales.length;
  
+  }
+
+  onScanPick(num){
+
+    
+  this.barcodeScanner.scan().then(
+    barCodeData => {
+      let code = barCodeData.text;
+   
+      if(code != ''){
+        switch(num){
+          case 0:
+            if(code.toUpperCase() === this.list.id.toUpperCase()){
+              let qty =  this.frm.controls.qty.value;
+              qty+=1;
+              this.frm.controls.qty.setValue(qty);
+            }           
+            break;
+
+          default:
+            if(code.toUpperCase() === this.list.id.toUpperCase()){
+
+              let qtyToShip =  this.frm.controls.qtyToShip.value;
+              qtyToShip+=1;
+              this.frm.controls.qtyToShip.setValue(qtyToShip);
+            }
+      
+            break;
+        }
+      }
+  
+    }
+  ).catch(
+    err => {
+      console.log(err);
+    }
+  )
+
   }
 }

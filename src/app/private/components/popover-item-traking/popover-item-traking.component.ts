@@ -31,17 +31,18 @@ export class PopoverItemTrakingComponent implements OnInit {
   public list:any[] = [];
 
   public traking = false;
-
+  public send = false;
   public item: any;
   public approved = true;
   public frm: UntypedFormGroup;
   constructor(private formBuilder: UntypedFormBuilder, public popoverController: PopoverController,private barcodeScanner: BarcodeScanner, 
     private jsonService: JsonService,  private intServ: InterceptService, private wmsService: WmsService,  private storage: Storage) {
 
-   
+      let fecha = new Date().toISOString();
+
     this.frm = this.formBuilder.group(
       {
-        requestedDeliveryDate: ['', Validators.required],
+        requestedDeliveryDate: [fecha, Validators.required],
         TotalToReceive: ['', Validators.required],
         SerialNo: ['', Validators.required],
         LotNo: ['', Validators.required],
@@ -119,6 +120,7 @@ export class PopoverItemTrakingComponent implements OnInit {
         }else{
 
           this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${code.toUpperCase()} already exists`));
+          this.frm.controls.SerialNo.setValue("");
         }
     
 
@@ -131,26 +133,63 @@ export class PopoverItemTrakingComponent implements OnInit {
 
   }
 
+  validLot(e){
+
+    let val = e.target.value;
+
+    let line = this.list.find(x => x.LotNo === val.toUpperCase());
+     let line2 = this.trakingOpen.find(x => x.LotNo === val.toUpperCase());
+     let line3  = this.trakingClose.find(x => x.LotNo === val.toUpperCase());
+
+
+     if(line != undefined || line2 != undefined || line3 != undefined){
+
+       this.frm.patchValue({
+         LotNo: val.toUpperCase(),
+         requestedDeliveryDate: line != undefined?line.ExperationDate:line2 != undefined?line2.ExpirationDate:line3.ExpirationDate
+
+       });
+
+       if(this.exp) document.getElementById('button').setAttribute('disabled','true');
+       
+
+     }else{
+
+         if(this.exp) document.getElementById('button').setAttribute('disabled','false');
+      
+         this.frm.patchValue({
+
+           LotNo: val.toUpperCase()
+ 
+         });
+       
+
+     }
+
+}
+
   scanLOT(){
 
     this.barcodeScanner.scan().then(
       barCodeData => {
         let code = barCodeData.text;    
         let line = this.list.find(x => x.LotNo === code.toUpperCase());
+        let line2 = this.trakingOpen.find(x => x.LotNo === code.toUpperCase());
+        let line3  = this.trakingClose.find(x => x.LotNo === code.toUpperCase());
+  
         if(line != undefined){
           this.frm.patchValue({
-
             LotNo: code.toUpperCase(),
-            requestedDeliveryDate: line.ExperationDate
+            requestedDeliveryDate: line != undefined?line.ExperationDate:line2 != undefined?line2.ExpirationDate:line3.ExpirationDate
   
           });
-          if(this.exp) document.getElementById('datetime').setAttribute('disabled','true');
+          if(this.exp) document.getElementById('button').setAttribute('disabled','true');
       
 
         }else{
 
 
-         if(this.exp) document.getElementById('datetime').setAttribute('disabled','false');
+         if(this.exp) document.getElementById('button').setAttribute('disabled','false');
 
           this.frm.patchValue({
 
@@ -212,10 +251,30 @@ async  view(){
 
   this.list = data.list;
   this.Quantity = 0;
-  this.list.length > 0?this.list.map(x => {if(x.proceded === false){this.Quantity += x.Qty}}):this.Quantity;
-    
+  this.list.length > 0?this.list.map(x => {if(x.proceded === false){this.Quantity += x.Qty}}):this.Quantity;  
+  this.send = this.Quantity < this.total?false:true;
   }
 
+
+  validSerial(e){
+    let val = e.target.value;
+    let line = this.list.find(x => x.SerialNo === val.toUpperCase());
+    let line2 = this.trakingOpen.find(x => x.SerialNo === val.toUpperCase());
+    let line3 = this.trakingClose.find(x => x.SerialNo === val.toUpperCase());
+
+    if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
+
+      this.frm.patchValue({
+        SerialNo: val.toUpperCase()
+      });
+
+      this.approved = true;
+    }else{
+
+      this.intServ.alertFunc(this.jsonService.getAlert('alert','',`The serial ${val.toUpperCase()} already exists`));
+      this.frm.controls.SerialNo.setValue("");
+    }
+  }
 
   async  viewProcessed(){
 
@@ -335,39 +394,13 @@ async  view(){
   }
 
   save(){
-
-   switch(this.serial){
-
-   case true:
-    let line = this.list.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
-    let line2 = this.trakingOpen.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
-    let line3 = this.trakingClose.find(x => x.SerialNo === this.frm.get('SerialNo').value.toUpperCase());
-
-    if(line != undefined || line2 != undefined || line3 != undefined){
-      this.approved = false;
-      this.frm.controls.SerialNo.setValue('');
-
-      this.intServ.alertFunc(this.jsonService.getAlert('alert', '', `The serial ${this.frm.get('SerialNo').value.toUpperCase()} already exists`));
-
-    }else{
-      this.approved = true;
-    }
-
-      break;
-
-   case false:
-       this.approved = true;
-    break;
-   } 
-
     
   let Qty = (this.serial)?1:this.frm.get('QtyBase').value;
- 
-    if(this.approved && this.frm.valid){
+  let fecha2 = new Date().toISOString();
+    if(this.frm.valid){
 
-     switch(this.Quantity+Qty <= this.total){
+     if(this.Quantity+Qty === this.total)this.send = true;
 
-      case true:
 
         let res = new Date(this.frm.get('requestedDeliveryDate').value);
   
@@ -414,36 +447,25 @@ async  view(){
           }        
         }
        
-       
-  
+
         this.frm.patchValue({
   
           SerialNo: "",
           LotNo: "",
-          requestedDeliveryDate: "",
+          requestedDeliveryDate: fecha2,
           QtyBase: ""
         });
   
         console.log(this.list);
-        break;
-      default:
 
-        this.frm.patchValue({
-          SerialNo: "",
-          LotNo: "",
-          requestedDeliveryDate: "",
-          QtyBase: ""
-        });
-
-      this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
-
-        break;
+        document.getElementById('button').setAttribute('disabled','false');
       }
-    }
-      
-    }
 
   }
+
+
+
+}
 
 
 

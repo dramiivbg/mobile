@@ -85,7 +85,7 @@
 
 
 <ng-container *ngIf="!Boolean">
-  <ion-content (ionBlur)="save()">
+  <ion-content>
     <form [formGroup]="frm2" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col class="iconeye" size="2">
@@ -108,7 +108,7 @@
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input  class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001"  
+          <ion-input (ionInput)="validSerial($event)" class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001"  
             value="0"></ion-input>
         </ion-col>
       </ion-row>
@@ -122,21 +122,26 @@
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input  class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
+          <ion-input  class="inputqty" (ionInput)="validLot($event)" formControlName="LotNo" placeholder="ej: LOT-001" value="0"></ion-input>
         </ion-col>
       </ion-row>
 
       <ion-row class="qtytoreceive" *ngIf="exp">
-        <ion-col size="6">
-          <b>Expiration Date:</b> <ion-text
+        <ion-col size="4">
+          <b>Exp Date:</b> <ion-text
             *ngIf="frm2.controls['exp'].errors && frm2.controls['exp'].errors['required']" color="danger">*</ion-text>
 
         </ion-col>
-        <ion-col size="6">
+        <ion-col size="8">
 
+               
+          <ion-datetime-button id="button"  datetime="datetime"></ion-datetime-button>
 
-          <ion-datetime id="datetime" min="2023" max="3099" class="inputqty" displayFormat="MM/DD/YYYY"
-            formControlName="exp" placeholder="Select Date"></ion-datetime>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime formControlName="exp" id="datetime" min="2023" max="3099" displayFormat="MM/DD/YYYY"></ion-datetime>
+            </ng-template>
+          </ion-modal>
 
         </ion-col>
       </ion-row>
@@ -153,7 +158,12 @@
 
       <ion-row class="footer">
 
-        <ion-col size="6">
+        
+        <ion-col size="6" (click)="save()" *ngIf="!send">
+          <ion-button  shape="round" expand="block" type="submit">Save</ion-button>
+        </ion-col>
+
+        <ion-col size="6" *ngIf="send">
           <ion-button color="success" shape="round" expand="block" type="submit">Send</ion-button>
         </ion-col>
         <ion-col size="6">

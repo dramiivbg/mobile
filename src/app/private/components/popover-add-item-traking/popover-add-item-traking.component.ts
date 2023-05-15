@@ -33,7 +33,7 @@ export class PopoverAddItemTrakingComponent implements OnInit {
   public lot:boolean = false; 
   public exp:boolean = false;
   public serial:boolean = false;
-  public approved = true;
+  public send = false;
   constructor( private formBuilder: UntypedFormBuilder, public popoverController: PopoverController, private barcodeScanner: BarcodeScanner,
     private jsonService: JsonService, private intServ: InterceptService,  private storage: Storage) {
 
@@ -50,11 +50,13 @@ export class PopoverAddItemTrakingComponent implements OnInit {
       }
     )
 
+    let fecha = new Date().toISOString();
+
     this.frm2 = this.formBuilder.group(
       {
         SerialNo: ['', Validators.required],
         LotNo: ['', Validators.required],
-        exp: ['', Validators.required],
+        exp: [fecha, Validators.required],
         Qty: ['', Validators.required]
 
       }
@@ -104,21 +106,24 @@ export class PopoverAddItemTrakingComponent implements OnInit {
         console.log(code);
 
         let line = this.list.find(x => x.LotNo === code.toUpperCase());
+        let line2 = this.trakingOpen.find(x => x.LotNo === code.toUpperCase());
+        let line3  = this.trakingClose.find(x => x.LotNo === code.toUpperCase());
+  
 
-        if(line != undefined){
+        if(line != undefined || line2 != undefined || line3 != undefined){
+
           this.frm2.patchValue({
-
             LotNo: code.toUpperCase(),
-            exp: line.ExperationDate
+            exp: line != undefined?line.ExperationDate:line2 != undefined?line2.ExpirationDate:line3.ExpirationDate
   
           });
 
-          if(this.exp) document.getElementById('datetime').setAttribute('disabled','true');
+          if(this.exp) document.getElementById('button').setAttribute('disabled','true');
           
 
         }else{
 
-            if(this.exp) document.getElementById('datetime').setAttribute('disabled','false');
+            if(this.exp) document.getElementById('button').setAttribute('disabled','false');
          
             this.frm2.patchValue({
   
@@ -142,35 +147,12 @@ export class PopoverAddItemTrakingComponent implements OnInit {
 async  save(){
 
   let obj = await this.jsonService.formToJson(this.frm2); 
- switch(this.serial){
-  case true:
-    let line = this.list.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-    let line2 = this.trakingOpen.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-    let line3 = this.trakingClose.find(x => x.SerialNo === obj.SerialNo.toUpperCase());
-  
-    if(line != undefined || line2 != undefined || line3 != undefined){
-      this.approved = false;
-      this.frm2.controls.SerialNo.setValue('');
-  
-      this.mensaje = `The serial ${obj.SerialNo.toUpperCase()} already exists`;
-  
-    }else{
-      this.approved = true;
-    }
-    
-    break;
 
-  case false:
-    this.approved = true;
-    break;
- }
- 
+  let fecha2 = new Date().toISOString();
+
 let Qty = (this.serial)?1:obj.Qty;
  
-  if(this.approved){
-    console.log('qty =>',Qty);
-    switch(this.Quantity+Qty <= this.total){
-      case true:
+    if(this.Quantity+Qty === this.total)this.send = true
         if (this.frm2.valid) {    
           let res = new Date(obj.exp);
     
@@ -208,7 +190,7 @@ let Qty = (this.serial)?1:obj.Qty;
       
               SerialNo: "",
               LotNo: "",
-              exp: "",
+              exp: fecha2,
               Qty:""
             });
       
@@ -261,7 +243,7 @@ let Qty = (this.serial)?1:obj.Qty;
         
                 SerialNo: "",
                 LotNo: "",
-                exp: "",
+                exp: fecha2,
                 Qty:""
               });
         
@@ -291,23 +273,17 @@ let Qty = (this.serial)?1:obj.Qty;
         
               SerialNo: "",
               LotNo: "",
-              exp: "",
+              exp: fecha2,
               Qty: ""
             });
           
            }
     
           }
+
+        document.getElementById('button').setAttribute('disabled','false');
     
         }
-        break
-  
-       default:
-        this.intServ.alertFunc(this.jsonService.getAlert('alert','','You cannot create more than you receive'));
-        break;
-      
-    }
-  }
   
   }
 
@@ -328,7 +304,7 @@ let Qty = (this.serial)?1:obj.Qty;
       let line3  = this.trakingClose.find(x => x.SerialNo === code.toUpperCase());
 
       if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
-      this.approved = true;
+    
         this.frm2.patchValue({
           SerialNo: code.toUpperCase()
         });
@@ -336,6 +312,7 @@ let Qty = (this.serial)?1:obj.Qty;
       }else{
 
         this.mensaje = `The serial ${code.toUpperCase()} already exists`;
+        this.frm2.controls.SerialNo.setValue("");
       }
       
     }
@@ -347,6 +324,41 @@ let Qty = (this.serial)?1:obj.Qty;
 
   }
 
+
+  validLot(e){
+
+       let val = e.target.value;
+
+       let line = this.list.find(x => x.LotNo === val.toUpperCase());
+        let line2 = this.trakingOpen.find(x => x.LotNo === val.toUpperCase());
+        let line3  = this.trakingClose.find(x => x.LotNo === val.toUpperCase());
+  
+
+        if(line != undefined || line2 != undefined || line3 != undefined){
+
+          this.frm2.patchValue({
+            LotNo: val.toUpperCase(),
+            exp: line != undefined?line.ExperationDate:line2 != undefined?line2.ExpirationDate:line3.ExpirationDate
+  
+          });
+
+          if(this.exp) document.getElementById('button').setAttribute('disabled','true');
+          
+
+        }else{
+
+            if(this.exp) document.getElementById('button').setAttribute('disabled','false');
+         
+            this.frm2.patchValue({
+  
+              LotNo: val.toUpperCase()
+    
+            });
+          
+
+        }
+
+  }
 
 async  onSubmit(){
 
@@ -388,6 +400,26 @@ async  onSubmit(){
     const { data } = await popover.onDidDismiss();
   
     }
+
+    validSerial(e){
+      let val = e.target.value;
+      let line = this.list.find(x => x.SerialNo === val.toUpperCase());
+      let line2 = this.trakingOpen.find(x => x.SerialNo === val.toUpperCase());
+      let line3 = this.trakingClose.find(x => x.SerialNo === val.toUpperCase());
+  
+      if((line === null || line === undefined) && (line2 === null || line2 === undefined) && (line3 === null || line3 === undefined)){
+  
+        this.frm2.patchValue({
+          SerialNo: val.toUpperCase()
+        });
+  
+  
+      }else{
+  
+        this.intServ.alertFunc(this.jsonService.getAlert('alert','',`The serial ${val.toUpperCase()} already exists`));
+        this.frm2.controls.SerialNo.setValue("");
+      }
+    }
   
     async lists(){
 
@@ -406,6 +438,8 @@ async  onSubmit(){
        data.list.map(x => {if(x.proceded === false)this.obj.TrackingInfo.push(x)});
        this.Quantity = 0;
        this.list.map(x => this.Quantity+= x.Qty);
+
+       this.send = this.Quantity < this.total?false:true;
    
     }
 }

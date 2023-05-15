@@ -64,7 +64,7 @@
 
 
 <ng-container *ngIf="!Boolean">
-  <ion-content (ionBlur)="save()">
+  <ion-content >
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
       <ion-row class="header">
         <ion-col size="10" >
@@ -84,7 +84,7 @@
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001" ></ion-input>
+          <ion-input (ionInput)="validSerial($event)" class="inputqty" formControlName="SerialNo" placeholder="ej: SN-001" ></ion-input>
         </ion-col>
 
       </ion-row>
@@ -97,18 +97,26 @@
           <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input class="inputqty" formControlName="LotNo" placeholder="ej: LOT-001"></ion-input>
+          <ion-input class="inputqty" (ionInput)="validLot($event)"  formControlName="LotNo" placeholder="ej: LOT-001"></ion-input>
         </ion-col>
       </ion-row>
       <ion-row class="qtytoreceive" *ngIf="exp">
-        <ion-col size="6">
-          <b>Exp Date:</b><ion-text
-            *ngIf="frm.controls['requestedDeliveryDate'].errors && frm.controls['requestedDeliveryDate'].errors['required']"
-            color="danger">*</ion-text>
+        <ion-col size="4">
+          <b>Exp Date:</b> <ion-text
+            *ngIf="frm.controls['requestedDeliveryDate'].errors && frm.controls['requestedDeliveryDate'].errors['required']" color="danger">*</ion-text>
+
         </ion-col>
-        <ion-col size="6">
-          <ion-datetime id="datetime" class="inputqty" displayFormat="MM/DD/YYYY"
-            formControlName="requestedDeliveryDate" placeholder="Select Date"></ion-datetime>
+        <ion-col size="8">
+
+               
+          <ion-datetime-button id="button"  datetime="datetime"></ion-datetime-button>
+
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime  formControlName="requestedDeliveryDate" id="datetime" min="2023" max="3099" displayFormat="MM/DD/YYYY"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+
         </ion-col>
       </ion-row>
 
@@ -125,7 +133,11 @@
     
       <ion-row class="footer">
 
-        <ion-col size="6">
+        <ion-col size="6" (click)="save()" *ngIf="!send">
+          <ion-button  shape="round" expand="block" type="submit">Save</ion-button>
+        </ion-col>
+
+        <ion-col size="6" *ngIf="send">
           <ion-button color="success" shape="round" expand="block" type="submit">Send</ion-button>
         </ion-col>
         <ion-col size="6">
