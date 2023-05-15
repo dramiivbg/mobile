@@ -1,7 +1,7 @@
 <ng-container>
   <ion-content>
     <form [formGroup]="frm" (ngSubmit)="onSubmit()">
-      <ion-row class="header" *ngIf="!picking">
+      <ion-row class="header" *ngIf="process === undefined">
         <ion-col class="iconeye" size="2" >
           <ion-icon class="itemfooter" name="eye-outline" (click)="lists()" *ngIf="item === undefined"></ion-icon>
         </ion-col>
@@ -13,10 +13,14 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="header" *ngIf="picking">
+      <ion-row class="header" *ngIf="process != undefined">
 
-        <ion-col size="12">
+        <ion-col size="12" *ngIf="process === 'Sales Order'">
           <ion-label>Picking</ion-label>
+        </ion-col>
+
+        <ion-col size="12" *ngIf="process === 'Sales Return Order'">
+          <ion-label>Return To Receive</ion-label>
         </ion-col>
      
       </ion-row>
@@ -25,20 +29,20 @@
         <ion-col size="6">
           <b>Item No:</b>
         </ion-col>
-        <ion-col size="6" *ngIf="item != undefined && item.PLUItemNo != undefined && !picking">
+        <ion-col size="6" *ngIf="item != undefined && item.PLUItemNo != undefined && process === undefined">
           {{item.PLUItemNo}}
         </ion-col>
-        <ion-col size="6" *ngIf="item === undefined && list.PLUItemNo != undefined && !picking">
+        <ion-col size="6" *ngIf="item === undefined && list.PLUItemNo != undefined && process === undefined">
           {{list.PLUItemNo}}
         </ion-col>
-        <ion-col size="6" *ngIf="item != undefined && item.ItemNo != undefined && !picking">
+        <ion-col size="6" *ngIf="item != undefined && item.ItemNo != undefined && process === undefined">
           {{item.ItemNo}}
         </ion-col>
-        <ion-col size="6" *ngIf="item === undefined && list.ItemNo != undefined && !picking">
+        <ion-col size="6" *ngIf="item === undefined && list.ItemNo != undefined && process === undefined">
           {{list.ItemNo}}
         </ion-col>
 
-        <ion-col size="6" *ngIf="picking">
+        <ion-col size="6" *ngIf="process != undefined">
           {{list.id}}
         </ion-col>
       </ion-row>
@@ -47,26 +51,26 @@
         <ion-col size="6">
           <b>Unit of measure:</b>
         </ion-col>
-        <ion-col size="6" *ngIf="item != undefined && item.PLUUnitofMeasure != undefined && !picking">
+        <ion-col size="6" *ngIf="item != undefined && item.PLUUnitofMeasure != undefined && process === undefined">
           {{item.PLUUnitofMeasure}}
         </ion-col>
-        <ion-col size="6" *ngIf="item === undefined && list.PLUUnitofMeasure != undefined && !picking">
+        <ion-col size="6" *ngIf="item === undefined && list.PLUUnitofMeasure != undefined && process === undefined">
           {{list.PLUUnitofMeasure}}
         </ion-col>
 
-        <ion-col size="6" *ngIf="item != undefined && item.UnitofMeasureCode != undefined && !picking">
+        <ion-col size="6" *ngIf="item != undefined && item.UnitofMeasureCode != undefined && process === undefined">
           {{item.UnitofMeasureCode}}
         </ion-col>
-        <ion-col size="6" *ngIf="item === undefined && list.UnitofMeasureCode != undefined && !picking">
+        <ion-col size="6" *ngIf="item === undefined && list.UnitofMeasureCode != undefined && process === undefined">
           {{list.UnitofMeasureCode}}
         </ion-col>
 
-        <ion-col size="6" *ngIf="picking">
+        <ion-col size="6" *ngIf="process != undefined">
           {{list.unitOfMeasureCode}}
         </ion-col>
       </ion-row>
 
-      <ion-row class="qtytoreceive" *ngIf="item != undefined && item.QtyPhysInventory != undefined && !picking" >
+      <ion-row class="qtytoreceive" *ngIf="item != undefined && item.QtyPhysInventory != undefined && process === undefined" >
         <ion-col size="6">
           <b>Qty P.I:</b>
         </ion-col>
@@ -75,7 +79,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="qtytoreceive" *ngIf="item != undefined && item.Quantity != undefined && item.Quantity > 0 && !picking">
+      <ion-row class="qtytoreceive" *ngIf="item != undefined && item.Quantity != undefined && item.Quantity > 0 && process === undefined">
         <ion-col size="6">
           <b>Qty</b>
         </ion-col>
@@ -84,17 +88,47 @@
         </ion-col>
       </ion-row>
 
-
-      <ion-row class="qtytoreceive" *ngIf="picking && !automate">
+      
+      <ion-row class="qtytoreceive" *ngIf="process != undefined && !automate">
         <ion-col size="6">
           <b>Qty</b>
         </ion-col>
         <ion-col size="6">
-          {{list.quantity}}
+         {{list.quantity}}
         </ion-col>
       </ion-row>
 
-      <ion-row class="qtytoreceive" *ngIf="item !== undefined && !picking">
+      <ion-row class="qtytoreceive" *ngIf="picking">
+        <ion-col size="6">
+          <b>Qty to Shipped:</b>
+        </ion-col>
+        <ion-col size="6">
+          {{list.QuantityShipped}}
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="qtytoreceive" *ngIf="!picking">
+        <ion-col size="6">
+          <b>Return Qty to received:</b>
+        </ion-col>
+        <ion-col size="6">
+       
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="qtytoreceive" *ngIf="process != undefined && automate">
+        <ion-col size="4">
+          <b>Qty</b>
+        </ion-col>
+        <ion-col size="2" (click)="onScanPick(0)">
+          <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
+        </ion-col>
+        <ion-col size="6">
+          <ion-input class="inputqty" type="number" formControlName="qty"></ion-input>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="qtytoreceive" *ngIf="item !== undefined && process === undefined">
         <ion-col size="6">
           <b>Qty Counted:</b>
         </ion-col>
@@ -103,7 +137,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="qtytoreceive" *ngIf="item === undefined && !picking">
+      <ion-row class="qtytoreceive" *ngIf="item === undefined && process === undefined">
         <ion-col size="6">
           <b>Scan Counting:</b>
         </ion-col>
@@ -112,18 +146,26 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="qtytoreceive" *ngIf="automate">
-        <ion-col size="6">
-          <b>Qty:</b>
+    
+
+      <ion-row class="qtytoreceive" *ngIf="picking">
+        <ion-col size="4">
+          <b>Qty to Ship:</b>
+        </ion-col>
+        <ion-col size="2" (click)="onScanPick(1)">
+          <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
-          <ion-input class="inputqty" type="number" formControlName="qty"></ion-input>
+          <ion-input class="inputqty" type="number" formControlName="qtyToShip"></ion-input>
         </ion-col>
       </ion-row>
 
-      <ion-row class="qtytoreceive" *ngIf="picking">
-        <ion-col size="6">
-          <b>Qty to Ship:</b>
+      <ion-row class="qtytoreceive" *ngIf="!picking">
+        <ion-col size="4">
+          <b>Return Qty to Receive:</b>
+        </ion-col>
+        <ion-col size="2" (click)="onScanPick(1)">
+          <ion-icon class="codebaricon" name="barcode-outline"></ion-icon>
         </ion-col>
         <ion-col size="6">
           <ion-input class="inputqty" type="number" formControlName="qtyToShip"></ion-input>
