@@ -41,13 +41,13 @@ Send(){
     async (barCodeData) => {
       let code = barCodeData.text;   
 
-        let line = this.listPalletVoid.find(pallet => pallet.PLULPDocumentNo === code.toUpperCase());
+        let line = this.listPalletVoid.find(pallet => pallet.LPDocumentNo === code.toUpperCase());
 
         if(line === undefined || line === null){
           this.intServ.alertFunc(this.jsonService.getAlert('error', '', `Pallet ${code.toUpperCase()} unknown`));
         }else{
 
-          this.No = line.PLULPDocumentNo;
+          this.No = line.LPDocumentNo;
         }
 
         console.log(line);    

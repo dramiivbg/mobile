@@ -186,6 +186,10 @@ export class WmsReceiptPage implements OnInit {
       
       let res = await this.wmsService.GetItemTrackingSpecificationV2(item.ItemNo,item.SourceNo,item.SourceLineNo);
 
+      let res2 = await this.wmsService.GetItemTrackingSpecificationV3("NEWWMS");
+
+      console.log(res2);
+
       console.log(res);
  
     

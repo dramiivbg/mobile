@@ -66,7 +66,7 @@ export class PopoverCountingComponent implements OnInit {
     console.log(obj);
     
     switch(this.process === undefined){
-      case false:
+      case true:
         if(this.frm.valid && this.item != undefined){
           this.popoverController.dismiss({qty:obj.qty, seriales: this.seriales, obj: this.list,type:'normal'});
         }else{

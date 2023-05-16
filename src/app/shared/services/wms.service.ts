@@ -117,6 +117,37 @@ export class WmsService {
 
 }
 
+public async GetItemTrackingSpecificationV3(LocationCode:any){
+    try {
+        let obj: any = [{
+            LocationCode
+          
+        }]; 
+        
+        let p = await this.syncErp.processRequestParams('GetItemTrackingSpecificationV3', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+}
+
+public async Update_QtyToReturn_V1(list:any){
+
+    try {
+        let obj: any = [{
+            SalesLine: list
+          
+        }]; 
+        
+        let p = await this.syncErp.processRequestParams('Update_QtyToReturn_V1', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+    } catch (error) {
+        throw error;
+    }
+
+}
 
 public async Update_QtyToShip_SalesLines_V1(list:any){
 
@@ -1033,6 +1064,29 @@ public async SplitPallet_LPSingleV2(list:any){
     
         
         let p = await this.syncErp.processRequestParams('SplitPallet_LPSingleV2', obj);
+        let rsl = await this.syncErp.setRequest(p);
+        return rsl;
+       
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+
+public async SplitPallet_ItemV2(list:any){
+
+     
+    try {
+
+    
+        let obj: any = [list];
+    
+
+        console.log(JSON.stringify(obj));
+    
+        
+        let p = await this.syncErp.processRequestParams('SplitPallet_ItemV2', obj);
         let rsl = await this.syncErp.setRequest(p);
         return rsl;
        

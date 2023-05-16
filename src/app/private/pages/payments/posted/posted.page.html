@@ -43,8 +43,8 @@
           </ion-row>
         </ion-item>
 
-        <ion-item-options side="end" *ngIf="item.parameters == undefined">
-          <ion-item-option color="plureBlue" (click)="onPaid(item)" style="padding: 0 20px;">Paid</ion-item-option>
+        <ion-item-options side="end">
+          <ion-item-option color="plureBlue" (click)="onPaid(item)" style="padding: 0 20px;" *ngIf="item.parameters == undefined">Paid</ion-item-option>
           <!-- Delete item -->
         </ion-item-options>
       </ion-item-sliding>

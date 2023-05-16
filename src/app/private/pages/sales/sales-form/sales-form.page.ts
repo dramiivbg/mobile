@@ -48,7 +48,7 @@ export class SalesFormPage implements OnInit {
   public order: any;
   public temp: any;
   public unitMeasureList: any = [];
-  
+  public listEditQtyReturn = [];
   public listEditShip = [];
   public idSales: string;
   public hideShipTo: boolean = false;
@@ -311,6 +311,7 @@ export class SalesFormPage implements OnInit {
  async  popoverPicking(i,item: any,process:any, automate:boolean = true){
 
     // console.log(item);
+  if(process === 'Sales Return Order' ||  process === 'Sales Order'){
 
      automate = this.disabled?false:automate; 
      let picking  = process === 'Sales Order'?true:false
@@ -324,28 +325,46 @@ export class SalesFormPage implements OnInit {
     await popover.present();
     const { data } = await popover.onDidDismiss();
 
-    console.log(item.value.QuantityShipped);
+    console.log(item.value.QuantityShipped,data);
 
    if(data.qtyToShip != undefined){
-    item.value.quantity = data.qty;
-    switch(item.value.QuantityShipped === undefined?data.qtyToShip <= item.value.quantity:data.qtyToShip+item.value.QuantityShipped <= item.value.quantity){
+    switch(process === "Sales Order"?(item.value.QuantityShipped === 0?data.qtyToShip <= data.qty:data.qtyToShip+item.value.QuantityShipped <= data.qty):
+    (item.value.ReturnQtyReceived === 0?data.qtyToShip <= data.qty:data.qtyToShip+item.value.ReturnQtyReceived <= data.qty)){
 
       case true:
         console.log(data.qtyToShip);
 
         let lines = this.frm.controls.lines.value;
+        let qtyR = 0;
         console.log('line =>',lines[i]);
-        lines[i].qtytoShip = data.qtyToShip;
-         lines[i].quantity = data.qty;         
-          let subTotal =  data.qtyToShip * lines[i].unitPrice
+        if(process === "Sales Order")lines[i].qtytoShip = data.qtyToShip;
+        if(process === "Sales Return Order")lines[i].ReturnQtytoReceive = data.qtyToShip;
+         lines[i].quantity = data.qty;  
+
+         if(process === "Sales Return Order"){
+          qtyR = data.qty -  lines[i].ReturnQtytoReceive;  
+         }    
+
+          let subTotal =  process === "Sales Order"?data.qtyToShip * lines[i].unitPrice:qtyR * lines[i].unitPrice;
           let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
           lines[i].lineDiscountAmount = discountAmount.toFixed(2);
           lines[i].totalWithoutDiscount = subTotal.toFixed(2);
           lines[i].total = Number(subTotal  - discountAmount).toFixed(2);
           this.frm.controls.lines.setValue(lines); 
           if(this.disabled){
-            let find = this.listEditShip.find(x => x.LineNo === lines[i].LineNo);
-            find == undefined?this.listEditShip.push(lines[i]):find.qtytoShip = data.qtyToShip;
+            switch(process){
+              case 'Sales Order':
+                let find = this.listEditShip.find(x => x.LineNo === lines[i].LineNo);
+                 find == undefined?this.listEditShip.push(lines[i]):find.qtytoShip = data.qtyToShip;
+                break;
+
+              default:
+                
+              let find2 = this.listEditQtyReturn.find(x => x.LineNo === lines[i].LineNo);
+              find2 == undefined?this.listEditQtyReturn.push(lines[i]):find.ReturnQtytoReceive = data.qtyToShip;
+                break;
+            }
+            
           }
 
           this.setTotals();    
@@ -356,16 +375,23 @@ export class SalesFormPage implements OnInit {
 
       default:
 
-       let ship = data.qtyToShip+item.value.QuantityShipped - item.value.quantity;
+      if(process === "Sales Order"){
+
+        let ship = data.qtyToShip+item.value.QuantityShipped - item.value.quantity;
         this.intServ.alertFunc(this.js.getAlert('alert', '', `You cannot ship more than ${ship} units`));
+      }else{
+        let Return = data.qtyToShip+item.value.ReturnQtyReceived - item.value.quantity;
+        this.intServ.alertFunc(this.js.getAlert('alert', '', `You cannot Qty Return more than ${Return} units`)); 
+      }
+    
         break;
     }
  
    }
    
-  
+ }
 
-  }
+}
 
   onDeleteLine(i) {
     let lines: any = this.frm.controls.lines;
@@ -579,7 +605,7 @@ export class SalesFormPage implements OnInit {
       // if (this.frm.valid) {
         this.jsonServ.formToJson(this.frm, ['picture', 'categoryNo', 'title']).then(
           async json => {
-            if (this.order === undefined || this.order === null) {
+            if (this.temp !== undefined) {
               json['SalesOrder'] = this.temp.id;
             }
             json['salesPerson'] = this.module.erpUserId;
@@ -617,9 +643,17 @@ export class SalesFormPage implements OnInit {
               QtytoShip: ""
              }
 
-            this.listEditShip.filter(i => {
+             let obj2 = {
+              DocumentType: "",
+              DocumentNo: "",
+              LineNo: "",
+              No: "",
+              QtytoReturn: ""
+            }
+
+             process.description === "Sales Order"?this.listEditShip.filter(i => {
                 console.log('item =>',i);
-               obj.DocumentType = this.process.description == "Sales Order"?"1":this.process.description == "Sales Return Order"?"5":this.process.description == "Sales Invoice"?"2":"3",
+               obj.DocumentType = "1";
                 obj.DocumentNo =  this.order.id;
                 obj.LineNo = i.LineNo;
                 obj.No =  i.id; 
@@ -633,14 +667,32 @@ export class SalesFormPage implements OnInit {
                 QtytoShip: ""
                }
                
-            });
+            }):
+            this.listEditQtyReturn.filter(i => {
+              console.log('item =>',i);
+              obj2.DocumentType = "5";
+              obj2.DocumentNo =  this.order.id;
+              obj2.LineNo = i.LineNo;
+              obj2.No =  i.id; 
+              obj2.QtytoReturn =  i.ReturnQtytoReceive;
+              list.push(obj2);
+              obj2 = {
+                DocumentType: "",
+                DocumentNo: "",
+                LineNo: "",
+                No: "",
+                QtytoReturn: ""
+              }
+             
+          });
 
           }
            
 
           try {
 
-            let salesOrder =  !this.disabled?await this.syncerp.setRequest(process): this.wmsService.Update_QtyToShip_SalesLines_V1(list);
+            let salesOrder =  !this.disabled?await this.syncerp.setRequest(process): process.description === "Sales Order"?this.wmsService.Update_QtyToShip_SalesLines_V1(list):
+                               this.wmsService. Update_QtyToReturn_V1(list);
             console.log(salesOrder);
             if(salesOrder.Error) throw new Error(salesOrder.Error.Message);
 
@@ -819,6 +871,8 @@ export class SalesFormPage implements OnInit {
      item['quantity'] = 1;
      item['qtytoShip'] = 0;
      item['ReturnQtytoReceive'] = 0;
+     item['QuantityShipped'] = 0;
+     item['ReturnQtyReceived'] = 0;
     this.linesS.push(item);
 
     if (newSales) {
@@ -870,7 +924,8 @@ export class SalesFormPage implements OnInit {
         tax,
         qtytoShip: item.qtytoShip,
         QuantityShipped: item.QuantityShipped,
-        ReturnQtytoReceive: item.ReturnQtytoReceive
+        ReturnQtytoReceive: item.ReturnQtytoReceive,
+        ReturnQtyReceived: item.ReturnQtyReceived
       })
     );
     // this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -939,8 +994,9 @@ export class SalesFormPage implements OnInit {
           tax,
           qtytoShip: lines[i].fields.QtytoShip == null?0:lines[i].fields.QtytoShip,
           LineNo: lines[i].fields.LineNo,
-          QuantityShipped: lines[i].fields.QuantityShipped === null?0:lines[i].fields.QuantityShipped
-
+          QuantityShipped: lines[i].fields.QuantityShipped === null?0:lines[i].fields.QuantityShipped,
+          ReturnQtyReceived: lines[i].fields.ReturnQtyReceived === null?0:lines[i].fields.ReturnQtyReceived,
+          ReturnQtytoReceive: lines[i].fields.ReturnQtytoReceive === null?0:lines[i].fields.ReturnQtytoReceive 
         })
       );
       this.unitMeasureList[arr.length - 1] = item.unitOfMeasures;
@@ -978,7 +1034,9 @@ export class SalesFormPage implements OnInit {
           edit: lines[i].edit,
           tax: lines[i].tax,
           qtytoShip: lines[i].qtytoShip,
-          QuantityShipped: lines[i].QuantityShipped
+          QuantityShipped: lines[i].QuantityShipped,
+          ReturnQtyReceived: lines[i].ReturnQtyReceived,
+          ReturnQtytoReceive: lines[i].ReturnQtytoReceive
           
         })
       );

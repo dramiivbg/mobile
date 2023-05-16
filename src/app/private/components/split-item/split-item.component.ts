@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { PopoverController } from '@ionic/angular';
 import { InterceptService } from '@svc/intercept.service';
 import { JsonService } from '@svc/json.service';
@@ -16,18 +17,18 @@ export class SplitItemComponent implements OnInit {
 
   @Input() item:any;
   @Input() pallet:any;
-  @Input() listPalletVoid:any;
-  
-  public boolean:Boolean = true;
+ // @Input() listPalletVoid:any;
+
 
   public No:any;
-  public loading:Boolean = false;
+
 
   constructor(private formBuilder: UntypedFormBuilder, 
     private jsonService: JsonService
     , private wmsService: WmsService
     , private popoverController: PopoverController
-    , private interceptService: InterceptService) { 
+    , private interceptService: InterceptService
+    ,private barcodeScanner: BarcodeScanner) { 
 
 
     this.frm = this.formBuilder.group(
@@ -58,9 +59,6 @@ export class SplitItemComponent implements OnInit {
     if (this.frm.valid) {
 
 
-      this.boolean = false;
-      this.loading = true;
-
       let obj = await this.jsonService.formToJson(this.frm); 
      
      if(obj.Quantity <= this.item.PLUQuantity && obj.Quantity > 0){
@@ -73,40 +71,54 @@ export class SplitItemComponent implements OnInit {
 
  }
 
-
-  
-  add(){
-
-    let qty =  this.frm.get('Quantity').value;
-  
-    if(qty < this.item.PLUQuantity){
-
-      qty +=1
-  
-      this.frm.get('Quantity').setValue(qty);
-    }
-    
-  
-    }
-  
-    res(){
-  
-      let qty =  this.frm.get('Quantity').value;
-  
-      if(qty > 1){
-   
-       qty -=1
-  
-       this.frm.get('Quantity').setValue(qty);
-       }
-  
-    }
-
     onSelect(p){
 
       this.No = p;
     
       console.log(this.No);
+    }
+
+
+    onScanPick(){
+
+      this.barcodeScanner.scan().then(
+       async barCodeData => {
+          let code = barCodeData.text;
+       
+          if(code != ''){
+      
+              let find = this.item.PLUNo === code.toUpperCase() || this.item.PLUSerialNo === code.toUpperCase();
+
+              if(!find){
+                let identifier = await this.wmsService.GetItemIdentifier(code.toUpperCase());
+                console.log('identifier =>',identifier);
+          
+                 if(!identifier.Error && !identifier.error){
+      
+                  for (const key in identifier.ItemIdentifier) {
+                    
+                      find = (this.item.PLUNo === identifier.ItemIdentifier[key].ItemNo && this.item.PLUVariantCode === identifier.ItemIdentifier[key].VariantCode);
+                    
+                   }
+            
+                  }
+              }
+                if(find){
+
+                  let qty =  this.frm.controls.Quantity.value;
+                  qty+=1;
+                  this.frm.controls.Quantity.setValue(qty);
+                }
+                 
+            }           
+                 
+        }
+      ).catch(
+        err => {
+          console.log(err);
+        }
+      )
+
     }
 
 }

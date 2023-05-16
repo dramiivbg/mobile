@@ -585,6 +585,12 @@ disable(){
 
   this.QtyLP = 0;
 
+  for (const key in this.itemsL) {
+    if (this.itemsL[key].Qty === 0) {
+      this.itemsL.splice(Number(key),1);     
+    }
+   }
+
   this.lps = [];
   this.itemsL.map(x => {
     this.items.map((i,index) => {
@@ -595,6 +601,12 @@ disable(){
 console.log(this.items);
 
   let contador = 0
+
+   for (const key in this.traking) {
+    if (this.traking[key].Qty === 0) {
+      this.traking.splice(Number(key),1);     
+    }
+   }
 
   if(this.traking.length > 0){
     this.trakingItem(contador);
