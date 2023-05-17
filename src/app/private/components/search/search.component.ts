@@ -439,6 +439,7 @@ export class SearchComponent implements OnInit {
     try {
       this.intServ.loadingFunc(true);
       let {PostedDocNo} = await this.salesService.post(this.process.salesType, sell.id);
+      console.log(PostedDocNo);
       this.intServ.alertFunc(this.js.getAlert('success', 'Success', `Post was successful. Posted Document No. ${PostedDocNo}`,
         () => {
           this.listsFilter.splice(index, 1);

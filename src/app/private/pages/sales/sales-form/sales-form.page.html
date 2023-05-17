@@ -90,7 +90,7 @@
        <!-- <ion-col size="1" *ngIf="new || edit" class="edit-header">
           <img src="../../../../assets/img/modules/sales/edit.svg" width="70%" />
         </ion-col>-->
-      </ion-row>
+      </ion-row><br>
       <ion-row class="total-for-pay">
         <ion-col>
           <ion-label>${{total}}</ion-label>
@@ -219,15 +219,15 @@
                                 <ion-col size="5" style="padding: 0;">
                                   Disc %
                                 </ion-col>
-                                <ion-col size="7" style="padding: 0;">
+                                <ion-col  size="7" style="padding: 0;">
 
-                                  <ion-input type="number" *ngIf="new || edit" formControlName="lineDiscountPercentage"
-                                    (ionChange)="onChangeDiscount($event, i)" [readonly] = "disabled">
-                                  </ion-input>
+                                  <input  type="number" *ngIf="new || edit" formControlName="lineDiscountPercentage"
+                                  (change)="onChangeDiscount($event, i)" [readonly] = "disabled">
+                                 
 
-                                  <ion-input type="number" *ngIf="!new && !edit" formControlName="lineDiscountPercentage"
-                                    (ionChange)="onChangeDiscount($event, i)"  readonly>
-                                  </ion-input>
+                                  <input  type="number" *ngIf="!new && !edit" formControlName="lineDiscountPercentage"
+                                  (change)="onChangeDiscount($event, i)"  readonly>
+
 
                                 </ion-col>
                               </ion-row>
@@ -238,11 +238,11 @@
                               <ion-row>
                                 <ion-col size="5" style="padding: 0;">U.Price</ion-col>
                                 <ion-col size="7" style="padding: 0;">
-                                  <ion-input type="number" *ngIf="new || edit" formControlName="unitPrice"
-                                    (ionChange)="onChangePrice($event, i)" [readonly] = "disabled"></ion-input>
+                                  <input type="number" *ngIf="new || edit" formControlName="unitPrice"
+                                    (change)="onChangePrice($event, i)" [readonly] = "disabled">
 
-                                  <ion-input type="number" *ngIf="!new && !edit" formControlName="unitPrice"
-                                    (ionChange)="onChangePrice($event, i)"  readonly></ion-input>
+                                  <input type="number" *ngIf="!new && !edit" formControlName="unitPrice"
+                                    (change)="onChangePrice($event, i)"  readonly>
 
                                 </ion-col>
 

@@ -199,7 +199,7 @@ export class SalesFormPage implements OnInit {
       if(this.order.fields.Status === "Released"){
        this.disabled = true;
        document.getElementById('button').setAttribute('disabled','true');
-       document.getElementById('button2').setAttribute('disabled','true');
+       if(this.process.description == 'Sales Order')document.getElementById('button2').setAttribute('disabled','true');
       }else{
         this.disabled = false;
       }
@@ -268,11 +268,13 @@ export class SalesFormPage implements OnInit {
   }
 
   onShipAddress() {
-    let obj = this.general.structSearch(this.customer.shipAddress, 'Search ship-to address', 'ship-to address', (item) => {
-      this.shipAddress = item;
-      this.setShipAdress();
-    });
-    this.intServ.searchShowFunc(obj);
+    if(!this.disabled){
+      let obj = this.general.structSearch(this.customer.shipAddress, 'Search ship-to address', 'ship-to address', (item) => {
+        this.shipAddress = item;
+        this.setShipAdress();
+      });
+      this.intServ.searchShowFunc(obj);
+    }    
   }
 
   onClear() {
@@ -345,7 +347,8 @@ export class SalesFormPage implements OnInit {
           qtyR = data.qty -  lines[i].ReturnQtytoReceive;  
          }    
 
-          let subTotal =  process === "Sales Order"?data.qtyToShip * lines[i].unitPrice:qtyR * lines[i].unitPrice;
+          let subTotal =  process === "Sales Order"?(data.qtyToShip > 0?data.qtyToShip * lines[i].unitPrice:
+            data.qty * lines[i].unitPrice):(qtyR > 0?qtyR * lines[i].unitPrice:data.qty * lines[i].unitPrice);
           let discountAmount = subTotal * (lines[i].lineDiscountPercentage / 100);
           lines[i].lineDiscountAmount = discountAmount.toFixed(2);
           lines[i].totalWithoutDiscount = subTotal.toFixed(2);
@@ -377,11 +380,11 @@ export class SalesFormPage implements OnInit {
 
       if(process === "Sales Order"){
 
-        let ship = data.qtyToShip+item.value.QuantityShipped - item.value.quantity;
+        let ship =  data.qty - item.value.QuantityShipped;
         this.intServ.alertFunc(this.js.getAlert('alert', '', `You cannot ship more than ${ship} units`));
       }else{
-        let Return = data.qtyToShip+item.value.ReturnQtyReceived - item.value.quantity;
-        this.intServ.alertFunc(this.js.getAlert('alert', '', `You cannot Qty Return more than ${Return} units`)); 
+        let Return =  data.qty - item.value.ReturnQtyReceived;
+        this.intServ.alertFunc(this.js.getAlert('alert', '', `You cannot  Return more than ${Return} units`)); 
       }
     
         break;
