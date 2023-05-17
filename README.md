@@ -29,4 +29,4 @@ npx cap sync android
 
 ### Helps Links
 
-- [NVM](https://github.com/coreybutler/nvm-windows#installation--upgrades)
+- [NVM](https://github.com/coreybutler/nvm-windows#installation--upgrades)"# pliure" 
